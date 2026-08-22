@@ -1,6 +1,6 @@
 # xai-report-app
 
-모델 예측 결과를 SHAP 기반으로 설명하는 XAI(설명가능한 AI) 리포트 생성 웹앱입니다. Titanic 생존 예측, HR 이직 예측, 대출 승인 예측 3개 도메인을 다룹니다.
+모델 예측 결과를 SHAP 기반으로 설명하는 XAI(설명가능한 AI) 리포트 생성 웹앱입니다. Titanic 생존 예측, HR 이직(Attrition) 예측, Telco 고객 이탈(Churn) 예측 3개 도메인을 다룹니다.
 
 ## 구조
 
@@ -11,6 +11,6 @@
 
 TODO: 각 도메인별 Kaggle 데이터셋 링크와 다운로드 절차 (다음 세션에 채울 예정)
 
-1. Titanic
-2. HR 이직 예측
-3. 대출 승인 예측
+1. Titanic (`titanic.csv`, 타겟: `2urvived`)
+2. HR 이직 예측 (`HR-Employee-Attrition.csv`, 타겟: `Attrition`)
+3. Telco 고객 이탈 예측 (`Telco-Customer-Churn.csv`, 타겟: `Churn`)
