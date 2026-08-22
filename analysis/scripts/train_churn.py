@@ -6,9 +6,9 @@ SCRIPTS_DIR = Path(__file__).resolve().parent
 ANALYSIS_DIR = SCRIPTS_DIR.parent
 ROOT_DIR = ANALYSIS_DIR.parent
 
-CSV_PATH = ANALYSIS_DIR / "data" / "raw" / "HR-Employee-Attrition.csv"
-OUTPUT_PATH = ROOT_DIR / "web" / "public" / "data" / "hr_attrition.json"
-TARGET_COLUMN = "Attrition"
+CSV_PATH = ANALYSIS_DIR / "data" / "raw" / "Telco-Customer-Churn.csv"
+OUTPUT_PATH = ROOT_DIR / "web" / "public" / "data" / "telco_churn.json"
+TARGET_COLUMN = "Churn"
 
 
 def main():
@@ -16,7 +16,7 @@ def main():
     model, accuracy = train_model(X, y)
     shap_values, feature_importance_df = compute_shap(model, X)
     report = export_report_json(
-        domain="hr_attrition",
+        domain="telco_churn",
         model=model,
         X=X,
         y=y,
@@ -26,7 +26,7 @@ def main():
         model_accuracy=accuracy,
         output_path=OUTPUT_PATH,
     )
-    print(f"hr_attrition accuracy={accuracy:.4f} -> {OUTPUT_PATH}")
+    print(f"telco_churn accuracy={accuracy:.4f} -> {OUTPUT_PATH}")
     return report
 
 
