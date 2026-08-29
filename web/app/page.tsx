@@ -1,69 +1,27 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import { loadReport } from "@/lib/loadReport";
+import DomainCard from "@/components/DomainCard";
+import styles from "@/components/report.module.css";
+
+const titanic = loadReport("titanic");
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>
-            To get started, edit the{" "}
-            <code className={styles.code}>page.tsx</code> file.
-          </h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <main className={styles.landing}>
+      <h1 className={styles.h1}>모델 설명 리포트</h1>
+      <p className={styles.lead}>
+        학습된 분류 모델이 왜 그렇게 예측했는지, SHAP 기여도를 자연어 리포트로
+        보여줍니다.
+      </p>
+
+      <h2 className={styles.h2}>예시 리포트</h2>
+      <DomainCard
+        href="/report"
+        title="Titanic 생존 예측"
+        description="승객 정보로 생존 여부를 예측하는 모델의 특성 중요도와 케이스별 근거"
+        accuracy={titanic.modelAccuracy}
+      />
+
+      <p className={styles.note}>CSV 업로드로 내 데이터 분석하기 — 다음 주 업데이트 예정</p>
+    </main>
   );
 }
