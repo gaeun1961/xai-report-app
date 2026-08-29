@@ -15,6 +15,9 @@ export default function ReportPage() {
   const selected =
     report.cases.find((c) => c.id === selectedId) ?? report.cases[0];
 
+  const positiveLabel = report.positiveLabel ?? "그렇다";
+  const negativeLabel = report.negativeLabel ?? "아니다";
+
   return (
     <main className={styles.report}>
       <Link href="/" className={styles.back}>
@@ -22,6 +25,12 @@ export default function ReportPage() {
       </Link>
 
       <h1 className={styles.h1}>Titanic 생존 예측 리포트</h1>
+
+      <p className={styles.guide}>
+        이 리포트는 AI가 왜 이렇게 예측했는지 보여줍니다. 각 요인이 예측을 어느
+        쪽으로, 얼마나 강하게 밀었는지 문장으로 풀어서 설명해요. 원래 숫자가
+        궁금하면 케이스별 리포트에서 “숫자로 보기”를 누르면 됩니다.
+      </p>
 
       <section className={styles.section}>
         <h2 className={styles.h2}>전체 정확도</h2>
@@ -42,7 +51,11 @@ export default function ReportPage() {
           selectedId={selectedId}
           onSelect={setSelectedId}
         />
-        <CaseReportCard case={selected} />
+        <CaseReportCard
+          case={selected}
+          positiveLabel={positiveLabel}
+          negativeLabel={negativeLabel}
+        />
       </section>
     </main>
   );
