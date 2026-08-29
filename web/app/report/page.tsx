@@ -15,8 +15,10 @@ export default function ReportPage() {
   const selected =
     report.cases.find((c) => c.id === selectedId) ?? report.cases[0];
 
-  const positiveLabel = report.positiveLabel ?? "그렇다";
-  const negativeLabel = report.negativeLabel ?? "아니다";
+  // No blanket default: when a report has no preset labels, CaseReportCard
+  // falls back to each case's raw `prediction` value so uploaded-CSV data
+  // keeps its own wording.
+  const { positiveLabel, negativeLabel } = report;
 
   return (
     <main className={styles.report}>

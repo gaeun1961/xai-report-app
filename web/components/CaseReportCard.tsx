@@ -6,8 +6,8 @@ import styles from "./report.module.css";
 
 type Props = {
   case: ShapReport["cases"][number];
-  positiveLabel: string;
-  negativeLabel: string;
+  positiveLabel?: string;
+  negativeLabel?: string;
 };
 
 function strengthWord(contribution: number): string {
@@ -24,7 +24,10 @@ export default function CaseReportCard({
 }: Props) {
   const [showNumbers, setShowNumbers] = useState(false);
   const positive = c.predictedPositive;
-  const outcome = positive ? positiveLabel : negativeLabel;
+  // Fall back to the CSV's own predicted value when no preset label is given.
+  const posText = positiveLabel ?? c.prediction;
+  const negText = negativeLabel ?? c.prediction;
+  const outcome = positive ? posText : negText;
 
   return (
     <article className={styles.card}>
@@ -53,7 +56,7 @@ export default function CaseReportCard({
       <ul className={styles.contribList}>
         {c.topFeatures.map((f) => {
           const up = f.contribution >= 0;
-          const dir = up ? positiveLabel : negativeLabel;
+          const dir = up ? posText : negText;
           return (
             <li key={f.feature} className={styles.contribRow}>
               {showNumbers ? (
