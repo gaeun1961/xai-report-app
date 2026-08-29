@@ -80,6 +80,35 @@
   letter-spacing: -0.03em;
 }
 
+.accuracyRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.qualityBadge {
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.qualityGood {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  color: var(--accent-strong);
+}
+
+.qualityWeak {
+  background: color-mix(in srgb, #d97706 20%, transparent);
+  color: #b45309;
+}
+
+.qualityMessage {
+  font-size: 13px;
+  line-height: 1.5;
+  color: color-mix(in srgb, currentColor 70%, transparent);
+}
+
 /* domain card */
 .domainCard {
   display: block;

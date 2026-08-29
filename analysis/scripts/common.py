@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 import shap
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, recall_score
 from sklearn.model_selection import train_test_split
 
 RANDOM_STATE = 42
@@ -114,14 +114,52 @@ def load_and_preprocess(csv_path: str, target_column: str):
 
 
 def train_model(X: pd.DataFrame, y: pd.Series):
-    """Train a baseline RandomForest classifier and report holdout accuracy."""
+    """Train a baseline RandomForest classifier and evaluate it on a holdout.
+
+    Returns (model, accuracy, eval_stats) where eval_stats carries the numbers
+    _judge_model_quality needs: majority-class baseline accuracy, the recall on
+    the minority class, and which class that is.
+    """
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=RANDOM_STATE, stratify=y
     )
     model = RandomForestClassifier(n_estimators=300, random_state=RANDOM_STATE)
     model.fit(X_train, y_train)
-    accuracy = accuracy_score(y_test, model.predict(X_test))
-    return model, accuracy
+    preds = model.predict(X_test)
+
+    accuracy = accuracy_score(y_test, preds)
+    pos_rate = float(y_test.mean())
+    minority_cls = 1 if pos_rate < 0.5 else 0
+    eval_stats = {
+        "baseline_accuracy": max(pos_rate, 1.0 - pos_rate),
+        "minority_recall": float(
+            recall_score(y_test, preds, pos_label=minority_cls, zero_division=0)
+        ),
+        "minority_is_positive": minority_cls == 1,
+    }
+    return model, accuracy, eval_stats
+
+
+def _judge_model_quality(accuracy, baseline_accuracy, minority_recall, minority_label):
+    """Plain-language verdict on whether the model is actually useful.
+    Domain-agnostic: works for any uploaded CSV, no column/label hardcoding."""
+    if accuracy <= baseline_accuracy + 0.02:
+        return {
+            "verdict": "weak",
+            "message": "이 모델은 그냥 다수 클래스로 찍는 것보다 나을 게 거의 없어요.",
+            "baselineAccuracy": baseline_accuracy,
+        }
+    if minority_recall < 0.2:
+        return {
+            "verdict": "weak",
+            "message": f"이 모델은 '{minority_label}'을(를) 거의 못 잡아내요.",
+            "baselineAccuracy": baseline_accuracy,
+        }
+    return {
+        "verdict": "good",
+        "message": "이 모델은 baseline보다 낫고, 두 클래스 모두 어느 정도 예측하고 있어요.",
+        "baselineAccuracy": baseline_accuracy,
+    }
 
 
 SHAP_MAX_ROWS = 2000
@@ -208,6 +246,7 @@ def export_report_json(
     target_labels: tuple = ("0", "1"),
     positive_label: str = None,
     negative_label: str = None,
+    eval_stats: dict = None,
     n_cases: int = 8,
     top_features_per_case: int = 5,
     top_features_overall: int = 15,
@@ -274,6 +313,15 @@ def export_report_json(
         ],
         "cases": cases,
     }
+
+    if eval_stats is not None:
+        minority_label = pos_display if eval_stats["minority_is_positive"] else neg_display
+        report["modelQuality"] = _judge_model_quality(
+            float(model_accuracy),
+            eval_stats["baseline_accuracy"],
+            eval_stats["minority_recall"],
+            minority_label,
+        )
 
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)

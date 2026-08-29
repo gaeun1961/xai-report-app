@@ -330,5 +330,10 @@
         }
       ]
     }
-  ]
+  ],
+  "modelQuality": {
+    "verdict": "good",
+    "message": "이 모델은 baseline보다 낫고, 두 클래스 모두 어느 정도 예측하고 있어요.",
+    "baselineAccuracy": 0.7345635202271115
+  }
 }

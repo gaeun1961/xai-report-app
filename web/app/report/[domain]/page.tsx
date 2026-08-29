@@ -64,9 +64,28 @@ function ReportBody({ report, selectedId, onSelect }: BodyProps) {
 
       <section className={styles.section}>
         <h2 className={styles.h2}>전체 정확도</h2>
-        <p className={styles.accuracy}>
-          {(report.modelAccuracy * 100).toFixed(1)}%
-        </p>
+        <div className={styles.accuracyRow}>
+          <p className={styles.accuracy}>
+            {(report.modelAccuracy * 100).toFixed(1)}%
+          </p>
+          {report.modelQuality && (
+            <span
+              className={`${styles.qualityBadge} ${
+                report.modelQuality.verdict === "good"
+                  ? styles.qualityGood
+                  : styles.qualityWeak
+              }`}
+            >
+              {report.modelQuality.verdict === "good" ? "양호" : "주의"}
+            </span>
+          )}
+        </div>
+        {report.modelQuality && (
+          <p className={styles.qualityMessage}>
+            {report.modelQuality.message} (다수 클래스로만 찍었을 때 정확도{" "}
+            {(report.modelQuality.baselineAccuracy * 100).toFixed(1)}%)
+          </p>
+        )}
       </section>
 
       <section className={styles.section}>
