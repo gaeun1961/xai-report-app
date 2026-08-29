@@ -1,0 +1,334 @@
+{
+  "domain": "telco_churn",
+  "modelAccuracy": 0.7849538679914834,
+  "positiveLabel": "이탈",
+  "negativeLabel": "유지",
+  "featureImportance": [
+    {
+      "feature": "Contract",
+      "importance": 0.07570238323090513
+    },
+    {
+      "feature": "tenure",
+      "importance": 0.05717886437740228
+    },
+    {
+      "feature": "OnlineSecurity",
+      "importance": 0.04321709872894692
+    },
+    {
+      "feature": "TotalCharges",
+      "importance": 0.03859048513873006
+    },
+    {
+      "feature": "TechSupport",
+      "importance": 0.035385028633069464
+    },
+    {
+      "feature": "MonthlyCharges",
+      "importance": 0.03491083592065209
+    },
+    {
+      "feature": "PaymentMethod",
+      "importance": 0.031235188403850228
+    },
+    {
+      "feature": "InternetService",
+      "importance": 0.02791435785715183
+    },
+    {
+      "feature": "PaperlessBilling",
+      "importance": 0.01675250373468926
+    },
+    {
+      "feature": "MultipleLines",
+      "importance": 0.012201786009152707
+    },
+    {
+      "feature": "OnlineBackup",
+      "importance": 0.012186487640551405
+    },
+    {
+      "feature": "StreamingTV",
+      "importance": 0.011987943490586824
+    },
+    {
+      "feature": "DeviceProtection",
+      "importance": 0.011613450885658363
+    },
+    {
+      "feature": "StreamingMovies",
+      "importance": 0.010505427242225605
+    },
+    {
+      "feature": "gender",
+      "importance": 0.008168776513615503
+    }
+  ],
+  "cases": [
+    {
+      "id": "6933",
+      "prediction": "Yes",
+      "predictedPositive": true,
+      "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 100%). 주요 근거: TotalCharges=69.6 (기여도 +0.176), tenure=1 (기여도 +0.176), Contract=Month-to-month (기여도 +0.084), TechSupport=No (기여도 +0.055), InternetService=Fiber optic (기여도 +0.054).",
+      "topFeatures": [
+        {
+          "feature": "TotalCharges",
+          "value": 69.6,
+          "contribution": 0.17618779239377286
+        },
+        {
+          "feature": "tenure",
+          "value": 1,
+          "contribution": 0.17611146407178485
+        },
+        {
+          "feature": "Contract",
+          "value": "Month-to-month",
+          "contribution": 0.08446162426553906
+        },
+        {
+          "feature": "TechSupport",
+          "value": "No",
+          "contribution": 0.05483699001354604
+        },
+        {
+          "feature": "InternetService",
+          "value": "Fiber optic",
+          "contribution": 0.05431427978655524
+        }
+      ]
+    },
+    {
+      "id": "2184",
+      "prediction": "Yes",
+      "predictedPositive": true,
+      "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 100%). 주요 근거: tenure=2 (기여도 +0.144), Contract=Month-to-month (기여도 +0.096), TotalCharges=179.25 (기여도 +0.088), OnlineSecurity=No (기여도 +0.073), MonthlyCharges=88.55 (기여도 +0.057).",
+      "topFeatures": [
+        {
+          "feature": "tenure",
+          "value": 2,
+          "contribution": 0.14383654242281815
+        },
+        {
+          "feature": "Contract",
+          "value": "Month-to-month",
+          "contribution": 0.09643074603703146
+        },
+        {
+          "feature": "TotalCharges",
+          "value": 179.25,
+          "contribution": 0.08763476320545509
+        },
+        {
+          "feature": "OnlineSecurity",
+          "value": "No",
+          "contribution": 0.07275386530901988
+        },
+        {
+          "feature": "MonthlyCharges",
+          "value": 88.55,
+          "contribution": 0.057354472446252205
+        }
+      ]
+    },
+    {
+      "id": "4995",
+      "prediction": "Yes",
+      "predictedPositive": true,
+      "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 50%). 주요 근거: Contract=Month-to-month (기여도 +0.079), tenure=7 (기여도 +0.064), InternetService=Fiber optic (기여도 +0.046), OnlineSecurity=No (기여도 +0.041), PaymentMethod=Bank transfer (automatic) (기여도 -0.033).",
+      "topFeatures": [
+        {
+          "feature": "Contract",
+          "value": "Month-to-month",
+          "contribution": 0.07947129849787649
+        },
+        {
+          "feature": "tenure",
+          "value": 7,
+          "contribution": 0.06422390247964238
+        },
+        {
+          "feature": "InternetService",
+          "value": "Fiber optic",
+          "contribution": 0.0464652532147971
+        },
+        {
+          "feature": "OnlineSecurity",
+          "value": "No",
+          "contribution": 0.04085822797012081
+        },
+        {
+          "feature": "PaymentMethod",
+          "value": "Bank transfer (automatic)",
+          "contribution": -0.033017884872938434
+        }
+      ]
+    },
+    {
+      "id": "1420",
+      "prediction": "Yes",
+      "predictedPositive": true,
+      "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 51%). 주요 근거: tenure=60 (기여도 -0.103), Contract=Month-to-month (기여도 +0.093), TotalCharges=5985.75 (기여도 -0.071), OnlineSecurity=No (기여도 +0.064), MonthlyCharges=99.8 (기여도 +0.059).",
+      "topFeatures": [
+        {
+          "feature": "tenure",
+          "value": 60,
+          "contribution": -0.10283483464668332
+        },
+        {
+          "feature": "Contract",
+          "value": "Month-to-month",
+          "contribution": 0.09342481998291739
+        },
+        {
+          "feature": "TotalCharges",
+          "value": 5985.75,
+          "contribution": -0.07117669894787361
+        },
+        {
+          "feature": "OnlineSecurity",
+          "value": "No",
+          "contribution": 0.063832388994454
+        },
+        {
+          "feature": "MonthlyCharges",
+          "value": 99.8,
+          "contribution": 0.058970686988233226
+        }
+      ]
+    },
+    {
+      "id": "5002",
+      "prediction": "No",
+      "predictedPositive": false,
+      "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 100%). 주요 근거: Contract=Two year (기여도 -0.090), tenure=69 (기여도 -0.051), OnlineSecurity=Yes (기여도 -0.038), PaymentMethod=Credit card (automatic) (기여도 -0.027), InternetService=DSL (기여도 -0.026).",
+      "topFeatures": [
+        {
+          "feature": "Contract",
+          "value": "Two year",
+          "contribution": -0.09048743524040306
+        },
+        {
+          "feature": "tenure",
+          "value": 69,
+          "contribution": -0.0506107004302458
+        },
+        {
+          "feature": "OnlineSecurity",
+          "value": "Yes",
+          "contribution": -0.03835592057773461
+        },
+        {
+          "feature": "PaymentMethod",
+          "value": "Credit card (automatic)",
+          "contribution": -0.026733455634908074
+        },
+        {
+          "feature": "InternetService",
+          "value": "DSL",
+          "contribution": -0.02551070003239167
+        }
+      ]
+    },
+    {
+      "id": "5728",
+      "prediction": "No",
+      "predictedPositive": false,
+      "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 50%). 주요 근거: Contract=Month-to-month (기여도 +0.086), PaperlessBilling=No (기여도 -0.069), InternetService=Fiber optic (기여도 +0.049), MonthlyCharges=89.4 (기여도 +0.048), OnlineSecurity=No (기여도 +0.047).",
+      "topFeatures": [
+        {
+          "feature": "Contract",
+          "value": "Month-to-month",
+          "contribution": 0.08553505529622114
+        },
+        {
+          "feature": "PaperlessBilling",
+          "value": "No",
+          "contribution": -0.06874606415830263
+        },
+        {
+          "feature": "InternetService",
+          "value": "Fiber optic",
+          "contribution": 0.04900658110308971
+        },
+        {
+          "feature": "MonthlyCharges",
+          "value": 89.4,
+          "contribution": 0.04819972954457863
+        },
+        {
+          "feature": "OnlineSecurity",
+          "value": "No",
+          "contribution": 0.04706817691406628
+        }
+      ]
+    },
+    {
+      "id": "2521",
+      "prediction": "No",
+      "predictedPositive": false,
+      "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 50%). 주요 근거: Contract=Month-to-month (기여도 +0.093), PaymentMethod=Credit card (automatic) (기여도 -0.059), tenure=36 (기여도 -0.054), TechSupport=No (기여도 +0.048), OnlineSecurity=No (기여도 +0.047).",
+      "topFeatures": [
+        {
+          "feature": "Contract",
+          "value": "Month-to-month",
+          "contribution": 0.0929085592974403
+        },
+        {
+          "feature": "PaymentMethod",
+          "value": "Credit card (automatic)",
+          "contribution": -0.05906108718778241
+        },
+        {
+          "feature": "tenure",
+          "value": 36,
+          "contribution": -0.05445487069739934
+        },
+        {
+          "feature": "TechSupport",
+          "value": "No",
+          "contribution": 0.047589655123511494
+        },
+        {
+          "feature": "OnlineSecurity",
+          "value": "No",
+          "contribution": 0.04660136334043005
+        }
+      ]
+    },
+    {
+      "id": "4731",
+      "prediction": "No",
+      "predictedPositive": false,
+      "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 100%). 주요 근거: OnlineSecurity=No internet service (기여도 -0.055), Contract=One year (기여도 -0.054), TechSupport=No internet service (기여도 -0.039), StreamingTV=No internet service (기여도 -0.019), OnlineBackup=No internet service (기여도 -0.019).",
+      "topFeatures": [
+        {
+          "feature": "OnlineSecurity",
+          "value": "No internet service",
+          "contribution": -0.055413948540794844
+        },
+        {
+          "feature": "Contract",
+          "value": "One year",
+          "contribution": -0.053744446735035256
+        },
+        {
+          "feature": "TechSupport",
+          "value": "No internet service",
+          "contribution": -0.03876434916657255
+        },
+        {
+          "feature": "StreamingTV",
+          "value": "No internet service",
+          "contribution": -0.019322194765033815
+        },
+        {
+          "feature": "OnlineBackup",
+          "value": "No internet service",
+          "contribution": -0.01861539438966209
+        }
+      ]
+    }
+  ]
+}
