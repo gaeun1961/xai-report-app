@@ -1,7 +1,7 @@
 .sidebar {
   flex: 0 0 170px;
   width: 170px;
-  min-height: 100vh;
+  height: 100dvh;
   padding: 24px 12px;
   background: var(--surface);
   border-right: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
@@ -11,6 +11,7 @@
   position: sticky;
   top: 0;
   align-self: flex-start;
+  overflow-y: auto;
 }
 
 .brand {
@@ -54,8 +55,9 @@
   .sidebar {
     flex-basis: auto;
     width: 100%;
-    min-height: 0;
+    height: auto;
     position: static;
+    overflow-y: visible;
     border-right: none;
     border-bottom: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
   }
