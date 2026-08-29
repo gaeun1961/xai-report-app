@@ -34,9 +34,38 @@
   color: color-mix(in srgb, currentColor 60%, transparent);
 }
 
-.back {
+.tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+.tab {
+  padding: 8px 14px;
   font-size: 14px;
-  color: color-mix(in srgb, currentColor 60%, transparent);
+  font-weight: 600;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+
+.tabActive {
+  color: var(--accent-strong);
+  border-bottom-color: var(--accent);
+}
+
+.tabDisabled {
+  color: color-mix(in srgb, currentColor 40%, transparent);
+  cursor: not-allowed;
+}
+
+.soon {
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
+  color: var(--accent-strong);
 }
 
 .section {
@@ -79,7 +108,7 @@
 .domainAcc {
   font-size: 13px;
   font-weight: 600;
-  color: #2563eb;
+  color: var(--accent);
 }
 
 /* feature importance chart */
@@ -112,7 +141,7 @@
 .chartBar {
   display: block;
   height: 16px;
-  background: #2563eb;
+  background: var(--accent);
   border-radius: 4px;
 }
 
@@ -139,8 +168,8 @@
 }
 
 .selectorBtnActive {
-  background: #2563eb;
-  border-color: #2563eb;
+  background: var(--accent);
+  border-color: var(--accent);
   color: #fff;
 }
 
@@ -189,10 +218,10 @@
 .guide {
   padding: 12px 16px;
   border-radius: 8px;
-  background: color-mix(in srgb, currentColor 6%, transparent);
+  background: var(--surface);
   font-size: 13px;
   line-height: 1.6;
-  color: color-mix(in srgb, currentColor 70%, transparent);
+  color: var(--accent-strong);
 }
 
 .contribHead {
@@ -244,7 +273,7 @@
 }
 
 .up {
-  color: #16a34a;
+  color: var(--accent);
 }
 
 .down {

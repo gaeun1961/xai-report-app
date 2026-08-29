@@ -1,8 +1,7 @@
 import { loadReport } from "@/lib/loadReport";
+import { DOMAINS } from "@/lib/domains";
 import DomainCard from "@/components/DomainCard";
 import styles from "@/components/report.module.css";
-
-const titanic = loadReport("titanic");
 
 export default function Home() {
   return (
@@ -14,14 +13,22 @@ export default function Home() {
       </p>
 
       <h2 className={styles.h2}>예시 리포트</h2>
-      <DomainCard
-        href="/report"
-        title="Titanic 생존 예측"
-        description="승객 정보로 생존 여부를 예측하는 모델의 특성 중요도와 케이스별 근거"
-        accuracy={titanic.modelAccuracy}
-      />
+      {DOMAINS.map((d) => {
+        const report = loadReport(d.slug);
+        return (
+          <DomainCard
+            key={d.slug}
+            href={`/report/${d.slug}`}
+            title={d.title}
+            description={d.description}
+            accuracy={report?.modelAccuracy}
+          />
+        );
+      })}
 
-      <p className={styles.note}>CSV 업로드로 내 데이터 분석하기 — 다음 주 업데이트 예정</p>
+      <p className={styles.note}>
+        CSV 업로드로 내 데이터 분석하기 — 다음 주 업데이트 예정
+      </p>
     </main>
   );
 }

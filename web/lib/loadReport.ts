@@ -1,13 +1,14 @@
 import type { ShapReport } from "./types";
 import titanic from "@/public/data/titanic.json";
+import hrAttrition from "@/public/data/hr_attrition.json";
 
-// ponytail: 도메인이 titanic 하나뿐이라 정적 import. 도메인 늘면 fetch/fs로 전환
+// ponytail: 정적 import. telco_churn.json은 아직 없어서 등록 안 함 —
+// 생성되면 import 한 줄 추가. 없는 도메인은 null → 페이지에서 빈 상태 처리.
 const reports: Record<string, ShapReport> = {
   titanic: titanic as ShapReport,
+  hr_attrition: hrAttrition as ShapReport,
 };
 
-export function loadReport(domain: string): ShapReport {
-  const report = reports[domain];
-  if (!report) throw new Error(`Unknown report domain: ${domain}`);
-  return report;
+export function loadReport(domain: string): ShapReport | null {
+  return reports[domain] ?? null;
 }
