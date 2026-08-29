@@ -24,7 +24,7 @@ TARGET_COLUMN = "2urvived"
 
 def main():
     X, y, display_df, target_labels = load_and_preprocess(CSV_PATH, TARGET_COLUMN)
-    model, accuracy = train_model(X, y)
+    model, accuracy, eval_stats = train_model(X, y)
     X, y, display_df = sample_for_shap(X, y, display_df)
     shap_values, feature_importance_df = compute_shap(model, X)
     report = export_report_json(
@@ -39,6 +39,7 @@ def main():
         feature_importance_df=feature_importance_df,
         display_df=display_df,
         model_accuracy=accuracy,
+        eval_stats=eval_stats,
         output_path=OUTPUT_PATH,
     )
     print(f"titanic accuracy={accuracy:.4f} -> {OUTPUT_PATH}")

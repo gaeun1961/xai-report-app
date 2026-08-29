@@ -6,6 +6,13 @@ export type ShapReport = {
   // back to the target column's own values. Optional so old JSON still loads.
   positiveLabel?: string;
   negativeLabel?: string;
+  // Plain-language check on whether the model actually beats a majority-class
+  // guess. Optional so old JSON still loads.
+  modelQuality?: {
+    verdict: "good" | "weak";
+    message: string;
+    baselineAccuracy: number;
+  };
   featureImportance: { feature: string; importance: number }[];
   cases: {
     id: string;

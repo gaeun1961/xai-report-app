@@ -330,5 +330,10 @@
         }
       ]
     }
-  ]
+  ],
+  "modelQuality": {
+    "verdict": "weak",
+    "message": "이 모델은 그냥 다수 클래스로 찍는 것보다 나을 게 거의 없어요.",
+    "baselineAccuracy": 0.8401360544217686
+  }
 }
