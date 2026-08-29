@@ -1,0 +1,219 @@
+.landing,
+.report {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.h1 {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.h2 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 16px;
+}
+
+.lead {
+  color: color-mix(in srgb, currentColor 65%, transparent);
+  line-height: 1.6;
+}
+
+.note {
+  margin-top: 24px;
+  padding: 12px 16px;
+  border: 1px dashed color-mix(in srgb, currentColor 30%, transparent);
+  border-radius: 8px;
+  font-size: 14px;
+  color: color-mix(in srgb, currentColor 60%, transparent);
+}
+
+.back {
+  font-size: 14px;
+  color: color-mix(in srgb, currentColor 60%, transparent);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.accuracy {
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+/* domain card */
+.domainCard {
+  display: block;
+  padding: 20px;
+  border: 1px solid color-mix(in srgb, currentColor 15%, transparent);
+  border-radius: 12px;
+  transition: border-color 0.15s;
+}
+
+.domainCard:hover {
+  border-color: color-mix(in srgb, currentColor 40%, transparent);
+}
+
+.domainTitle {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.domainDesc {
+  margin: 6px 0 12px;
+  font-size: 14px;
+  color: color-mix(in srgb, currentColor 65%, transparent);
+  line-height: 1.5;
+}
+
+.domainAcc {
+  font-size: 13px;
+  font-weight: 600;
+  color: #2563eb;
+}
+
+/* feature importance chart */
+.chart {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.chartRow {
+  display: grid;
+  grid-template-columns: 80px 1fr 56px;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.chartLabel {
+  text-align: right;
+  color: color-mix(in srgb, currentColor 70%, transparent);
+}
+
+.chartTrack {
+  background: color-mix(in srgb, currentColor 10%, transparent);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.chartBar {
+  display: block;
+  height: 16px;
+  background: #2563eb;
+  border-radius: 4px;
+}
+
+.chartValue {
+  font-variant-numeric: tabular-nums;
+  color: color-mix(in srgb, currentColor 60%, transparent);
+}
+
+/* case selector */
+.selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.selectorBtn {
+  padding: 4px 10px;
+  border: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.selectorBtnActive {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+}
+
+/* case report card */
+.card {
+  padding: 20px;
+  border: 1px solid color-mix(in srgb, currentColor 15%, transparent);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.caseId {
+  font-weight: 600;
+}
+
+.badge {
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.badgeYes {
+  background: color-mix(in srgb, #16a34a 18%, transparent);
+  color: #16a34a;
+}
+
+.badgeNo {
+  background: color-mix(in srgb, #dc2626 18%, transparent);
+  color: #dc2626;
+}
+
+.explanation {
+  line-height: 1.7;
+  font-size: 14px;
+}
+
+.contribList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.contribRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  padding: 6px 0;
+  border-top: 1px solid color-mix(in srgb, currentColor 10%, transparent);
+}
+
+.contribFeature {
+  color: color-mix(in srgb, currentColor 75%, transparent);
+}
+
+.contribValue {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.up {
+  color: #16a34a;
+}
+
+.down {
+  color: #dc2626;
+}
