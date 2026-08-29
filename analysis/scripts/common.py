@@ -52,6 +52,20 @@ def _encode_binary_target(y_raw: pd.Series) -> pd.Series:
     return pd.Series(codes, index=y_raw.index).astype(int)
 
 
+def _raw_class_labels(y_raw: pd.Series, y_encoded: pd.Series) -> tuple:
+    """Representative original (pre-encoding) label for class 0 and class 1,
+    so a report can show the CSV's own words instead of a forced 'Yes'/'No'.
+    Falls back to '0'/'1' if a class somehow has no rows."""
+    raw = y_raw.astype(str).str.strip()
+    mask = y_encoded.to_numpy()
+
+    def pick(cls: int, fallback: str) -> str:
+        vals = raw[mask == cls]
+        return str(vals.mode().iloc[0]) if not vals.empty else fallback
+
+    return pick(0, "0"), pick(1, "1")
+
+
 def load_and_preprocess(csv_path: str, target_column: str):
     """Load a CSV and split it into a model-ready feature matrix and target.
 
@@ -60,6 +74,8 @@ def load_and_preprocess(csv_path: str, target_column: str):
         y: 0/1 target Series.
         display_df: same rows/columns as X, but with human-readable values
             (pre-encoding) for use when rendering individual case reports.
+        target_labels: (negative_label, positive_label) as they appeared in
+            the CSV, for showing the dataset's own wording in the report.
     """
     df = pd.read_csv(csv_path)
     df.columns = df.columns.str.strip()
@@ -71,6 +87,7 @@ def load_and_preprocess(csv_path: str, target_column: str):
         )
 
     y = _encode_binary_target(df[target_column])
+    target_labels = _raw_class_labels(df[target_column], y)
     X = df.drop(columns=[target_column])
     n_rows = len(X)
 
@@ -93,7 +110,7 @@ def load_and_preprocess(csv_path: str, target_column: str):
         display_df[col] = X[col]
         X[col], _ = pd.factorize(X[col])
 
-    return X, y, display_df
+    return X, y, display_df, target_labels
 
 
 def train_model(X: pd.DataFrame, y: pd.Series):
@@ -105,6 +122,24 @@ def train_model(X: pd.DataFrame, y: pd.Series):
     model.fit(X_train, y_train)
     accuracy = accuracy_score(y_test, model.predict(X_test))
     return model, accuracy
+
+
+SHAP_MAX_ROWS = 2000
+
+
+def sample_for_shap(X, y, display_df, max_rows=SHAP_MAX_ROWS):
+    """Cap the row count fed to SHAP. Exact TreeExplainer cost is roughly
+    linear in rows and explodes with tree depth, so on a large dataset with
+    deep unpruned trees (e.g. Telco Churn: ~24-deep trees, ~0.5s/row) the full
+    pass takes ~1h. A seeded sub-sample keeps mean(|SHAP|) importance stable
+    and the 8 case rows are a tiny slice anyway. Datasets already under the
+    cap (Titanic, HR) are returned untouched, so their reports don't change.
+    ponytail: row cap, not tree pruning — pruning would alter every domain's model.
+    """
+    if len(X) <= max_rows:
+        return X, y, display_df
+    idx = X.sample(n=max_rows, random_state=RANDOM_STATE).index
+    return X.loc[idx], y.loc[idx], display_df.loc[idx]
 
 
 def compute_shap(model, X: pd.DataFrame):
@@ -127,27 +162,37 @@ def compute_shap(model, X: pd.DataFrame):
     return shap_values, feature_importance_df
 
 
-def _pick_case_indices(y: pd.Series, predictions: np.ndarray, n_cases: int) -> list:
-    """Sample a representative mix of predicted-positive and predicted-negative
-    cases so the report doesn't show only one outcome."""
-    rng = np.random.default_rng(RANDOM_STATE)
-    positive_idx = np.where(predictions == 1)[0]
-    negative_idx = np.where(predictions == 0)[0]
+def _pick_case_indices(predictions: np.ndarray, proba_pos: np.ndarray, n_cases: int) -> list:
+    """Pick a representative case mix: an even split across predicted classes,
+    and within each class half the slots go to 'typical' rows the model is
+    most confident about and half to 'borderline' rows whose probability sits
+    nearest 0.5. Deterministic (sorted by confidence, no sampling)."""
+    per_class = max(1, n_cases // 2)
+    chosen: list = []
 
-    half = n_cases // 2
-    chosen = []
-    for pool, count in ((positive_idx, half), (negative_idx, n_cases - half)):
+    for cls in (1, 0):
+        pool = np.where(predictions == cls)[0]
         if len(pool) == 0:
             continue
-        take = min(count, len(pool))
-        chosen.extend(rng.choice(pool, size=take, replace=False))
+        # ascending distance from 0.5 -> borderline first, typical last
+        order = pool[np.argsort(np.abs(proba_pos[pool] - 0.5))]
+        take = min(per_class, len(order))
+        n_typical = take // 2
+        n_border = take - n_typical
+        picks = list(order[:n_border])
+        if n_typical:
+            picks += list(order[-n_typical:])
+        chosen.extend(int(i) for i in picks)
 
-    remaining = n_cases - len(chosen)
-    if remaining > 0:
-        leftover = [i for i in range(len(predictions)) if i not in chosen]
-        chosen.extend(rng.choice(leftover, size=min(remaining, len(leftover)), replace=False))
+    # top up if a class was empty / too small, keeping n_cases stable
+    if len(set(chosen)) < n_cases:
+        for i in np.argsort(np.abs(proba_pos - 0.5)):
+            if int(i) not in chosen:
+                chosen.append(int(i))
+            if len(set(chosen)) >= n_cases:
+                break
 
-    return sorted(int(i) for i in chosen)
+    return sorted(set(chosen))[:n_cases]
 
 
 def export_report_json(
@@ -160,16 +205,30 @@ def export_report_json(
     display_df: pd.DataFrame,
     model_accuracy: float,
     output_path: str,
+    target_labels: tuple = ("0", "1"),
+    positive_label: str = None,
+    negative_label: str = None,
     n_cases: int = 8,
     top_features_per_case: int = 5,
     top_features_overall: int = 15,
 ):
     """Assemble a ShapReport-shaped dict (see web/lib/types.ts) and write it
-    to output_path as JSON."""
+    to output_path as JSON.
+
+    target_labels is (negative, positive) as they appeared in the CSV and is
+    stored verbatim in each case's `prediction`. positive_label/negative_label
+    are optional human-friendly overrides (e.g. '생존'/'사망' for a known
+    preset); when omitted the raw CSV labels are used everywhere.
+    """
     predictions = model.predict(X)
+    proba_pos = model.predict_proba(X)[:, 1]
     feature_names = list(X.columns)
 
-    case_indices = _pick_case_indices(y, predictions, n_cases)
+    neg_raw, pos_raw = target_labels
+    pos_display = positive_label or pos_raw
+    neg_display = negative_label or neg_raw
+
+    case_indices = _pick_case_indices(predictions, proba_pos, n_cases)
 
     cases = []
     for idx in case_indices:
@@ -183,18 +242,22 @@ def export_report_json(
             }
             for j in ranked
         ]
-        prediction_label = "Yes" if predictions[idx] == 1 else "No"
+        predicted_positive = bool(predictions[idx] == 1)
+        prediction_raw = pos_raw if predicted_positive else neg_raw
+        prediction_display = pos_display if predicted_positive else neg_display
+        confidence = proba_pos[idx] if predicted_positive else 1 - proba_pos[idx]
         feature_summary = ", ".join(
             f"{tf['feature']}={tf['value']} (기여도 {tf['contribution']:+.3f})" for tf in top_features
         )
         explanation = (
-            f"모델은 이 케이스를 '{prediction_label}'로 예측했습니다. "
-            f"주요 근거: {feature_summary}."
+            f"모델은 이 케이스를 '{prediction_display}'(으)로 예측했습니다 "
+            f"(확신도 {confidence * 100:.0f}%). 주요 근거: {feature_summary}."
         )
         cases.append(
             {
                 "id": str(display_df.index[idx]),
-                "prediction": prediction_label,
+                "prediction": prediction_raw,
+                "predictedPositive": predicted_positive,
                 "explanation": explanation,
                 "topFeatures": top_features,
             }
@@ -203,6 +266,8 @@ def export_report_json(
     report = {
         "domain": domain,
         "modelAccuracy": float(model_accuracy),
+        "positiveLabel": pos_display,
+        "negativeLabel": neg_display,
         "featureImportance": [
             {"feature": row.feature, "importance": float(row.importance)}
             for row in feature_importance_df.head(top_features_overall).itertuples()

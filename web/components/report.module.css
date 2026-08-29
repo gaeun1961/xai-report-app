@@ -186,6 +186,39 @@
   font-size: 14px;
 }
 
+.guide {
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: color-mix(in srgb, currentColor 6%, transparent);
+  font-size: 13px;
+  line-height: 1.6;
+  color: color-mix(in srgb, currentColor 70%, transparent);
+}
+
+.contribHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 600;
+  color: color-mix(in srgb, currentColor 70%, transparent);
+}
+
+.toggleBtn {
+  padding: 3px 10px;
+  border: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.contribSentence {
+  font-size: 13px;
+  line-height: 1.6;
+}
+
 .contribList {
   list-style: none;
   display: flex;

@@ -1,6 +1,12 @@
 from pathlib import Path
 
-from common import compute_shap, export_report_json, load_and_preprocess, train_model
+from common import (
+    compute_shap,
+    export_report_json,
+    load_and_preprocess,
+    sample_for_shap,
+    train_model,
+)
 
 SCRIPTS_DIR = Path(__file__).resolve().parent
 ANALYSIS_DIR = SCRIPTS_DIR.parent
@@ -12,11 +18,15 @@ TARGET_COLUMN = "Attrition"
 
 
 def main():
-    X, y, display_df = load_and_preprocess(CSV_PATH, TARGET_COLUMN)
+    X, y, display_df, target_labels = load_and_preprocess(CSV_PATH, TARGET_COLUMN)
     model, accuracy = train_model(X, y)
+    X, y, display_df = sample_for_shap(X, y, display_df)
     shap_values, feature_importance_df = compute_shap(model, X)
     report = export_report_json(
         domain="hr_attrition",
+        target_labels=target_labels,
+        positive_label="퇴사",
+        negative_label="잔류",
         model=model,
         X=X,
         y=y,
