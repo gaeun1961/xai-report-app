@@ -220,6 +220,43 @@
       ]
     },
     {
+      "id": "230",
+      "prediction": "1",
+      "predictedPositive": true,
+      "probaPositive": 0.9733,
+      "actualLabel": "1",
+      "actualPositive": true,
+      "isCorrect": true,
+      "explanation": "모델은 이 케이스를 '생존'(으)로 예측했습니다 (확신도 97%). 주요 근거: Sex=1.0 (기여도 +0.273), Fare=83.475 (기여도 +0.176), Pclass=1.0 (기여도 +0.121), Age=35.0 (기여도 +0.081), Embarked=2.0 (기여도 +0.035).",
+      "topFeatures": [
+        {
+          "feature": "Sex",
+          "value": 1.0,
+          "contribution": 0.27345532179922205
+        },
+        {
+          "feature": "Fare",
+          "value": 83.475,
+          "contribution": 0.1760032783865014
+        },
+        {
+          "feature": "Pclass",
+          "value": 1.0,
+          "contribution": 0.12141971935096392
+        },
+        {
+          "feature": "Age",
+          "value": 35.0,
+          "contribution": 0.08134169709957545
+        },
+        {
+          "feature": "Embarked",
+          "value": 2.0,
+          "contribution": 0.03540379677563737
+        }
+      ]
+    },
+    {
       "id": "241",
       "prediction": "1",
       "predictedPositive": true,
@@ -294,76 +331,187 @@
       ]
     },
     {
-      "id": "358",
+      "id": "369",
       "prediction": "1",
       "predictedPositive": true,
-      "probaPositive": 0.508,
+      "probaPositive": 0.9733,
       "actualLabel": "1",
       "actualPositive": true,
       "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '생존'(으)로 예측했습니다 (확신도 51%). 주요 근거: Sex=1.0 (기여도 +0.239), Embarked=1.0 (기여도 +0.086), Pclass=3.0 (기여도 -0.079), Fare=7.8792 (기여도 -0.028), Age=28.0 (기여도 +0.016).",
+      "explanation": "모델은 이 케이스를 '생존'(으)로 예측했습니다 (확신도 97%). 주요 근거: Sex=1.0 (기여도 +0.265), Fare=69.3 (기여도 +0.157), Pclass=1.0 (기여도 +0.129), Age=24.0 (기여도 +0.085), Parch=0.0 (기여도 +0.030).",
       "topFeatures": [
         {
           "feature": "Sex",
           "value": 1.0,
-          "contribution": 0.2394345901842359
-        },
-        {
-          "feature": "Embarked",
-          "value": 1.0,
-          "contribution": 0.08574847432453861
-        },
-        {
-          "feature": "Pclass",
-          "value": 3.0,
-          "contribution": -0.07943318761334914
+          "contribution": 0.26510619383428335
         },
         {
           "feature": "Fare",
-          "value": 7.8792,
-          "contribution": -0.028281557057114777
+          "value": 69.3,
+          "contribution": 0.15746442979403474
+        },
+        {
+          "feature": "Pclass",
+          "value": 1.0,
+          "contribution": 0.12873999575128853
         },
         {
           "feature": "Age",
-          "value": 28.0,
-          "contribution": 0.01619640632048985
+          "value": 24.0,
+          "contribution": 0.08496345657693453
+        },
+        {
+          "feature": "Parch",
+          "value": 0.0,
+          "contribution": 0.029673918566548833
         }
       ]
     },
     {
-      "id": "359",
+      "id": "399",
       "prediction": "1",
       "predictedPositive": true,
-      "probaPositive": 0.508,
+      "probaPositive": 0.9767,
       "actualLabel": "1",
       "actualPositive": true,
       "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '생존'(으)로 예측했습니다 (확신도 51%). 주요 근거: Sex=1.0 (기여도 +0.239), Embarked=1.0 (기여도 +0.086), Pclass=3.0 (기여도 -0.079), Fare=7.8792 (기여도 -0.028), Age=28.0 (기여도 +0.016).",
+      "explanation": "모델은 이 케이스를 '생존'(으)로 예측했습니다 (확신도 98%). 주요 근거: Sex=1.0 (기여도 +0.366), Pclass=2.0 (기여도 +0.139), Fare=12.65 (기여도 +0.117), Age=28.0 (기여도 +0.044), sibsp=0.0 (기여도 +0.034).",
       "topFeatures": [
         {
           "feature": "Sex",
           "value": 1.0,
-          "contribution": 0.2394345901842359
-        },
-        {
-          "feature": "Embarked",
-          "value": 1.0,
-          "contribution": 0.08574847432453861
+          "contribution": 0.3660182150676897
         },
         {
           "feature": "Pclass",
-          "value": 3.0,
-          "contribution": -0.07943318761334914
+          "value": 2.0,
+          "contribution": 0.13903207245560795
         },
         {
           "feature": "Fare",
-          "value": 7.8792,
-          "contribution": -0.028281557057114777
+          "value": 12.65,
+          "contribution": 0.11729718746245649
         },
         {
           "feature": "Age",
           "value": 28.0,
-          "contribution": 0.01619640632048985
+          "contribution": 0.04359521893959711
+        },
+        {
+          "feature": "sibsp",
+          "value": 0.0,
+          "contribution": 0.03395798343486193
+        }
+      ]
+    },
+    {
+      "id": "416",
+      "prediction": "1",
+      "predictedPositive": true,
+      "probaPositive": 0.9733,
+      "actualLabel": "1",
+      "actualPositive": true,
+      "isCorrect": true,
+      "explanation": "모델은 이 케이스를 '생존'(으)로 예측했습니다 (확신도 97%). 주요 근거: Sex=1.0 (기여도 +0.316), Pclass=2.0 (기여도 +0.137), Age=34.0 (기여도 +0.100), Fare=32.5 (기여도 +0.082), Parch=1.0 (기여도 +0.040).",
+      "topFeatures": [
+        {
+          "feature": "Sex",
+          "value": 1.0,
+          "contribution": 0.3159392413142634
+        },
+        {
+          "feature": "Pclass",
+          "value": 2.0,
+          "contribution": 0.13716636994659145
+        },
+        {
+          "feature": "Age",
+          "value": 34.0,
+          "contribution": 0.09979300156055176
+        },
+        {
+          "feature": "Fare",
+          "value": 32.5,
+          "contribution": 0.08194820322434083
+        },
+        {
+          "feature": "Parch",
+          "value": 1.0,
+          "contribution": 0.03993559312799579
+        }
+      ]
+    },
+    {
+      "id": "454",
+      "prediction": "0",
+      "predictedPositive": false,
+      "probaPositive": 0.0,
+      "actualLabel": "0",
+      "actualPositive": false,
+      "isCorrect": true,
+      "explanation": "모델은 이 케이스를 '사망'(으)로 예측했습니다 (확신도 100%). 주요 근거: Fare=8.05 (기여도 -0.087), Sex=0.0 (기여도 -0.066), Age=28.0 (기여도 -0.051), Pclass=3.0 (기여도 -0.038), Embarked=2.0 (기여도 -0.012).",
+      "topFeatures": [
+        {
+          "feature": "Fare",
+          "value": 8.05,
+          "contribution": -0.08662518088787491
+        },
+        {
+          "feature": "Sex",
+          "value": 0.0,
+          "contribution": -0.0661283092885301
+        },
+        {
+          "feature": "Age",
+          "value": 28.0,
+          "contribution": -0.05117509594386135
+        },
+        {
+          "feature": "Pclass",
+          "value": 3.0,
+          "contribution": -0.038344670890566736
+        },
+        {
+          "feature": "Embarked",
+          "value": 2.0,
+          "contribution": -0.01173798284976575
+        }
+      ]
+    },
+    {
+      "id": "464",
+      "prediction": "0",
+      "predictedPositive": false,
+      "probaPositive": 0.0,
+      "actualLabel": "0",
+      "actualPositive": false,
+      "isCorrect": true,
+      "explanation": "모델은 이 케이스를 '사망'(으)로 예측했습니다 (확신도 100%). 주요 근거: Fare=8.05 (기여도 -0.087), Sex=0.0 (기여도 -0.066), Age=28.0 (기여도 -0.051), Pclass=3.0 (기여도 -0.038), Embarked=2.0 (기여도 -0.012).",
+      "topFeatures": [
+        {
+          "feature": "Fare",
+          "value": 8.05,
+          "contribution": -0.08662518088787491
+        },
+        {
+          "feature": "Sex",
+          "value": 0.0,
+          "contribution": -0.0661283092885301
+        },
+        {
+          "feature": "Age",
+          "value": 28.0,
+          "contribution": -0.05117509594386135
+        },
+        {
+          "feature": "Pclass",
+          "value": 3.0,
+          "contribution": -0.038344670890566736
+        },
+        {
+          "feature": "Embarked",
+          "value": 2.0,
+          "contribution": -0.01173798284976575
         }
       ]
     },
@@ -553,6 +701,117 @@
       ]
     },
     {
+      "id": "500",
+      "prediction": "0",
+      "predictedPositive": false,
+      "probaPositive": 0.0,
+      "actualLabel": "0",
+      "actualPositive": false,
+      "isCorrect": true,
+      "explanation": "모델은 이 케이스를 '사망'(으)로 예측했습니다 (확신도 100%). 주요 근거: Sex=0.0 (기여도 -0.073), Fare=8.6625 (기여도 -0.072), Age=17.0 (기여도 -0.049), Pclass=3.0 (기여도 -0.038), Embarked=2.0 (기여도 -0.017).",
+      "topFeatures": [
+        {
+          "feature": "Sex",
+          "value": 0.0,
+          "contribution": -0.07304626118769034
+        },
+        {
+          "feature": "Fare",
+          "value": 8.6625,
+          "contribution": -0.0723812637465303
+        },
+        {
+          "feature": "Age",
+          "value": 17.0,
+          "contribution": -0.048653977014074375
+        },
+        {
+          "feature": "Pclass",
+          "value": 3.0,
+          "contribution": -0.038008178152282086
+        },
+        {
+          "feature": "Embarked",
+          "value": 2.0,
+          "contribution": -0.016710702127768477
+        }
+      ]
+    },
+    {
+      "id": "511",
+      "prediction": "0",
+      "predictedPositive": false,
+      "probaPositive": 0.0,
+      "actualLabel": "0",
+      "actualPositive": false,
+      "isCorrect": true,
+      "explanation": "모델은 이 케이스를 '사망'(으)로 예측했습니다 (확신도 100%). 주요 근거: Fare=8.05 (기여도 -0.087), Sex=0.0 (기여도 -0.066), Age=28.0 (기여도 -0.051), Pclass=3.0 (기여도 -0.038), Embarked=2.0 (기여도 -0.012).",
+      "topFeatures": [
+        {
+          "feature": "Fare",
+          "value": 8.05,
+          "contribution": -0.08662518088787491
+        },
+        {
+          "feature": "Sex",
+          "value": 0.0,
+          "contribution": -0.0661283092885301
+        },
+        {
+          "feature": "Age",
+          "value": 28.0,
+          "contribution": -0.05117509594386135
+        },
+        {
+          "feature": "Pclass",
+          "value": 3.0,
+          "contribution": -0.038344670890566736
+        },
+        {
+          "feature": "Embarked",
+          "value": 2.0,
+          "contribution": -0.01173798284976575
+        }
+      ]
+    },
+    {
+      "id": "514",
+      "prediction": "0",
+      "predictedPositive": false,
+      "probaPositive": 0.0,
+      "actualLabel": "0",
+      "actualPositive": false,
+      "isCorrect": true,
+      "explanation": "모델은 이 케이스를 '사망'(으)로 예측했습니다 (확신도 100%). 주요 근거: Sex=0.0 (기여도 -0.131), Fare=7.4958 (기여도 -0.063), Pclass=3.0 (기여도 -0.033), Age=24.0 (기여도 -0.024), Parch=0.0 (기여도 -0.008).",
+      "topFeatures": [
+        {
+          "feature": "Sex",
+          "value": 0.0,
+          "contribution": -0.1307742705524998
+        },
+        {
+          "feature": "Fare",
+          "value": 7.4958,
+          "contribution": -0.06338595296453595
+        },
+        {
+          "feature": "Pclass",
+          "value": 3.0,
+          "contribution": -0.03326309643681195
+        },
+        {
+          "feature": "Age",
+          "value": 24.0,
+          "contribution": -0.024403759430350353
+        },
+        {
+          "feature": "Parch",
+          "value": 0.0,
+          "contribution": -0.008246466838902466
+        }
+      ]
+    },
+    {
       "id": "516",
       "prediction": "1",
       "predictedPositive": true,
@@ -664,76 +923,39 @@
       ]
     },
     {
-      "id": "612",
+      "id": "641",
       "prediction": "1",
       "predictedPositive": true,
-      "probaPositive": 0.5035,
+      "probaPositive": 0.9733,
       "actualLabel": "1",
       "actualPositive": true,
       "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '생존'(으)로 예측했습니다 (확신도 50%). 주요 근거: Sex=1.0 (기여도 +0.224), Pclass=3.0 (기여도 -0.090), sibsp=1.0 (기여도 +0.053), Embarked=1.0 (기여도 +0.052), Fare=15.5 (기여도 -0.039).",
+      "explanation": "모델은 이 케이스를 '생존'(으)로 예측했습니다 (확신도 97%). 주요 근거: Sex=1.0 (기여도 +0.265), Fare=69.3 (기여도 +0.157), Pclass=1.0 (기여도 +0.129), Age=24.0 (기여도 +0.085), Parch=0.0 (기여도 +0.030).",
       "topFeatures": [
         {
           "feature": "Sex",
           "value": 1.0,
-          "contribution": 0.22372715752869946
-        },
-        {
-          "feature": "Pclass",
-          "value": 3.0,
-          "contribution": -0.08990557981025629
-        },
-        {
-          "feature": "sibsp",
-          "value": 1.0,
-          "contribution": 0.0527270366893322
-        },
-        {
-          "feature": "Embarked",
-          "value": 1.0,
-          "contribution": 0.051766418645999
+          "contribution": 0.26510619383428335
         },
         {
           "feature": "Fare",
-          "value": 15.5,
-          "contribution": -0.03889362506454801
-        }
-      ]
-    },
-    {
-      "id": "697",
-      "prediction": "0",
-      "predictedPositive": false,
-      "probaPositive": 0.4671,
-      "actualLabel": "1",
-      "actualPositive": true,
-      "isCorrect": false,
-      "explanation": "모델은 이 케이스를 '사망'(으)로 예측했습니다 (확신도 53%). 주요 근거: Sex=1.0 (기여도 +0.237), Pclass=3.0 (기여도 -0.077), Embarked=1.0 (기여도 +0.043), Fare=7.7333 (기여도 -0.023), Parch=0.0 (기여도 +0.011).",
-      "topFeatures": [
-        {
-          "feature": "Sex",
-          "value": 1.0,
-          "contribution": 0.23727497222819488
+          "value": 69.3,
+          "contribution": 0.15746442979403474
         },
         {
           "feature": "Pclass",
-          "value": 3.0,
-          "contribution": -0.07651927573568645
-        },
-        {
-          "feature": "Embarked",
           "value": 1.0,
-          "contribution": 0.043242136768046904
+          "contribution": 0.12873999575128853
         },
         {
-          "feature": "Fare",
-          "value": 7.7333,
-          "contribution": -0.022711006376341297
+          "feature": "Age",
+          "value": 24.0,
+          "contribution": 0.08496345657693453
         },
         {
           "feature": "Parch",
           "value": 0.0,
-          "contribution": 0.01103741901246748
+          "contribution": 0.029673918566548833
         }
       ]
     },
@@ -775,80 +997,6 @@
       ]
     },
     {
-      "id": "774",
-      "prediction": "0",
-      "predictedPositive": false,
-      "probaPositive": 0.4683,
-      "actualLabel": "1",
-      "actualPositive": true,
-      "isCorrect": false,
-      "explanation": "모델은 이 케이스를 '사망'(으)로 예측했습니다 (확신도 53%). 주요 근거: Sex=1.0 (기여도 +0.213), Pclass=2.0 (기여도 +0.092), Age=54.0 (기여도 -0.089), Parch=3.0 (기여도 +0.024), Fare=23.0 (기여도 -0.018).",
-      "topFeatures": [
-        {
-          "feature": "Sex",
-          "value": 1.0,
-          "contribution": 0.2125457645966699
-        },
-        {
-          "feature": "Pclass",
-          "value": 2.0,
-          "contribution": 0.09194617468094925
-        },
-        {
-          "feature": "Age",
-          "value": 54.0,
-          "contribution": -0.08870864929888751
-        },
-        {
-          "feature": "Parch",
-          "value": 3.0,
-          "contribution": 0.024353350928044602
-        },
-        {
-          "feature": "Fare",
-          "value": 23.0,
-          "contribution": -0.01839810425974171
-        }
-      ]
-    },
-    {
-      "id": "850",
-      "prediction": "0",
-      "predictedPositive": false,
-      "probaPositive": 0.4767,
-      "actualLabel": "0",
-      "actualPositive": false,
-      "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '사망'(으)로 예측했습니다 (확신도 52%). 주요 근거: Age=4.0 (기여도 +0.320), Parch=2.0 (기여도 +0.075), Pclass=3.0 (기여도 -0.063), sibsp=4.0 (기여도 -0.062), Sex=0.0 (기여도 -0.054).",
-      "topFeatures": [
-        {
-          "feature": "Age",
-          "value": 4.0,
-          "contribution": 0.31996681550176015
-        },
-        {
-          "feature": "Parch",
-          "value": 2.0,
-          "contribution": 0.07463559203348243
-        },
-        {
-          "feature": "Pclass",
-          "value": 3.0,
-          "contribution": -0.06277367433857182
-        },
-        {
-          "feature": "sibsp",
-          "value": 4.0,
-          "contribution": -0.062497858246997474
-        },
-        {
-          "feature": "Sex",
-          "value": 0.0,
-          "contribution": -0.05377396904053618
-        }
-      ]
-    },
-    {
       "id": "905",
       "prediction": "0",
       "predictedPositive": false,
@@ -886,117 +1034,6 @@
       ]
     },
     {
-      "id": "1044",
-      "prediction": "1",
-      "predictedPositive": true,
-      "probaPositive": 0.5067,
-      "actualLabel": "0",
-      "actualPositive": false,
-      "isCorrect": false,
-      "explanation": "모델은 이 케이스를 '생존'(으)로 예측했습니다 (확신도 51%). 주요 근거: Sex=1.0 (기여도 +0.223), Fare=12.1833 (기여도 +0.137), Pclass=3.0 (기여도 -0.110), Age=36.0 (기여도 -0.041), sibsp=0.0 (기여도 +0.026).",
-      "topFeatures": [
-        {
-          "feature": "Sex",
-          "value": 1.0,
-          "contribution": 0.2231252632524638
-        },
-        {
-          "feature": "Fare",
-          "value": 12.1833,
-          "contribution": 0.13681565583680044
-        },
-        {
-          "feature": "Pclass",
-          "value": 3.0,
-          "contribution": -0.10957208577063793
-        },
-        {
-          "feature": "Age",
-          "value": 36.0,
-          "contribution": -0.04112321858754891
-        },
-        {
-          "feature": "sibsp",
-          "value": 0.0,
-          "contribution": 0.02606477497864258
-        }
-      ]
-    },
-    {
-      "id": "1067",
-      "prediction": "0",
-      "predictedPositive": false,
-      "probaPositive": 0.4733,
-      "actualLabel": "0",
-      "actualPositive": false,
-      "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '사망'(으)로 예측했습니다 (확신도 53%). 주요 근거: Sex=1.0 (기여도 +0.234), Age=20.0 (기여도 -0.104), Pclass=2.0 (기여도 +0.057), Fare=36.75 (기여도 +0.049), Parch=0.0 (기여도 -0.026).",
-      "topFeatures": [
-        {
-          "feature": "Sex",
-          "value": 1.0,
-          "contribution": 0.23358827434091495
-        },
-        {
-          "feature": "Age",
-          "value": 20.0,
-          "contribution": -0.1043251769982191
-        },
-        {
-          "feature": "Pclass",
-          "value": 2.0,
-          "contribution": 0.057138278042473595
-        },
-        {
-          "feature": "Fare",
-          "value": 36.75,
-          "contribution": 0.048965156622446236
-        },
-        {
-          "feature": "Parch",
-          "value": 0.0,
-          "contribution": -0.026093879757295803
-        }
-      ]
-    },
-    {
-      "id": "1107",
-      "prediction": "1",
-      "predictedPositive": true,
-      "probaPositive": 0.508,
-      "actualLabel": "0",
-      "actualPositive": false,
-      "isCorrect": false,
-      "explanation": "모델은 이 케이스를 '생존'(으)로 예측했습니다 (확신도 51%). 주요 근거: Sex=1.0 (기여도 +0.239), Embarked=1.0 (기여도 +0.086), Pclass=3.0 (기여도 -0.079), Fare=7.8792 (기여도 -0.028), Age=28.0 (기여도 +0.016).",
-      "topFeatures": [
-        {
-          "feature": "Sex",
-          "value": 1.0,
-          "contribution": 0.2394345901842359
-        },
-        {
-          "feature": "Embarked",
-          "value": 1.0,
-          "contribution": 0.08574847432453861
-        },
-        {
-          "feature": "Pclass",
-          "value": 3.0,
-          "contribution": -0.07943318761334914
-        },
-        {
-          "feature": "Fare",
-          "value": 7.8792,
-          "contribution": -0.028281557057114777
-        },
-        {
-          "feature": "Age",
-          "value": 28.0,
-          "contribution": 0.01619640632048985
-        }
-      ]
-    },
-    {
       "id": "1164",
       "prediction": "1",
       "predictedPositive": true,
@@ -1030,43 +1067,6 @@
           "feature": "Fare",
           "value": 15.5,
           "contribution": -0.03889362506454801
-        }
-      ]
-    },
-    {
-      "id": "1198",
-      "prediction": "0",
-      "predictedPositive": false,
-      "probaPositive": 0.4733,
-      "actualLabel": "0",
-      "actualPositive": false,
-      "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '사망'(으)로 예측했습니다 (확신도 53%). 주요 근거: Age=0.83 (기여도 +0.310), Pclass=3.0 (기여도 -0.053), Sex=0.0 (기여도 -0.042), Parch=1.0 (기여도 +0.039), Embarked=2.0 (기여도 -0.034).",
-      "topFeatures": [
-        {
-          "feature": "Age",
-          "value": 0.83,
-          "contribution": 0.30957916015676673
-        },
-        {
-          "feature": "Pclass",
-          "value": 3.0,
-          "contribution": -0.052947730702368405
-        },
-        {
-          "feature": "Sex",
-          "value": 0.0,
-          "contribution": -0.042221016882530875
-        },
-        {
-          "feature": "Parch",
-          "value": 1.0,
-          "contribution": 0.03919812152360978
-        },
-        {
-          "feature": "Embarked",
-          "value": 2.0,
-          "contribution": -0.03411739244055404
         }
       ]
     },
