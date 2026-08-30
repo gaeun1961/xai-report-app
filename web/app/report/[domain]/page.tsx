@@ -77,6 +77,9 @@ function ModelBody({ report, domain, selectedId, onSelect }: BodyProps) {
     report.cases.find((c) => c.id === selectedId) ?? report.cases[0];
   const { positiveLabel, negativeLabel } = report;
 
+  const CHART_LIMIT = 15;
+  const importanceOrder = report.featureImportance.map((f) => f.feature);
+
   return (
     <>
       <p className={styles.guide}>
@@ -118,7 +121,7 @@ function ModelBody({ report, domain, selectedId, onSelect }: BodyProps) {
           <section className={styles.section}>
             <h2 className={styles.h2}>특성 중요도</h2>
             <FeatureImportanceChart
-              items={report.featureImportance}
+              items={report.featureImportance.slice(0, CHART_LIMIT)}
               domain={domain}
             />
           </section>
@@ -140,6 +143,8 @@ function ModelBody({ report, domain, selectedId, onSelect }: BodyProps) {
               positiveLabel={positiveLabel}
               negativeLabel={negativeLabel}
               baseValue={report.baseValue}
+              importanceOrder={importanceOrder}
+              chartLimit={CHART_LIMIT}
             />
           </section>
         </div>

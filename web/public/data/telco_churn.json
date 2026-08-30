@@ -6,63 +6,79 @@
   "featureImportance": [
     {
       "feature": "Contract",
-      "importance": 0.07570238323090513
+      "importance": 0.0757
     },
     {
       "feature": "tenure",
-      "importance": 0.05717886437740228
+      "importance": 0.05718
     },
     {
       "feature": "OnlineSecurity",
-      "importance": 0.04321709872894692
+      "importance": 0.04322
     },
     {
       "feature": "TotalCharges",
-      "importance": 0.03859048513873006
+      "importance": 0.03859
     },
     {
       "feature": "TechSupport",
-      "importance": 0.035385028633069464
+      "importance": 0.03539
     },
     {
       "feature": "MonthlyCharges",
-      "importance": 0.03491083592065209
+      "importance": 0.03491
     },
     {
       "feature": "PaymentMethod",
-      "importance": 0.031235188403850228
+      "importance": 0.03124
     },
     {
       "feature": "InternetService",
-      "importance": 0.02791435785715183
+      "importance": 0.02791
     },
     {
       "feature": "PaperlessBilling",
-      "importance": 0.01675250373468926
+      "importance": 0.01675
     },
     {
       "feature": "MultipleLines",
-      "importance": 0.012201786009152707
+      "importance": 0.0122
     },
     {
       "feature": "OnlineBackup",
-      "importance": 0.012186487640551405
+      "importance": 0.01219
     },
     {
       "feature": "StreamingTV",
-      "importance": 0.011987943490586824
+      "importance": 0.01199
     },
     {
       "feature": "DeviceProtection",
-      "importance": 0.011613450885658363
+      "importance": 0.01161
     },
     {
       "feature": "StreamingMovies",
-      "importance": 0.010505427242225605
+      "importance": 0.01051
     },
     {
       "feature": "gender",
-      "importance": 0.008168776513615503
+      "importance": 0.00817
+    },
+    {
+      "feature": "SeniorCitizen",
+      "importance": 0.00813
+    },
+    {
+      "feature": "Dependents",
+      "importance": 0.00691
+    },
+    {
+      "feature": "Partner",
+      "importance": 0.00565
+    },
+    {
+      "feature": "PhoneService",
+      "importance": 0.00204
     }
   ],
   "cases": [

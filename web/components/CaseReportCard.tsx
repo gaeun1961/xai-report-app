@@ -12,6 +12,10 @@ type Props = {
   positiveLabel?: string;
   negativeLabel?: string;
   baseValue?: number;
+  // feature names in overall-importance order (index 0 = most important)
+  importanceOrder?: string[];
+  // how many features the left chart shows — anything past this is "하위권"
+  chartLimit?: number;
 };
 
 const TOP_N = 5;
@@ -29,8 +33,6 @@ function strengthWord(contribution: number): string {
   return "약간";
 }
 
-// Plain-language note for a case the model got wrong, based on how far its
-// probability sat from the 50% decision line.
 function whyWrongText(predConfidencePct: number, distFrom50: number): string {
   if (distFrom50 <= 0.05) {
     return `이 예측은 확률이 50%에 아주 가까워서(${predConfidencePct}%), 경계선에서 반대로 뒤집힌 경우예요.`;
@@ -47,49 +49,55 @@ export default function CaseReportCard({
   positiveLabel,
   negativeLabel,
   baseValue,
+  importanceOrder = [],
+  chartLimit = 15,
 }: Props) {
   const [showNumbers, setShowNumbers] = useState(false);
   const [factorQuery, setFactorQuery] = useState("");
   const [expanded, setExpanded] = useState(false);
 
   const positive = c.predictedPositive;
-  // Fall back to the CSV's own predicted value when no preset label is given.
   const posText = positiveLabel ?? c.prediction;
   const negText = negativeLabel ?? c.prediction;
   const outcome = positive ? posText : negText;
 
   const pct = (n: number) => `${Math.round(n * 100)}%`;
-  const showBaseline =
-    baseValue !== undefined && c.probaPositive !== undefined;
+  const showBaseline = baseValue !== undefined && c.probaPositive !== undefined;
 
   const showActual = c.actualLabel !== undefined && c.isCorrect !== undefined;
   const actualText = c.actualPositive
     ? (positiveLabel ?? c.actualLabel)
     : (negativeLabel ?? c.actualLabel);
 
-  const showWhyWrong = showActual && c.isCorrect === false && c.probaPositive !== undefined;
+  const showWhyWrong =
+    showActual && c.isCorrect === false && c.probaPositive !== undefined;
   const predConfidence = positive ? c.probaPositive! : 1 - c.probaPositive!;
 
   const factors = c.topFeatures;
+  const rankOf = (name: string) => importanceOrder.indexOf(name) + 1; // 0 → unknown
+  const totalFeatures = importanceOrder.length;
+  const label = (name: string) => columnDesc(domain, name) ?? name;
 
-  // how the top-5 factors' pull compares to everything else
+  // top-5 pull vs everything else
   const dirOf = (s: number) => (s >= 0 ? posText : negText);
-  const sumTop = factors
-    .slice(0, TOP_N)
-    .reduce((a, f) => a + f.contribution, 0);
+  const sumTop = factors.slice(0, TOP_N).reduce((a, f) => a + f.contribution, 0);
   const sumRest = factors.slice(TOP_N).reduce((a, f) => a + f.contribution, 0);
-  const restRatio = Math.abs(sumTop) > 1e-9 ? Math.abs(sumRest) / Math.abs(sumTop) : 0;
+  const restRatio =
+    Math.abs(sumTop) > 1e-9 ? Math.abs(sumRest) / Math.abs(sumTop) : 0;
+  const topPp = Math.round(Math.abs(sumTop) * 100);
+  const restPp = Math.round(Math.abs(sumRest) * 100);
+
   let restNote: string;
   if (factors.length <= TOP_N || restRatio < 0.25) {
-    restNote = `이 ${TOP_N}개 요인이 예측의 대부분을 결정했어요.`;
+    restNote = `이 ${TOP_N}개가 ${topPp}%p를 움직였고, 나머지는 다 합쳐도 ${restPp}%p뿐이에요.`;
   } else if (sumTop >= 0 === sumRest >= 0) {
-    restNote = `이 ${TOP_N}개에 더해 나머지 요인들도 ${dirOf(sumTop)} 쪽으로 함께 작용한 결과예요.`;
+    restNote = `이 ${TOP_N}개에 더해 나머지 요인들도 ${dirOf(sumTop)} 쪽으로 ${restPp}%p 더 작용했어요.`;
   } else {
     const top5OnlyPositive = (baseValue ?? 0.5) + sumTop >= 0.5;
     const flipped = top5OnlyPositive !== positive;
     restNote = flipped
-      ? `위 ${TOP_N}개는 ${dirOf(sumTop)} 쪽이었지만, 나머지 요인들이 ${dirOf(sumRest)} 쪽으로 더 세게 작용해서 최종 결과가 뒤집혔어요.`
-      : `위 ${TOP_N}개는 ${dirOf(sumTop)} 쪽이었지만, 나머지 요인들이 ${dirOf(sumRest)} 쪽으로도 작용해서 확신을 다소 낮췄어요.`;
+      ? `위 ${TOP_N}개는 ${dirOf(sumTop)} 쪽(${topPp}%p)이었지만, 나머지 요인들이 ${dirOf(sumRest)} 쪽으로 ${restPp}%p 작용해서 최종 결과가 뒤집혔어요.`
+      : `위 ${TOP_N}개는 ${dirOf(sumTop)} 쪽이었지만, 나머지 요인들이 ${dirOf(sumRest)} 쪽으로 ${restPp}%p 작용해서 확신을 다소 낮췄어요.`;
   }
 
   const query = factorQuery.trim().toLowerCase();
@@ -98,6 +106,9 @@ export default function CaseReportCard({
     : factors;
   const visible = query || expanded ? filtered : filtered.slice(0, TOP_N);
   const hiddenCount = factors.length - TOP_N;
+
+  const ex1 = label(factors[0]?.feature ?? "");
+  const ex2 = label(factors[1]?.feature ?? "");
 
   return (
     <article className={styles.card}>
@@ -137,13 +148,20 @@ export default function CaseReportCard({
       )}
 
       {showBaseline && (
-        <p className={styles.baseline}>
-          이 모델이 기본적으로 보는 &lsquo;{posText}&rsquo; 확률은{" "}
-          {pct(baseValue!)}인데, 이 케이스의 요인들을 반영하면{" "}
-          <b>{pct(c.probaPositive!)}</b>가 됩니다.{" "}
-          {c.probaPositive! >= 0.5 ? "50%를 넘어" : "50%에 못 미쳐"} &lsquo;
-          {outcome}&rsquo;으로 예측했어요. {restNote}
-        </p>
+        <div className={styles.baseline}>
+          <p>
+            다른 정보 없이 평균적으로 보면 &lsquo;{posText}&rsquo; 확률은{" "}
+            {pct(baseValue!)}예요.
+          </p>
+          <p>
+            그런데 이 케이스의 실제 특성값({ex1}, {ex2} 등)을 반영하면{" "}
+            <b>{pct(c.probaPositive!)}</b>가 됩니다.
+          </p>
+          <p>
+            {c.probaPositive! >= 0.5 ? "50%를 넘어" : "50%에 못 미쳐"} &lsquo;
+            {outcome}&rsquo;으로 예측했어요. {restNote}
+          </p>
+        </div>
       )}
 
       <div className={styles.contribHead}>
@@ -176,41 +194,54 @@ export default function CaseReportCard({
           visible.map((f) => {
             const up = f.contribution >= 0;
             const dir = up ? posText : negText;
+            const rank = rankOf(f.feature);
+            const low = rank > 0 && rank > chartLimit;
             return (
               <li key={f.feature} className={styles.contribRow}>
-                {showNumbers ? (
-                  <>
-                    <span className={styles.contribFeature}>
+                <div className={styles.contribMain}>
+                  {showNumbers ? (
+                    <>
+                      <span className={styles.contribFeature}>
+                        <GlossaryTerm
+                          term={f.feature}
+                          desc={columnDesc(domain, f.feature)}
+                          className={styles.contribName}
+                        />{" "}
+                        = {f.value}
+                      </span>
+                      <span
+                        className={`${styles.contribValue} ${up ? styles.up : styles.down}`}
+                      >
+                        {up ? "+" : ""}
+                        {f.contribution.toFixed(3)}
+                      </span>
+                    </>
+                  ) : (
+                    <span className={styles.contribSentence}>
                       <GlossaryTerm
                         term={f.feature}
                         desc={columnDesc(domain, f.feature)}
                         className={styles.contribName}
                       />{" "}
-                      = {f.value}
+                      <span className={styles.nowrap}>({f.value})</span>{" "}
+                      <span className={styles.nowrap}>
+                        &mdash;{" "}
+                        <b className={up ? styles.up : styles.down}>{dir}</b>
+                        &nbsp;예측&nbsp;쪽으로
+                      </span>{" "}
+                      <span className={styles.nowrap}>
+                        {strengthWord(f.contribution)}&nbsp;작용했어요
+                      </span>
                     </span>
-                    <span
-                      className={`${styles.contribValue} ${up ? styles.up : styles.down}`}
-                    >
-                      {up ? "+" : ""}
-                      {f.contribution.toFixed(3)}
-                    </span>
-                  </>
-                ) : (
-                  <span className={styles.contribSentence}>
-                    <GlossaryTerm
-                      term={f.feature}
-                      desc={columnDesc(domain, f.feature)}
-                      className={styles.contribName}
-                    />{" "}
-                    <span className={styles.nowrap}>({f.value})</span>{" "}
-                    <span className={styles.nowrap}>
-                      &mdash;{" "}
-                      <b className={up ? styles.up : styles.down}>{dir}</b>
-                      &nbsp;예측&nbsp;쪽으로
-                    </span>{" "}
-                    <span className={styles.nowrap}>
-                      {strengthWord(f.contribution)}&nbsp;작용했어요
-                    </span>
+                  )}
+                </div>
+                {rank > 0 && (
+                  <span
+                    className={`${styles.rankChip} ${low ? styles.rankChipLow : ""}`}
+                  >
+                    {low
+                      ? `전체 중요도 ${totalFeatures}개 중 ${rank}위 · 덜 중요한 편`
+                      : `전체 중요도 ${rank}위`}
                   </span>
                 )}
               </li>

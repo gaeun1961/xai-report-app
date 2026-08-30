@@ -6,63 +6,123 @@
   "featureImportance": [
     {
       "feature": "OverTime",
-      "importance": 0.03707341348453118
+      "importance": 0.03707
     },
     {
       "feature": "Age",
-      "importance": 0.023962615036634827
+      "importance": 0.02396
     },
     {
       "feature": "StockOptionLevel",
-      "importance": 0.021237053616352967
+      "importance": 0.02124
     },
     {
       "feature": "MonthlyIncome",
-      "importance": 0.020967338678442127
+      "importance": 0.02097
     },
     {
       "feature": "TotalWorkingYears",
-      "importance": 0.019757213382621
+      "importance": 0.01976
     },
     {
       "feature": "YearsAtCompany",
-      "importance": 0.017077112585973837
+      "importance": 0.01708
     },
     {
       "feature": "NumCompaniesWorked",
-      "importance": 0.015172591265911207
+      "importance": 0.01517
     },
     {
       "feature": "YearsWithCurrManager",
-      "importance": 0.014649881592237235
+      "importance": 0.01465
     },
     {
       "feature": "DistanceFromHome",
-      "importance": 0.01446573745903802
+      "importance": 0.01447
     },
     {
       "feature": "EnvironmentSatisfaction",
-      "importance": 0.013680780385196116
+      "importance": 0.01368
     },
     {
       "feature": "JobLevel",
-      "importance": 0.013268446482933937
+      "importance": 0.01327
     },
     {
       "feature": "DailyRate",
-      "importance": 0.011797060655376201
+      "importance": 0.0118
     },
     {
       "feature": "MaritalStatus",
-      "importance": 0.011123581842720685
+      "importance": 0.01112
     },
     {
       "feature": "JobRole",
-      "importance": 0.010463139358853386
+      "importance": 0.01046
     },
     {
       "feature": "JobInvolvement",
-      "importance": 0.010173467999815161
+      "importance": 0.01017
+    },
+    {
+      "feature": "WorkLifeBalance",
+      "importance": 0.00949
+    },
+    {
+      "feature": "JobSatisfaction",
+      "importance": 0.00934
+    },
+    {
+      "feature": "EducationField",
+      "importance": 0.00821
+    },
+    {
+      "feature": "RelationshipSatisfaction",
+      "importance": 0.00809
+    },
+    {
+      "feature": "YearsInCurrentRole",
+      "importance": 0.00809
+    },
+    {
+      "feature": "Department",
+      "importance": 0.00805
+    },
+    {
+      "feature": "PercentSalaryHike",
+      "importance": 0.00804
+    },
+    {
+      "feature": "HourlyRate",
+      "importance": 0.00779
+    },
+    {
+      "feature": "MonthlyRate",
+      "importance": 0.0066
+    },
+    {
+      "feature": "YearsSinceLastPromotion",
+      "importance": 0.00635
+    },
+    {
+      "feature": "TrainingTimesLastYear",
+      "importance": 0.00433
+    },
+    {
+      "feature": "BusinessTravel",
+      "importance": 0.00362
+    },
+    {
+      "feature": "Education",
+      "importance": 0.00275
+    },
+    {
+      "feature": "Gender",
+      "importance": 0.00157
+    },
+    {
+      "feature": "PerformanceRating",
+      "importance": 0.00134
     }
   ],
   "cases": [
