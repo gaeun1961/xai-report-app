@@ -110,8 +110,16 @@
   padding: 8px 14px;
   font-size: 14px;
   font-weight: 600;
+  border: none;
   border-bottom: 2px solid transparent;
   margin-bottom: -1px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.tab:hover:not(:disabled) {
+  color: var(--foreground);
 }
 
 .tabActive {
@@ -138,6 +146,61 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+/* correlation heatmap */
+.corrWrap {
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.corrGrid {
+  display: grid;
+  gap: 2px;
+  width: max-content;
+  min-width: 100%;
+  font-size: 11px;
+}
+
+.corrCorner {
+  background: transparent;
+}
+
+.corrColHead {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 4px 2px;
+  min-height: 96px;
+  color: var(--text-muted);
+  cursor: help;
+}
+
+.corrColHead span {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  white-space: nowrap;
+}
+
+.corrRowHead {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 8px;
+  text-align: right;
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+  cursor: help;
+}
+
+.corrCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  border-radius: 3px;
+  font-variant-numeric: tabular-nums;
 }
 
 .accuracy {
