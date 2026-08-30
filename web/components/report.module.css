@@ -49,7 +49,9 @@
 
 @media (max-width: 640px) {
   .reportGrid {
-    grid-template-columns: 1fr;
+    /* minmax(0, …) so a wide child (chip row, long sentence) wraps/scrolls
+       inside the track instead of pushing it past the viewport */
+    grid-template-columns: minmax(0, 1fr);
     gap: 16px;
   }
 }
@@ -271,27 +273,25 @@
   color: var(--text-muted);
 }
 
-/* narrow screens: label on its own line above the bar (no clipping) */
+/* narrow screens: label on its own line above the bar, hide the raw number
+   (the bar length carries it) — dead-simple block stacking, no grid tricks */
 @media (max-width: 640px) {
   .chartRow {
-    grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-areas:
-      "label label"
-      "track value";
-    gap: 4px 8px;
+    display: block;
   }
 
   .chartLabel {
-    grid-area: label;
+    display: block;
     text-align: left;
+    margin-bottom: 3px;
   }
 
   .chartTrack {
-    grid-area: track;
+    display: block;
   }
 
   .chartValue {
-    grid-area: value;
+    display: none;
   }
 }
 
@@ -327,6 +327,40 @@
   background: var(--background);
   color: inherit;
   font-size: 13px;
+}
+
+.selectorHint {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.selectorHint code {
+  padding: 0 4px;
+  border-radius: 4px;
+  background: var(--surface);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.selectorFilter {
+  display: flex;
+  gap: 6px;
+}
+
+.filterBtn {
+  padding: 3px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.filterBtnActive {
+  background: var(--foreground);
+  border-color: var(--foreground);
+  color: #fff;
 }
 
 .selector {
@@ -451,16 +485,64 @@
   font-weight: 700;
 }
 
-/* feature name with a glossary tooltip (native title=) */
-.hasDesc {
-  text-decoration: underline dotted;
-  text-decoration-color: var(--text-muted);
-  text-underline-offset: 2px;
-  cursor: help;
-}
-
 .contribVal {
   color: var(--text-muted);
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+/* glossary term: dotted underline + CSS-only tooltip bubble */
+.glossary {
+  position: relative;
+  text-decoration: underline dotted;
+  text-decoration-color: var(--text-muted);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  cursor: help;
+  outline: none;
+}
+
+.glossary:hover,
+.glossary:focus-visible {
+  text-decoration-color: var(--accent);
+  color: var(--accent-strong);
+}
+
+.glossaryBubble {
+  display: none;
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 8px);
+  z-index: 20;
+  width: max-content;
+  max-width: min(240px, 70vw);
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--foreground);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+  text-decoration: none;
+  white-space: normal;
+  pointer-events: none;
+}
+
+.glossaryBubble::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 14px;
+  border: 5px solid transparent;
+  border-top-color: var(--foreground);
+}
+
+.glossary:hover .glossaryBubble,
+.glossary:focus .glossaryBubble,
+.glossary:focus-within .glossaryBubble {
+  display: block;
 }
 
 .contribList {

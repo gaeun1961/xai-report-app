@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { ShapReport } from "@/lib/types";
 import { columnDesc } from "@/lib/columnGlossary";
+import GlossaryTerm from "./GlossaryTerm";
 import styles from "./report.module.css";
 
 type Props = {
@@ -12,17 +13,6 @@ type Props = {
   negativeLabel?: string;
   baseValue?: number;
 };
-
-function FeatureName({ domain, name }: { domain: string; name: string }) {
-  const desc = columnDesc(domain, name);
-  return desc ? (
-    <b className={`${styles.contribName} ${styles.hasDesc}`} title={desc}>
-      {name}
-    </b>
-  ) : (
-    <b className={styles.contribName}>{name}</b>
-  );
-}
 
 function strengthWord(contribution: number): string {
   const a = Math.abs(contribution);
@@ -93,7 +83,12 @@ export default function CaseReportCard({
               {showNumbers ? (
                 <>
                   <span className={styles.contribFeature}>
-                    <FeatureName domain={domain} name={f.feature} /> = {f.value}
+                    <GlossaryTerm
+                      term={f.feature}
+                      desc={columnDesc(domain, f.feature)}
+                      className={styles.contribName}
+                    />{" "}
+                    = {f.value}
                   </span>
                   <span
                     className={`${styles.contribValue} ${up ? styles.up : styles.down}`}
@@ -104,10 +99,20 @@ export default function CaseReportCard({
                 </>
               ) : (
                 <span className={styles.contribSentence}>
-                  <FeatureName domain={domain} name={f.feature} />
-                  <span className={styles.contribVal}> ({f.value})</span> —{" "}
-                  <b className={up ? styles.up : styles.down}>{dir}</b> 예측 쪽으로{" "}
-                  {strengthWord(f.contribution)} 작용했어요
+                  <GlossaryTerm
+                    term={f.feature}
+                    desc={columnDesc(domain, f.feature)}
+                    className={styles.contribName}
+                  />{" "}
+                  <span className={styles.nowrap}>({f.value})</span>{" "}
+                  <span className={styles.nowrap}>
+                    &mdash;{" "}
+                    <b className={up ? styles.up : styles.down}>{dir}</b>
+                    &nbsp;예측&nbsp;쪽으로
+                  </span>{" "}
+                  <span className={styles.nowrap}>
+                    {strengthWord(f.contribution)}&nbsp;작용했어요
+                  </span>
                 </span>
               )}
             </li>
