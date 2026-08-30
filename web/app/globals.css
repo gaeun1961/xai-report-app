@@ -3,7 +3,7 @@
   --foreground: #2b2a27; /* body text (neutral dark gray) */
   --text-muted: #6b6a64; /* secondary text, disabled states */
   --border: #e5e3dc; /* card borders, dividers, bar track */
-  --surface: #f6f5f1; /* faint gray fill for callout boxes */
+  --surface: #f1ecdf; /* ivory: sidebar, callout boxes, inactive chips — distinct from #fff */
   --accent: #1d9e75; /* green: active nav, bar fill, good badge, active chip */
   --accent-strong: #0f7a58; /* darker green for accent text */
   --warn: #d97706; /* amber: "주의" badge */

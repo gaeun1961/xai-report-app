@@ -35,6 +35,7 @@ export default function ReportPage() {
       ) : (
         <ReportBody
           report={report}
+          domain={domain}
           selectedId={selectedId}
           onSelect={setSelectedId}
         />
@@ -45,11 +46,12 @@ export default function ReportPage() {
 
 type BodyProps = {
   report: NonNullable<ReturnType<typeof loadReport>>;
+  domain: string;
   selectedId: string | null;
   onSelect: (id: string) => void;
 };
 
-function ReportBody({ report, selectedId, onSelect }: BodyProps) {
+function ReportBody({ report, domain, selectedId, onSelect }: BodyProps) {
   const selected =
     report.cases.find((c) => c.id === selectedId) ?? report.cases[0];
   const { positiveLabel, negativeLabel } = report;
@@ -92,7 +94,10 @@ function ReportBody({ report, selectedId, onSelect }: BodyProps) {
 
           <section className={styles.section}>
             <h2 className={styles.h2}>특성 중요도</h2>
-            <FeatureImportanceChart items={report.featureImportance} />
+            <FeatureImportanceChart
+              items={report.featureImportance}
+              domain={domain}
+            />
           </section>
         </div>
 
@@ -106,6 +111,7 @@ function ReportBody({ report, selectedId, onSelect }: BodyProps) {
             />
             <CaseReportCard
               case={selected}
+              domain={domain}
               positiveLabel={positiveLabel}
               negativeLabel={negativeLabel}
             />
