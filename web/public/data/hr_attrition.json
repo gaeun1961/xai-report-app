@@ -67,9 +67,44 @@
   ],
   "cases": [
     {
+      "id": "2",
+      "prediction": "No",
+      "predictedPositive": false,
+      "probaPositive": 0.3967,
+      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 60%). 주요 근거: OverTime=Yes (기여도 +0.095), MonthlyIncome=2090 (기여도 +0.076), Age=37 (기여도 -0.046), YearsAtCompany=0 (기여도 +0.045), YearsWithCurrManager=0 (기여도 +0.027).",
+      "topFeatures": [
+        {
+          "feature": "OverTime",
+          "value": "Yes",
+          "contribution": 0.09498514294765381
+        },
+        {
+          "feature": "MonthlyIncome",
+          "value": 2090,
+          "contribution": 0.07643016032131454
+        },
+        {
+          "feature": "Age",
+          "value": 37,
+          "contribution": -0.04639965591154855
+        },
+        {
+          "feature": "YearsAtCompany",
+          "value": 0,
+          "contribution": 0.045222768275506114
+        },
+        {
+          "feature": "YearsWithCurrManager",
+          "value": 0,
+          "contribution": 0.027295895305272537
+        }
+      ]
+    },
+    {
       "id": "17",
       "prediction": "Yes",
       "predictedPositive": true,
+      "probaPositive": 0.53,
       "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 53%). 주요 근거: TotalWorkingYears=1 (기여도 +0.120), Age=22 (기여도 +0.099), OverTime=Yes (기여도 +0.073), YearsAtCompany=1 (기여도 +0.061), YearsWithCurrManager=0 (기여도 +0.047).",
       "topFeatures": [
         {
@@ -100,9 +135,44 @@
       ]
     },
     {
+      "id": "41",
+      "prediction": "Yes",
+      "predictedPositive": true,
+      "probaPositive": 0.55,
+      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 55%). 주요 근거: TotalWorkingYears=1 (기여도 +0.138), MonthlyIncome=2341 (기여도 +0.067), YearsAtCompany=1 (기여도 +0.065), YearsWithCurrManager=0 (기여도 +0.059), HourlyRate=33 (기여도 +0.058).",
+      "topFeatures": [
+        {
+          "feature": "TotalWorkingYears",
+          "value": 1,
+          "contribution": 0.13774641780385452
+        },
+        {
+          "feature": "MonthlyIncome",
+          "value": 2341,
+          "contribution": 0.06723888096753652
+        },
+        {
+          "feature": "YearsAtCompany",
+          "value": 1,
+          "contribution": 0.06453274634001949
+        },
+        {
+          "feature": "YearsWithCurrManager",
+          "value": 0,
+          "contribution": 0.05870425978878761
+        },
+        {
+          "feature": "HourlyRate",
+          "value": 33,
+          "contribution": 0.058304779898156904
+        }
+      ]
+    },
+    {
       "id": "127",
       "prediction": "Yes",
       "predictedPositive": true,
+      "probaPositive": 0.93,
       "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 93%). 주요 근거: TotalWorkingYears=0 (기여도 +0.139), MonthlyIncome=1675 (기여도 +0.108), Age=19 (기여도 +0.093), OverTime=Yes (기여도 +0.081), YearsAtCompany=0 (기여도 +0.073).",
       "topFeatures": [
         {
@@ -133,9 +203,44 @@
       ]
     },
     {
+      "id": "357",
+      "prediction": "Yes",
+      "predictedPositive": true,
+      "probaPositive": 0.5533,
+      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 55%). 주요 근거: OverTime=Yes (기여도 +0.109), Age=21 (기여도 +0.080), MonthlyIncome=2174 (기여도 +0.061), JobLevel=1 (기여도 +0.030), EnvironmentSatisfaction=1 (기여도 +0.030).",
+      "topFeatures": [
+        {
+          "feature": "OverTime",
+          "value": "Yes",
+          "contribution": 0.10909488809829376
+        },
+        {
+          "feature": "Age",
+          "value": 21,
+          "contribution": 0.0796804271048875
+        },
+        {
+          "feature": "MonthlyIncome",
+          "value": 2174,
+          "contribution": 0.06130189520640658
+        },
+        {
+          "feature": "JobLevel",
+          "value": 1,
+          "contribution": 0.030192133468412638
+        },
+        {
+          "feature": "EnvironmentSatisfaction",
+          "value": 1,
+          "contribution": 0.029773666608824273
+        }
+      ]
+    },
+    {
       "id": "463",
       "prediction": "Yes",
       "predictedPositive": true,
+      "probaPositive": 0.94,
       "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 94%). 주요 근거: TotalWorkingYears=1 (기여도 +0.146), OverTime=Yes (기여도 +0.087), YearsAtCompany=1 (기여도 +0.073), MonthlyIncome=2340 (기여도 +0.071), Age=26 (기여도 +0.069).",
       "topFeatures": [
         {
@@ -166,9 +271,214 @@
       ]
     },
     {
+      "id": "476",
+      "prediction": "Yes",
+      "predictedPositive": true,
+      "probaPositive": 0.5433,
+      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 54%). 주요 근거: TotalWorkingYears=1 (기여도 +0.140), Age=24 (기여도 +0.071), YearsAtCompany=1 (기여도 +0.069), MonthlyIncome=2127 (기여도 +0.065), YearsWithCurrManager=0 (기여도 +0.063).",
+      "topFeatures": [
+        {
+          "feature": "TotalWorkingYears",
+          "value": 1,
+          "contribution": 0.14019685727599837
+        },
+        {
+          "feature": "Age",
+          "value": 24,
+          "contribution": 0.07083588743724452
+        },
+        {
+          "feature": "YearsAtCompany",
+          "value": 1,
+          "contribution": 0.06892587208149485
+        },
+        {
+          "feature": "MonthlyIncome",
+          "value": 2127,
+          "contribution": 0.06492080211699482
+        },
+        {
+          "feature": "YearsWithCurrManager",
+          "value": 0,
+          "contribution": 0.06326238845971764
+        }
+      ]
+    },
+    {
+      "id": "491",
+      "prediction": "No",
+      "predictedPositive": false,
+      "probaPositive": 0.0,
+      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 100%). 주요 근거: OverTime=Yes (기여도 +0.032), Age=43 (기여도 -0.025), MonthlyIncome=5679 (기여도 -0.022), StockOptionLevel=1 (기여도 -0.018), JobLevel=2 (기여도 -0.016).",
+      "topFeatures": [
+        {
+          "feature": "OverTime",
+          "value": "Yes",
+          "contribution": 0.032486995940000735
+        },
+        {
+          "feature": "Age",
+          "value": 43,
+          "contribution": -0.02530299807888962
+        },
+        {
+          "feature": "MonthlyIncome",
+          "value": 5679,
+          "contribution": -0.021896916627032158
+        },
+        {
+          "feature": "StockOptionLevel",
+          "value": 1,
+          "contribution": -0.01846311702801024
+        },
+        {
+          "feature": "JobLevel",
+          "value": 2,
+          "contribution": -0.01561061234902439
+        }
+      ]
+    },
+    {
+      "id": "529",
+      "prediction": "No",
+      "predictedPositive": false,
+      "probaPositive": 0.0,
+      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 100%). 주요 근거: Age=38 (기여도 -0.021), OverTime=No (기여도 -0.020), TotalWorkingYears=10 (기여도 -0.015), MonthlyIncome=7625 (기여도 -0.013), DistanceFromHome=1 (기여도 -0.011).",
+      "topFeatures": [
+        {
+          "feature": "Age",
+          "value": 38,
+          "contribution": -0.02067654817843127
+        },
+        {
+          "feature": "OverTime",
+          "value": "No",
+          "contribution": -0.019972958591576447
+        },
+        {
+          "feature": "TotalWorkingYears",
+          "value": 10,
+          "contribution": -0.014735148686204234
+        },
+        {
+          "feature": "MonthlyIncome",
+          "value": 7625,
+          "contribution": -0.013306749298927684
+        },
+        {
+          "feature": "DistanceFromHome",
+          "value": 1,
+          "contribution": -0.010843890959444283
+        }
+      ]
+    },
+    {
+      "id": "655",
+      "prediction": "No",
+      "predictedPositive": false,
+      "probaPositive": 0.3933,
+      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 61%). 주요 근거: OverTime=Yes (기여도 +0.104), MonthlyIncome=2277 (기여도 +0.082), EducationField=Human Resources (기여도 +0.057), JobLevel=1 (기여도 +0.032), DistanceFromHome=3 (기여도 -0.019).",
+      "topFeatures": [
+        {
+          "feature": "OverTime",
+          "value": "Yes",
+          "contribution": 0.10358460662490546
+        },
+        {
+          "feature": "MonthlyIncome",
+          "value": 2277,
+          "contribution": 0.0821739436217257
+        },
+        {
+          "feature": "EducationField",
+          "value": "Human Resources",
+          "contribution": 0.05712716275897858
+        },
+        {
+          "feature": "JobLevel",
+          "value": 1,
+          "contribution": 0.03248765824402388
+        },
+        {
+          "feature": "DistanceFromHome",
+          "value": 3,
+          "contribution": -0.019033838527662012
+        }
+      ]
+    },
+    {
+      "id": "663",
+      "prediction": "No",
+      "predictedPositive": false,
+      "probaPositive": 0.4433,
+      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 56%). 주요 근거: TotalWorkingYears=1 (기여도 +0.128), Age=21 (기여도 +0.096), YearsAtCompany=1 (기여도 +0.062), OverTime=No (기여도 -0.042), YearsWithCurrManager=0 (기여도 +0.036).",
+      "topFeatures": [
+        {
+          "feature": "TotalWorkingYears",
+          "value": 1,
+          "contribution": 0.12768345206421344
+        },
+        {
+          "feature": "Age",
+          "value": 21,
+          "contribution": 0.09552632189227661
+        },
+        {
+          "feature": "YearsAtCompany",
+          "value": 1,
+          "contribution": 0.062001800712452856
+        },
+        {
+          "feature": "OverTime",
+          "value": "No",
+          "contribution": -0.04169051723684017
+        },
+        {
+          "feature": "YearsWithCurrManager",
+          "value": 0,
+          "contribution": 0.03591004235051975
+        }
+      ]
+    },
+    {
+      "id": "683",
+      "prediction": "Yes",
+      "predictedPositive": true,
+      "probaPositive": 0.9267,
+      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 93%). 주요 근거: TotalWorkingYears=1 (기여도 +0.159), MonthlyIncome=2413 (기여도 +0.091), YearsAtCompany=1 (기여도 +0.085), Age=25 (기여도 +0.082), OverTime=Yes (기여도 +0.082).",
+      "topFeatures": [
+        {
+          "feature": "TotalWorkingYears",
+          "value": 1,
+          "contribution": 0.15855397107473473
+        },
+        {
+          "feature": "MonthlyIncome",
+          "value": 2413,
+          "contribution": 0.0910490768826286
+        },
+        {
+          "feature": "YearsAtCompany",
+          "value": 1,
+          "contribution": 0.0848203421655261
+        },
+        {
+          "feature": "Age",
+          "value": 25,
+          "contribution": 0.08234166226412477
+        },
+        {
+          "feature": "OverTime",
+          "value": "Yes",
+          "contribution": 0.08189383160822845
+        }
+      ]
+    },
+    {
       "id": "709",
       "prediction": "No",
       "predictedPositive": false,
+      "probaPositive": 0.4533,
       "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 55%). 주요 근거: OverTime=Yes (기여도 +0.113), MonthlyIncome=2321 (기여도 +0.071), StockOptionLevel=0 (기여도 +0.033), NumCompaniesWorked=0 (기여도 -0.032), RelationshipSatisfaction=1 (기여도 +0.028).",
       "topFeatures": [
         {
@@ -199,9 +509,44 @@
       ]
     },
     {
+      "id": "711",
+      "prediction": "Yes",
+      "predictedPositive": true,
+      "probaPositive": 0.5967,
+      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 60%). 주요 근거: OverTime=Yes (기여도 +0.102), MonthlyIncome=2404 (기여도 +0.064), YearsAtCompany=0 (기여도 +0.056), Age=29 (기여도 +0.048), YearsWithCurrManager=0 (기여도 +0.038).",
+      "topFeatures": [
+        {
+          "feature": "OverTime",
+          "value": "Yes",
+          "contribution": 0.10237768625329487
+        },
+        {
+          "feature": "MonthlyIncome",
+          "value": 2404,
+          "contribution": 0.0638790050023215
+        },
+        {
+          "feature": "YearsAtCompany",
+          "value": 0,
+          "contribution": 0.05608490834848003
+        },
+        {
+          "feature": "Age",
+          "value": 29,
+          "contribution": 0.04830214772882446
+        },
+        {
+          "feature": "YearsWithCurrManager",
+          "value": 0,
+          "contribution": 0.03814486203383566
+        }
+      ]
+    },
+    {
       "id": "762",
       "prediction": "No",
       "predictedPositive": false,
+      "probaPositive": 0.4767,
       "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 52%). 주요 근거: OverTime=Yes (기여도 +0.129), MonthlyIncome=2042 (기여도 +0.108), Age=26 (기여도 +0.041), NumCompaniesWorked=6 (기여도 +0.041), EnvironmentSatisfaction=1 (기여도 +0.040).",
       "topFeatures": [
         {
@@ -232,9 +577,112 @@
       ]
     },
     {
+      "id": "777",
+      "prediction": "Yes",
+      "predictedPositive": true,
+      "probaPositive": 0.9033,
+      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 90%). 주요 근거: TotalWorkingYears=1 (기여도 +0.163), MonthlyIncome=1416 (기여도 +0.133), Age=21 (기여도 +0.102), YearsAtCompany=1 (기여도 +0.080), YearsWithCurrManager=0 (기여도 +0.052).",
+      "topFeatures": [
+        {
+          "feature": "TotalWorkingYears",
+          "value": 1,
+          "contribution": 0.16332644152560885
+        },
+        {
+          "feature": "MonthlyIncome",
+          "value": 1416,
+          "contribution": 0.1325095946761752
+        },
+        {
+          "feature": "Age",
+          "value": 21,
+          "contribution": 0.10187244848311452
+        },
+        {
+          "feature": "YearsAtCompany",
+          "value": 1,
+          "contribution": 0.08042907795157585
+        },
+        {
+          "feature": "YearsWithCurrManager",
+          "value": 0,
+          "contribution": 0.0522290576647337
+        }
+      ]
+    },
+    {
+      "id": "855",
+      "prediction": "No",
+      "predictedPositive": false,
+      "probaPositive": 0.0,
+      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 100%). 주요 근거: Age=37 (기여도 -0.018), TotalWorkingYears=14 (기여도 -0.013), OverTime=No (기여도 -0.012), MonthlyIncome=6474 (기여도 -0.012), StockOptionLevel=1 (기여도 -0.011).",
+      "topFeatures": [
+        {
+          "feature": "Age",
+          "value": 37,
+          "contribution": -0.017560116975432725
+        },
+        {
+          "feature": "TotalWorkingYears",
+          "value": 14,
+          "contribution": -0.01272417333154196
+        },
+        {
+          "feature": "OverTime",
+          "value": "No",
+          "contribution": -0.012424141518773883
+        },
+        {
+          "feature": "MonthlyIncome",
+          "value": 6474,
+          "contribution": -0.01237003728982444
+        },
+        {
+          "feature": "StockOptionLevel",
+          "value": 1,
+          "contribution": -0.011275221972845749
+        }
+      ]
+    },
+    {
+      "id": "860",
+      "prediction": "No",
+      "predictedPositive": false,
+      "probaPositive": 0.43,
+      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 57%). 주요 근거: Age=22 (기여도 +0.102), TotalWorkingYears=1 (기여도 +0.092), OverTime=Yes (기여도 +0.077), YearsAtCompany=0 (기여도 +0.049), YearsWithCurrManager=0 (기여도 +0.036).",
+      "topFeatures": [
+        {
+          "feature": "Age",
+          "value": 22,
+          "contribution": 0.10205603442812644
+        },
+        {
+          "feature": "TotalWorkingYears",
+          "value": 1,
+          "contribution": 0.09195871198450352
+        },
+        {
+          "feature": "OverTime",
+          "value": "Yes",
+          "contribution": 0.07674267554474987
+        },
+        {
+          "feature": "YearsAtCompany",
+          "value": 0,
+          "contribution": 0.04902677394849593
+        },
+        {
+          "feature": "YearsWithCurrManager",
+          "value": 0,
+          "contribution": 0.03624145315429823
+        }
+      ]
+    },
+    {
       "id": "962",
       "prediction": "No",
       "predictedPositive": false,
+      "probaPositive": 0.0,
       "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 100%). 주요 근거: OverTime=Yes (기여도 +0.024), MonthlyIncome=14026 (기여도 -0.020), Age=51 (기여도 -0.018), TotalWorkingYears=33 (기여도 -0.018), StockOptionLevel=1 (기여도 -0.017).",
       "topFeatures": [
         {
@@ -265,9 +713,44 @@
       ]
     },
     {
+      "id": "1061",
+      "prediction": "Yes",
+      "predictedPositive": true,
+      "probaPositive": 0.5867,
+      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 59%). 주요 근거: TotalWorkingYears=1 (기여도 +0.137), MonthlyIncome=2033 (기여도 +0.087), Age=24 (기여도 +0.069), YearsAtCompany=1 (기여도 +0.068), YearsWithCurrManager=0 (기여도 +0.062).",
+      "topFeatures": [
+        {
+          "feature": "TotalWorkingYears",
+          "value": 1,
+          "contribution": 0.13711987943598172
+        },
+        {
+          "feature": "MonthlyIncome",
+          "value": 2033,
+          "contribution": 0.08723828832436678
+        },
+        {
+          "feature": "Age",
+          "value": 24,
+          "contribution": 0.06853749363565435
+        },
+        {
+          "feature": "YearsAtCompany",
+          "value": 1,
+          "contribution": 0.06778849500817825
+        },
+        {
+          "feature": "YearsWithCurrManager",
+          "value": 0,
+          "contribution": 0.062001968570517485
+        }
+      ]
+    },
+    {
       "id": "1076",
       "prediction": "No",
       "predictedPositive": false,
+      "probaPositive": 0.0,
       "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 100%). 주요 근거: TotalWorkingYears=26 (기여도 -0.016), StockOptionLevel=1 (기여도 -0.016), MonthlyIncome=16032 (기여도 -0.014), OverTime=No (기여도 -0.014), JobRole=Manager (기여도 -0.014).",
       "topFeatures": [
         {
@@ -298,9 +781,282 @@
       ]
     },
     {
+      "id": "1118",
+      "prediction": "No",
+      "predictedPositive": false,
+      "probaPositive": 0.4133,
+      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 59%). 주요 근거: TotalWorkingYears=1 (기여도 +0.107), YearsAtCompany=1 (기여도 +0.064), MonthlyIncome=2061 (기여도 +0.055), OverTime=No (기여도 -0.050), Age=26 (기여도 +0.050).",
+      "topFeatures": [
+        {
+          "feature": "TotalWorkingYears",
+          "value": 1,
+          "contribution": 0.10690693397434427
+        },
+        {
+          "feature": "YearsAtCompany",
+          "value": 1,
+          "contribution": 0.06389143499930829
+        },
+        {
+          "feature": "MonthlyIncome",
+          "value": 2061,
+          "contribution": 0.05505506179296228
+        },
+        {
+          "feature": "OverTime",
+          "value": "No",
+          "contribution": -0.049733767713074126
+        },
+        {
+          "feature": "Age",
+          "value": 26,
+          "contribution": 0.04951674209554686
+        }
+      ]
+    },
+    {
+      "id": "1153",
+      "prediction": "Yes",
+      "predictedPositive": true,
+      "probaPositive": 0.91,
+      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 91%). 주요 근거: TotalWorkingYears=0 (기여도 +0.138), MonthlyIncome=1569 (기여도 +0.116), Age=18 (기여도 +0.108), OverTime=Yes (기여도 +0.084), YearsAtCompany=0 (기여도 +0.072).",
+      "topFeatures": [
+        {
+          "feature": "TotalWorkingYears",
+          "value": 0,
+          "contribution": 0.13849539184078224
+        },
+        {
+          "feature": "MonthlyIncome",
+          "value": 1569,
+          "contribution": 0.115808903372288
+        },
+        {
+          "feature": "Age",
+          "value": 18,
+          "contribution": 0.10844551791093139
+        },
+        {
+          "feature": "OverTime",
+          "value": "Yes",
+          "contribution": 0.08351645850568043
+        },
+        {
+          "feature": "YearsAtCompany",
+          "value": 0,
+          "contribution": 0.07204632705228711
+        }
+      ]
+    },
+    {
+      "id": "1311",
+      "prediction": "Yes",
+      "predictedPositive": true,
+      "probaPositive": 0.5467,
+      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 55%). 주요 근거: TotalWorkingYears=0 (기여도 +0.096), Age=18 (기여도 +0.095), MonthlyIncome=1514 (기여도 +0.086), YearsAtCompany=0 (기여도 +0.050), OverTime=No (기여도 -0.036).",
+      "topFeatures": [
+        {
+          "feature": "TotalWorkingYears",
+          "value": 0,
+          "contribution": 0.09619468330495962
+        },
+        {
+          "feature": "Age",
+          "value": 18,
+          "contribution": 0.0953520917154785
+        },
+        {
+          "feature": "MonthlyIncome",
+          "value": 1514,
+          "contribution": 0.08580459591933672
+        },
+        {
+          "feature": "YearsAtCompany",
+          "value": 0,
+          "contribution": 0.04986556642917864
+        },
+        {
+          "feature": "OverTime",
+          "value": "No",
+          "contribution": -0.0358562574843191
+        }
+      ]
+    },
+    {
+      "id": "1332",
+      "prediction": "Yes",
+      "predictedPositive": true,
+      "probaPositive": 0.91,
+      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 91%). 주요 근거: TotalWorkingYears=1 (기여도 +0.139), OverTime=Yes (기여도 +0.111), YearsAtCompany=1 (기여도 +0.082), MonthlyIncome=2439 (기여도 +0.061), DistanceFromHome=24 (기여도 +0.055).",
+      "topFeatures": [
+        {
+          "feature": "TotalWorkingYears",
+          "value": 1,
+          "contribution": 0.138881619404549
+        },
+        {
+          "feature": "OverTime",
+          "value": "Yes",
+          "contribution": 0.11092466707428883
+        },
+        {
+          "feature": "YearsAtCompany",
+          "value": 1,
+          "contribution": 0.08226573352702034
+        },
+        {
+          "feature": "MonthlyIncome",
+          "value": 2439,
+          "contribution": 0.06101114484512959
+        },
+        {
+          "feature": "DistanceFromHome",
+          "value": 24,
+          "contribution": 0.054977798691948306
+        }
+      ]
+    },
+    {
+      "id": "1349",
+      "prediction": "No",
+      "predictedPositive": false,
+      "probaPositive": 0.4333,
+      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 57%). 주요 근거: TotalWorkingYears=1 (기여도 +0.099), OverTime=Yes (기여도 +0.086), YearsAtCompany=1 (기여도 +0.066), Age=26 (기여도 +0.061), YearsWithCurrManager=0 (기여도 +0.044).",
+      "topFeatures": [
+        {
+          "feature": "TotalWorkingYears",
+          "value": 1,
+          "contribution": 0.09941666559100586
+        },
+        {
+          "feature": "OverTime",
+          "value": "Yes",
+          "contribution": 0.08573296843957229
+        },
+        {
+          "feature": "YearsAtCompany",
+          "value": 1,
+          "contribution": 0.0660569227253451
+        },
+        {
+          "feature": "Age",
+          "value": 26,
+          "contribution": 0.06139244145616151
+        },
+        {
+          "feature": "YearsWithCurrManager",
+          "value": 0,
+          "contribution": 0.044273342590290636
+        }
+      ]
+    },
+    {
+      "id": "1365",
+      "prediction": "Yes",
+      "predictedPositive": true,
+      "probaPositive": 0.9033,
+      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 90%). 주요 근거: TotalWorkingYears=1 (기여도 +0.167), MonthlyIncome=1091 (기여도 +0.130), YearsAtCompany=1 (기여도 +0.086), YearsWithCurrManager=0 (기여도 +0.058), Age=29 (기여도 +0.047).",
+      "topFeatures": [
+        {
+          "feature": "TotalWorkingYears",
+          "value": 1,
+          "contribution": 0.1665377515376291
+        },
+        {
+          "feature": "MonthlyIncome",
+          "value": 1091,
+          "contribution": 0.1295320029487884
+        },
+        {
+          "feature": "YearsAtCompany",
+          "value": 1,
+          "contribution": 0.0862196639935751
+        },
+        {
+          "feature": "YearsWithCurrManager",
+          "value": 0,
+          "contribution": 0.05840079007119391
+        },
+        {
+          "feature": "Age",
+          "value": 29,
+          "contribution": 0.04658980708310367
+        }
+      ]
+    },
+    {
+      "id": "1376",
+      "prediction": "No",
+      "predictedPositive": false,
+      "probaPositive": 0.0,
+      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 100%). 주요 근거: OverTime=No (기여도 -0.022), Age=38 (기여도 -0.017), TrainingTimesLastYear=0 (기여도 +0.014), YearsAtCompany=5 (기여도 -0.013), MonthlyIncome=4771 (기여도 -0.013).",
+      "topFeatures": [
+        {
+          "feature": "OverTime",
+          "value": "No",
+          "contribution": -0.02240351215743309
+        },
+        {
+          "feature": "Age",
+          "value": 38,
+          "contribution": -0.017186020356133112
+        },
+        {
+          "feature": "TrainingTimesLastYear",
+          "value": 0,
+          "contribution": 0.01409937927292585
+        },
+        {
+          "feature": "YearsAtCompany",
+          "value": 5,
+          "contribution": -0.012767172265886443
+        },
+        {
+          "feature": "MonthlyIncome",
+          "value": 4771,
+          "contribution": -0.012727415582452562
+        }
+      ]
+    },
+    {
+      "id": "1377",
+      "prediction": "No",
+      "predictedPositive": false,
+      "probaPositive": 0.0,
+      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 100%). 주요 근거: OverTime=No (기여도 -0.019), TotalWorkingYears=28 (기여도 -0.015), JobRole=Research Director (기여도 -0.014), Age=49 (기여도 -0.014), DistanceFromHome=2 (기여도 -0.010).",
+      "topFeatures": [
+        {
+          "feature": "OverTime",
+          "value": "No",
+          "contribution": -0.01945730108694446
+        },
+        {
+          "feature": "TotalWorkingYears",
+          "value": 28,
+          "contribution": -0.014821993731464148
+        },
+        {
+          "feature": "JobRole",
+          "value": "Research Director",
+          "contribution": -0.01413972134091759
+        },
+        {
+          "feature": "Age",
+          "value": 49,
+          "contribution": -0.01358682433229097
+        },
+        {
+          "feature": "DistanceFromHome",
+          "value": 2,
+          "contribution": -0.010031659770688142
+        }
+      ]
+    },
+    {
       "id": "1402",
       "prediction": "Yes",
       "predictedPositive": true,
+      "probaPositive": 0.5233,
       "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 52%). 주요 근거: MonthlyIncome=1129 (기여도 +0.121), TotalWorkingYears=1 (기여도 +0.097), OverTime=Yes (기여도 +0.077), JobInvolvement=1 (기여도 +0.060), YearsWithCurrManager=0 (기여도 +0.045).",
       "topFeatures": [
         {
@@ -331,6 +1087,7 @@
       ]
     }
   ],
+  "baseValue": 0.163,
   "modelQuality": {
     "verdict": "weak",
     "message": "이 모델은 그냥 다수 클래스로 찍는 것보다 나을 게 거의 없어요.",

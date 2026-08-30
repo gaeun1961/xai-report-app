@@ -181,8 +181,10 @@ def sample_for_shap(X, y, display_df, max_rows=SHAP_MAX_ROWS):
 
 
 def compute_shap(model, X: pd.DataFrame):
-    """Compute SHAP values for the positive class plus a ranked feature-
-    importance table."""
+    """Compute SHAP values for the positive class, a ranked feature-importance
+    table, and the model's base value (E[P(positive)] before any feature is
+    considered — the report uses it to explain why the top-5 factors alone
+    don't always match the final prediction)."""
     explainer = shap.TreeExplainer(model)
     raw = explainer.shap_values(X)
 
@@ -192,12 +194,15 @@ def compute_shap(model, X: pd.DataFrame):
         arr = np.asarray(raw)
         shap_values = arr[:, :, 1] if arr.ndim == 3 and arr.shape[2] > 1 else arr
 
+    ev = np.atleast_1d(explainer.expected_value)
+    base_value = float(ev[1] if len(ev) > 1 else ev[0])
+
     feature_importance_df = (
         pd.DataFrame({"feature": X.columns, "importance": np.abs(shap_values).mean(axis=0)})
         .sort_values("importance", ascending=False)
         .reset_index(drop=True)
     )
-    return shap_values, feature_importance_df
+    return shap_values, feature_importance_df, base_value
 
 
 def _pick_case_indices(predictions: np.ndarray, proba_pos: np.ndarray, n_cases: int) -> list:
@@ -247,7 +252,8 @@ def export_report_json(
     positive_label: str = None,
     negative_label: str = None,
     eval_stats: dict = None,
-    n_cases: int = 8,
+    base_value: float = None,
+    n_cases: int = 30,
     top_features_per_case: int = 5,
     top_features_overall: int = 15,
 ):
@@ -297,6 +303,7 @@ def export_report_json(
                 "id": str(display_df.index[idx]),
                 "prediction": prediction_raw,
                 "predictedPositive": predicted_positive,
+                "probaPositive": round(float(proba_pos[idx]), 4),
                 "explanation": explanation,
                 "topFeatures": top_features,
             }
@@ -313,6 +320,9 @@ def export_report_json(
         ],
         "cases": cases,
     }
+
+    if base_value is not None:
+        report["baseValue"] = round(float(base_value), 4)
 
     if eval_stats is not None:
         minority_label = pos_display if eval_stats["minority_is_positive"] else neg_display
