@@ -119,6 +119,7 @@ export default function CaseSelector({
       </div>
       <p className={styles.selectorHint}>
         범위를 45~55%처럼 좁히면 모델이 애매해한 케이스만 볼 수 있어요.
+        <br />이 구간은 모델이 확신이 없는 케이스라, 적중률이 낮은 편이에요.
       </p>
 
       <div className={styles.selectorCount}>{shown.length}개 표시</div>
