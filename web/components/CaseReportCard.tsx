@@ -71,6 +71,27 @@ export default function CaseReportCard({
   const predConfidence = positive ? c.probaPositive! : 1 - c.probaPositive!;
 
   const factors = c.topFeatures;
+
+  // how the top-5 factors' pull compares to everything else
+  const dirOf = (s: number) => (s >= 0 ? posText : negText);
+  const sumTop = factors
+    .slice(0, TOP_N)
+    .reduce((a, f) => a + f.contribution, 0);
+  const sumRest = factors.slice(TOP_N).reduce((a, f) => a + f.contribution, 0);
+  const restRatio = Math.abs(sumTop) > 1e-9 ? Math.abs(sumRest) / Math.abs(sumTop) : 0;
+  let restNote: string;
+  if (factors.length <= TOP_N || restRatio < 0.25) {
+    restNote = `이 ${TOP_N}개 요인이 예측의 대부분을 결정했어요.`;
+  } else if (sumTop >= 0 === sumRest >= 0) {
+    restNote = `이 ${TOP_N}개에 더해 나머지 요인들도 ${dirOf(sumTop)} 쪽으로 함께 작용한 결과예요.`;
+  } else {
+    const top5OnlyPositive = (baseValue ?? 0.5) + sumTop >= 0.5;
+    const flipped = top5OnlyPositive !== positive;
+    restNote = flipped
+      ? `위 ${TOP_N}개는 ${dirOf(sumTop)} 쪽이었지만, 나머지 요인들이 ${dirOf(sumRest)} 쪽으로 더 세게 작용해서 최종 결과가 뒤집혔어요.`
+      : `위 ${TOP_N}개는 ${dirOf(sumTop)} 쪽이었지만, 나머지 요인들이 ${dirOf(sumRest)} 쪽으로도 작용해서 확신을 다소 낮췄어요.`;
+  }
+
   const query = factorQuery.trim().toLowerCase();
   const filtered = query
     ? factors.filter((f) => f.feature.toLowerCase().includes(query))
@@ -121,8 +142,7 @@ export default function CaseReportCard({
           {pct(baseValue!)}인데, 이 케이스의 요인들을 반영하면{" "}
           <b>{pct(c.probaPositive!)}</b>가 됩니다.{" "}
           {c.probaPositive! >= 0.5 ? "50%를 넘어" : "50%에 못 미쳐"} &lsquo;
-          {outcome}&rsquo;으로 예측했어요. 상위 {TOP_N}개 외에도 여러 요인이 조금씩
-          반영된 값이에요.
+          {outcome}&rsquo;으로 예측했어요. {restNote}
         </p>
       )}
 
