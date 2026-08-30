@@ -13,20 +13,29 @@ export default function Home() {
       </p>
 
       <section className={styles.about}>
-        <p>
-          <strong>AI 모델은 결과만 주고 이유는 잘 설명하지 않습니다.</strong>{" "}
-          “이 고객은 이탈”, “이 직원은 퇴사” 같은 판정은 내놓지만, 어떤 정보를
-          근거로 그렇게 봤는지는 블랙박스로 남습니다. 중요한 의사결정에 쓰려면 그
-          근거를 확인할 수 있어야 합니다.
-        </p>
-        <p>
-          <strong>SHAP</strong>은 하나의 예측을 “각 입력 특성이 결과를 얼마나,
-          어느 방향으로 밀었는지”로 분해하는 기법입니다. 이 리포트는 그 값을 사람이
-          읽을 수 있는 문장으로 풀어, 모델의 판단 과정을 그대로 보여줍니다.
-        </p>
+        <div className={styles.aboutBlock}>
+          <p>
+            <strong>AI 모델은 결과만 주고 이유는 잘 설명하지 않습니다.</strong>
+          </p>
+          <p>
+            “이 고객은 이탈”, “이 직원은 퇴사” 같은 판정은 내놓지만, 어떤 정보를
+            근거로 그렇게 봤는지는 블랙박스로 남습니다.
+          </p>
+          <p>중요한 의사결정에 쓰려면 그 근거를 확인할 수 있어야 합니다.</p>
+        </div>
+        <div className={styles.aboutBlock}>
+          <p>
+            <strong>SHAP</strong>은 하나의 예측을 “각 입력 특성이 결과를 얼마나,
+            어느 방향으로 밀었는지”로 분해하는 기법입니다.
+          </p>
+          <p>
+            이 리포트는 그 값을 사람이 읽을 수 있는 문장으로 풀어, 모델의 판단
+            과정을 그대로 보여줍니다.
+          </p>
+        </div>
       </section>
 
-      <h2 className={styles.h2}>예시 리포트</h2>
+      <h2 className={`${styles.h2} ${styles.h2Accent}`}>예시 리포트</h2>
       <div className={styles.cardGrid}>
         {DOMAINS.map((d) => {
           const report = loadReport(d.slug);

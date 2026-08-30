@@ -80,9 +80,11 @@ function ModelBody({ report, domain, selectedId, onSelect }: BodyProps) {
   return (
     <>
       <p className={styles.guide}>
-        이 리포트는 AI가 왜 이렇게 예측했는지 보여줍니다. 각 요인이 예측을 어느
-        쪽으로, 얼마나 강하게 밀었는지 문장으로 풀어서 설명해요. 원래 숫자가
-        궁금하면 케이스별 리포트에서 “숫자로 보기”를 누르면 됩니다.
+        이 리포트는 AI가 왜 이렇게 예측했는지 보여줍니다.
+        <br />각 요인이 예측을 어느 쪽으로, 얼마나 강하게 밀었는지 문장으로 풀어서
+        설명해요.
+        <br />원래 숫자가 궁금하면 케이스별 리포트에서 “숫자로 보기”를 누르면
+        됩니다.
       </p>
 
       <div className={styles.reportGrid}>

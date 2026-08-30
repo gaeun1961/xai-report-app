@@ -60,12 +60,21 @@
   font-size: 28px;
   font-weight: 700;
   letter-spacing: -0.02em;
+  border-left: 4px solid var(--accent);
+  padding-left: 14px;
 }
 
 .h2 {
   font-size: 18px;
   font-weight: 600;
   margin-top: 16px;
+  border-left: 3px solid var(--accent);
+  padding-left: 10px;
+  color: var(--accent-strong);
+}
+
+/* kept for callers that still pass it; same as .h2 now */
+.h2Accent {
 }
 
 .lead {
@@ -76,18 +85,29 @@
 .about {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 14px;
   padding: 16px 20px;
   border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
   border-radius: 12px;
   background: var(--surface);
   font-size: 13px;
-  line-height: 1.75;
+  line-height: 1.7;
   color: var(--text-muted);
 }
 
+.aboutBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.about p {
+  margin: 0;
+}
+
 .about strong {
-  color: var(--foreground);
+  color: var(--accent-strong);
   font-weight: 700;
 }
 
@@ -123,8 +143,9 @@
 }
 
 .tabActive {
-  color: var(--foreground);
+  color: var(--accent-strong);
   border-bottom-color: var(--accent);
+  border-bottom-width: 3px;
 }
 
 .tabDisabled {
@@ -207,6 +228,7 @@
   font-size: 40px;
   font-weight: 700;
   letter-spacing: -0.03em;
+  color: var(--accent-strong);
 }
 
 .accuracyRow {
@@ -300,7 +322,7 @@
   font-size: 28px;
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: var(--foreground);
+  color: var(--accent-strong);
 }
 
 .domainAccLabel {
@@ -557,8 +579,15 @@
 }
 
 .explanation {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
   line-height: 1.7;
   font-size: 14px;
+}
+
+.explanation p {
+  margin: 0;
 }
 
 .baseline {

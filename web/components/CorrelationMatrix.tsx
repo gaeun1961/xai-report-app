@@ -20,7 +20,8 @@ export default function CorrelationMatrix({ data, domain }: Props) {
     <section className={styles.section}>
       <p className={styles.guide}>
         모델과는 무관하게, 데이터 안에서 두 컬럼이 얼마나 같이 움직이는지
-        보여줘요. 초록이 진할수록 같은 방향으로(양의 상관), 주황이 진할수록 반대
+        보여줘요.
+        <br />초록이 진할수록 같은 방향으로(양의 상관), 주황이 진할수록 반대
         방향으로(음의 상관) 움직입니다.
       </p>
 
