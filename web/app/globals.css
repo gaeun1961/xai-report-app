@@ -3,7 +3,7 @@
   --foreground: #2b2a27; /* body text (neutral dark gray) */
   --text-muted: #6b6a64; /* secondary text, disabled states */
   --border: #e5e3dc; /* card borders, dividers, bar track */
-  --surface: #f1ecdf; /* ivory: sidebar, callout boxes, inactive chips — distinct from #fff */
+  --surface: #f7f5ee; /* ivory: sidebar, callout boxes, inactive chips — distinct from #fff, not yellow */
   --accent: #1d9e75; /* green: active nav, bar fill, good badge, active chip */
   --accent-strong: #0f7a58; /* darker green for accent text */
   --warn: #d97706; /* amber: "주의" badge */
@@ -55,5 +55,9 @@ a {
 @media (max-width: 640px) {
   .shell {
     flex-direction: column;
+    /* column flex + align-items: flex-start (from the base rule) would let
+       .content shrink to its content width and overflow the viewport —
+       stretch it to full width instead */
+    align-items: stretch;
   }
 }

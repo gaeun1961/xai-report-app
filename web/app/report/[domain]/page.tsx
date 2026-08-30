@@ -105,9 +105,11 @@ function ReportBody({ report, domain, selectedId, onSelect }: BodyProps) {
           <section className={styles.section}>
             <h2 className={styles.h2}>케이스별 리포트</h2>
             <CaseSelector
-              ids={report.cases.map((c) => c.id)}
+              cases={report.cases}
               selectedId={selected.id}
               onSelect={onSelect}
+              positiveLabel={positiveLabel}
+              negativeLabel={negativeLabel}
             />
             <CaseReportCard
               case={selected}
