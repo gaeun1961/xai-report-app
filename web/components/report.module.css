@@ -12,7 +12,29 @@
 }
 
 .report {
-  max-width: 720px;
+  max-width: 1000px;
+}
+
+/* report: 2-column split (model summary | case report) */
+.reportGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: 32px;
+  align-items: start;
+}
+
+.reportCol {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+@media (max-width: 640px) {
+  .reportGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
 }
 
 .h1 {

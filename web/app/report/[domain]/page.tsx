@@ -62,50 +62,56 @@ function ReportBody({ report, selectedId, onSelect }: BodyProps) {
         궁금하면 케이스별 리포트에서 “숫자로 보기”를 누르면 됩니다.
       </p>
 
-      <section className={styles.section}>
-        <h2 className={styles.h2}>전체 정확도</h2>
-        <div className={styles.accuracyRow}>
-          <p className={styles.accuracy}>
-            {(report.modelAccuracy * 100).toFixed(1)}%
-          </p>
-          {report.modelQuality && (
-            <span
-              className={`${styles.qualityBadge} ${
-                report.modelQuality.verdict === "good"
-                  ? styles.qualityGood
-                  : styles.qualityWeak
-              }`}
-            >
-              {report.modelQuality.verdict === "good" ? "양호" : "주의"}
-            </span>
-          )}
+      <div className={styles.reportGrid}>
+        <div className={styles.reportCol}>
+          <section className={styles.section}>
+            <h2 className={styles.h2}>전체 정확도</h2>
+            <div className={styles.accuracyRow}>
+              <p className={styles.accuracy}>
+                {(report.modelAccuracy * 100).toFixed(1)}%
+              </p>
+              {report.modelQuality && (
+                <span
+                  className={`${styles.qualityBadge} ${
+                    report.modelQuality.verdict === "good"
+                      ? styles.qualityGood
+                      : styles.qualityWeak
+                  }`}
+                >
+                  {report.modelQuality.verdict === "good" ? "양호" : "주의"}
+                </span>
+              )}
+            </div>
+            {report.modelQuality && (
+              <p className={styles.qualityMessage}>
+                {report.modelQuality.message} (다수 클래스로만 찍었을 때 정확도{" "}
+                {(report.modelQuality.baselineAccuracy * 100).toFixed(1)}%)
+              </p>
+            )}
+          </section>
+
+          <section className={styles.section}>
+            <h2 className={styles.h2}>특성 중요도</h2>
+            <FeatureImportanceChart items={report.featureImportance} />
+          </section>
         </div>
-        {report.modelQuality && (
-          <p className={styles.qualityMessage}>
-            {report.modelQuality.message} (다수 클래스로만 찍었을 때 정확도{" "}
-            {(report.modelQuality.baselineAccuracy * 100).toFixed(1)}%)
-          </p>
-        )}
-      </section>
 
-      <section className={styles.section}>
-        <h2 className={styles.h2}>특성 중요도</h2>
-        <FeatureImportanceChart items={report.featureImportance} />
-      </section>
-
-      <section className={styles.section}>
-        <h2 className={styles.h2}>케이스별 리포트</h2>
-        <CaseSelector
-          ids={report.cases.map((c) => c.id)}
-          selectedId={selected.id}
-          onSelect={onSelect}
-        />
-        <CaseReportCard
-          case={selected}
-          positiveLabel={positiveLabel}
-          negativeLabel={negativeLabel}
-        />
-      </section>
+        <div className={styles.reportCol}>
+          <section className={styles.section}>
+            <h2 className={styles.h2}>케이스별 리포트</h2>
+            <CaseSelector
+              ids={report.cases.map((c) => c.id)}
+              selectedId={selected.id}
+              onSelect={onSelect}
+            />
+            <CaseReportCard
+              case={selected}
+              positiveLabel={positiveLabel}
+              negativeLabel={negativeLabel}
+            />
+          </section>
+        </div>
+      </div>
     </>
   );
 }
