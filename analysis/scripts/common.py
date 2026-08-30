@@ -258,7 +258,6 @@ def export_report_json(
     eval_stats: dict = None,
     base_value: float = None,
     n_cases: int = 30,
-    top_features_per_case: int = 5,
     top_features_overall: int = 15,
     corr_max_cols: int = 12,
 ):
@@ -283,12 +282,14 @@ def export_report_json(
     cases = []
     for idx in case_indices:
         row_shap = shap_values[idx]
-        ranked = np.argsort(-np.abs(row_shap))[:top_features_per_case]
+        # every feature, |contribution| descending — the frontend shows the
+        # top few and lets the user search the rest
+        ranked = np.argsort(-np.abs(row_shap))
         top_features = [
             {
                 "feature": feature_names[j],
                 "value": display_df.iloc[idx][feature_names[j]],
-                "contribution": float(row_shap[j]),
+                "contribution": round(float(row_shap[j]), 4),
             }
             for j in ranked
         ]
@@ -299,12 +300,9 @@ def export_report_json(
         actual_raw = pos_raw if actual_positive else neg_raw
         is_correct = actual_positive == predicted_positive
         confidence = proba_pos[idx] if predicted_positive else 1 - proba_pos[idx]
-        feature_summary = ", ".join(
-            f"{tf['feature']}={tf['value']} (기여도 {tf['contribution']:+.3f})" for tf in top_features
-        )
         explanation = (
             f"모델은 이 케이스를 '{prediction_display}'(으)로 예측했습니다 "
-            f"(확신도 {confidence * 100:.0f}%). 주요 근거: {feature_summary}."
+            f"(확신도 {confidence * 100:.0f}%)."
         )
         cases.append(
             {
