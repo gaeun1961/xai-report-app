@@ -10,6 +10,7 @@ type Props = {
   domain: string;
   positiveLabel?: string;
   negativeLabel?: string;
+  baseValue?: number;
 };
 
 function FeatureName({ domain, name }: { domain: string; name: string }) {
@@ -35,6 +36,7 @@ export default function CaseReportCard({
   domain,
   positiveLabel,
   negativeLabel,
+  baseValue,
 }: Props) {
   const [showNumbers, setShowNumbers] = useState(false);
   const positive = c.predictedPositive;
@@ -42,6 +44,10 @@ export default function CaseReportCard({
   const posText = positiveLabel ?? c.prediction;
   const negText = negativeLabel ?? c.prediction;
   const outcome = positive ? posText : negText;
+
+  const pct = (n: number) => `${Math.round(n * 100)}%`;
+  const showBaseline =
+    baseValue !== undefined && c.probaPositive !== undefined;
 
   return (
     <article className={styles.card}>
@@ -55,6 +61,17 @@ export default function CaseReportCard({
       </header>
 
       <p className={styles.explanation}>{c.explanation}</p>
+
+      {showBaseline && (
+        <p className={styles.baseline}>
+          이 모델이 기본적으로 보는 &lsquo;{posText}&rsquo; 확률은{" "}
+          {pct(baseValue!)}인데, 이 케이스의 요인들을 반영하면{" "}
+          <b>{pct(c.probaPositive!)}</b>가 됩니다.{" "}
+          {c.probaPositive! >= 0.5 ? "50%를 넘어" : "50%에 못 미쳐"} &lsquo;
+          {outcome}&rsquo;으로 예측했어요. 위 {c.topFeatures.length}개 외에도 여러
+          요인이 조금씩 반영된 값이에요.
+        </p>
+      )}
 
       <div className={styles.contribHead}>
         <span>각 요인이 예측에 준 영향</span>

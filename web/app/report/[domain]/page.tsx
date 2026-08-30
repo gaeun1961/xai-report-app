@@ -114,6 +114,7 @@ function ReportBody({ report, domain, selectedId, onSelect }: BodyProps) {
               domain={domain}
               positiveLabel={positiveLabel}
               negativeLabel={negativeLabel}
+              baseValue={report.baseValue}
             />
           </section>
         </div>

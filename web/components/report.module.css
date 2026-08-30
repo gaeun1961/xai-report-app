@@ -314,10 +314,32 @@
 }
 
 /* case selector */
+.selectorWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.selectorSearch {
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--background);
+  color: inherit;
+  font-size: 13px;
+}
+
 .selector {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+  max-height: 132px;
+  overflow-y: auto;
+}
+
+.selectorEmpty {
+  font-size: 13px;
+  color: var(--text-muted);
 }
 
 .selectorBtn {
@@ -376,6 +398,19 @@
 .explanation {
   line-height: 1.7;
   font-size: 14px;
+}
+
+.baseline {
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: var(--surface);
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-muted);
+}
+
+.baseline b {
+  color: var(--foreground);
 }
 
 .guide {
