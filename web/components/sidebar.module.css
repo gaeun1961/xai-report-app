@@ -3,8 +3,8 @@
   width: 170px;
   height: 100dvh;
   padding: 24px 12px;
-  background: var(--surface);
-  border-right: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+  background: var(--background);
+  border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -18,7 +18,7 @@
   font-size: 15px;
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: var(--accent-strong);
+  color: var(--foreground);
   padding: 0 8px;
   line-height: 1.4;
 }
@@ -33,12 +33,12 @@
   padding: 8px 10px;
   border-radius: 8px;
   font-size: 14px;
-  color: var(--accent-strong);
+  color: var(--foreground);
   transition: background 0.12s;
 }
 
 .item:hover {
-  background: color-mix(in srgb, var(--accent) 15%, transparent);
+  background: var(--surface);
 }
 
 .itemActive {
@@ -59,7 +59,7 @@
     position: static;
     overflow-y: visible;
     border-right: none;
-    border-bottom: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+    border-bottom: 1px solid var(--border);
   }
 
   .nav {

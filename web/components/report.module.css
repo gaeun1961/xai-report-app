@@ -37,7 +37,7 @@
 .tabs {
   display: flex;
   gap: 4px;
-  border-bottom: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+  border-bottom: 1px solid var(--border);
 }
 
 .tab {
@@ -49,12 +49,12 @@
 }
 
 .tabActive {
-  color: var(--accent-strong);
+  color: var(--foreground);
   border-bottom-color: var(--accent);
 }
 
 .tabDisabled {
-  color: color-mix(in srgb, currentColor 40%, transparent);
+  color: var(--text-muted);
   cursor: not-allowed;
 }
 
@@ -64,8 +64,8 @@
   font-weight: 600;
   padding: 1px 6px;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--accent) 15%, transparent);
-  color: var(--accent-strong);
+  background: var(--surface);
+  color: var(--text-muted);
 }
 
 .section {
@@ -99,14 +99,14 @@
 }
 
 .qualityWeak {
-  background: color-mix(in srgb, #d97706 20%, transparent);
+  background: color-mix(in srgb, var(--warn) 20%, transparent);
   color: #b45309;
 }
 
 .qualityMessage {
   font-size: 13px;
   line-height: 1.5;
-  color: color-mix(in srgb, currentColor 70%, transparent);
+  color: var(--text-muted);
 }
 
 /* domain card */
@@ -250,7 +250,7 @@
   background: var(--surface);
   font-size: 13px;
   line-height: 1.6;
-  color: var(--accent-strong);
+  color: var(--text-muted);
 }
 
 .contribHead {
