@@ -1,11 +1,40 @@
 .landing,
 .report {
-  max-width: 720px;
   margin: 0 auto;
   padding: 48px 24px 80px;
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+.landing {
+  max-width: 960px;
+}
+
+.report {
+  max-width: 1000px;
+}
+
+/* report: 2-column split (model summary | case report) */
+.reportGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: 32px;
+  align-items: start;
+}
+
+.reportCol {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+@media (max-width: 640px) {
+  .reportGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
 }
 
 .h1 {
@@ -26,18 +55,18 @@
 }
 
 .note {
-  margin-top: 24px;
+  margin-top: 8px;
   padding: 12px 16px;
-  border: 1px dashed color-mix(in srgb, currentColor 30%, transparent);
+  border: 1px dashed var(--border);
   border-radius: 8px;
   font-size: 14px;
-  color: color-mix(in srgb, currentColor 60%, transparent);
+  color: var(--text-muted);
 }
 
 .tabs {
   display: flex;
   gap: 4px;
-  border-bottom: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+  border-bottom: 1px solid var(--border);
 }
 
 .tab {
@@ -49,12 +78,12 @@
 }
 
 .tabActive {
-  color: var(--accent-strong);
+  color: var(--foreground);
   border-bottom-color: var(--accent);
 }
 
 .tabDisabled {
-  color: color-mix(in srgb, currentColor 40%, transparent);
+  color: var(--text-muted);
   cursor: not-allowed;
 }
 
@@ -64,8 +93,8 @@
   font-weight: 600;
   padding: 1px 6px;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--accent) 15%, transparent);
-  color: var(--accent-strong);
+  background: var(--surface);
+  color: var(--text-muted);
 }
 
 .section {
@@ -99,45 +128,89 @@
 }
 
 .qualityWeak {
-  background: color-mix(in srgb, #d97706 20%, transparent);
+  background: color-mix(in srgb, var(--warn) 20%, transparent);
   color: #b45309;
 }
 
 .qualityMessage {
   font-size: 13px;
   line-height: 1.5;
-  color: color-mix(in srgb, currentColor 70%, transparent);
+  color: var(--text-muted);
 }
 
-/* domain card */
+/* domain card grid (landing) */
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 4px;
+}
+
+@media (max-width: 800px) {
+  .cardGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .domainCard {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
   padding: 20px;
-  border: 1px solid color-mix(in srgb, currentColor 15%, transparent);
+  border: 1px solid var(--border);
   border-radius: 12px;
   transition: border-color 0.15s;
 }
 
 .domainCard:hover {
-  border-color: color-mix(in srgb, currentColor 40%, transparent);
+  border-color: var(--accent);
+}
+
+.domainCardTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
 }
 
 .domainTitle {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
 }
 
 .domainDesc {
-  margin: 6px 0 12px;
-  font-size: 14px;
-  color: color-mix(in srgb, currentColor 65%, transparent);
+  flex: 1;
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-muted);
   line-height: 1.5;
 }
 
-.domainAcc {
+.domainAccBlock {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 4px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.domainAccNum {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--foreground);
+}
+
+.domainAccLabel {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.domainAccPending {
   font-size: 13px;
-  font-weight: 600;
-  color: var(--accent);
+  color: var(--text-muted);
 }
 
 /* feature importance chart */
@@ -250,7 +323,7 @@
   background: var(--surface);
   font-size: 13px;
   line-height: 1.6;
-  color: var(--accent-strong);
+  color: var(--text-muted);
 }
 
 .contribHead {
