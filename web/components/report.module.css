@@ -240,15 +240,17 @@
 
 .chartRow {
   display: grid;
-  grid-template-columns: 80px 1fr 56px;
+  grid-template-columns: 160px minmax(0, 1fr) 44px;
   align-items: center;
   gap: 10px;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .chartLabel {
   text-align: right;
-  color: color-mix(in srgb, currentColor 70%, transparent);
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+  color: var(--text-muted);
 }
 
 .chartTrack {
@@ -364,26 +366,35 @@
 
 .contribSentence {
   font-size: 13px;
-  line-height: 1.6;
+  line-height: 1.65;
+  text-wrap: pretty;
+}
+
+.contribName {
+  font-weight: 700;
+}
+
+.contribVal {
+  color: var(--text-muted);
 }
 
 .contribList {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 6px;
 }
 
 .contribRow {
   display: flex;
   justify-content: space-between;
+  gap: 12px;
   font-size: 13px;
-  padding: 6px 0;
-  border-top: 1px solid color-mix(in srgb, currentColor 10%, transparent);
+  padding: 10px 0;
+  border-top: 1px solid var(--border);
 }
 
 .contribFeature {
-  color: color-mix(in srgb, currentColor 75%, transparent);
+  color: var(--text-muted);
 }
 
 .contribValue {

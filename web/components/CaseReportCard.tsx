@@ -73,8 +73,9 @@ export default function CaseReportCard({
                 </>
               ) : (
                 <span className={styles.contribSentence}>
-                  『{f.feature} = {f.value}』 항목이{" "}
-                  <b className={up ? styles.up : styles.down}>{dir}</b> 쪽으로{" "}
+                  <b className={styles.contribName}>{f.feature}</b>
+                  <span className={styles.contribVal}> ({f.value})</span> —{" "}
+                  <b className={up ? styles.up : styles.down}>{dir}</b> 예측 쪽으로{" "}
                   {strengthWord(f.contribution)} 작용했어요
                 </span>
               )}
