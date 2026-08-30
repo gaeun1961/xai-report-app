@@ -74,32 +74,157 @@
       "actualLabel": "No",
       "actualPositive": false,
       "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 100%). 주요 근거: StockOptionLevel=2 (기여도 -0.023), OverTime=No (기여도 -0.022), Age=36 (기여도 -0.020), NumCompaniesWorked=6 (기여도 +0.019), DistanceFromHome=27 (기여도 +0.018).",
+      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 100%).",
       "topFeatures": [
         {
           "feature": "StockOptionLevel",
           "value": 2,
-          "contribution": -0.022624705028757398
+          "contribution": -0.0226
         },
         {
           "feature": "OverTime",
           "value": "No",
-          "contribution": -0.022185434763409943
+          "contribution": -0.0222
         },
         {
           "feature": "Age",
           "value": 36,
-          "contribution": -0.02025803289810331
+          "contribution": -0.0203
         },
         {
           "feature": "NumCompaniesWorked",
           "value": 6,
-          "contribution": 0.01863634118736836
+          "contribution": 0.0186
         },
         {
           "feature": "DistanceFromHome",
           "value": 27,
-          "contribution": 0.017976087376511938
+          "contribution": 0.018
+        },
+        {
+          "feature": "TotalWorkingYears",
+          "value": 17,
+          "contribution": -0.0157
+        },
+        {
+          "feature": "DailyRate",
+          "value": 1299,
+          "contribution": -0.015
+        },
+        {
+          "feature": "MonthlyIncome",
+          "value": 5237,
+          "contribution": -0.0124
+        },
+        {
+          "feature": "YearsAtCompany",
+          "value": 7,
+          "contribution": -0.0116
+        },
+        {
+          "feature": "JobRole",
+          "value": "Healthcare Representative",
+          "contribution": -0.0115
+        },
+        {
+          "feature": "JobLevel",
+          "value": 2,
+          "contribution": -0.0103
+        },
+        {
+          "feature": "EnvironmentSatisfaction",
+          "value": 3,
+          "contribution": -0.0088
+        },
+        {
+          "feature": "YearsInCurrentRole",
+          "value": 7,
+          "contribution": -0.0088
+        },
+        {
+          "feature": "YearsSinceLastPromotion",
+          "value": 7,
+          "contribution": 0.0079
+        },
+        {
+          "feature": "YearsWithCurrManager",
+          "value": 7,
+          "contribution": -0.0077
+        },
+        {
+          "feature": "MaritalStatus",
+          "value": "Married",
+          "contribution": -0.0069
+        },
+        {
+          "feature": "JobInvolvement",
+          "value": 3,
+          "contribution": -0.0063
+        },
+        {
+          "feature": "Department",
+          "value": "Research & Development",
+          "contribution": -0.006
+        },
+        {
+          "feature": "JobSatisfaction",
+          "value": 3,
+          "contribution": -0.0044
+        },
+        {
+          "feature": "MonthlyRate",
+          "value": 16577,
+          "contribution": -0.0043
+        },
+        {
+          "feature": "PercentSalaryHike",
+          "value": 13,
+          "contribution": -0.0037
+        },
+        {
+          "feature": "HourlyRate",
+          "value": 94,
+          "contribution": 0.003
+        },
+        {
+          "feature": "EducationField",
+          "value": "Medical",
+          "contribution": -0.003
+        },
+        {
+          "feature": "TrainingTimesLastYear",
+          "value": 3,
+          "contribution": -0.0029
+        },
+        {
+          "feature": "BusinessTravel",
+          "value": "Travel_Rarely",
+          "contribution": -0.0027
+        },
+        {
+          "feature": "WorkLifeBalance",
+          "value": 2,
+          "contribution": 0.0017
+        },
+        {
+          "feature": "RelationshipSatisfaction",
+          "value": 2,
+          "contribution": -0.0012
+        },
+        {
+          "feature": "Gender",
+          "value": "Male",
+          "contribution": 0.0008
+        },
+        {
+          "feature": "Education",
+          "value": 3,
+          "contribution": -0.0007
+        },
+        {
+          "feature": "PerformanceRating",
+          "value": 3,
+          "contribution": -0.0006
         }
       ]
     },
@@ -111,32 +236,157 @@
       "actualLabel": "No",
       "actualPositive": false,
       "isCorrect": false,
-      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 53%). 주요 근거: TotalWorkingYears=1 (기여도 +0.120), Age=22 (기여도 +0.099), OverTime=Yes (기여도 +0.073), YearsAtCompany=1 (기여도 +0.061), YearsWithCurrManager=0 (기여도 +0.047).",
+      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 53%).",
       "topFeatures": [
         {
           "feature": "TotalWorkingYears",
           "value": 1,
-          "contribution": 0.11989397510182635
+          "contribution": 0.1199
         },
         {
           "feature": "Age",
           "value": 22,
-          "contribution": 0.09899338805611359
+          "contribution": 0.099
         },
         {
           "feature": "OverTime",
           "value": "Yes",
-          "contribution": 0.07276020205252068
+          "contribution": 0.0728
         },
         {
           "feature": "YearsAtCompany",
           "value": 1,
-          "contribution": 0.06125571443470108
+          "contribution": 0.0613
         },
         {
           "feature": "YearsWithCurrManager",
           "value": 0,
-          "contribution": 0.0471246574904983
+          "contribution": 0.0471
+        },
+        {
+          "feature": "DistanceFromHome",
+          "value": 16,
+          "contribution": 0.035
+        },
+        {
+          "feature": "StockOptionLevel",
+          "value": 2,
+          "contribution": -0.0286
+        },
+        {
+          "feature": "MaritalStatus",
+          "value": "Divorced",
+          "contribution": -0.0235
+        },
+        {
+          "feature": "JobLevel",
+          "value": 1,
+          "contribution": 0.0218
+        },
+        {
+          "feature": "JobSatisfaction",
+          "value": 4,
+          "contribution": -0.0187
+        },
+        {
+          "feature": "YearsInCurrentRole",
+          "value": 0,
+          "contribution": 0.0156
+        },
+        {
+          "feature": "DailyRate",
+          "value": 1123,
+          "contribution": -0.0147
+        },
+        {
+          "feature": "EnvironmentSatisfaction",
+          "value": 4,
+          "contribution": -0.0128
+        },
+        {
+          "feature": "JobRole",
+          "value": "Laboratory Technician",
+          "contribution": 0.0127
+        },
+        {
+          "feature": "JobInvolvement",
+          "value": 4,
+          "contribution": -0.0093
+        },
+        {
+          "feature": "BusinessTravel",
+          "value": "Non-Travel",
+          "contribution": -0.0078
+        },
+        {
+          "feature": "RelationshipSatisfaction",
+          "value": 2,
+          "contribution": 0.0067
+        },
+        {
+          "feature": "MonthlyIncome",
+          "value": 2935,
+          "contribution": -0.0064
+        },
+        {
+          "feature": "MonthlyRate",
+          "value": 7324,
+          "contribution": -0.0053
+        },
+        {
+          "feature": "NumCompaniesWorked",
+          "value": 1,
+          "contribution": -0.0031
+        },
+        {
+          "feature": "TrainingTimesLastYear",
+          "value": 2,
+          "contribution": 0.0027
+        },
+        {
+          "feature": "WorkLifeBalance",
+          "value": 2,
+          "contribution": 0.0023
+        },
+        {
+          "feature": "HourlyRate",
+          "value": 96,
+          "contribution": 0.0022
+        },
+        {
+          "feature": "Department",
+          "value": "Research & Development",
+          "contribution": -0.0019
+        },
+        {
+          "feature": "PerformanceRating",
+          "value": 3,
+          "contribution": -0.0009
+        },
+        {
+          "feature": "Education",
+          "value": 2,
+          "contribution": 0.0007
+        },
+        {
+          "feature": "PercentSalaryHike",
+          "value": 13,
+          "contribution": -0.0004
+        },
+        {
+          "feature": "YearsSinceLastPromotion",
+          "value": 0,
+          "contribution": 0.0004
+        },
+        {
+          "feature": "EducationField",
+          "value": "Medical",
+          "contribution": 0.0003
+        },
+        {
+          "feature": "Gender",
+          "value": "Male",
+          "contribution": 0.0
         }
       ]
     },
@@ -148,32 +398,157 @@
       "actualLabel": "Yes",
       "actualPositive": true,
       "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 93%). 주요 근거: TotalWorkingYears=0 (기여도 +0.139), MonthlyIncome=1675 (기여도 +0.108), Age=19 (기여도 +0.093), OverTime=Yes (기여도 +0.081), YearsAtCompany=0 (기여도 +0.073).",
+      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 93%).",
       "topFeatures": [
         {
           "feature": "TotalWorkingYears",
           "value": 0,
-          "contribution": 0.1388830093909399
+          "contribution": 0.1389
         },
         {
           "feature": "MonthlyIncome",
           "value": 1675,
-          "contribution": 0.10811478765840654
+          "contribution": 0.1081
         },
         {
           "feature": "Age",
           "value": 19,
-          "contribution": 0.09316003437942624
+          "contribution": 0.0932
         },
         {
           "feature": "OverTime",
           "value": "Yes",
-          "contribution": 0.08122838302840635
+          "contribution": 0.0812
         },
         {
           "feature": "YearsAtCompany",
           "value": 0,
-          "contribution": 0.07324797837996133
+          "contribution": 0.0732
+        },
+        {
+          "feature": "YearsWithCurrManager",
+          "value": 0,
+          "contribution": 0.0454
+        },
+        {
+          "feature": "StockOptionLevel",
+          "value": 0,
+          "contribution": 0.0312
+        },
+        {
+          "feature": "YearsInCurrentRole",
+          "value": 0,
+          "contribution": 0.031
+        },
+        {
+          "feature": "DistanceFromHome",
+          "value": 22,
+          "contribution": 0.0286
+        },
+        {
+          "feature": "MonthlyRate",
+          "value": 26820,
+          "contribution": 0.0283
+        },
+        {
+          "feature": "JobLevel",
+          "value": 1,
+          "contribution": 0.0259
+        },
+        {
+          "feature": "MaritalStatus",
+          "value": "Single",
+          "contribution": 0.025
+        },
+        {
+          "feature": "EducationField",
+          "value": "Marketing",
+          "contribution": 0.0223
+        },
+        {
+          "feature": "JobRole",
+          "value": "Sales Representative",
+          "contribution": 0.0174
+        },
+        {
+          "feature": "HourlyRate",
+          "value": 50,
+          "contribution": 0.0135
+        },
+        {
+          "feature": "RelationshipSatisfaction",
+          "value": 4,
+          "contribution": -0.0129
+        },
+        {
+          "feature": "DailyRate",
+          "value": 528,
+          "contribution": 0.0124
+        },
+        {
+          "feature": "Department",
+          "value": "Sales",
+          "contribution": 0.0107
+        },
+        {
+          "feature": "EnvironmentSatisfaction",
+          "value": 4,
+          "contribution": -0.0105
+        },
+        {
+          "feature": "TrainingTimesLastYear",
+          "value": 2,
+          "contribution": 0.006
+        },
+        {
+          "feature": "JobInvolvement",
+          "value": 3,
+          "contribution": -0.0053
+        },
+        {
+          "feature": "WorkLifeBalance",
+          "value": 2,
+          "contribution": 0.004
+        },
+        {
+          "feature": "Education",
+          "value": 1,
+          "contribution": -0.0032
+        },
+        {
+          "feature": "PercentSalaryHike",
+          "value": 19,
+          "contribution": -0.0022
+        },
+        {
+          "feature": "JobSatisfaction",
+          "value": 3,
+          "contribution": 0.0017
+        },
+        {
+          "feature": "YearsSinceLastPromotion",
+          "value": 0,
+          "contribution": 0.0015
+        },
+        {
+          "feature": "BusinessTravel",
+          "value": "Travel_Rarely",
+          "contribution": 0.0008
+        },
+        {
+          "feature": "NumCompaniesWorked",
+          "value": 1,
+          "contribution": 0.0007
+        },
+        {
+          "feature": "Gender",
+          "value": "Male",
+          "contribution": 0.0004
+        },
+        {
+          "feature": "PerformanceRating",
+          "value": 3,
+          "contribution": -0.0002
         }
       ]
     },
@@ -185,32 +560,157 @@
       "actualLabel": "Yes",
       "actualPositive": true,
       "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 90%). 주요 근거: TotalWorkingYears=1 (기여도 +0.145), Age=19 (기여도 +0.100), YearsAtCompany=0 (기여도 +0.073), JobInvolvement=1 (기여도 +0.065), MonthlyIncome=2325 (기여도 +0.054).",
+      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 90%).",
       "topFeatures": [
         {
           "feature": "TotalWorkingYears",
           "value": 1,
-          "contribution": 0.14526091485133072
+          "contribution": 0.1453
         },
         {
           "feature": "Age",
           "value": 19,
-          "contribution": 0.09989110670519878
+          "contribution": 0.0999
         },
         {
           "feature": "YearsAtCompany",
           "value": 0,
-          "contribution": 0.07317406933139384
+          "contribution": 0.0732
         },
         {
           "feature": "JobInvolvement",
           "value": 1,
-          "contribution": 0.06473178962090448
+          "contribution": 0.0647
         },
         {
           "feature": "MonthlyIncome",
           "value": 2325,
-          "contribution": 0.054370920861805346
+          "contribution": 0.0544
+        },
+        {
+          "feature": "YearsWithCurrManager",
+          "value": 0,
+          "contribution": 0.0483
+        },
+        {
+          "feature": "EducationField",
+          "value": "Technical Degree",
+          "contribution": 0.0341
+        },
+        {
+          "feature": "JobSatisfaction",
+          "value": 1,
+          "contribution": 0.0304
+        },
+        {
+          "feature": "YearsInCurrentRole",
+          "value": 0,
+          "contribution": 0.0299
+        },
+        {
+          "feature": "StockOptionLevel",
+          "value": 0,
+          "contribution": 0.0294
+        },
+        {
+          "feature": "MaritalStatus",
+          "value": "Single",
+          "contribution": 0.0287
+        },
+        {
+          "feature": "HourlyRate",
+          "value": 100,
+          "contribution": 0.0271
+        },
+        {
+          "feature": "OverTime",
+          "value": "No",
+          "contribution": -0.0236
+        },
+        {
+          "feature": "JobRole",
+          "value": "Sales Representative",
+          "contribution": 0.0217
+        },
+        {
+          "feature": "RelationshipSatisfaction",
+          "value": 1,
+          "contribution": 0.0215
+        },
+        {
+          "feature": "JobLevel",
+          "value": 1,
+          "contribution": 0.0187
+        },
+        {
+          "feature": "BusinessTravel",
+          "value": "Travel_Frequently",
+          "contribution": 0.0179
+        },
+        {
+          "feature": "DistanceFromHome",
+          "value": 1,
+          "contribution": -0.0168
+        },
+        {
+          "feature": "Department",
+          "value": "Sales",
+          "contribution": 0.0155
+        },
+        {
+          "feature": "NumCompaniesWorked",
+          "value": 0,
+          "contribution": -0.0088
+        },
+        {
+          "feature": "DailyRate",
+          "value": 602,
+          "contribution": 0.0074
+        },
+        {
+          "feature": "MonthlyRate",
+          "value": 20989,
+          "contribution": 0.0071
+        },
+        {
+          "feature": "EnvironmentSatisfaction",
+          "value": 3,
+          "contribution": -0.0065
+        },
+        {
+          "feature": "PerformanceRating",
+          "value": 4,
+          "contribution": 0.005
+        },
+        {
+          "feature": "Gender",
+          "value": "Female",
+          "contribution": 0.0044
+        },
+        {
+          "feature": "WorkLifeBalance",
+          "value": 4,
+          "contribution": 0.0037
+        },
+        {
+          "feature": "PercentSalaryHike",
+          "value": 21,
+          "contribution": 0.0031
+        },
+        {
+          "feature": "Education",
+          "value": 1,
+          "contribution": -0.0015
+        },
+        {
+          "feature": "TrainingTimesLastYear",
+          "value": 5,
+          "contribution": -0.0002
+        },
+        {
+          "feature": "YearsSinceLastPromotion",
+          "value": 0,
+          "contribution": -0.0002
         }
       ]
     },
@@ -222,32 +722,157 @@
       "actualLabel": "No",
       "actualPositive": false,
       "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 100%). 주요 근거: Age=42 (기여도 -0.018), OverTime=No (기여도 -0.016), StockOptionLevel=1 (기여도 -0.014), MonthlyIncome=5265 (기여도 -0.013), YearsAtCompany=5 (기여도 -0.013).",
+      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 100%).",
       "topFeatures": [
         {
           "feature": "Age",
           "value": 42,
-          "contribution": -0.018138120828628656
+          "contribution": -0.0181
         },
         {
           "feature": "OverTime",
           "value": "No",
-          "contribution": -0.015683326980689204
+          "contribution": -0.0157
         },
         {
           "feature": "StockOptionLevel",
           "value": 1,
-          "contribution": -0.013678058505645052
+          "contribution": -0.0137
         },
         {
           "feature": "MonthlyIncome",
           "value": 5265,
-          "contribution": -0.013433293632636787
+          "contribution": -0.0134
         },
         {
           "feature": "YearsAtCompany",
           "value": 5,
-          "contribution": -0.012553917211916968
+          "contribution": -0.0126
+        },
+        {
+          "feature": "DailyRate",
+          "value": 926,
+          "contribution": -0.01
+        },
+        {
+          "feature": "TotalWorkingYears",
+          "value": 11,
+          "contribution": -0.009
+        },
+        {
+          "feature": "DistanceFromHome",
+          "value": 21,
+          "contribution": 0.0085
+        },
+        {
+          "feature": "JobLevel",
+          "value": 2,
+          "contribution": -0.0082
+        },
+        {
+          "feature": "YearsWithCurrManager",
+          "value": 2,
+          "contribution": -0.0077
+        },
+        {
+          "feature": "NumCompaniesWorked",
+          "value": 2,
+          "contribution": -0.0076
+        },
+        {
+          "feature": "EnvironmentSatisfaction",
+          "value": 3,
+          "contribution": -0.0073
+        },
+        {
+          "feature": "JobRole",
+          "value": "Manufacturing Director",
+          "contribution": -0.0063
+        },
+        {
+          "feature": "WorkLifeBalance",
+          "value": 3,
+          "contribution": -0.0058
+        },
+        {
+          "feature": "MonthlyRate",
+          "value": 16439,
+          "contribution": -0.005
+        },
+        {
+          "feature": "Department",
+          "value": "Research & Development",
+          "contribution": -0.0047
+        },
+        {
+          "feature": "JobInvolvement",
+          "value": 3,
+          "contribution": -0.0044
+        },
+        {
+          "feature": "JobSatisfaction",
+          "value": 3,
+          "contribution": -0.0043
+        },
+        {
+          "feature": "PercentSalaryHike",
+          "value": 16,
+          "contribution": -0.0041
+        },
+        {
+          "feature": "HourlyRate",
+          "value": 36,
+          "contribution": 0.0039
+        },
+        {
+          "feature": "MaritalStatus",
+          "value": "Divorced",
+          "contribution": -0.0037
+        },
+        {
+          "feature": "YearsInCurrentRole",
+          "value": 3,
+          "contribution": -0.0034
+        },
+        {
+          "feature": "EducationField",
+          "value": "Medical",
+          "contribution": -0.003
+        },
+        {
+          "feature": "YearsSinceLastPromotion",
+          "value": 0,
+          "contribution": -0.0022
+        },
+        {
+          "feature": "TrainingTimesLastYear",
+          "value": 5,
+          "contribution": 0.0015
+        },
+        {
+          "feature": "RelationshipSatisfaction",
+          "value": 2,
+          "contribution": -0.0014
+        },
+        {
+          "feature": "PerformanceRating",
+          "value": 3,
+          "contribution": -0.001
+        },
+        {
+          "feature": "Gender",
+          "value": "Female",
+          "contribution": -0.0009
+        },
+        {
+          "feature": "Education",
+          "value": 2,
+          "contribution": -0.0009
+        },
+        {
+          "feature": "BusinessTravel",
+          "value": "Non-Travel",
+          "contribution": 0.0007
         }
       ]
     },
@@ -259,32 +884,157 @@
       "actualLabel": "Yes",
       "actualPositive": true,
       "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 88%). 주요 근거: TotalWorkingYears=1 (기여도 +0.190), OverTime=Yes (기여도 +0.080), YearsAtCompany=1 (기여도 +0.078), YearsWithCurrManager=0 (기여도 +0.053), StockOptionLevel=0 (기여도 +0.041).",
+      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 88%).",
       "topFeatures": [
         {
           "feature": "TotalWorkingYears",
           "value": 1,
-          "contribution": 0.19005618134934488
+          "contribution": 0.1901
         },
         {
           "feature": "OverTime",
           "value": "Yes",
-          "contribution": 0.08036899909724367
+          "contribution": 0.0804
         },
         {
           "feature": "YearsAtCompany",
           "value": 1,
-          "contribution": 0.07769784855070834
+          "contribution": 0.0777
         },
         {
           "feature": "YearsWithCurrManager",
           "value": 0,
-          "contribution": 0.052859060211108914
+          "contribution": 0.0529
         },
         {
           "feature": "StockOptionLevel",
           "value": 0,
-          "contribution": 0.04067865698081518
+          "contribution": 0.0407
+        },
+        {
+          "feature": "JobLevel",
+          "value": 1,
+          "contribution": 0.0403
+        },
+        {
+          "feature": "MaritalStatus",
+          "value": "Single",
+          "contribution": 0.0386
+        },
+        {
+          "feature": "HourlyRate",
+          "value": 34,
+          "contribution": 0.0367
+        },
+        {
+          "feature": "YearsInCurrentRole",
+          "value": 0,
+          "contribution": 0.0325
+        },
+        {
+          "feature": "DailyRate",
+          "value": 350,
+          "contribution": 0.0269
+        },
+        {
+          "feature": "EducationField",
+          "value": "Marketing",
+          "contribution": 0.0255
+        },
+        {
+          "feature": "JobRole",
+          "value": "Sales Representative",
+          "contribution": 0.0209
+        },
+        {
+          "feature": "Age",
+          "value": 33,
+          "contribution": 0.0164
+        },
+        {
+          "feature": "RelationshipSatisfaction",
+          "value": 2,
+          "contribution": 0.0162
+        },
+        {
+          "feature": "Department",
+          "value": "Sales",
+          "contribution": 0.0153
+        },
+        {
+          "feature": "MonthlyIncome",
+          "value": 2851,
+          "contribution": 0.0129
+        },
+        {
+          "feature": "EnvironmentSatisfaction",
+          "value": 4,
+          "contribution": -0.0107
+        },
+        {
+          "feature": "TrainingTimesLastYear",
+          "value": 2,
+          "contribution": 0.0094
+        },
+        {
+          "feature": "DistanceFromHome",
+          "value": 5,
+          "contribution": -0.0072
+        },
+        {
+          "feature": "JobInvolvement",
+          "value": 3,
+          "contribution": -0.0072
+        },
+        {
+          "feature": "Education",
+          "value": 3,
+          "contribution": 0.0068
+        },
+        {
+          "feature": "WorkLifeBalance",
+          "value": 3,
+          "contribution": -0.0043
+        },
+        {
+          "feature": "PercentSalaryHike",
+          "value": 13,
+          "contribution": 0.0038
+        },
+        {
+          "feature": "Gender",
+          "value": "Female",
+          "contribution": 0.0037
+        },
+        {
+          "feature": "MonthlyRate",
+          "value": 9150,
+          "contribution": 0.0036
+        },
+        {
+          "feature": "YearsSinceLastPromotion",
+          "value": 0,
+          "contribution": -0.0015
+        },
+        {
+          "feature": "BusinessTravel",
+          "value": "Travel_Rarely",
+          "contribution": 0.0001
+        },
+        {
+          "feature": "JobSatisfaction",
+          "value": 3,
+          "contribution": -0.0001
+        },
+        {
+          "feature": "NumCompaniesWorked",
+          "value": 1,
+          "contribution": 0.0001
+        },
+        {
+          "feature": "PerformanceRating",
+          "value": 3,
+          "contribution": 0.0
         }
       ]
     },
@@ -296,32 +1046,157 @@
       "actualLabel": "Yes",
       "actualPositive": true,
       "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 94%). 주요 근거: TotalWorkingYears=1 (기여도 +0.146), OverTime=Yes (기여도 +0.087), YearsAtCompany=1 (기여도 +0.073), MonthlyIncome=2340 (기여도 +0.071), Age=26 (기여도 +0.069).",
+      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 94%).",
       "topFeatures": [
         {
           "feature": "TotalWorkingYears",
           "value": 1,
-          "contribution": 0.14635273964852683
+          "contribution": 0.1464
         },
         {
           "feature": "OverTime",
           "value": "Yes",
-          "contribution": 0.08684803884101731
+          "contribution": 0.0868
         },
         {
           "feature": "YearsAtCompany",
           "value": 1,
-          "contribution": 0.07330251833051935
+          "contribution": 0.0733
         },
         {
           "feature": "MonthlyIncome",
           "value": 2340,
-          "contribution": 0.0714263102062559
+          "contribution": 0.0714
         },
         {
           "feature": "Age",
           "value": 26,
-          "contribution": 0.0693737554363375
+          "contribution": 0.0694
+        },
+        {
+          "feature": "YearsWithCurrManager",
+          "value": 0,
+          "contribution": 0.0501
+        },
+        {
+          "feature": "JobInvolvement",
+          "value": 1,
+          "contribution": 0.041
+        },
+        {
+          "feature": "DistanceFromHome",
+          "value": 24,
+          "contribution": 0.0388
+        },
+        {
+          "feature": "StockOptionLevel",
+          "value": 0,
+          "contribution": 0.0367
+        },
+        {
+          "feature": "WorkLifeBalance",
+          "value": 1,
+          "contribution": 0.0356
+        },
+        {
+          "feature": "JobLevel",
+          "value": 1,
+          "contribution": 0.035
+        },
+        {
+          "feature": "EducationField",
+          "value": "Technical Degree",
+          "contribution": 0.0279
+        },
+        {
+          "feature": "YearsInCurrentRole",
+          "value": 0,
+          "contribution": 0.0265
+        },
+        {
+          "feature": "MaritalStatus",
+          "value": "Single",
+          "contribution": 0.0253
+        },
+        {
+          "feature": "JobSatisfaction",
+          "value": 4,
+          "contribution": -0.0121
+        },
+        {
+          "feature": "JobRole",
+          "value": "Laboratory Technician",
+          "contribution": 0.012
+        },
+        {
+          "feature": "EnvironmentSatisfaction",
+          "value": 3,
+          "contribution": -0.0104
+        },
+        {
+          "feature": "DailyRate",
+          "value": 471,
+          "contribution": 0.0096
+        },
+        {
+          "feature": "RelationshipSatisfaction",
+          "value": 2,
+          "contribution": 0.0095
+        },
+        {
+          "feature": "MonthlyRate",
+          "value": 23213,
+          "contribution": 0.0071
+        },
+        {
+          "feature": "Department",
+          "value": "Research & Development",
+          "contribution": -0.0053
+        },
+        {
+          "feature": "Education",
+          "value": 3,
+          "contribution": 0.004
+        },
+        {
+          "feature": "PercentSalaryHike",
+          "value": 18,
+          "contribution": -0.0022
+        },
+        {
+          "feature": "NumCompaniesWorked",
+          "value": 1,
+          "contribution": -0.0014
+        },
+        {
+          "feature": "YearsSinceLastPromotion",
+          "value": 0,
+          "contribution": 0.0013
+        },
+        {
+          "feature": "PerformanceRating",
+          "value": 3,
+          "contribution": -0.001
+        },
+        {
+          "feature": "Gender",
+          "value": "Male",
+          "contribution": 0.0008
+        },
+        {
+          "feature": "BusinessTravel",
+          "value": "Travel_Rarely",
+          "contribution": 0.0007
+        },
+        {
+          "feature": "TrainingTimesLastYear",
+          "value": 3,
+          "contribution": 0.0002
+        },
+        {
+          "feature": "HourlyRate",
+          "value": 66,
+          "contribution": -0.0
         }
       ]
     },
@@ -333,32 +1208,157 @@
       "actualLabel": "No",
       "actualPositive": false,
       "isCorrect": false,
-      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 54%). 주요 근거: TotalWorkingYears=1 (기여도 +0.140), Age=24 (기여도 +0.071), YearsAtCompany=1 (기여도 +0.069), MonthlyIncome=2127 (기여도 +0.065), YearsWithCurrManager=0 (기여도 +0.063).",
+      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 54%).",
       "topFeatures": [
         {
           "feature": "TotalWorkingYears",
           "value": 1,
-          "contribution": 0.14019685727599837
+          "contribution": 0.1402
         },
         {
           "feature": "Age",
           "value": 24,
-          "contribution": 0.07083588743724452
+          "contribution": 0.0708
         },
         {
           "feature": "YearsAtCompany",
           "value": 1,
-          "contribution": 0.06892587208149485
+          "contribution": 0.0689
         },
         {
           "feature": "MonthlyIncome",
           "value": 2127,
-          "contribution": 0.06492080211699482
+          "contribution": 0.0649
         },
         {
           "feature": "YearsWithCurrManager",
           "value": 0,
-          "contribution": 0.06326238845971764
+          "contribution": 0.0633
+        },
+        {
+          "feature": "OverTime",
+          "value": "No",
+          "contribution": -0.0455
+        },
+        {
+          "feature": "DistanceFromHome",
+          "value": 17,
+          "contribution": 0.0392
+        },
+        {
+          "feature": "YearsInCurrentRole",
+          "value": 0,
+          "contribution": 0.0276
+        },
+        {
+          "feature": "RelationshipSatisfaction",
+          "value": 4,
+          "contribution": -0.0231
+        },
+        {
+          "feature": "JobLevel",
+          "value": 1,
+          "contribution": 0.0212
+        },
+        {
+          "feature": "StockOptionLevel",
+          "value": 1,
+          "contribution": -0.0183
+        },
+        {
+          "feature": "JobSatisfaction",
+          "value": 2,
+          "contribution": 0.015
+        },
+        {
+          "feature": "JobRole",
+          "value": "Laboratory Technician",
+          "contribution": 0.0135
+        },
+        {
+          "feature": "EnvironmentSatisfaction",
+          "value": 4,
+          "contribution": -0.0121
+        },
+        {
+          "feature": "EducationField",
+          "value": "Other",
+          "contribution": -0.0114
+        },
+        {
+          "feature": "MaritalStatus",
+          "value": "Married",
+          "contribution": -0.0094
+        },
+        {
+          "feature": "MonthlyRate",
+          "value": 9100,
+          "contribution": -0.0093
+        },
+        {
+          "feature": "WorkLifeBalance",
+          "value": 3,
+          "contribution": -0.0092
+        },
+        {
+          "feature": "HourlyRate",
+          "value": 94,
+          "contribution": -0.0071
+        },
+        {
+          "feature": "Education",
+          "value": 2,
+          "contribution": -0.0054
+        },
+        {
+          "feature": "Department",
+          "value": "Research & Development",
+          "contribution": -0.005
+        },
+        {
+          "feature": "PerformanceRating",
+          "value": 4,
+          "contribution": 0.005
+        },
+        {
+          "feature": "JobInvolvement",
+          "value": 2,
+          "contribution": 0.0048
+        },
+        {
+          "feature": "DailyRate",
+          "value": 823,
+          "contribution": 0.0036
+        },
+        {
+          "feature": "PercentSalaryHike",
+          "value": 21,
+          "contribution": -0.0031
+        },
+        {
+          "feature": "TrainingTimesLastYear",
+          "value": 2,
+          "contribution": 0.0027
+        },
+        {
+          "feature": "Gender",
+          "value": "Male",
+          "contribution": -0.0012
+        },
+        {
+          "feature": "YearsSinceLastPromotion",
+          "value": 0,
+          "contribution": 0.0007
+        },
+        {
+          "feature": "BusinessTravel",
+          "value": "Travel_Rarely",
+          "contribution": -0.0005
+        },
+        {
+          "feature": "NumCompaniesWorked",
+          "value": 1,
+          "contribution": -0.0004
         }
       ]
     },
@@ -370,32 +1370,157 @@
       "actualLabel": "No",
       "actualPositive": false,
       "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 100%). 주요 근거: OverTime=Yes (기여도 +0.032), Age=43 (기여도 -0.025), MonthlyIncome=5679 (기여도 -0.022), StockOptionLevel=1 (기여도 -0.018), JobLevel=2 (기여도 -0.016).",
+      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 100%).",
       "topFeatures": [
         {
           "feature": "OverTime",
           "value": "Yes",
-          "contribution": 0.032486995940000735
+          "contribution": 0.0325
         },
         {
           "feature": "Age",
           "value": 43,
-          "contribution": -0.02530299807888962
+          "contribution": -0.0253
         },
         {
           "feature": "MonthlyIncome",
           "value": 5679,
-          "contribution": -0.021896916627032158
+          "contribution": -0.0219
         },
         {
           "feature": "StockOptionLevel",
           "value": 1,
-          "contribution": -0.01846311702801024
+          "contribution": -0.0185
         },
         {
           "feature": "JobLevel",
           "value": 2,
-          "contribution": -0.01561061234902439
+          "contribution": -0.0156
+        },
+        {
+          "feature": "TotalWorkingYears",
+          "value": 10,
+          "contribution": -0.0113
+        },
+        {
+          "feature": "YearsAtCompany",
+          "value": 8,
+          "contribution": -0.0107
+        },
+        {
+          "feature": "YearsWithCurrManager",
+          "value": 7,
+          "contribution": -0.0105
+        },
+        {
+          "feature": "DailyRate",
+          "value": 1001,
+          "contribution": -0.0099
+        },
+        {
+          "feature": "EnvironmentSatisfaction",
+          "value": 4,
+          "contribution": -0.0098
+        },
+        {
+          "feature": "MaritalStatus",
+          "value": "Divorced",
+          "contribution": -0.0098
+        },
+        {
+          "feature": "NumCompaniesWorked",
+          "value": 3,
+          "contribution": -0.0079
+        },
+        {
+          "feature": "WorkLifeBalance",
+          "value": 3,
+          "contribution": -0.0076
+        },
+        {
+          "feature": "HourlyRate",
+          "value": 72,
+          "contribution": -0.0073
+        },
+        {
+          "feature": "JobInvolvement",
+          "value": 3,
+          "contribution": -0.0054
+        },
+        {
+          "feature": "Department",
+          "value": "Research & Development",
+          "contribution": -0.0051
+        },
+        {
+          "feature": "YearsInCurrentRole",
+          "value": 7,
+          "contribution": -0.005
+        },
+        {
+          "feature": "BusinessTravel",
+          "value": "Travel_Frequently",
+          "contribution": 0.0048
+        },
+        {
+          "feature": "MonthlyRate",
+          "value": 19627,
+          "contribution": -0.0047
+        },
+        {
+          "feature": "EducationField",
+          "value": "Medical",
+          "contribution": -0.0046
+        },
+        {
+          "feature": "DistanceFromHome",
+          "value": 9,
+          "contribution": -0.004
+        },
+        {
+          "feature": "PercentSalaryHike",
+          "value": 13,
+          "contribution": -0.0038
+        },
+        {
+          "feature": "TrainingTimesLastYear",
+          "value": 3,
+          "contribution": -0.0035
+        },
+        {
+          "feature": "Education",
+          "value": 5,
+          "contribution": 0.0025
+        },
+        {
+          "feature": "JobSatisfaction",
+          "value": 3,
+          "contribution": -0.0021
+        },
+        {
+          "feature": "JobRole",
+          "value": "Laboratory Technician",
+          "contribution": 0.0014
+        },
+        {
+          "feature": "Gender",
+          "value": "Male",
+          "contribution": 0.0007
+        },
+        {
+          "feature": "PerformanceRating",
+          "value": 3,
+          "contribution": -0.0006
+        },
+        {
+          "feature": "YearsSinceLastPromotion",
+          "value": 4,
+          "contribution": 0.0004
+        },
+        {
+          "feature": "RelationshipSatisfaction",
+          "value": 2,
+          "contribution": -0.0003
         }
       ]
     },
@@ -407,32 +1532,157 @@
       "actualLabel": "No",
       "actualPositive": false,
       "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 100%). 주요 근거: Age=38 (기여도 -0.021), OverTime=No (기여도 -0.020), TotalWorkingYears=10 (기여도 -0.015), MonthlyIncome=7625 (기여도 -0.013), DistanceFromHome=1 (기여도 -0.011).",
+      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 100%).",
       "topFeatures": [
         {
           "feature": "Age",
           "value": 38,
-          "contribution": -0.02067654817843127
+          "contribution": -0.0207
         },
         {
           "feature": "OverTime",
           "value": "No",
-          "contribution": -0.019972958591576447
+          "contribution": -0.02
         },
         {
           "feature": "TotalWorkingYears",
           "value": 10,
-          "contribution": -0.014735148686204234
+          "contribution": -0.0147
         },
         {
           "feature": "MonthlyIncome",
           "value": 7625,
-          "contribution": -0.013306749298927684
+          "contribution": -0.0133
         },
         {
           "feature": "DistanceFromHome",
           "value": 1,
-          "contribution": -0.010843890959444283
+          "contribution": -0.0108
+        },
+        {
+          "feature": "YearsAtCompany",
+          "value": 9,
+          "contribution": -0.0106
+        },
+        {
+          "feature": "NumCompaniesWorked",
+          "value": 0,
+          "contribution": -0.0105
+        },
+        {
+          "feature": "StockOptionLevel",
+          "value": 0,
+          "contribution": 0.0099
+        },
+        {
+          "feature": "JobRole",
+          "value": "Healthcare Representative",
+          "contribution": -0.0097
+        },
+        {
+          "feature": "YearsWithCurrManager",
+          "value": 8,
+          "contribution": -0.0088
+        },
+        {
+          "feature": "JobLevel",
+          "value": 2,
+          "contribution": -0.0085
+        },
+        {
+          "feature": "JobSatisfaction",
+          "value": 4,
+          "contribution": -0.0085
+        },
+        {
+          "feature": "MaritalStatus",
+          "value": "Single",
+          "contribution": 0.0077
+        },
+        {
+          "feature": "DailyRate",
+          "value": 827,
+          "contribution": -0.0069
+        },
+        {
+          "feature": "YearsInCurrentRole",
+          "value": 7,
+          "contribution": -0.0065
+        },
+        {
+          "feature": "Department",
+          "value": "Research & Development",
+          "contribution": -0.0055
+        },
+        {
+          "feature": "YearsSinceLastPromotion",
+          "value": 1,
+          "contribution": -0.0053
+        },
+        {
+          "feature": "JobInvolvement",
+          "value": 4,
+          "contribution": -0.0053
+        },
+        {
+          "feature": "HourlyRate",
+          "value": 33,
+          "contribution": 0.0049
+        },
+        {
+          "feature": "PercentSalaryHike",
+          "value": 13,
+          "contribution": -0.0049
+        },
+        {
+          "feature": "MonthlyRate",
+          "value": 19383,
+          "contribution": -0.0043
+        },
+        {
+          "feature": "RelationshipSatisfaction",
+          "value": 3,
+          "contribution": -0.0042
+        },
+        {
+          "feature": "EducationField",
+          "value": "Life Sciences",
+          "contribution": -0.0041
+        },
+        {
+          "feature": "EnvironmentSatisfaction",
+          "value": 2,
+          "contribution": -0.0014
+        },
+        {
+          "feature": "WorkLifeBalance",
+          "value": 2,
+          "contribution": 0.0013
+        },
+        {
+          "feature": "BusinessTravel",
+          "value": "Travel_Rarely",
+          "contribution": -0.0013
+        },
+        {
+          "feature": "TrainingTimesLastYear",
+          "value": 4,
+          "contribution": -0.0008
+        },
+        {
+          "feature": "PerformanceRating",
+          "value": 3,
+          "contribution": -0.0005
+        },
+        {
+          "feature": "Education",
+          "value": 4,
+          "contribution": 0.0002
+        },
+        {
+          "feature": "Gender",
+          "value": "Female",
+          "contribution": 0.0001
         }
       ]
     },
@@ -444,32 +1694,157 @@
       "actualLabel": "Yes",
       "actualPositive": true,
       "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 88%). 주요 근거: TotalWorkingYears=1 (기여도 +0.148), MonthlyIncome=2319 (기여도 +0.095), OverTime=Yes (기여도 +0.094), YearsAtCompany=1 (기여도 +0.088), YearsWithCurrManager=0 (기여도 +0.066).",
+      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 88%).",
       "topFeatures": [
         {
           "feature": "TotalWorkingYears",
           "value": 1,
-          "contribution": 0.14777190972867207
+          "contribution": 0.1478
         },
         {
           "feature": "MonthlyIncome",
           "value": 2319,
-          "contribution": 0.0951121426234037
+          "contribution": 0.0951
         },
         {
           "feature": "OverTime",
           "value": "Yes",
-          "contribution": 0.09433373905584161
+          "contribution": 0.0943
         },
         {
           "feature": "YearsAtCompany",
           "value": 1,
-          "contribution": 0.087913733212447
+          "contribution": 0.0879
         },
         {
           "feature": "YearsWithCurrManager",
           "value": 0,
-          "contribution": 0.06628445993906967
+          "contribution": 0.0663
+        },
+        {
+          "feature": "Age",
+          "value": 29,
+          "contribution": 0.0518
+        },
+        {
+          "feature": "HourlyRate",
+          "value": 36,
+          "contribution": 0.0427
+        },
+        {
+          "feature": "JobLevel",
+          "value": 1,
+          "contribution": 0.0348
+        },
+        {
+          "feature": "JobSatisfaction",
+          "value": 1,
+          "contribution": 0.0321
+        },
+        {
+          "feature": "YearsInCurrentRole",
+          "value": 0,
+          "contribution": 0.0306
+        },
+        {
+          "feature": "TrainingTimesLastYear",
+          "value": 1,
+          "contribution": 0.0222
+        },
+        {
+          "feature": "DistanceFromHome",
+          "value": 1,
+          "contribution": -0.0157
+        },
+        {
+          "feature": "JobRole",
+          "value": "Laboratory Technician",
+          "contribution": 0.0141
+        },
+        {
+          "feature": "PercentSalaryHike",
+          "value": 11,
+          "contribution": 0.0133
+        },
+        {
+          "feature": "DailyRate",
+          "value": 805,
+          "contribution": 0.0123
+        },
+        {
+          "feature": "JobInvolvement",
+          "value": 2,
+          "contribution": 0.0107
+        },
+        {
+          "feature": "RelationshipSatisfaction",
+          "value": 4,
+          "contribution": -0.0087
+        },
+        {
+          "feature": "StockOptionLevel",
+          "value": 1,
+          "contribution": -0.0086
+        },
+        {
+          "feature": "EnvironmentSatisfaction",
+          "value": 2,
+          "contribution": 0.0071
+        },
+        {
+          "feature": "EducationField",
+          "value": "Life Sciences",
+          "contribution": -0.0059
+        },
+        {
+          "feature": "WorkLifeBalance",
+          "value": 3,
+          "contribution": -0.0055
+        },
+        {
+          "feature": "Gender",
+          "value": "Female",
+          "contribution": 0.0049
+        },
+        {
+          "feature": "MaritalStatus",
+          "value": "Married",
+          "contribution": -0.0039
+        },
+        {
+          "feature": "Department",
+          "value": "Research & Development",
+          "contribution": -0.0028
+        },
+        {
+          "feature": "MonthlyRate",
+          "value": 6689,
+          "contribution": 0.0018
+        },
+        {
+          "feature": "NumCompaniesWorked",
+          "value": 1,
+          "contribution": -0.0017
+        },
+        {
+          "feature": "Education",
+          "value": 2,
+          "contribution": 0.0013
+        },
+        {
+          "feature": "BusinessTravel",
+          "value": "Travel_Rarely",
+          "contribution": 0.0012
+        },
+        {
+          "feature": "PerformanceRating",
+          "value": 3,
+          "contribution": 0.0004
+        },
+        {
+          "feature": "YearsSinceLastPromotion",
+          "value": 0,
+          "contribution": 0.0004
         }
       ]
     },
@@ -481,32 +1856,157 @@
       "actualLabel": "Yes",
       "actualPositive": true,
       "isCorrect": false,
-      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 56%). 주요 근거: TotalWorkingYears=1 (기여도 +0.128), Age=21 (기여도 +0.096), YearsAtCompany=1 (기여도 +0.062), OverTime=No (기여도 -0.042), YearsWithCurrManager=0 (기여도 +0.036).",
+      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 56%).",
       "topFeatures": [
         {
           "feature": "TotalWorkingYears",
           "value": 1,
-          "contribution": 0.12768345206421344
+          "contribution": 0.1277
         },
         {
           "feature": "Age",
           "value": 21,
-          "contribution": 0.09552632189227661
+          "contribution": 0.0955
         },
         {
           "feature": "YearsAtCompany",
           "value": 1,
-          "contribution": 0.062001800712452856
+          "contribution": 0.062
         },
         {
           "feature": "OverTime",
           "value": "No",
-          "contribution": -0.04169051723684017
+          "contribution": -0.0417
         },
         {
           "feature": "YearsWithCurrManager",
           "value": 0,
-          "contribution": 0.03591004235051975
+          "contribution": 0.0359
+        },
+        {
+          "feature": "JobRole",
+          "value": "Research Scientist",
+          "contribution": -0.0334
+        },
+        {
+          "feature": "RelationshipSatisfaction",
+          "value": 1,
+          "contribution": 0.0301
+        },
+        {
+          "feature": "DistanceFromHome",
+          "value": 18,
+          "contribution": 0.0292
+        },
+        {
+          "feature": "StockOptionLevel",
+          "value": 0,
+          "contribution": 0.0267
+        },
+        {
+          "feature": "YearsInCurrentRole",
+          "value": 0,
+          "contribution": 0.0257
+        },
+        {
+          "feature": "MaritalStatus",
+          "value": "Single",
+          "contribution": 0.0178
+        },
+        {
+          "feature": "EducationField",
+          "value": "Other",
+          "contribution": -0.0153
+        },
+        {
+          "feature": "JobSatisfaction",
+          "value": 4,
+          "contribution": -0.0144
+        },
+        {
+          "feature": "EnvironmentSatisfaction",
+          "value": 4,
+          "contribution": -0.0138
+        },
+        {
+          "feature": "MonthlyRate",
+          "value": 8870,
+          "contribution": -0.0131
+        },
+        {
+          "feature": "DailyRate",
+          "value": 1427,
+          "contribution": -0.0104
+        },
+        {
+          "feature": "HourlyRate",
+          "value": 65,
+          "contribution": -0.0099
+        },
+        {
+          "feature": "JobLevel",
+          "value": 1,
+          "contribution": 0.0097
+        },
+        {
+          "feature": "JobInvolvement",
+          "value": 3,
+          "contribution": -0.0097
+        },
+        {
+          "feature": "MonthlyIncome",
+          "value": 2693,
+          "contribution": -0.0086
+        },
+        {
+          "feature": "WorkLifeBalance",
+          "value": 2,
+          "contribution": 0.0072
+        },
+        {
+          "feature": "Gender",
+          "value": "Female",
+          "contribution": 0.0063
+        },
+        {
+          "feature": "Education",
+          "value": 1,
+          "contribution": -0.0055
+        },
+        {
+          "feature": "Department",
+          "value": "Research & Development",
+          "contribution": -0.0053
+        },
+        {
+          "feature": "NumCompaniesWorked",
+          "value": 1,
+          "contribution": -0.0032
+        },
+        {
+          "feature": "YearsSinceLastPromotion",
+          "value": 0,
+          "contribution": -0.0029
+        },
+        {
+          "feature": "PercentSalaryHike",
+          "value": 19,
+          "contribution": -0.0026
+        },
+        {
+          "feature": "BusinessTravel",
+          "value": "Travel_Rarely",
+          "contribution": -0.0023
+        },
+        {
+          "feature": "TrainingTimesLastYear",
+          "value": 3,
+          "contribution": -0.001
+        },
+        {
+          "feature": "PerformanceRating",
+          "value": 3,
+          "contribution": -0.0005
         }
       ]
     },
@@ -518,32 +2018,157 @@
       "actualLabel": "Yes",
       "actualPositive": true,
       "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 93%). 주요 근거: TotalWorkingYears=1 (기여도 +0.159), MonthlyIncome=2413 (기여도 +0.091), YearsAtCompany=1 (기여도 +0.085), Age=25 (기여도 +0.082), OverTime=Yes (기여도 +0.082).",
+      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 93%).",
       "topFeatures": [
         {
           "feature": "TotalWorkingYears",
           "value": 1,
-          "contribution": 0.15855397107473473
+          "contribution": 0.1586
         },
         {
           "feature": "MonthlyIncome",
           "value": 2413,
-          "contribution": 0.0910490768826286
+          "contribution": 0.091
         },
         {
           "feature": "YearsAtCompany",
           "value": 1,
-          "contribution": 0.0848203421655261
+          "contribution": 0.0848
         },
         {
           "feature": "Age",
           "value": 25,
-          "contribution": 0.08234166226412477
+          "contribution": 0.0823
         },
         {
           "feature": "OverTime",
           "value": "Yes",
-          "contribution": 0.08189383160822845
+          "contribution": 0.0819
+        },
+        {
+          "feature": "YearsWithCurrManager",
+          "value": 0,
+          "contribution": 0.0685
+        },
+        {
+          "feature": "JobLevel",
+          "value": 1,
+          "contribution": 0.0364
+        },
+        {
+          "feature": "DistanceFromHome",
+          "value": 19,
+          "contribution": 0.0358
+        },
+        {
+          "feature": "HourlyRate",
+          "value": 36,
+          "contribution": 0.0339
+        },
+        {
+          "feature": "YearsInCurrentRole",
+          "value": 0,
+          "contribution": 0.0338
+        },
+        {
+          "feature": "JobRole",
+          "value": "Sales Representative",
+          "contribution": 0.0195
+        },
+        {
+          "feature": "EducationField",
+          "value": "Marketing",
+          "contribution": 0.0183
+        },
+        {
+          "feature": "StockOptionLevel",
+          "value": 3,
+          "contribution": -0.0155
+        },
+        {
+          "feature": "JobInvolvement",
+          "value": 2,
+          "contribution": 0.0118
+        },
+        {
+          "feature": "JobSatisfaction",
+          "value": 2,
+          "contribution": 0.0109
+        },
+        {
+          "feature": "MaritalStatus",
+          "value": "Married",
+          "contribution": -0.0098
+        },
+        {
+          "feature": "Department",
+          "value": "Sales",
+          "contribution": 0.0082
+        },
+        {
+          "feature": "DailyRate",
+          "value": 867,
+          "contribution": 0.0081
+        },
+        {
+          "feature": "EnvironmentSatisfaction",
+          "value": 3,
+          "contribution": -0.007
+        },
+        {
+          "feature": "WorkLifeBalance",
+          "value": 3,
+          "contribution": -0.005
+        },
+        {
+          "feature": "TrainingTimesLastYear",
+          "value": 2,
+          "contribution": 0.0046
+        },
+        {
+          "feature": "Education",
+          "value": 2,
+          "contribution": 0.0027
+        },
+        {
+          "feature": "MonthlyRate",
+          "value": 18798,
+          "contribution": 0.0026
+        },
+        {
+          "feature": "BusinessTravel",
+          "value": "Travel_Rarely",
+          "contribution": 0.0022
+        },
+        {
+          "feature": "YearsSinceLastPromotion",
+          "value": 0,
+          "contribution": 0.0019
+        },
+        {
+          "feature": "NumCompaniesWorked",
+          "value": 1,
+          "contribution": 0.0016
+        },
+        {
+          "feature": "PercentSalaryHike",
+          "value": 18,
+          "contribution": 0.0015
+        },
+        {
+          "feature": "Gender",
+          "value": "Male",
+          "contribution": -0.0005
+        },
+        {
+          "feature": "RelationshipSatisfaction",
+          "value": 3,
+          "contribution": 0.0003
+        },
+        {
+          "feature": "PerformanceRating",
+          "value": 3,
+          "contribution": 0.0001
         }
       ]
     },
@@ -555,32 +2180,157 @@
       "actualLabel": "Yes",
       "actualPositive": true,
       "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 89%). 주요 근거: TotalWorkingYears=1 (기여도 +0.161), Age=19 (기여도 +0.101), MonthlyIncome=2121 (기여도 +0.074), YearsAtCompany=1 (기여도 +0.073), OverTime=Yes (기여도 +0.072).",
+      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 89%).",
       "topFeatures": [
         {
           "feature": "TotalWorkingYears",
           "value": 1,
-          "contribution": 0.16077424172432012
+          "contribution": 0.1608
         },
         {
           "feature": "Age",
           "value": 19,
-          "contribution": 0.10055244327425007
+          "contribution": 0.1006
         },
         {
           "feature": "MonthlyIncome",
           "value": 2121,
-          "contribution": 0.07405240746263463
+          "contribution": 0.0741
         },
         {
           "feature": "YearsAtCompany",
           "value": 1,
-          "contribution": 0.07293551140087182
+          "contribution": 0.0729
         },
         {
           "feature": "OverTime",
           "value": "Yes",
-          "contribution": 0.07230633321638333
+          "contribution": 0.0723
+        },
+        {
+          "feature": "YearsWithCurrManager",
+          "value": 0,
+          "contribution": 0.0524
+        },
+        {
+          "feature": "YearsInCurrentRole",
+          "value": 0,
+          "contribution": 0.0338
+        },
+        {
+          "feature": "JobLevel",
+          "value": 1,
+          "contribution": 0.0293
+        },
+        {
+          "feature": "StockOptionLevel",
+          "value": 0,
+          "contribution": 0.0254
+        },
+        {
+          "feature": "MaritalStatus",
+          "value": "Single",
+          "contribution": 0.0212
+        },
+        {
+          "feature": "DistanceFromHome",
+          "value": 21,
+          "contribution": 0.0211
+        },
+        {
+          "feature": "DailyRate",
+          "value": 419,
+          "contribution": 0.0186
+        },
+        {
+          "feature": "HourlyRate",
+          "value": 37,
+          "contribution": 0.0181
+        },
+        {
+          "feature": "EnvironmentSatisfaction",
+          "value": 4,
+          "contribution": -0.0159
+        },
+        {
+          "feature": "RelationshipSatisfaction",
+          "value": 2,
+          "contribution": 0.0151
+        },
+        {
+          "feature": "JobRole",
+          "value": "Sales Representative",
+          "contribution": 0.013
+        },
+        {
+          "feature": "EducationField",
+          "value": "Other",
+          "contribution": -0.0117
+        },
+        {
+          "feature": "JobInvolvement",
+          "value": 2,
+          "contribution": 0.0111
+        },
+        {
+          "feature": "JobSatisfaction",
+          "value": 2,
+          "contribution": 0.0091
+        },
+        {
+          "feature": "Department",
+          "value": "Sales",
+          "contribution": 0.0082
+        },
+        {
+          "feature": "Education",
+          "value": 3,
+          "contribution": 0.0065
+        },
+        {
+          "feature": "MonthlyRate",
+          "value": 9947,
+          "contribution": -0.0058
+        },
+        {
+          "feature": "PercentSalaryHike",
+          "value": 13,
+          "contribution": 0.0027
+        },
+        {
+          "feature": "NumCompaniesWorked",
+          "value": 1,
+          "contribution": -0.0011
+        },
+        {
+          "feature": "TrainingTimesLastYear",
+          "value": 3,
+          "contribution": 0.001
+        },
+        {
+          "feature": "WorkLifeBalance",
+          "value": 4,
+          "contribution": -0.0006
+        },
+        {
+          "feature": "Gender",
+          "value": "Male",
+          "contribution": -0.0006
+        },
+        {
+          "feature": "PerformanceRating",
+          "value": 3,
+          "contribution": -0.0005
+        },
+        {
+          "feature": "BusinessTravel",
+          "value": "Travel_Rarely",
+          "contribution": -0.0003
+        },
+        {
+          "feature": "YearsSinceLastPromotion",
+          "value": 0,
+          "contribution": -0.0001
         }
       ]
     },
@@ -592,32 +2342,157 @@
       "actualLabel": "Yes",
       "actualPositive": true,
       "isCorrect": false,
-      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 55%). 주요 근거: OverTime=Yes (기여도 +0.113), MonthlyIncome=2321 (기여도 +0.071), StockOptionLevel=0 (기여도 +0.033), NumCompaniesWorked=0 (기여도 -0.032), RelationshipSatisfaction=1 (기여도 +0.028).",
+      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 55%).",
       "topFeatures": [
         {
           "feature": "OverTime",
           "value": "Yes",
-          "contribution": 0.11281476379860172
+          "contribution": 0.1128
         },
         {
           "feature": "MonthlyIncome",
           "value": 2321,
-          "contribution": 0.07098170499942351
+          "contribution": 0.071
         },
         {
           "feature": "StockOptionLevel",
           "value": 0,
-          "contribution": 0.032780250934305914
+          "contribution": 0.0328
         },
         {
           "feature": "NumCompaniesWorked",
           "value": 0,
-          "contribution": -0.031710427660672634
+          "contribution": -0.0317
         },
         {
           "feature": "RelationshipSatisfaction",
           "value": 1,
-          "contribution": 0.027853623839125756
+          "contribution": 0.0279
+        },
+        {
+          "feature": "JobLevel",
+          "value": 1,
+          "contribution": 0.0268
+        },
+        {
+          "feature": "PercentSalaryHike",
+          "value": 22,
+          "contribution": 0.0259
+        },
+        {
+          "feature": "DailyRate",
+          "value": 335,
+          "contribution": 0.0215
+        },
+        {
+          "feature": "TrainingTimesLastYear",
+          "value": 0,
+          "contribution": 0.0202
+        },
+        {
+          "feature": "MaritalStatus",
+          "value": "Single",
+          "contribution": 0.0199
+        },
+        {
+          "feature": "JobSatisfaction",
+          "value": 1,
+          "contribution": 0.0191
+        },
+        {
+          "feature": "YearsAtCompany",
+          "value": 3,
+          "contribution": -0.0131
+        },
+        {
+          "feature": "EnvironmentSatisfaction",
+          "value": 3,
+          "contribution": -0.012
+        },
+        {
+          "feature": "YearsWithCurrManager",
+          "value": 2,
+          "contribution": -0.0116
+        },
+        {
+          "feature": "YearsSinceLastPromotion",
+          "value": 1,
+          "contribution": -0.0101
+        },
+        {
+          "feature": "PerformanceRating",
+          "value": 4,
+          "contribution": 0.0095
+        },
+        {
+          "feature": "Age",
+          "value": 31,
+          "contribution": 0.0093
+        },
+        {
+          "feature": "JobInvolvement",
+          "value": 2,
+          "contribution": 0.0062
+        },
+        {
+          "feature": "WorkLifeBalance",
+          "value": 3,
+          "contribution": -0.0054
+        },
+        {
+          "feature": "Department",
+          "value": "Research & Development",
+          "contribution": -0.005
+        },
+        {
+          "feature": "HourlyRate",
+          "value": 46,
+          "contribution": -0.0045
+        },
+        {
+          "feature": "Education",
+          "value": 2,
+          "contribution": -0.0043
+        },
+        {
+          "feature": "JobRole",
+          "value": "Research Scientist",
+          "contribution": -0.0041
+        },
+        {
+          "feature": "TotalWorkingYears",
+          "value": 4,
+          "contribution": -0.0035
+        },
+        {
+          "feature": "EducationField",
+          "value": "Medical",
+          "contribution": -0.003
+        },
+        {
+          "feature": "DistanceFromHome",
+          "value": 9,
+          "contribution": -0.0027
+        },
+        {
+          "feature": "BusinessTravel",
+          "value": "Non-Travel",
+          "contribution": 0.0017
+        },
+        {
+          "feature": "MonthlyRate",
+          "value": 10322,
+          "contribution": -0.0015
+        },
+        {
+          "feature": "YearsInCurrentRole",
+          "value": 2,
+          "contribution": -0.0009
+        },
+        {
+          "feature": "Gender",
+          "value": "Male",
+          "contribution": -0.0008
         }
       ]
     },
@@ -629,32 +2504,157 @@
       "actualLabel": "Yes",
       "actualPositive": true,
       "isCorrect": false,
-      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 52%). 주요 근거: OverTime=Yes (기여도 +0.129), MonthlyIncome=2042 (기여도 +0.108), Age=26 (기여도 +0.041), NumCompaniesWorked=6 (기여도 +0.041), EnvironmentSatisfaction=1 (기여도 +0.040).",
+      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 52%).",
       "topFeatures": [
         {
           "feature": "OverTime",
           "value": "Yes",
-          "contribution": 0.12914447430582263
+          "contribution": 0.1291
         },
         {
           "feature": "MonthlyIncome",
           "value": 2042,
-          "contribution": 0.10821061885376965
+          "contribution": 0.1082
         },
         {
           "feature": "Age",
           "value": 26,
-          "contribution": 0.041265901343910505
+          "contribution": 0.0413
         },
         {
           "feature": "NumCompaniesWorked",
           "value": 6,
-          "contribution": 0.04077183383821429
+          "contribution": 0.0408
         },
         {
           "feature": "EnvironmentSatisfaction",
           "value": 1,
-          "contribution": 0.04035646146838279
+          "contribution": 0.0404
+        },
+        {
+          "feature": "JobLevel",
+          "value": 1,
+          "contribution": 0.0339
+        },
+        {
+          "feature": "StockOptionLevel",
+          "value": 1,
+          "contribution": -0.0234
+        },
+        {
+          "feature": "DailyRate",
+          "value": 342,
+          "contribution": 0.0205
+        },
+        {
+          "feature": "DistanceFromHome",
+          "value": 2,
+          "contribution": -0.0185
+        },
+        {
+          "feature": "JobSatisfaction",
+          "value": 1,
+          "contribution": 0.0165
+        },
+        {
+          "feature": "YearsWithCurrManager",
+          "value": 2,
+          "contribution": -0.0161
+        },
+        {
+          "feature": "JobRole",
+          "value": "Research Scientist",
+          "contribution": -0.0117
+        },
+        {
+          "feature": "MaritalStatus",
+          "value": "Married",
+          "contribution": -0.0113
+        },
+        {
+          "feature": "BusinessTravel",
+          "value": "Travel_Frequently",
+          "contribution": 0.0108
+        },
+        {
+          "feature": "EducationField",
+          "value": "Life Sciences",
+          "contribution": -0.0092
+        },
+        {
+          "feature": "PercentSalaryHike",
+          "value": 14,
+          "contribution": -0.0082
+        },
+        {
+          "feature": "YearsSinceLastPromotion",
+          "value": 1,
+          "contribution": -0.0075
+        },
+        {
+          "feature": "YearsAtCompany",
+          "value": 3,
+          "contribution": -0.0066
+        },
+        {
+          "feature": "WorkLifeBalance",
+          "value": 3,
+          "contribution": -0.0062
+        },
+        {
+          "feature": "JobInvolvement",
+          "value": 3,
+          "contribution": -0.0061
+        },
+        {
+          "feature": "MonthlyRate",
+          "value": 15346,
+          "contribution": -0.0049
+        },
+        {
+          "feature": "TotalWorkingYears",
+          "value": 6,
+          "contribution": 0.0049
+        },
+        {
+          "feature": "Department",
+          "value": "Research & Development",
+          "contribution": -0.0039
+        },
+        {
+          "feature": "RelationshipSatisfaction",
+          "value": 2,
+          "contribution": 0.0029
+        },
+        {
+          "feature": "Education",
+          "value": 3,
+          "contribution": 0.0026
+        },
+        {
+          "feature": "HourlyRate",
+          "value": 57,
+          "contribution": -0.0017
+        },
+        {
+          "feature": "Gender",
+          "value": "Male",
+          "contribution": -0.0015
+        },
+        {
+          "feature": "PerformanceRating",
+          "value": 3,
+          "contribution": -0.0008
+        },
+        {
+          "feature": "TrainingTimesLastYear",
+          "value": 2,
+          "contribution": -0.0007
+        },
+        {
+          "feature": "YearsInCurrentRole",
+          "value": 2,
+          "contribution": 0.0001
         }
       ]
     },
@@ -666,32 +2666,157 @@
       "actualLabel": "Yes",
       "actualPositive": true,
       "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 90%). 주요 근거: TotalWorkingYears=1 (기여도 +0.163), MonthlyIncome=1416 (기여도 +0.133), Age=21 (기여도 +0.102), YearsAtCompany=1 (기여도 +0.080), YearsWithCurrManager=0 (기여도 +0.052).",
+      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 90%).",
       "topFeatures": [
         {
           "feature": "TotalWorkingYears",
           "value": 1,
-          "contribution": 0.16332644152560885
+          "contribution": 0.1633
         },
         {
           "feature": "MonthlyIncome",
           "value": 1416,
-          "contribution": 0.1325095946761752
+          "contribution": 0.1325
         },
         {
           "feature": "Age",
           "value": 21,
-          "contribution": 0.10187244848311452
+          "contribution": 0.1019
         },
         {
           "feature": "YearsAtCompany",
           "value": 1,
-          "contribution": 0.08042907795157585
+          "contribution": 0.0804
         },
         {
           "feature": "YearsWithCurrManager",
           "value": 0,
-          "contribution": 0.0522290576647337
+          "contribution": 0.0522
+        },
+        {
+          "feature": "YearsInCurrentRole",
+          "value": 0,
+          "contribution": 0.0346
+        },
+        {
+          "feature": "HourlyRate",
+          "value": 36,
+          "contribution": 0.0321
+        },
+        {
+          "feature": "RelationshipSatisfaction",
+          "value": 1,
+          "contribution": 0.0289
+        },
+        {
+          "feature": "StockOptionLevel",
+          "value": 0,
+          "contribution": 0.0281
+        },
+        {
+          "feature": "JobSatisfaction",
+          "value": 1,
+          "contribution": 0.0269
+        },
+        {
+          "feature": "OverTime",
+          "value": "No",
+          "contribution": -0.0246
+        },
+        {
+          "feature": "JobLevel",
+          "value": 1,
+          "contribution": 0.024
+        },
+        {
+          "feature": "MaritalStatus",
+          "value": "Single",
+          "contribution": 0.0217
+        },
+        {
+          "feature": "JobRole",
+          "value": "Laboratory Technician",
+          "contribution": 0.0158
+        },
+        {
+          "feature": "DistanceFromHome",
+          "value": 10,
+          "contribution": 0.0151
+        },
+        {
+          "feature": "TrainingTimesLastYear",
+          "value": 6,
+          "contribution": -0.0099
+        },
+        {
+          "feature": "JobInvolvement",
+          "value": 2,
+          "contribution": 0.0095
+        },
+        {
+          "feature": "WorkLifeBalance",
+          "value": 2,
+          "contribution": 0.0079
+        },
+        {
+          "feature": "EnvironmentSatisfaction",
+          "value": 3,
+          "contribution": -0.0069
+        },
+        {
+          "feature": "Gender",
+          "value": "Female",
+          "contribution": 0.0068
+        },
+        {
+          "feature": "Education",
+          "value": 3,
+          "contribution": 0.0068
+        },
+        {
+          "feature": "EducationField",
+          "value": "Life Sciences",
+          "contribution": -0.0063
+        },
+        {
+          "feature": "BusinessTravel",
+          "value": "Travel_Rarely",
+          "contribution": 0.0052
+        },
+        {
+          "feature": "DailyRate",
+          "value": 1334,
+          "contribution": -0.0051
+        },
+        {
+          "feature": "Department",
+          "value": "Research & Development",
+          "contribution": -0.0049
+        },
+        {
+          "feature": "NumCompaniesWorked",
+          "value": 1,
+          "contribution": -0.0044
+        },
+        {
+          "feature": "PercentSalaryHike",
+          "value": 13,
+          "contribution": 0.0039
+        },
+        {
+          "feature": "YearsSinceLastPromotion",
+          "value": 1,
+          "contribution": 0.0029
+        },
+        {
+          "feature": "MonthlyRate",
+          "value": 17258,
+          "contribution": 0.0021
+        },
+        {
+          "feature": "PerformanceRating",
+          "value": 3,
+          "contribution": -0.0001
         }
       ]
     },
@@ -703,32 +2828,157 @@
       "actualLabel": "No",
       "actualPositive": false,
       "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 100%). 주요 근거: OverTime=No (기여도 -0.015), TotalWorkingYears=23 (기여도 -0.013), StockOptionLevel=1 (기여도 -0.012), DistanceFromHome=2 (기여도 -0.011), MonthlyIncome=10976 (기여도 -0.011).",
+      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 100%).",
       "topFeatures": [
         {
           "feature": "OverTime",
           "value": "No",
-          "contribution": -0.015208821459992979
+          "contribution": -0.0152
         },
         {
           "feature": "TotalWorkingYears",
           "value": 23,
-          "contribution": -0.012678484387929387
+          "contribution": -0.0127
         },
         {
           "feature": "StockOptionLevel",
           "value": 1,
-          "contribution": -0.012479261632307176
+          "contribution": -0.0125
         },
         {
           "feature": "DistanceFromHome",
           "value": 2,
-          "contribution": -0.01075143765824881
+          "contribution": -0.0108
         },
         {
           "feature": "MonthlyIncome",
           "value": 10976,
-          "contribution": -0.010620134113334708
+          "contribution": -0.0106
+        },
+        {
+          "feature": "DailyRate",
+          "value": 1091,
+          "contribution": -0.0097
+        },
+        {
+          "feature": "JobRole",
+          "value": "Manufacturing Director",
+          "contribution": -0.0091
+        },
+        {
+          "feature": "JobLevel",
+          "value": 3,
+          "contribution": -0.0085
+        },
+        {
+          "feature": "NumCompaniesWorked",
+          "value": 3,
+          "contribution": -0.0076
+        },
+        {
+          "feature": "Department",
+          "value": "Research & Development",
+          "contribution": -0.0076
+        },
+        {
+          "feature": "YearsWithCurrManager",
+          "value": 2,
+          "contribution": -0.0076
+        },
+        {
+          "feature": "YearsAtCompany",
+          "value": 3,
+          "contribution": -0.0065
+        },
+        {
+          "feature": "EnvironmentSatisfaction",
+          "value": 4,
+          "contribution": -0.0061
+        },
+        {
+          "feature": "MonthlyRate",
+          "value": 15813,
+          "contribution": -0.0061
+        },
+        {
+          "feature": "WorkLifeBalance",
+          "value": 3,
+          "contribution": -0.0055
+        },
+        {
+          "feature": "MaritalStatus",
+          "value": "Married",
+          "contribution": -0.0051
+        },
+        {
+          "feature": "BusinessTravel",
+          "value": "Travel_Frequently",
+          "contribution": 0.0048
+        },
+        {
+          "feature": "HourlyRate",
+          "value": 65,
+          "contribution": -0.0046
+        },
+        {
+          "feature": "YearsSinceLastPromotion",
+          "value": 1,
+          "contribution": -0.0045
+        },
+        {
+          "feature": "PercentSalaryHike",
+          "value": 18,
+          "contribution": -0.0045
+        },
+        {
+          "feature": "Age",
+          "value": 55,
+          "contribution": -0.0043
+        },
+        {
+          "feature": "Education",
+          "value": 1,
+          "contribution": 0.0043
+        },
+        {
+          "feature": "JobInvolvement",
+          "value": 3,
+          "contribution": -0.0042
+        },
+        {
+          "feature": "EducationField",
+          "value": "Life Sciences",
+          "contribution": -0.0038
+        },
+        {
+          "feature": "RelationshipSatisfaction",
+          "value": 2,
+          "contribution": -0.0022
+        },
+        {
+          "feature": "JobSatisfaction",
+          "value": 2,
+          "contribution": 0.0013
+        },
+        {
+          "feature": "YearsInCurrentRole",
+          "value": 2,
+          "contribution": -0.0012
+        },
+        {
+          "feature": "Gender",
+          "value": "Male",
+          "contribution": 0.0008
+        },
+        {
+          "feature": "PerformanceRating",
+          "value": 3,
+          "contribution": -0.0003
+        },
+        {
+          "feature": "TrainingTimesLastYear",
+          "value": 4,
+          "contribution": -0.0002
         }
       ]
     },
@@ -740,32 +2990,157 @@
       "actualLabel": "No",
       "actualPositive": false,
       "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 100%). 주요 근거: Age=37 (기여도 -0.018), TotalWorkingYears=14 (기여도 -0.013), OverTime=No (기여도 -0.012), MonthlyIncome=6474 (기여도 -0.012), StockOptionLevel=1 (기여도 -0.011).",
+      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 100%).",
       "topFeatures": [
         {
           "feature": "Age",
           "value": 37,
-          "contribution": -0.017560116975432725
+          "contribution": -0.0176
         },
         {
           "feature": "TotalWorkingYears",
           "value": 14,
-          "contribution": -0.01272417333154196
+          "contribution": -0.0127
         },
         {
           "feature": "OverTime",
           "value": "No",
-          "contribution": -0.012424141518773883
+          "contribution": -0.0124
         },
         {
           "feature": "MonthlyIncome",
           "value": 6474,
-          "contribution": -0.01237003728982444
+          "contribution": -0.0124
         },
         {
           "feature": "StockOptionLevel",
           "value": 1,
-          "contribution": -0.011275221972845749
+          "contribution": -0.0113
+        },
+        {
+          "feature": "JobLevel",
+          "value": 2,
+          "contribution": -0.0091
+        },
+        {
+          "feature": "DistanceFromHome",
+          "value": 1,
+          "contribution": -0.0087
+        },
+        {
+          "feature": "YearsAtCompany",
+          "value": 14,
+          "contribution": -0.0085
+        },
+        {
+          "feature": "DailyRate",
+          "value": 977,
+          "contribution": -0.0081
+        },
+        {
+          "feature": "YearsWithCurrManager",
+          "value": 11,
+          "contribution": -0.0069
+        },
+        {
+          "feature": "NumCompaniesWorked",
+          "value": 1,
+          "contribution": -0.0068
+        },
+        {
+          "feature": "JobSatisfaction",
+          "value": 4,
+          "contribution": -0.0062
+        },
+        {
+          "feature": "EnvironmentSatisfaction",
+          "value": 4,
+          "contribution": -0.0058
+        },
+        {
+          "feature": "JobRole",
+          "value": "Manufacturing Director",
+          "contribution": -0.0056
+        },
+        {
+          "feature": "MaritalStatus",
+          "value": "Married",
+          "contribution": -0.0054
+        },
+        {
+          "feature": "Department",
+          "value": "Research & Development",
+          "contribution": -0.0052
+        },
+        {
+          "feature": "YearsInCurrentRole",
+          "value": 8,
+          "contribution": -0.0043
+        },
+        {
+          "feature": "PercentSalaryHike",
+          "value": 13,
+          "contribution": -0.004
+        },
+        {
+          "feature": "EducationField",
+          "value": "Life Sciences",
+          "contribution": -0.0035
+        },
+        {
+          "feature": "HourlyRate",
+          "value": 56,
+          "contribution": -0.0019
+        },
+        {
+          "feature": "MonthlyRate",
+          "value": 9961,
+          "contribution": -0.0017
+        },
+        {
+          "feature": "TrainingTimesLastYear",
+          "value": 2,
+          "contribution": -0.0016
+        },
+        {
+          "feature": "BusinessTravel",
+          "value": "Travel_Rarely",
+          "contribution": -0.0013
+        },
+        {
+          "feature": "Education",
+          "value": 3,
+          "contribution": -0.0012
+        },
+        {
+          "feature": "YearsSinceLastPromotion",
+          "value": 3,
+          "contribution": -0.0008
+        },
+        {
+          "feature": "RelationshipSatisfaction",
+          "value": 2,
+          "contribution": -0.0007
+        },
+        {
+          "feature": "JobInvolvement",
+          "value": 2,
+          "contribution": 0.0005
+        },
+        {
+          "feature": "PerformanceRating",
+          "value": 3,
+          "contribution": -0.0005
+        },
+        {
+          "feature": "WorkLifeBalance",
+          "value": 2,
+          "contribution": 0.0004
+        },
+        {
+          "feature": "Gender",
+          "value": "Female",
+          "contribution": 0.0002
         }
       ]
     },
@@ -777,32 +3152,157 @@
       "actualLabel": "No",
       "actualPositive": false,
       "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 100%). 주요 근거: OverTime=No (기여도 -0.018), MonthlyIncome=6209 (기여도 -0.015), StockOptionLevel=2 (기여도 -0.013), TotalWorkingYears=10 (기여도 -0.011), YearsAtCompany=10 (기여도 -0.010).",
+      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 100%).",
       "topFeatures": [
         {
           "feature": "OverTime",
           "value": "No",
-          "contribution": -0.017579037525114746
+          "contribution": -0.0176
         },
         {
           "feature": "MonthlyIncome",
           "value": 6209,
-          "contribution": -0.015168695893737554
+          "contribution": -0.0152
         },
         {
           "feature": "StockOptionLevel",
           "value": 2,
-          "contribution": -0.013316476821801893
+          "contribution": -0.0133
         },
         {
           "feature": "TotalWorkingYears",
           "value": 10,
-          "contribution": -0.010670161578004935
+          "contribution": -0.0107
         },
         {
           "feature": "YearsAtCompany",
           "value": 10,
-          "contribution": -0.009871081231573906
+          "contribution": -0.0099
+        },
+        {
+          "feature": "NumCompaniesWorked",
+          "value": 1,
+          "contribution": -0.0095
+        },
+        {
+          "feature": "JobLevel",
+          "value": 2,
+          "contribution": -0.0089
+        },
+        {
+          "feature": "DistanceFromHome",
+          "value": 8,
+          "contribution": -0.0085
+        },
+        {
+          "feature": "PercentSalaryHike",
+          "value": 15,
+          "contribution": -0.0084
+        },
+        {
+          "feature": "EnvironmentSatisfaction",
+          "value": 3,
+          "contribution": -0.0082
+        },
+        {
+          "feature": "YearsWithCurrManager",
+          "value": 8,
+          "contribution": -0.0077
+        },
+        {
+          "feature": "JobInvolvement",
+          "value": 4,
+          "contribution": -0.0073
+        },
+        {
+          "feature": "Department",
+          "value": "Sales",
+          "contribution": 0.0069
+        },
+        {
+          "feature": "JobSatisfaction",
+          "value": 4,
+          "contribution": -0.0057
+        },
+        {
+          "feature": "MonthlyRate",
+          "value": 11693,
+          "contribution": -0.0054
+        },
+        {
+          "feature": "RelationshipSatisfaction",
+          "value": 3,
+          "contribution": -0.005
+        },
+        {
+          "feature": "YearsSinceLastPromotion",
+          "value": 0,
+          "contribution": -0.0047
+        },
+        {
+          "feature": "Age",
+          "value": 32,
+          "contribution": -0.0046
+        },
+        {
+          "feature": "EducationField",
+          "value": "Medical",
+          "contribution": -0.0046
+        },
+        {
+          "feature": "MaritalStatus",
+          "value": "Married",
+          "contribution": -0.0044
+        },
+        {
+          "feature": "YearsInCurrentRole",
+          "value": 7,
+          "contribution": -0.0044
+        },
+        {
+          "feature": "HourlyRate",
+          "value": 56,
+          "contribution": -0.0037
+        },
+        {
+          "feature": "WorkLifeBalance",
+          "value": 4,
+          "contribution": 0.0028
+        },
+        {
+          "feature": "JobRole",
+          "value": "Sales Executive",
+          "contribution": 0.0025
+        },
+        {
+          "feature": "DailyRate",
+          "value": 604,
+          "contribution": -0.0013
+        },
+        {
+          "feature": "BusinessTravel",
+          "value": "Travel_Rarely",
+          "contribution": -0.0013
+        },
+        {
+          "feature": "Education",
+          "value": 3,
+          "contribution": -0.0007
+        },
+        {
+          "feature": "PerformanceRating",
+          "value": 3,
+          "contribution": -0.0006
+        },
+        {
+          "feature": "TrainingTimesLastYear",
+          "value": 4,
+          "contribution": -0.0003
+        },
+        {
+          "feature": "Gender",
+          "value": "Male",
+          "contribution": -0.0001
         }
       ]
     },
@@ -814,32 +3314,157 @@
       "actualLabel": "No",
       "actualPositive": false,
       "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 100%). 주요 근거: OverTime=Yes (기여도 +0.024), MonthlyIncome=14026 (기여도 -0.020), Age=51 (기여도 -0.018), TotalWorkingYears=33 (기여도 -0.018), StockOptionLevel=1 (기여도 -0.017).",
+      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 100%).",
       "topFeatures": [
         {
           "feature": "OverTime",
           "value": "Yes",
-          "contribution": 0.024076551267311112
+          "contribution": 0.0241
         },
         {
           "feature": "MonthlyIncome",
           "value": 14026,
-          "contribution": -0.0195548569358715
+          "contribution": -0.0196
         },
         {
           "feature": "Age",
           "value": 51,
-          "contribution": -0.018451192527354374
+          "contribution": -0.0185
         },
         {
           "feature": "TotalWorkingYears",
           "value": 33,
-          "contribution": -0.018332337865824087
+          "contribution": -0.0183
         },
         {
           "feature": "StockOptionLevel",
           "value": 1,
-          "contribution": -0.016937429485555038
+          "contribution": -0.0169
+        },
+        {
+          "feature": "JobLevel",
+          "value": 4,
+          "contribution": -0.0153
+        },
+        {
+          "feature": "PercentSalaryHike",
+          "value": 11,
+          "contribution": 0.0121
+        },
+        {
+          "feature": "JobRole",
+          "value": "Manager",
+          "contribution": -0.0112
+        },
+        {
+          "feature": "EnvironmentSatisfaction",
+          "value": 3,
+          "contribution": -0.0111
+        },
+        {
+          "feature": "DistanceFromHome",
+          "value": 5,
+          "contribution": -0.0099
+        },
+        {
+          "feature": "NumCompaniesWorked",
+          "value": 1,
+          "contribution": -0.009
+        },
+        {
+          "feature": "MaritalStatus",
+          "value": "Divorced",
+          "contribution": -0.008
+        },
+        {
+          "feature": "YearsInCurrentRole",
+          "value": 9,
+          "contribution": -0.0074
+        },
+        {
+          "feature": "YearsWithCurrManager",
+          "value": 10,
+          "contribution": -0.0074
+        },
+        {
+          "feature": "JobInvolvement",
+          "value": 3,
+          "contribution": -0.0057
+        },
+        {
+          "feature": "WorkLifeBalance",
+          "value": 3,
+          "contribution": -0.0055
+        },
+        {
+          "feature": "MonthlyRate",
+          "value": 17588,
+          "contribution": -0.0055
+        },
+        {
+          "feature": "YearsAtCompany",
+          "value": 33,
+          "contribution": -0.0055
+        },
+        {
+          "feature": "EducationField",
+          "value": "Life Sciences",
+          "contribution": -0.0049
+        },
+        {
+          "feature": "DailyRate",
+          "value": 770,
+          "contribution": -0.0037
+        },
+        {
+          "feature": "Department",
+          "value": "Human Resources",
+          "contribution": -0.0032
+        },
+        {
+          "feature": "YearsSinceLastPromotion",
+          "value": 0,
+          "contribution": -0.003
+        },
+        {
+          "feature": "RelationshipSatisfaction",
+          "value": 2,
+          "contribution": -0.0025
+        },
+        {
+          "feature": "HourlyRate",
+          "value": 84,
+          "contribution": -0.0024
+        },
+        {
+          "feature": "Education",
+          "value": 3,
+          "contribution": -0.0017
+        },
+        {
+          "feature": "BusinessTravel",
+          "value": "Travel_Rarely",
+          "contribution": -0.0016
+        },
+        {
+          "feature": "TrainingTimesLastYear",
+          "value": 2,
+          "contribution": -0.0014
+        },
+        {
+          "feature": "PerformanceRating",
+          "value": 3,
+          "contribution": -0.0005
+        },
+        {
+          "feature": "Gender",
+          "value": "Male",
+          "contribution": 0.0003
+        },
+        {
+          "feature": "JobSatisfaction",
+          "value": 2,
+          "contribution": 0.0002
         }
       ]
     },
@@ -851,32 +3476,157 @@
       "actualLabel": "Yes",
       "actualPositive": true,
       "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 88%). 주요 근거: TotalWorkingYears=1 (기여도 +0.159), MonthlyIncome=1359 (기여도 +0.143), YearsAtCompany=1 (기여도 +0.078), JobInvolvement=1 (기여도 +0.065), Age=31 (기여도 +0.044).",
+      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 88%).",
       "topFeatures": [
         {
           "feature": "TotalWorkingYears",
           "value": 1,
-          "contribution": 0.1590602618796704
+          "contribution": 0.1591
         },
         {
           "feature": "MonthlyIncome",
           "value": 1359,
-          "contribution": 0.14289379570537056
+          "contribution": 0.1429
         },
         {
           "feature": "YearsAtCompany",
           "value": 1,
-          "contribution": 0.07777056176533738
+          "contribution": 0.0778
         },
         {
           "feature": "JobInvolvement",
           "value": 1,
-          "contribution": 0.06467311620117955
+          "contribution": 0.0647
         },
         {
           "feature": "Age",
           "value": 31,
-          "contribution": 0.043558610708946656
+          "contribution": 0.0436
+        },
+        {
+          "feature": "YearsWithCurrManager",
+          "value": 0,
+          "contribution": 0.0421
+        },
+        {
+          "feature": "StockOptionLevel",
+          "value": 0,
+          "contribution": 0.0384
+        },
+        {
+          "feature": "MaritalStatus",
+          "value": "Single",
+          "contribution": 0.0324
+        },
+        {
+          "feature": "JobLevel",
+          "value": 1,
+          "contribution": 0.0302
+        },
+        {
+          "feature": "JobRole",
+          "value": "Sales Representative",
+          "contribution": 0.0294
+        },
+        {
+          "feature": "YearsInCurrentRole",
+          "value": 0,
+          "contribution": 0.0288
+        },
+        {
+          "feature": "DistanceFromHome",
+          "value": 1,
+          "contribution": -0.0251
+        },
+        {
+          "feature": "OverTime",
+          "value": "No",
+          "contribution": -0.0234
+        },
+        {
+          "feature": "Department",
+          "value": "Sales",
+          "contribution": 0.0193
+        },
+        {
+          "feature": "HourlyRate",
+          "value": 50,
+          "contribution": 0.0192
+        },
+        {
+          "feature": "BusinessTravel",
+          "value": "Travel_Frequently",
+          "contribution": 0.0186
+        },
+        {
+          "feature": "PercentSalaryHike",
+          "value": 12,
+          "contribution": 0.0103
+        },
+        {
+          "feature": "EducationField",
+          "value": "Life Sciences",
+          "contribution": -0.009
+        },
+        {
+          "feature": "WorkLifeBalance",
+          "value": 3,
+          "contribution": -0.0087
+        },
+        {
+          "feature": "RelationshipSatisfaction",
+          "value": 2,
+          "contribution": 0.0078
+        },
+        {
+          "feature": "DailyRate",
+          "value": 667,
+          "contribution": 0.0071
+        },
+        {
+          "feature": "Gender",
+          "value": "Female",
+          "contribution": 0.0065
+        },
+        {
+          "feature": "EnvironmentSatisfaction",
+          "value": 2,
+          "contribution": 0.0059
+        },
+        {
+          "feature": "Education",
+          "value": 4,
+          "contribution": 0.0058
+        },
+        {
+          "feature": "NumCompaniesWorked",
+          "value": 1,
+          "contribution": -0.0028
+        },
+        {
+          "feature": "MonthlyRate",
+          "value": 16154,
+          "contribution": -0.0018
+        },
+        {
+          "feature": "TrainingTimesLastYear",
+          "value": 3,
+          "contribution": 0.0016
+        },
+        {
+          "feature": "JobSatisfaction",
+          "value": 3,
+          "contribution": -0.0008
+        },
+        {
+          "feature": "YearsSinceLastPromotion",
+          "value": 0,
+          "contribution": 0.0005
+        },
+        {
+          "feature": "PerformanceRating",
+          "value": 3,
+          "contribution": 0.0001
         }
       ]
     },
@@ -888,32 +3638,157 @@
       "actualLabel": "No",
       "actualPositive": false,
       "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 100%). 주요 근거: TotalWorkingYears=26 (기여도 -0.016), StockOptionLevel=1 (기여도 -0.016), MonthlyIncome=16032 (기여도 -0.014), OverTime=No (기여도 -0.014), JobRole=Manager (기여도 -0.014).",
+      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 100%).",
       "topFeatures": [
         {
           "feature": "TotalWorkingYears",
           "value": 26,
-          "contribution": -0.015989139283234886
+          "contribution": -0.016
         },
         {
           "feature": "StockOptionLevel",
           "value": 1,
-          "contribution": -0.01584939241000429
+          "contribution": -0.0158
         },
         {
           "feature": "MonthlyIncome",
           "value": 16032,
-          "contribution": -0.014425450372402351
+          "contribution": -0.0144
         },
         {
           "feature": "OverTime",
           "value": "No",
-          "contribution": -0.013967869391032879
+          "contribution": -0.014
         },
         {
           "feature": "JobRole",
           "value": "Manager",
-          "contribution": -0.01361314141238635
+          "contribution": -0.0136
+        },
+        {
+          "feature": "Age",
+          "value": 54,
+          "contribution": -0.0122
+        },
+        {
+          "feature": "RelationshipSatisfaction",
+          "value": 1,
+          "contribution": 0.0114
+        },
+        {
+          "feature": "YearsAtCompany",
+          "value": 14,
+          "contribution": -0.0109
+        },
+        {
+          "feature": "DailyRate",
+          "value": 1050,
+          "contribution": -0.0095
+        },
+        {
+          "feature": "JobLevel",
+          "value": 4,
+          "contribution": -0.0094
+        },
+        {
+          "feature": "YearsInCurrentRole",
+          "value": 9,
+          "contribution": -0.0087
+        },
+        {
+          "feature": "NumCompaniesWorked",
+          "value": 3,
+          "contribution": -0.0062
+        },
+        {
+          "feature": "WorkLifeBalance",
+          "value": 3,
+          "contribution": -0.006
+        },
+        {
+          "feature": "Department",
+          "value": "Research & Development",
+          "contribution": -0.0058
+        },
+        {
+          "feature": "JobSatisfaction",
+          "value": 4,
+          "contribution": -0.0057
+        },
+        {
+          "feature": "YearsWithCurrManager",
+          "value": 12,
+          "contribution": -0.0057
+        },
+        {
+          "feature": "HourlyRate",
+          "value": 87,
+          "contribution": -0.0057
+        },
+        {
+          "feature": "JobInvolvement",
+          "value": 3,
+          "contribution": -0.0055
+        },
+        {
+          "feature": "MaritalStatus",
+          "value": "Divorced",
+          "contribution": -0.0044
+        },
+        {
+          "feature": "YearsSinceLastPromotion",
+          "value": 1,
+          "contribution": -0.0038
+        },
+        {
+          "feature": "PercentSalaryHike",
+          "value": 20,
+          "contribution": -0.0038
+        },
+        {
+          "feature": "BusinessTravel",
+          "value": "Travel_Frequently",
+          "contribution": 0.0037
+        },
+        {
+          "feature": "EducationField",
+          "value": "Medical",
+          "contribution": -0.0022
+        },
+        {
+          "feature": "MonthlyRate",
+          "value": 24456,
+          "contribution": 0.0022
+        },
+        {
+          "feature": "PerformanceRating",
+          "value": 4,
+          "contribution": 0.0022
+        },
+        {
+          "feature": "EnvironmentSatisfaction",
+          "value": 2,
+          "contribution": -0.002
+        },
+        {
+          "feature": "TrainingTimesLastYear",
+          "value": 2,
+          "contribution": -0.0012
+        },
+        {
+          "feature": "DistanceFromHome",
+          "value": 11,
+          "contribution": 0.0007
+        },
+        {
+          "feature": "Education",
+          "value": 4,
+          "contribution": -0.0006
+        },
+        {
+          "feature": "Gender",
+          "value": "Female",
+          "contribution": -0.0001
         }
       ]
     },
@@ -925,32 +3800,157 @@
       "actualLabel": "Yes",
       "actualPositive": true,
       "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 91%). 주요 근거: TotalWorkingYears=0 (기여도 +0.138), MonthlyIncome=1569 (기여도 +0.116), Age=18 (기여도 +0.108), OverTime=Yes (기여도 +0.084), YearsAtCompany=0 (기여도 +0.072).",
+      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 91%).",
       "topFeatures": [
         {
           "feature": "TotalWorkingYears",
           "value": 0,
-          "contribution": 0.13849539184078224
+          "contribution": 0.1385
         },
         {
           "feature": "MonthlyIncome",
           "value": 1569,
-          "contribution": 0.115808903372288
+          "contribution": 0.1158
         },
         {
           "feature": "Age",
           "value": 18,
-          "contribution": 0.10844551791093139
+          "contribution": 0.1084
         },
         {
           "feature": "OverTime",
           "value": "Yes",
-          "contribution": 0.08351645850568043
+          "contribution": 0.0835
         },
         {
           "feature": "YearsAtCompany",
           "value": 0,
-          "contribution": 0.07204632705228711
+          "contribution": 0.072
+        },
+        {
+          "feature": "YearsWithCurrManager",
+          "value": 0,
+          "contribution": 0.0491
+        },
+        {
+          "feature": "StockOptionLevel",
+          "value": 0,
+          "contribution": 0.0333
+        },
+        {
+          "feature": "YearsInCurrentRole",
+          "value": 0,
+          "contribution": 0.0328
+        },
+        {
+          "feature": "MaritalStatus",
+          "value": "Single",
+          "contribution": 0.0292
+        },
+        {
+          "feature": "JobLevel",
+          "value": 1,
+          "contribution": 0.0282
+        },
+        {
+          "feature": "JobRole",
+          "value": "Sales Representative",
+          "contribution": 0.0273
+        },
+        {
+          "feature": "BusinessTravel",
+          "value": "Travel_Frequently",
+          "contribution": 0.0176
+        },
+        {
+          "feature": "JobSatisfaction",
+          "value": 4,
+          "contribution": -0.0164
+        },
+        {
+          "feature": "DailyRate",
+          "value": 544,
+          "contribution": 0.0148
+        },
+        {
+          "feature": "DistanceFromHome",
+          "value": 3,
+          "contribution": -0.0141
+        },
+        {
+          "feature": "Department",
+          "value": "Sales",
+          "contribution": 0.0123
+        },
+        {
+          "feature": "JobInvolvement",
+          "value": 3,
+          "contribution": -0.0072
+        },
+        {
+          "feature": "TrainingTimesLastYear",
+          "value": 2,
+          "contribution": 0.005
+        },
+        {
+          "feature": "EnvironmentSatisfaction",
+          "value": 2,
+          "contribution": 0.0049
+        },
+        {
+          "feature": "Gender",
+          "value": "Female",
+          "contribution": 0.0035
+        },
+        {
+          "feature": "YearsSinceLastPromotion",
+          "value": 0,
+          "contribution": 0.0025
+        },
+        {
+          "feature": "Education",
+          "value": 2,
+          "contribution": -0.0024
+        },
+        {
+          "feature": "PercentSalaryHike",
+          "value": 12,
+          "contribution": 0.0022
+        },
+        {
+          "feature": "HourlyRate",
+          "value": 70,
+          "contribution": 0.0021
+        },
+        {
+          "feature": "WorkLifeBalance",
+          "value": 4,
+          "contribution": 0.0017
+        },
+        {
+          "feature": "RelationshipSatisfaction",
+          "value": 3,
+          "contribution": 0.0016
+        },
+        {
+          "feature": "EducationField",
+          "value": "Medical",
+          "contribution": 0.0012
+        },
+        {
+          "feature": "NumCompaniesWorked",
+          "value": 1,
+          "contribution": -0.0012
+        },
+        {
+          "feature": "MonthlyRate",
+          "value": 18420,
+          "contribution": 0.0011
+        },
+        {
+          "feature": "PerformanceRating",
+          "value": 3,
+          "contribution": -0.0002
         }
       ]
     },
@@ -962,32 +3962,157 @@
       "actualLabel": "No",
       "actualPositive": false,
       "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 100%). 주요 근거: OverTime=No (기여도 -0.016), StockOptionLevel=1 (기여도 -0.015), MonthlyIncome=5433 (기여도 -0.014), YearsSinceLastPromotion=7 (기여도 +0.010), Age=34 (기여도 -0.010).",
+      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 100%).",
       "topFeatures": [
         {
           "feature": "OverTime",
           "value": "No",
-          "contribution": -0.015762900227242374
+          "contribution": -0.0158
         },
         {
           "feature": "StockOptionLevel",
           "value": 1,
-          "contribution": -0.015183204786644177
+          "contribution": -0.0152
         },
         {
           "feature": "MonthlyIncome",
           "value": 5433,
-          "contribution": -0.013600866676183652
+          "contribution": -0.0136
         },
         {
           "feature": "YearsSinceLastPromotion",
           "value": 7,
-          "contribution": 0.01015861761304819
+          "contribution": 0.0102
         },
         {
           "feature": "Age",
           "value": 34,
-          "contribution": -0.010100957526433483
+          "contribution": -0.0101
+        },
+        {
+          "feature": "YearsWithCurrManager",
+          "value": 9,
+          "contribution": -0.01
+        },
+        {
+          "feature": "DistanceFromHome",
+          "value": 3,
+          "contribution": -0.0098
+        },
+        {
+          "feature": "DailyRate",
+          "value": 1130,
+          "contribution": -0.0092
+        },
+        {
+          "feature": "YearsAtCompany",
+          "value": 11,
+          "contribution": -0.0088
+        },
+        {
+          "feature": "TotalWorkingYears",
+          "value": 11,
+          "contribution": -0.0078
+        },
+        {
+          "feature": "JobLevel",
+          "value": 2,
+          "contribution": -0.0075
+        },
+        {
+          "feature": "NumCompaniesWorked",
+          "value": 1,
+          "contribution": -0.007
+        },
+        {
+          "feature": "WorkLifeBalance",
+          "value": 3,
+          "contribution": -0.007
+        },
+        {
+          "feature": "JobInvolvement",
+          "value": 3,
+          "contribution": -0.0057
+        },
+        {
+          "feature": "EnvironmentSatisfaction",
+          "value": 4,
+          "contribution": -0.0053
+        },
+        {
+          "feature": "MonthlyRate",
+          "value": 19332,
+          "contribution": -0.0051
+        },
+        {
+          "feature": "YearsInCurrentRole",
+          "value": 8,
+          "contribution": -0.005
+        },
+        {
+          "feature": "HourlyRate",
+          "value": 66,
+          "contribution": -0.0049
+        },
+        {
+          "feature": "MaritalStatus",
+          "value": "Divorced",
+          "contribution": -0.0042
+        },
+        {
+          "feature": "RelationshipSatisfaction",
+          "value": 3,
+          "contribution": -0.0041
+        },
+        {
+          "feature": "Department",
+          "value": "Research & Development",
+          "contribution": -0.0041
+        },
+        {
+          "feature": "EducationField",
+          "value": "Life Sciences",
+          "contribution": -0.0035
+        },
+        {
+          "feature": "PercentSalaryHike",
+          "value": 12,
+          "contribution": -0.0022
+        },
+        {
+          "feature": "JobSatisfaction",
+          "value": 2,
+          "contribution": 0.0016
+        },
+        {
+          "feature": "Education",
+          "value": 3,
+          "contribution": -0.0015
+        },
+        {
+          "feature": "JobRole",
+          "value": "Research Scientist",
+          "contribution": -0.0015
+        },
+        {
+          "feature": "TrainingTimesLastYear",
+          "value": 2,
+          "contribution": -0.001
+        },
+        {
+          "feature": "BusinessTravel",
+          "value": "Travel_Rarely",
+          "contribution": -0.0009
+        },
+        {
+          "feature": "PerformanceRating",
+          "value": 3,
+          "contribution": -0.0007
+        },
+        {
+          "feature": "Gender",
+          "value": "Female",
+          "contribution": 0.0
         }
       ]
     },
@@ -999,32 +4124,157 @@
       "actualLabel": "Yes",
       "actualPositive": true,
       "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 91%). 주요 근거: TotalWorkingYears=1 (기여도 +0.139), OverTime=Yes (기여도 +0.111), YearsAtCompany=1 (기여도 +0.082), MonthlyIncome=2439 (기여도 +0.061), DistanceFromHome=24 (기여도 +0.055).",
+      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 91%).",
       "topFeatures": [
         {
           "feature": "TotalWorkingYears",
           "value": 1,
-          "contribution": 0.138881619404549
+          "contribution": 0.1389
         },
         {
           "feature": "OverTime",
           "value": "Yes",
-          "contribution": 0.11092466707428883
+          "contribution": 0.1109
         },
         {
           "feature": "YearsAtCompany",
           "value": 1,
-          "contribution": 0.08226573352702034
+          "contribution": 0.0823
         },
         {
           "feature": "MonthlyIncome",
           "value": 2439,
-          "contribution": 0.06101114484512959
+          "contribution": 0.061
         },
         {
           "feature": "DistanceFromHome",
           "value": 24,
-          "contribution": 0.054977798691948306
+          "contribution": 0.055
+        },
+        {
+          "feature": "Age",
+          "value": 29,
+          "contribution": 0.0491
+        },
+        {
+          "feature": "YearsWithCurrManager",
+          "value": 0,
+          "contribution": 0.0472
+        },
+        {
+          "feature": "StockOptionLevel",
+          "value": 0,
+          "contribution": 0.0379
+        },
+        {
+          "feature": "JobLevel",
+          "value": 1,
+          "contribution": 0.0368
+        },
+        {
+          "feature": "MaritalStatus",
+          "value": "Single",
+          "contribution": 0.0321
+        },
+        {
+          "feature": "YearsInCurrentRole",
+          "value": 0,
+          "contribution": 0.0312
+        },
+        {
+          "feature": "PercentSalaryHike",
+          "value": 24,
+          "contribution": 0.0288
+        },
+        {
+          "feature": "DailyRate",
+          "value": 459,
+          "contribution": 0.0202
+        },
+        {
+          "feature": "RelationshipSatisfaction",
+          "value": 2,
+          "contribution": 0.0153
+        },
+        {
+          "feature": "JobInvolvement",
+          "value": 2,
+          "contribution": 0.0152
+        },
+        {
+          "feature": "JobRole",
+          "value": "Research Scientist",
+          "contribution": -0.0132
+        },
+        {
+          "feature": "BusinessTravel",
+          "value": "Travel_Frequently",
+          "contribution": 0.013
+        },
+        {
+          "feature": "JobSatisfaction",
+          "value": 4,
+          "contribution": -0.0113
+        },
+        {
+          "feature": "EnvironmentSatisfaction",
+          "value": 4,
+          "contribution": -0.0085
+        },
+        {
+          "feature": "PerformanceRating",
+          "value": 4,
+          "contribution": 0.007
+        },
+        {
+          "feature": "WorkLifeBalance",
+          "value": 2,
+          "contribution": 0.0064
+        },
+        {
+          "feature": "HourlyRate",
+          "value": 73,
+          "contribution": -0.006
+        },
+        {
+          "feature": "EducationField",
+          "value": "Life Sciences",
+          "contribution": -0.0059
+        },
+        {
+          "feature": "YearsSinceLastPromotion",
+          "value": 1,
+          "contribution": 0.0053
+        },
+        {
+          "feature": "Department",
+          "value": "Research & Development",
+          "contribution": -0.0032
+        },
+        {
+          "feature": "Education",
+          "value": 2,
+          "contribution": 0.0015
+        },
+        {
+          "feature": "NumCompaniesWorked",
+          "value": 1,
+          "contribution": -0.0014
+        },
+        {
+          "feature": "Gender",
+          "value": "Male",
+          "contribution": 0.0007
+        },
+        {
+          "feature": "MonthlyRate",
+          "value": 14753,
+          "contribution": 0.0004
+        },
+        {
+          "feature": "TrainingTimesLastYear",
+          "value": 3,
+          "contribution": 0.0001
         }
       ]
     },
@@ -1036,32 +4286,157 @@
       "actualLabel": "Yes",
       "actualPositive": true,
       "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 90%). 주요 근거: TotalWorkingYears=1 (기여도 +0.167), MonthlyIncome=1091 (기여도 +0.130), YearsAtCompany=1 (기여도 +0.086), YearsWithCurrManager=0 (기여도 +0.058), Age=29 (기여도 +0.047).",
+      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 90%).",
       "topFeatures": [
         {
           "feature": "TotalWorkingYears",
           "value": 1,
-          "contribution": 0.1665377515376291
+          "contribution": 0.1665
         },
         {
           "feature": "MonthlyIncome",
           "value": 1091,
-          "contribution": 0.1295320029487884
+          "contribution": 0.1295
         },
         {
           "feature": "YearsAtCompany",
           "value": 1,
-          "contribution": 0.0862196639935751
+          "contribution": 0.0862
         },
         {
           "feature": "YearsWithCurrManager",
           "value": 0,
-          "contribution": 0.05840079007119391
+          "contribution": 0.0584
         },
         {
           "feature": "Age",
           "value": 29,
-          "contribution": 0.04658980708310367
+          "contribution": 0.0466
+        },
+        {
+          "feature": "DistanceFromHome",
+          "value": 24,
+          "contribution": 0.0394
+        },
+        {
+          "feature": "EducationField",
+          "value": "Technical Degree",
+          "contribution": 0.0387
+        },
+        {
+          "feature": "YearsInCurrentRole",
+          "value": 0,
+          "contribution": 0.0348
+        },
+        {
+          "feature": "StockOptionLevel",
+          "value": 0,
+          "contribution": 0.0318
+        },
+        {
+          "feature": "MaritalStatus",
+          "value": "Single",
+          "contribution": 0.0295
+        },
+        {
+          "feature": "JobSatisfaction",
+          "value": 1,
+          "contribution": 0.0282
+        },
+        {
+          "feature": "JobLevel",
+          "value": 1,
+          "contribution": 0.028
+        },
+        {
+          "feature": "JobRole",
+          "value": "Sales Representative",
+          "contribution": 0.0276
+        },
+        {
+          "feature": "OverTime",
+          "value": "No",
+          "contribution": -0.0275
+        },
+        {
+          "feature": "BusinessTravel",
+          "value": "Travel_Frequently",
+          "contribution": 0.0171
+        },
+        {
+          "feature": "Department",
+          "value": "Sales",
+          "contribution": 0.0157
+        },
+        {
+          "feature": "RelationshipSatisfaction",
+          "value": 4,
+          "contribution": -0.015
+        },
+        {
+          "feature": "HourlyRate",
+          "value": 45,
+          "contribution": 0.0136
+        },
+        {
+          "feature": "JobInvolvement",
+          "value": 4,
+          "contribution": -0.0085
+        },
+        {
+          "feature": "Education",
+          "value": 3,
+          "contribution": 0.0081
+        },
+        {
+          "feature": "EnvironmentSatisfaction",
+          "value": 3,
+          "contribution": -0.0072
+        },
+        {
+          "feature": "WorkLifeBalance",
+          "value": 3,
+          "contribution": -0.0046
+        },
+        {
+          "feature": "DailyRate",
+          "value": 746,
+          "contribution": 0.0035
+        },
+        {
+          "feature": "NumCompaniesWorked",
+          "value": 1,
+          "contribution": -0.0017
+        },
+        {
+          "feature": "YearsSinceLastPromotion",
+          "value": 0,
+          "contribution": 0.0013
+        },
+        {
+          "feature": "TrainingTimesLastYear",
+          "value": 3,
+          "contribution": 0.0011
+        },
+        {
+          "feature": "MonthlyRate",
+          "value": 10642,
+          "contribution": -0.001
+        },
+        {
+          "feature": "PercentSalaryHike",
+          "value": 17,
+          "contribution": 0.0008
+        },
+        {
+          "feature": "Gender",
+          "value": "Male",
+          "contribution": -0.0008
+        },
+        {
+          "feature": "PerformanceRating",
+          "value": 3,
+          "contribution": 0.0002
         }
       ]
     },
@@ -1073,32 +4448,157 @@
       "actualLabel": "No",
       "actualPositive": false,
       "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 100%). 주요 근거: OverTime=No (기여도 -0.022), Age=38 (기여도 -0.017), TrainingTimesLastYear=0 (기여도 +0.014), YearsAtCompany=5 (기여도 -0.013), MonthlyIncome=4771 (기여도 -0.013).",
+      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 100%).",
       "topFeatures": [
         {
           "feature": "OverTime",
           "value": "No",
-          "contribution": -0.02240351215743309
+          "contribution": -0.0224
         },
         {
           "feature": "Age",
           "value": 38,
-          "contribution": -0.017186020356133112
+          "contribution": -0.0172
         },
         {
           "feature": "TrainingTimesLastYear",
           "value": 0,
-          "contribution": 0.01409937927292585
+          "contribution": 0.0141
         },
         {
           "feature": "YearsAtCompany",
           "value": 5,
-          "contribution": -0.012767172265886443
+          "contribution": -0.0128
         },
         {
           "feature": "MonthlyIncome",
           "value": 4771,
-          "contribution": -0.012727415582452562
+          "contribution": -0.0127
+        },
+        {
+          "feature": "StockOptionLevel",
+          "value": 2,
+          "contribution": -0.0126
+        },
+        {
+          "feature": "DailyRate",
+          "value": 1206,
+          "contribution": -0.0116
+        },
+        {
+          "feature": "TotalWorkingYears",
+          "value": 10,
+          "contribution": -0.0096
+        },
+        {
+          "feature": "NumCompaniesWorked",
+          "value": 2,
+          "contribution": -0.0094
+        },
+        {
+          "feature": "JobLevel",
+          "value": 1,
+          "contribution": 0.0081
+        },
+        {
+          "feature": "JobSatisfaction",
+          "value": 4,
+          "contribution": -0.0079
+        },
+        {
+          "feature": "YearsWithCurrManager",
+          "value": 3,
+          "contribution": -0.0077
+        },
+        {
+          "feature": "HourlyRate",
+          "value": 71,
+          "contribution": -0.0069
+        },
+        {
+          "feature": "EducationField",
+          "value": "Life Sciences",
+          "contribution": -0.0068
+        },
+        {
+          "feature": "JobInvolvement",
+          "value": 3,
+          "contribution": -0.0063
+        },
+        {
+          "feature": "Department",
+          "value": "Research & Development",
+          "contribution": -0.0059
+        },
+        {
+          "feature": "PercentSalaryHike",
+          "value": 19,
+          "contribution": -0.0059
+        },
+        {
+          "feature": "JobRole",
+          "value": "Research Scientist",
+          "contribution": -0.0056
+        },
+        {
+          "feature": "RelationshipSatisfaction",
+          "value": 4,
+          "contribution": -0.0053
+        },
+        {
+          "feature": "MaritalStatus",
+          "value": "Divorced",
+          "contribution": -0.0046
+        },
+        {
+          "feature": "MonthlyRate",
+          "value": 14293,
+          "contribution": -0.0032
+        },
+        {
+          "feature": "YearsSinceLastPromotion",
+          "value": 0,
+          "contribution": -0.0032
+        },
+        {
+          "feature": "WorkLifeBalance",
+          "value": 4,
+          "contribution": 0.003
+        },
+        {
+          "feature": "EnvironmentSatisfaction",
+          "value": 2,
+          "contribution": -0.0019
+        },
+        {
+          "feature": "DistanceFromHome",
+          "value": 9,
+          "contribution": -0.0019
+        },
+        {
+          "feature": "YearsInCurrentRole",
+          "value": 2,
+          "contribution": -0.0018
+        },
+        {
+          "feature": "Education",
+          "value": 2,
+          "contribution": -0.0018
+        },
+        {
+          "feature": "BusinessTravel",
+          "value": "Travel_Rarely",
+          "contribution": -0.0014
+        },
+        {
+          "feature": "Gender",
+          "value": "Male",
+          "contribution": -0.0011
+        },
+        {
+          "feature": "PerformanceRating",
+          "value": 3,
+          "contribution": -0.0005
         }
       ]
     },
@@ -1110,32 +4610,157 @@
       "actualLabel": "No",
       "actualPositive": false,
       "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 100%). 주요 근거: OverTime=No (기여도 -0.019), TotalWorkingYears=28 (기여도 -0.015), JobRole=Research Director (기여도 -0.014), Age=49 (기여도 -0.014), DistanceFromHome=2 (기여도 -0.010).",
+      "explanation": "모델은 이 케이스를 '잔류'(으)로 예측했습니다 (확신도 100%).",
       "topFeatures": [
         {
           "feature": "OverTime",
           "value": "No",
-          "contribution": -0.01945730108694446
+          "contribution": -0.0195
         },
         {
           "feature": "TotalWorkingYears",
           "value": 28,
-          "contribution": -0.014821993731464148
+          "contribution": -0.0148
         },
         {
           "feature": "JobRole",
           "value": "Research Director",
-          "contribution": -0.01413972134091759
+          "contribution": -0.0141
         },
         {
           "feature": "Age",
           "value": 49,
-          "contribution": -0.01358682433229097
+          "contribution": -0.0136
         },
         {
           "feature": "DistanceFromHome",
           "value": 2,
-          "contribution": -0.010031659770688142
+          "contribution": -0.01
+        },
+        {
+          "feature": "DailyRate",
+          "value": 1064,
+          "contribution": -0.0092
+        },
+        {
+          "feature": "NumCompaniesWorked",
+          "value": 3,
+          "contribution": -0.009
+        },
+        {
+          "feature": "YearsAtCompany",
+          "value": 5,
+          "contribution": -0.009
+        },
+        {
+          "feature": "StockOptionLevel",
+          "value": 0,
+          "contribution": 0.0084
+        },
+        {
+          "feature": "Department",
+          "value": "Research & Development",
+          "contribution": -0.0075
+        },
+        {
+          "feature": "PercentSalaryHike",
+          "value": 15,
+          "contribution": -0.007
+        },
+        {
+          "feature": "MonthlyIncome",
+          "value": 19161,
+          "contribution": -0.0068
+        },
+        {
+          "feature": "JobLevel",
+          "value": 5,
+          "contribution": -0.0066
+        },
+        {
+          "feature": "JobInvolvement",
+          "value": 3,
+          "contribution": -0.0064
+        },
+        {
+          "feature": "JobSatisfaction",
+          "value": 4,
+          "contribution": -0.0059
+        },
+        {
+          "feature": "WorkLifeBalance",
+          "value": 3,
+          "contribution": -0.0058
+        },
+        {
+          "feature": "YearsWithCurrManager",
+          "value": 3,
+          "contribution": -0.0052
+        },
+        {
+          "feature": "EducationField",
+          "value": "Life Sciences",
+          "contribution": -0.0051
+        },
+        {
+          "feature": "YearsInCurrentRole",
+          "value": 4,
+          "contribution": -0.0047
+        },
+        {
+          "feature": "MonthlyRate",
+          "value": 13738,
+          "contribution": -0.0042
+        },
+        {
+          "feature": "MaritalStatus",
+          "value": "Married",
+          "contribution": -0.004
+        },
+        {
+          "feature": "RelationshipSatisfaction",
+          "value": 4,
+          "contribution": -0.0036
+        },
+        {
+          "feature": "Education",
+          "value": 1,
+          "contribution": 0.003
+        },
+        {
+          "feature": "BusinessTravel",
+          "value": "Travel_Frequently",
+          "contribution": 0.003
+        },
+        {
+          "feature": "TrainingTimesLastYear",
+          "value": 3,
+          "contribution": -0.0029
+        },
+        {
+          "feature": "EnvironmentSatisfaction",
+          "value": 2,
+          "contribution": -0.0017
+        },
+        {
+          "feature": "HourlyRate",
+          "value": 42,
+          "contribution": -0.0005
+        },
+        {
+          "feature": "PerformanceRating",
+          "value": 3,
+          "contribution": -0.0003
+        },
+        {
+          "feature": "Gender",
+          "value": "Male",
+          "contribution": 0.0003
+        },
+        {
+          "feature": "YearsSinceLastPromotion",
+          "value": 4,
+          "contribution": -0.0001
         }
       ]
     },
@@ -1147,32 +4772,157 @@
       "actualLabel": "No",
       "actualPositive": false,
       "isCorrect": false,
-      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 52%). 주요 근거: MonthlyIncome=1129 (기여도 +0.121), TotalWorkingYears=1 (기여도 +0.097), OverTime=Yes (기여도 +0.077), JobInvolvement=1 (기여도 +0.060), YearsWithCurrManager=0 (기여도 +0.045).",
+      "explanation": "모델은 이 케이스를 '퇴사'(으)로 예측했습니다 (확신도 52%).",
       "topFeatures": [
         {
           "feature": "MonthlyIncome",
           "value": 1129,
-          "contribution": 0.12059858254877744
+          "contribution": 0.1206
         },
         {
           "feature": "TotalWorkingYears",
           "value": 1,
-          "contribution": 0.09694426714986039
+          "contribution": 0.0969
         },
         {
           "feature": "OverTime",
           "value": "Yes",
-          "contribution": 0.07700552835596325
+          "contribution": 0.077
         },
         {
           "feature": "JobInvolvement",
           "value": 1,
-          "contribution": 0.060424259710521476
+          "contribution": 0.0604
         },
         {
           "feature": "YearsWithCurrManager",
           "value": 0,
-          "contribution": 0.045429870633662495
+          "contribution": 0.0454
+        },
+        {
+          "feature": "YearsAtCompany",
+          "value": 1,
+          "contribution": 0.0406
+        },
+        {
+          "feature": "StockOptionLevel",
+          "value": 3,
+          "contribution": -0.0388
+        },
+        {
+          "feature": "MaritalStatus",
+          "value": "Divorced",
+          "contribution": -0.0264
+        },
+        {
+          "feature": "JobLevel",
+          "value": 1,
+          "contribution": 0.0251
+        },
+        {
+          "feature": "DistanceFromHome",
+          "value": 2,
+          "contribution": -0.0229
+        },
+        {
+          "feature": "Age",
+          "value": 31,
+          "contribution": 0.021
+        },
+        {
+          "feature": "DailyRate",
+          "value": 1276,
+          "contribution": -0.0175
+        },
+        {
+          "feature": "YearsInCurrentRole",
+          "value": 0,
+          "contribution": 0.0158
+        },
+        {
+          "feature": "JobSatisfaction",
+          "value": 4,
+          "contribution": -0.0145
+        },
+        {
+          "feature": "EnvironmentSatisfaction",
+          "value": 4,
+          "contribution": -0.0135
+        },
+        {
+          "feature": "PercentSalaryHike",
+          "value": 11,
+          "contribution": 0.0103
+        },
+        {
+          "feature": "JobRole",
+          "value": "Laboratory Technician",
+          "contribution": 0.0092
+        },
+        {
+          "feature": "MonthlyRate",
+          "value": 17536,
+          "contribution": -0.0081
+        },
+        {
+          "feature": "WorkLifeBalance",
+          "value": 3,
+          "contribution": -0.0066
+        },
+        {
+          "feature": "RelationshipSatisfaction",
+          "value": 3,
+          "contribution": -0.0056
+        },
+        {
+          "feature": "Gender",
+          "value": "Female",
+          "contribution": 0.0054
+        },
+        {
+          "feature": "Department",
+          "value": "Research & Development",
+          "contribution": -0.0049
+        },
+        {
+          "feature": "NumCompaniesWorked",
+          "value": 1,
+          "contribution": -0.0046
+        },
+        {
+          "feature": "HourlyRate",
+          "value": 59,
+          "contribution": -0.0042
+        },
+        {
+          "feature": "BusinessTravel",
+          "value": "Travel_Rarely",
+          "contribution": 0.003
+        },
+        {
+          "feature": "EducationField",
+          "value": "Medical",
+          "contribution": -0.0016
+        },
+        {
+          "feature": "YearsSinceLastPromotion",
+          "value": 0,
+          "contribution": -0.0008
+        },
+        {
+          "feature": "TrainingTimesLastYear",
+          "value": 4,
+          "contribution": -0.0007
+        },
+        {
+          "feature": "Education",
+          "value": 1,
+          "contribution": 0.0006
+        },
+        {
+          "feature": "PerformanceRating",
+          "value": 3,
+          "contribution": -0.0002
         }
       ]
     }
