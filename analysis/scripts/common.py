@@ -205,11 +205,16 @@ def compute_shap(model, X: pd.DataFrame):
     return shap_values, feature_importance_df, base_value
 
 
+TYPICAL_SHARE = 0.8  # per class: 80% confident/typical rows, 20% borderline
+
+
 def _pick_case_indices(predictions: np.ndarray, proba_pos: np.ndarray, n_cases: int) -> list:
     """Pick a representative case mix: an even split across predicted classes,
-    and within each class half the slots go to 'typical' rows the model is
-    most confident about and half to 'borderline' rows whose probability sits
-    nearest 0.5. Deterministic (sorted by confidence, no sampling)."""
+    and within each class ~80% of the slots go to 'typical' rows the model is
+    most confident about, ~20% to 'borderline' rows whose probability sits
+    nearest 0.5 (so the default view reads as trustworthy as the accuracy
+    implies; the borderline ones stay reachable via the confidence filter).
+    Deterministic (sorted by confidence, no sampling)."""
     per_class = max(1, n_cases // 2)
     chosen: list = []
 
@@ -220,11 +225,10 @@ def _pick_case_indices(predictions: np.ndarray, proba_pos: np.ndarray, n_cases: 
         # ascending distance from 0.5 -> borderline first, typical last
         order = pool[np.argsort(np.abs(proba_pos[pool] - 0.5))]
         take = min(per_class, len(order))
-        n_typical = take // 2
+        n_typical = min(take, max(1, round(take * TYPICAL_SHARE)))
         n_border = take - n_typical
         picks = list(order[:n_border])
-        if n_typical:
-            picks += list(order[-n_typical:])
+        picks += list(order[len(order) - n_typical:])
         chosen.extend(int(i) for i in picks)
 
     # top up if a class was empty / too small, keeping n_cases stable

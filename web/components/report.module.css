@@ -344,7 +344,49 @@
 
 .selectorFilter {
   display: flex;
+  flex-wrap: wrap;
   gap: 6px;
+}
+
+.rangeRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.rangeLabel {
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.rangeInput {
+  width: 52px;
+  padding: 3px 6px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--background);
+  color: inherit;
+  font-size: 13px;
+  text-align: right;
+}
+
+.rangeReset {
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.selectorCount {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
 }
 
 .filterBtn {
