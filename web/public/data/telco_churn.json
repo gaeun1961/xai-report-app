@@ -71,6 +71,9 @@
       "prediction": "Yes",
       "predictedPositive": true,
       "probaPositive": 1.0,
+      "actualLabel": "Yes",
+      "actualPositive": true,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 100%). 주요 근거: TotalCharges=69.6 (기여도 +0.176), tenure=1 (기여도 +0.176), Contract=Month-to-month (기여도 +0.084), TechSupport=No (기여도 +0.055), InternetService=Fiber optic (기여도 +0.054).",
       "topFeatures": [
         {
@@ -105,6 +108,9 @@
       "prediction": "No",
       "predictedPositive": false,
       "probaPositive": 0.4833,
+      "actualLabel": "No",
+      "actualPositive": false,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 52%). 주요 근거: Contract=Month-to-month (기여도 +0.104), OnlineSecurity=Yes (기여도 -0.065), MonthlyCharges=92.4 (기여도 +0.056), TechSupport=No (기여도 +0.053), PaymentMethod=Credit card (automatic) (기여도 -0.045).",
       "topFeatures": [
         {
@@ -139,6 +145,9 @@
       "prediction": "Yes",
       "predictedPositive": true,
       "probaPositive": 1.0,
+      "actualLabel": "Yes",
+      "actualPositive": true,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 100%). 주요 근거: tenure=2 (기여도 +0.144), Contract=Month-to-month (기여도 +0.096), TotalCharges=179.25 (기여도 +0.088), OnlineSecurity=No (기여도 +0.073), MonthlyCharges=88.55 (기여도 +0.057).",
       "topFeatures": [
         {
@@ -173,6 +182,9 @@
       "prediction": "No",
       "predictedPositive": false,
       "probaPositive": 0.48,
+      "actualLabel": "No",
+      "actualPositive": false,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 52%). 주요 근거: Contract=Month-to-month (기여도 +0.095), OnlineSecurity=No (기여도 +0.042), TechSupport=No (기여도 +0.042), InternetService=Fiber optic (기여도 +0.041), tenure=31 (기여도 -0.040).",
       "topFeatures": [
         {
@@ -207,6 +219,9 @@
       "prediction": "Yes",
       "predictedPositive": true,
       "probaPositive": 1.0,
+      "actualLabel": "Yes",
+      "actualPositive": true,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 100%). 주요 근거: tenure=1 (기여도 +0.174), TotalCharges=79.25 (기여도 +0.150), Contract=Month-to-month (기여도 +0.083), MonthlyCharges=79.25 (기여도 +0.056), OnlineSecurity=No (기여도 +0.053).",
       "topFeatures": [
         {
@@ -241,6 +256,9 @@
       "prediction": "Yes",
       "predictedPositive": true,
       "probaPositive": 0.9967,
+      "actualLabel": "Yes",
+      "actualPositive": true,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 100%). 주요 근거: tenure=1 (기여도 +0.179), TotalCharges=85.45 (기여도 +0.113), Contract=Month-to-month (기여도 +0.091), OnlineSecurity=No (기여도 +0.062), TechSupport=No (기여도 +0.062).",
       "topFeatures": [
         {
@@ -275,6 +293,9 @@
       "prediction": "Yes",
       "predictedPositive": true,
       "probaPositive": 0.5033,
+      "actualLabel": "Yes",
+      "actualPositive": true,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 50%). 주요 근거: Contract=Month-to-month (기여도 +0.079), tenure=7 (기여도 +0.064), InternetService=Fiber optic (기여도 +0.046), OnlineSecurity=No (기여도 +0.041), PaymentMethod=Bank transfer (automatic) (기여도 -0.033).",
       "topFeatures": [
         {
@@ -309,6 +330,9 @@
       "prediction": "No",
       "predictedPositive": false,
       "probaPositive": 0.48,
+      "actualLabel": "Yes",
+      "actualPositive": true,
+      "isCorrect": false,
       "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 52%). 주요 근거: Contract=Month-to-month (기여도 +0.086), tenure=30 (기여도 -0.073), OnlineSecurity=No (기여도 +0.049), PaymentMethod=Electronic check (기여도 +0.041), InternetService=Fiber optic (기여도 +0.038).",
       "topFeatures": [
         {
@@ -343,6 +367,9 @@
       "prediction": "Yes",
       "predictedPositive": true,
       "probaPositive": 0.51,
+      "actualLabel": "No",
+      "actualPositive": false,
+      "isCorrect": false,
       "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 51%). 주요 근거: Contract=Month-to-month (기여도 +0.106), tenure=67 (기여도 -0.097), MonthlyCharges=101.4 (기여도 +0.073), TotalCharges=6841.05 (기여도 -0.055), OnlineSecurity=No (기여도 +0.046).",
       "topFeatures": [
         {
@@ -377,6 +404,9 @@
       "prediction": "Yes",
       "predictedPositive": true,
       "probaPositive": 1.0,
+      "actualLabel": "Yes",
+      "actualPositive": true,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 100%). 주요 근거: tenure=1 (기여도 +0.174), TotalCharges=69.65 (기여도 +0.159), Contract=Month-to-month (기여도 +0.090), InternetService=Fiber optic (기여도 +0.048), TechSupport=No (기여도 +0.046).",
       "topFeatures": [
         {
@@ -411,6 +441,9 @@
       "prediction": "Yes",
       "predictedPositive": true,
       "probaPositive": 1.0,
+      "actualLabel": "Yes",
+      "actualPositive": true,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 100%). 주요 근거: tenure=1 (기여도 +0.151), TotalCharges=94.0 (기여도 +0.107), Contract=Month-to-month (기여도 +0.087), MonthlyCharges=94.0 (기여도 +0.070), TechSupport=No (기여도 +0.052).",
       "topFeatures": [
         {
@@ -445,6 +478,9 @@
       "prediction": "No",
       "predictedPositive": false,
       "probaPositive": 0.49,
+      "actualLabel": "Yes",
+      "actualPositive": true,
+      "isCorrect": false,
       "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 51%). 주요 근거: Contract=Month-to-month (기여도 +0.087), PaymentMethod=Electronic check (기여도 +0.072), TotalCharges=1712.7 (기여도 -0.042), InternetService=Fiber optic (기여도 +0.037), MonthlyCharges=76.1 (기여도 -0.032).",
       "topFeatures": [
         {
@@ -479,6 +515,9 @@
       "prediction": "Yes",
       "predictedPositive": true,
       "probaPositive": 0.9967,
+      "actualLabel": "Yes",
+      "actualPositive": true,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 100%). 주요 근거: TotalCharges=69.85 (기여도 +0.178), tenure=1 (기여도 +0.176), Contract=Month-to-month (기여도 +0.084), TechSupport=No (기여도 +0.055), InternetService=Fiber optic (기여도 +0.053).",
       "topFeatures": [
         {
@@ -513,6 +552,9 @@
       "prediction": "Yes",
       "predictedPositive": true,
       "probaPositive": 0.5067,
+      "actualLabel": "No",
+      "actualPositive": false,
+      "isCorrect": false,
       "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 51%). 주요 근거: tenure=60 (기여도 -0.103), Contract=Month-to-month (기여도 +0.093), TotalCharges=5985.75 (기여도 -0.071), OnlineSecurity=No (기여도 +0.064), MonthlyCharges=99.8 (기여도 +0.059).",
       "topFeatures": [
         {
@@ -547,6 +589,9 @@
       "prediction": "No",
       "predictedPositive": false,
       "probaPositive": 0.0,
+      "actualLabel": "No",
+      "actualPositive": false,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 100%). 주요 근거: Contract=Two year (기여도 -0.073), OnlineSecurity=No internet service (기여도 -0.045), TechSupport=No internet service (기여도 -0.041), PaymentMethod=Credit card (automatic) (기여도 -0.018), StreamingTV=No internet service (기여도 -0.017).",
       "topFeatures": [
         {
@@ -581,6 +626,9 @@
       "prediction": "No",
       "predictedPositive": false,
       "probaPositive": 0.0,
+      "actualLabel": "No",
+      "actualPositive": false,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 100%). 주요 근거: Contract=Two year (기여도 -0.074), OnlineSecurity=No internet service (기여도 -0.038), tenure=65 (기여도 -0.029), TechSupport=No internet service (기여도 -0.028), TotalCharges=1654.75 (기여도 -0.022).",
       "topFeatures": [
         {
@@ -615,6 +663,9 @@
       "prediction": "No",
       "predictedPositive": false,
       "probaPositive": 0.0,
+      "actualLabel": "No",
+      "actualPositive": false,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 100%). 주요 근거: Contract=Two year (기여도 -0.091), tenure=64 (기여도 -0.048), OnlineSecurity=Yes (기여도 -0.032), TechSupport=Yes (기여도 -0.029), InternetService=DSL (기여도 -0.027).",
       "topFeatures": [
         {
@@ -649,6 +700,9 @@
       "prediction": "No",
       "predictedPositive": false,
       "probaPositive": 0.0,
+      "actualLabel": "No",
+      "actualPositive": false,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 100%). 주요 근거: Contract=Two year (기여도 -0.076), OnlineSecurity=No internet service (기여도 -0.044), TechSupport=No internet service (기여도 -0.033), tenure=41 (기여도 -0.027), StreamingTV=No internet service (기여도 -0.014).",
       "topFeatures": [
         {
@@ -683,6 +737,9 @@
       "prediction": "No",
       "predictedPositive": false,
       "probaPositive": 0.0,
+      "actualLabel": "No",
+      "actualPositive": false,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 100%). 주요 근거: Contract=Two year (기여도 -0.084), OnlineSecurity=No internet service (기여도 -0.035), tenure=61 (기여도 -0.033), TechSupport=No internet service (기여도 -0.027), PaymentMethod=Bank transfer (automatic) (기여도 -0.021).",
       "topFeatures": [
         {
@@ -717,6 +774,9 @@
       "prediction": "No",
       "predictedPositive": false,
       "probaPositive": 0.0,
+      "actualLabel": "No",
+      "actualPositive": false,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 100%). 주요 근거: Contract=Two year (기여도 -0.090), tenure=69 (기여도 -0.051), OnlineSecurity=Yes (기여도 -0.038), PaymentMethod=Credit card (automatic) (기여도 -0.027), InternetService=DSL (기여도 -0.026).",
       "topFeatures": [
         {
@@ -751,6 +811,9 @@
       "prediction": "No",
       "predictedPositive": false,
       "probaPositive": 0.49,
+      "actualLabel": "No",
+      "actualPositive": false,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 51%). 주요 근거: tenure=3 (기여도 +0.091), Contract=Month-to-month (기여도 +0.084), TotalCharges=101.1 (기여도 +0.066), PaperlessBilling=No (기여도 -0.029), TechSupport=Yes (기여도 -0.023).",
       "topFeatures": [
         {
@@ -785,6 +848,9 @@
       "prediction": "No",
       "predictedPositive": false,
       "probaPositive": 0.4933,
+      "actualLabel": "Yes",
+      "actualPositive": true,
+      "isCorrect": false,
       "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 51%). 주요 근거: Contract=Month-to-month (기여도 +0.089), PaymentMethod=Electronic check (기여도 +0.076), tenure=37 (기여도 -0.047), OnlineSecurity=No (기여도 +0.046), InternetService=Fiber optic (기여도 +0.036).",
       "topFeatures": [
         {
@@ -819,6 +885,9 @@
       "prediction": "Yes",
       "predictedPositive": true,
       "probaPositive": 0.5133,
+      "actualLabel": "No",
+      "actualPositive": false,
+      "isCorrect": false,
       "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 51%). 주요 근거: tenure=4 (기여도 +0.072), Contract=Month-to-month (기여도 +0.069), OnlineSecurity=No (기여도 +0.050), PaperlessBilling=No (기여도 -0.042), PaymentMethod=Electronic check (기여도 +0.037).",
       "topFeatures": [
         {
@@ -853,6 +922,9 @@
       "prediction": "No",
       "predictedPositive": false,
       "probaPositive": 0.5,
+      "actualLabel": "Yes",
+      "actualPositive": true,
+      "isCorrect": false,
       "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 50%). 주요 근거: Contract=Month-to-month (기여도 +0.086), PaperlessBilling=No (기여도 -0.069), InternetService=Fiber optic (기여도 +0.049), MonthlyCharges=89.4 (기여도 +0.048), OnlineSecurity=No (기여도 +0.047).",
       "topFeatures": [
         {
@@ -887,6 +959,9 @@
       "prediction": "No",
       "predictedPositive": false,
       "probaPositive": 0.4967,
+      "actualLabel": "Yes",
+      "actualPositive": true,
+      "isCorrect": false,
       "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 50%). 주요 근거: Contract=Month-to-month (기여도 +0.093), PaymentMethod=Credit card (automatic) (기여도 -0.059), tenure=36 (기여도 -0.054), TechSupport=No (기여도 +0.048), OnlineSecurity=No (기여도 +0.047).",
       "topFeatures": [
         {
@@ -921,6 +996,9 @@
       "prediction": "Yes",
       "predictedPositive": true,
       "probaPositive": 0.51,
+      "actualLabel": "No",
+      "actualPositive": false,
+      "isCorrect": false,
       "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 51%). 주요 근거: Contract=Month-to-month (기여도 +0.089), TechSupport=No (기여도 +0.055), PaymentMethod=Electronic check (기여도 +0.048), OnlineSecurity=No (기여도 +0.045), tenure=57 (기여도 -0.036).",
       "topFeatures": [
         {
@@ -955,6 +1033,9 @@
       "prediction": "Yes",
       "predictedPositive": true,
       "probaPositive": 0.5167,
+      "actualLabel": "Yes",
+      "actualPositive": true,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 52%). 주요 근거: Contract=Month-to-month (기여도 +0.088), PaymentMethod=Electronic check (기여도 +0.041), TechSupport=No (기여도 +0.037), OnlineSecurity=Yes (기여도 -0.034), InternetService=Fiber optic (기여도 +0.033).",
       "topFeatures": [
         {
@@ -989,6 +1070,9 @@
       "prediction": "Yes",
       "predictedPositive": true,
       "probaPositive": 0.5292,
+      "actualLabel": "Yes",
+      "actualPositive": true,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 53%). 주요 근거: TotalCharges=19.65 (기여도 +0.143), tenure=1 (기여도 +0.120), Contract=Month-to-month (기여도 +0.093), TechSupport=No internet service (기여도 -0.047), OnlineSecurity=No internet service (기여도 -0.044).",
       "topFeatures": [
         {
@@ -1023,6 +1107,9 @@
       "prediction": "Yes",
       "predictedPositive": true,
       "probaPositive": 0.5067,
+      "actualLabel": "No",
+      "actualPositive": false,
+      "isCorrect": false,
       "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 51%). 주요 근거: Contract=Month-to-month (기여도 +0.068), PaymentMethod=Electronic check (기여도 +0.063), OnlineSecurity=No (기여도 +0.062), TechSupport=No (기여도 +0.056), tenure=59 (기여도 -0.052).",
       "topFeatures": [
         {
@@ -1057,6 +1144,9 @@
       "prediction": "No",
       "predictedPositive": false,
       "probaPositive": 0.0,
+      "actualLabel": "No",
+      "actualPositive": false,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 100%). 주요 근거: OnlineSecurity=No internet service (기여도 -0.055), Contract=One year (기여도 -0.054), TechSupport=No internet service (기여도 -0.039), StreamingTV=No internet service (기여도 -0.019), OnlineBackup=No internet service (기여도 -0.019).",
       "topFeatures": [
         {

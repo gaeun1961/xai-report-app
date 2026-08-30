@@ -39,6 +39,9 @@
       "prediction": "0",
       "predictedPositive": false,
       "probaPositive": 0.0,
+      "actualLabel": "0",
+      "actualPositive": false,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '사망'(으)로 예측했습니다 (확신도 100%). 주요 근거: Sex=0.0 (기여도 -0.199), Fare=10.5 (기여도 -0.031), Pclass=2.0 (기여도 -0.018), Parch=0.0 (기여도 -0.011), Embarked=2.0 (기여도 -0.008).",
       "topFeatures": [
         {
@@ -73,6 +76,9 @@
       "prediction": "1",
       "predictedPositive": true,
       "probaPositive": 0.99,
+      "actualLabel": "1",
+      "actualPositive": true,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '생존'(으)로 예측했습니다 (확신도 99%). 주요 근거: Sex=1.0 (기여도 +0.348), Fare=13.0 (기여도 +0.113), Age=32.5 (기여도 +0.106), Pclass=2.0 (기여도 +0.101), sibsp=0.0 (기여도 +0.035).",
       "topFeatures": [
         {
@@ -107,6 +113,9 @@
       "prediction": "1",
       "predictedPositive": true,
       "probaPositive": 0.5035,
+      "actualLabel": "1",
+      "actualPositive": true,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '생존'(으)로 예측했습니다 (확신도 50%). 주요 근거: Sex=1.0 (기여도 +0.224), Pclass=3.0 (기여도 -0.090), sibsp=1.0 (기여도 +0.053), Embarked=1.0 (기여도 +0.052), Fare=15.5 (기여도 -0.039).",
       "topFeatures": [
         {
@@ -141,6 +150,9 @@
       "prediction": "1",
       "predictedPositive": true,
       "probaPositive": 0.98,
+      "actualLabel": "1",
+      "actualPositive": true,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '생존'(으)로 예측했습니다 (확신도 98%). 주요 근거: Sex=1.0 (기여도 +0.353), Fare=13.0 (기여도 +0.111), Age=32.0 (기여도 +0.105), Pclass=2.0 (기여도 +0.091), sibsp=0.0 (기여도 +0.034).",
       "topFeatures": [
         {
@@ -175,6 +187,9 @@
       "prediction": "0",
       "predictedPositive": false,
       "probaPositive": 0.4803,
+      "actualLabel": "1",
+      "actualPositive": true,
+      "isCorrect": false,
       "explanation": "모델은 이 케이스를 '사망'(으)로 예측했습니다 (확신도 52%). 주요 근거: Sex=1.0 (기여도 +0.189), Age=27.0 (기여도 +0.085), Pclass=3.0 (기여도 -0.082), sibsp=0.0 (기여도 +0.033), Fare=7.925 (기여도 -0.026).",
       "topFeatures": [
         {
@@ -209,6 +224,9 @@
       "prediction": "1",
       "predictedPositive": true,
       "probaPositive": 0.5035,
+      "actualLabel": "1",
+      "actualPositive": true,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '생존'(으)로 예측했습니다 (확신도 50%). 주요 근거: Sex=1.0 (기여도 +0.224), Pclass=3.0 (기여도 -0.090), sibsp=1.0 (기여도 +0.053), Embarked=1.0 (기여도 +0.052), Fare=15.5 (기여도 -0.039).",
       "topFeatures": [
         {
@@ -243,6 +261,9 @@
       "prediction": "1",
       "predictedPositive": true,
       "probaPositive": 0.98,
+      "actualLabel": "1",
+      "actualPositive": true,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '생존'(으)로 예측했습니다 (확신도 98%). 주요 근거: Sex=1.0 (기여도 +0.292), Fare=83.1583 (기여도 +0.193), Pclass=1.0 (기여도 +0.122), Age=24.0 (기여도 +0.069), Parch=0.0 (기여도 +0.022).",
       "topFeatures": [
         {
@@ -277,6 +298,9 @@
       "prediction": "1",
       "predictedPositive": true,
       "probaPositive": 0.508,
+      "actualLabel": "1",
+      "actualPositive": true,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '생존'(으)로 예측했습니다 (확신도 51%). 주요 근거: Sex=1.0 (기여도 +0.239), Embarked=1.0 (기여도 +0.086), Pclass=3.0 (기여도 -0.079), Fare=7.8792 (기여도 -0.028), Age=28.0 (기여도 +0.016).",
       "topFeatures": [
         {
@@ -311,6 +335,9 @@
       "prediction": "1",
       "predictedPositive": true,
       "probaPositive": 0.508,
+      "actualLabel": "1",
+      "actualPositive": true,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '생존'(으)로 예측했습니다 (확신도 51%). 주요 근거: Sex=1.0 (기여도 +0.239), Embarked=1.0 (기여도 +0.086), Pclass=3.0 (기여도 -0.079), Fare=7.8792 (기여도 -0.028), Age=28.0 (기여도 +0.016).",
       "topFeatures": [
         {
@@ -345,6 +372,9 @@
       "prediction": "0",
       "predictedPositive": false,
       "probaPositive": 0.0,
+      "actualLabel": "0",
+      "actualPositive": false,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '사망'(으)로 예측했습니다 (확신도 100%). 주요 근거: Sex=0.0 (기여도 -0.148), Pclass=2.0 (기여도 -0.049), Fare=0.0 (기여도 -0.044), Age=28.0 (기여도 -0.013), Parch=0.0 (기여도 -0.007).",
       "topFeatures": [
         {
@@ -379,6 +409,9 @@
       "prediction": "0",
       "predictedPositive": false,
       "probaPositive": 0.0,
+      "actualLabel": "0",
+      "actualPositive": false,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '사망'(으)로 예측했습니다 (확신도 100%). 주요 근거: Sex=0.0 (기여도 -0.102), Fare=7.25 (기여도 -0.083), Pclass=3.0 (기여도 -0.036), Age=28.0 (기여도 -0.029), Embarked=2.0 (기여도 -0.008).",
       "topFeatures": [
         {
@@ -413,6 +446,9 @@
       "prediction": "0",
       "predictedPositive": false,
       "probaPositive": 0.0,
+      "actualLabel": "0",
+      "actualPositive": false,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '사망'(으)로 예측했습니다 (확신도 100%). 주요 근거: Sex=0.0 (기여도 -0.173), Fare=21.0 (기여도 -0.063), sibsp=1.0 (기여도 -0.027), Age=34.0 (기여도 +0.019), Parch=0.0 (기여도 -0.011).",
       "topFeatures": [
         {
@@ -447,6 +483,9 @@
       "prediction": "0",
       "predictedPositive": false,
       "probaPositive": 0.0,
+      "actualLabel": "0",
+      "actualPositive": false,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '사망'(으)로 예측했습니다 (확신도 100%). 주요 근거: Sex=0.0 (기여도 -0.148), Pclass=2.0 (기여도 -0.049), Fare=0.0 (기여도 -0.044), Age=28.0 (기여도 -0.013), Parch=0.0 (기여도 -0.007).",
       "topFeatures": [
         {
@@ -481,6 +520,9 @@
       "prediction": "1",
       "predictedPositive": true,
       "probaPositive": 0.98,
+      "actualLabel": "1",
+      "actualPositive": true,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '생존'(으)로 예측했습니다 (확신도 98%). 주요 근거: Sex=1.0 (기여도 +0.227), Fare=90.0 (기여도 +0.201), Pclass=1.0 (기여도 +0.130), Age=35.0 (기여도 +0.089), Embarked=2.0 (기여도 +0.041).",
       "topFeatures": [
         {
@@ -515,6 +557,9 @@
       "prediction": "1",
       "predictedPositive": true,
       "probaPositive": 0.9933,
+      "actualLabel": "1",
+      "actualPositive": true,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '생존'(으)로 예측했습니다 (확신도 99%). 주요 근거: Sex=1.0 (기여도 +0.371), Pclass=2.0 (기여도 +0.141), Age=34.0 (기여도 +0.091), Fare=10.5 (기여도 +0.074), sibsp=0.0 (기여도 +0.026).",
       "topFeatures": [
         {
@@ -549,6 +594,9 @@
       "prediction": "1",
       "predictedPositive": true,
       "probaPositive": 0.9867,
+      "actualLabel": "1",
+      "actualPositive": true,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '생존'(으)로 예측했습니다 (확신도 99%). 주요 근거: Sex=1.0 (기여도 +0.222), Age=7.0 (기여도 +0.142), Parch=2.0 (기여도 +0.120), Pclass=2.0 (기여도 +0.117), sibsp=0.0 (기여도 +0.066).",
       "topFeatures": [
         {
@@ -583,6 +631,9 @@
       "prediction": "1",
       "predictedPositive": true,
       "probaPositive": 0.9933,
+      "actualLabel": "1",
+      "actualPositive": true,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '생존'(으)로 예측했습니다 (확신도 99%). 주요 근거: Sex=1.0 (기여도 +0.307), Age=34.0 (기여도 +0.131), Pclass=2.0 (기여도 +0.120), Fare=13.0 (기여도 +0.107), sibsp=0.0 (기여도 +0.031).",
       "topFeatures": [
         {
@@ -617,6 +668,9 @@
       "prediction": "1",
       "predictedPositive": true,
       "probaPositive": 0.5035,
+      "actualLabel": "1",
+      "actualPositive": true,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '생존'(으)로 예측했습니다 (확신도 50%). 주요 근거: Sex=1.0 (기여도 +0.224), Pclass=3.0 (기여도 -0.090), sibsp=1.0 (기여도 +0.053), Embarked=1.0 (기여도 +0.052), Fare=15.5 (기여도 -0.039).",
       "topFeatures": [
         {
@@ -651,6 +705,9 @@
       "prediction": "0",
       "predictedPositive": false,
       "probaPositive": 0.4671,
+      "actualLabel": "1",
+      "actualPositive": true,
+      "isCorrect": false,
       "explanation": "모델은 이 케이스를 '사망'(으)로 예측했습니다 (확신도 53%). 주요 근거: Sex=1.0 (기여도 +0.237), Pclass=3.0 (기여도 -0.077), Embarked=1.0 (기여도 +0.043), Fare=7.7333 (기여도 -0.023), Parch=0.0 (기여도 +0.011).",
       "topFeatures": [
         {
@@ -685,6 +742,9 @@
       "prediction": "0",
       "predictedPositive": false,
       "probaPositive": 0.4906,
+      "actualLabel": "1",
+      "actualPositive": true,
+      "isCorrect": false,
       "explanation": "모델은 이 케이스를 '사망'(으)로 예측했습니다 (확신도 51%). 주요 근거: Sex=1.0 (기여도 +0.243), Pclass=3.0 (기여도 -0.075), Embarked=1.0 (기여도 +0.046), Fare=7.7375 (기여도 -0.015), Age=28.0 (기여도 +0.014).",
       "topFeatures": [
         {
@@ -719,6 +779,9 @@
       "prediction": "0",
       "predictedPositive": false,
       "probaPositive": 0.4683,
+      "actualLabel": "1",
+      "actualPositive": true,
+      "isCorrect": false,
       "explanation": "모델은 이 케이스를 '사망'(으)로 예측했습니다 (확신도 53%). 주요 근거: Sex=1.0 (기여도 +0.213), Pclass=2.0 (기여도 +0.092), Age=54.0 (기여도 -0.089), Parch=3.0 (기여도 +0.024), Fare=23.0 (기여도 -0.018).",
       "topFeatures": [
         {
@@ -753,6 +816,9 @@
       "prediction": "0",
       "predictedPositive": false,
       "probaPositive": 0.4767,
+      "actualLabel": "0",
+      "actualPositive": false,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '사망'(으)로 예측했습니다 (확신도 52%). 주요 근거: Age=4.0 (기여도 +0.320), Parch=2.0 (기여도 +0.075), Pclass=3.0 (기여도 -0.063), sibsp=4.0 (기여도 -0.062), Sex=0.0 (기여도 -0.054).",
       "topFeatures": [
         {
@@ -787,6 +853,9 @@
       "prediction": "0",
       "predictedPositive": false,
       "probaPositive": 0.49,
+      "actualLabel": "0",
+      "actualPositive": false,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '사망'(으)로 예측했습니다 (확신도 51%). 주요 근거: Sex=1.0 (기여도 +0.203), Pclass=1.0 (기여도 +0.071), Age=47.0 (기여도 -0.067), Fare=61.175 (기여도 +0.029), sibsp=1.0 (기여도 -0.023).",
       "topFeatures": [
         {
@@ -821,6 +890,9 @@
       "prediction": "1",
       "predictedPositive": true,
       "probaPositive": 0.5067,
+      "actualLabel": "0",
+      "actualPositive": false,
+      "isCorrect": false,
       "explanation": "모델은 이 케이스를 '생존'(으)로 예측했습니다 (확신도 51%). 주요 근거: Sex=1.0 (기여도 +0.223), Fare=12.1833 (기여도 +0.137), Pclass=3.0 (기여도 -0.110), Age=36.0 (기여도 -0.041), sibsp=0.0 (기여도 +0.026).",
       "topFeatures": [
         {
@@ -855,6 +927,9 @@
       "prediction": "0",
       "predictedPositive": false,
       "probaPositive": 0.4733,
+      "actualLabel": "0",
+      "actualPositive": false,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '사망'(으)로 예측했습니다 (확신도 53%). 주요 근거: Sex=1.0 (기여도 +0.234), Age=20.0 (기여도 -0.104), Pclass=2.0 (기여도 +0.057), Fare=36.75 (기여도 +0.049), Parch=0.0 (기여도 -0.026).",
       "topFeatures": [
         {
@@ -889,6 +964,9 @@
       "prediction": "1",
       "predictedPositive": true,
       "probaPositive": 0.508,
+      "actualLabel": "0",
+      "actualPositive": false,
+      "isCorrect": false,
       "explanation": "모델은 이 케이스를 '생존'(으)로 예측했습니다 (확신도 51%). 주요 근거: Sex=1.0 (기여도 +0.239), Embarked=1.0 (기여도 +0.086), Pclass=3.0 (기여도 -0.079), Fare=7.8792 (기여도 -0.028), Age=28.0 (기여도 +0.016).",
       "topFeatures": [
         {
@@ -923,6 +1001,9 @@
       "prediction": "1",
       "predictedPositive": true,
       "probaPositive": 0.5035,
+      "actualLabel": "0",
+      "actualPositive": false,
+      "isCorrect": false,
       "explanation": "모델은 이 케이스를 '생존'(으)로 예측했습니다 (확신도 50%). 주요 근거: Sex=1.0 (기여도 +0.224), Pclass=3.0 (기여도 -0.090), sibsp=1.0 (기여도 +0.053), Embarked=1.0 (기여도 +0.052), Fare=15.5 (기여도 -0.039).",
       "topFeatures": [
         {
@@ -957,6 +1038,9 @@
       "prediction": "0",
       "predictedPositive": false,
       "probaPositive": 0.4733,
+      "actualLabel": "0",
+      "actualPositive": false,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '사망'(으)로 예측했습니다 (확신도 53%). 주요 근거: Age=0.83 (기여도 +0.310), Pclass=3.0 (기여도 -0.053), Sex=0.0 (기여도 -0.042), Parch=1.0 (기여도 +0.039), Embarked=2.0 (기여도 -0.034).",
       "topFeatures": [
         {
@@ -991,6 +1075,9 @@
       "prediction": "0",
       "predictedPositive": false,
       "probaPositive": 0.0,
+      "actualLabel": "0",
+      "actualPositive": false,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '사망'(으)로 예측했습니다 (확신도 100%). 주요 근거: Fare=14.4583 (기여도 -0.082), Sex=0.0 (기여도 -0.073), Pclass=3.0 (기여도 -0.049), Parch=0.0 (기여도 -0.038), Age=28.0 (기여도 -0.035).",
       "topFeatures": [
         {
@@ -1025,6 +1112,9 @@
       "prediction": "0",
       "predictedPositive": false,
       "probaPositive": 0.0,
+      "actualLabel": "0",
+      "actualPositive": false,
+      "isCorrect": true,
       "explanation": "모델은 이 케이스를 '사망'(으)로 예측했습니다 (확신도 100%). 주요 근거: Fare=8.05 (기여도 -0.087), Sex=0.0 (기여도 -0.066), Age=28.0 (기여도 -0.051), Pclass=3.0 (기여도 -0.038), Embarked=2.0 (기여도 -0.012).",
       "topFeatures": [
         {
