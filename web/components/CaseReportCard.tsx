@@ -14,6 +14,12 @@ type Props = {
   baseValue?: number;
 };
 
+// Split on a period followed by whitespace — a real sentence break. A decimal
+// like "0.120" is "digit . digit" (no space after the dot), so it's untouched.
+function toSentences(text: string): string[] {
+  return text.split(/(?<=\.)\s+/).filter(Boolean);
+}
+
 function strengthWord(contribution: number): string {
   const a = Math.abs(contribution);
   if (a >= 0.15) return "강하게";
@@ -66,7 +72,11 @@ export default function CaseReportCard({
         </div>
       </header>
 
-      <p className={styles.explanation}>{c.explanation}</p>
+      <div className={styles.explanation}>
+        {toSentences(c.explanation).map((s, i) => (
+          <p key={i}>{s}</p>
+        ))}
+      </div>
 
       {showBaseline && (
         <p className={styles.baseline}>
