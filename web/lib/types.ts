@@ -17,6 +17,9 @@ export type ShapReport = {
     message: string;
     baselineAccuracy: number;
   };
+  // Pairwise correlations between the numeric columns (model-independent —
+  // just how the raw data moves together). Optional so old JSON still loads.
+  correlations?: { columns: string[]; matrix: number[][] };
   featureImportance: { feature: string; importance: number }[];
   cases: {
     id: string;

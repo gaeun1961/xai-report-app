@@ -260,6 +260,7 @@ def export_report_json(
     n_cases: int = 30,
     top_features_per_case: int = 5,
     top_features_overall: int = 15,
+    corr_max_cols: int = 12,
 ):
     """Assemble a ShapReport-shaped dict (see web/lib/types.ts) and write it
     to output_path as JSON.
@@ -333,6 +334,23 @@ def export_report_json(
 
     if base_value is not None:
         report["baseValue"] = round(float(base_value), 4)
+
+    # correlations between the genuinely-numeric columns (categoricals are
+    # strings in display_df, so select_dtypes cleanly excludes them — same
+    # spirit as the constant/ID drop in load_and_preprocess). Ordered by
+    # feature importance and capped so a 30-column domain stays legible.
+    numeric_cols = display_df.select_dtypes(include="number").columns.tolist()
+    fi_order = list(feature_importance_df["feature"])
+    corr_cols = [c for c in fi_order if c in numeric_cols][:corr_max_cols]
+    corr_cols += [c for c in numeric_cols if c not in corr_cols][
+        : max(0, corr_max_cols - len(corr_cols))
+    ]
+    if len(corr_cols) >= 2:
+        corr = X[corr_cols].corr().round(3)
+        report["correlations"] = {
+            "columns": corr_cols,
+            "matrix": [[float(v) for v in row] for row in corr.to_numpy()],
+        }
 
     if eval_stats is not None:
         minority_label = pos_display if eval_stats["minority_is_positive"] else neg_display

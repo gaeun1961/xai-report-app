@@ -7,33 +7,54 @@ import { findDomain } from "@/lib/domains";
 import FeatureImportanceChart from "@/components/FeatureImportanceChart";
 import CaseSelector from "@/components/CaseSelector";
 import CaseReportCard from "@/components/CaseReportCard";
+import CorrelationMatrix from "@/components/CorrelationMatrix";
 import styles from "@/components/report.module.css";
+
+type Tab = "model" | "data";
 
 export default function ReportPage() {
   const { domain } = useParams<{ domain: string }>();
   const meta = findDomain(domain);
   const report = loadReport(domain);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [tab, setTab] = useState<Tab>("model");
 
   const heading = meta?.title ?? domain;
+  const hasCorr = !!report?.correlations;
 
   return (
     <main className={styles.report}>
       <h1 className={styles.h1}>{heading} 리포트</h1>
 
       <div className={styles.tabs}>
-        <span className={`${styles.tab} ${styles.tabActive}`}>모델 설명</span>
-        <span className={`${styles.tab} ${styles.tabDisabled}`}>
-          데이터 관계 <em className={styles.soon}>준비 중</em>
-        </span>
+        <button
+          type="button"
+          onClick={() => setTab("model")}
+          className={`${styles.tab} ${tab === "model" ? styles.tabActive : ""}`}
+        >
+          모델 설명
+        </button>
+        <button
+          type="button"
+          onClick={() => hasCorr && setTab("data")}
+          disabled={!hasCorr}
+          className={`${styles.tab} ${tab === "data" ? styles.tabActive : ""} ${
+            hasCorr ? "" : styles.tabDisabled
+          }`}
+        >
+          데이터 관계
+          {!hasCorr && <em className={styles.soon}>준비 중</em>}
+        </button>
       </div>
 
       {!report ? (
         <p className={styles.guide}>
           이 도메인의 리포트 데이터는 아직 준비 중이에요. 곧 추가될 예정입니다.
         </p>
+      ) : tab === "data" && report.correlations ? (
+        <CorrelationMatrix data={report.correlations} domain={domain} />
       ) : (
-        <ReportBody
+        <ModelBody
           report={report}
           domain={domain}
           selectedId={selectedId}
@@ -51,7 +72,7 @@ type BodyProps = {
   onSelect: (id: string) => void;
 };
 
-function ReportBody({ report, domain, selectedId, onSelect }: BodyProps) {
+function ModelBody({ report, domain, selectedId, onSelect }: BodyProps) {
   const selected =
     report.cases.find((c) => c.id === selectedId) ?? report.cases[0];
   const { positiveLabel, negativeLabel } = report;
