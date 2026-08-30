@@ -13,18 +13,21 @@ export default function Home() {
       </p>
 
       <h2 className={styles.h2}>예시 리포트</h2>
-      {DOMAINS.map((d) => {
-        const report = loadReport(d.slug);
-        return (
-          <DomainCard
-            key={d.slug}
-            href={`/report/${d.slug}`}
-            title={d.title}
-            description={d.description}
-            accuracy={report?.modelAccuracy}
-          />
-        );
-      })}
+      <div className={styles.cardGrid}>
+        {DOMAINS.map((d) => {
+          const report = loadReport(d.slug);
+          return (
+            <DomainCard
+              key={d.slug}
+              href={`/report/${d.slug}`}
+              title={d.title}
+              description={d.description}
+              accuracy={report?.modelAccuracy}
+              verdict={report?.modelQuality?.verdict}
+            />
+          );
+        })}
+      </div>
 
       <p className={styles.note}>
         CSV 업로드로 내 데이터 분석하기 — 다음 주 업데이트 예정
