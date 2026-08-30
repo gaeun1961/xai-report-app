@@ -39,15 +39,31 @@ export default function CaseReportCard({
   const showBaseline =
     baseValue !== undefined && c.probaPositive !== undefined;
 
+  const showActual = c.actualLabel !== undefined && c.isCorrect !== undefined;
+  const actualText = c.actualPositive
+    ? (positiveLabel ?? c.actualLabel)
+    : (negativeLabel ?? c.actualLabel);
+
   return (
     <article className={styles.card}>
       <header className={styles.cardHead}>
         <span className={styles.caseId}>케이스 #{c.id}</span>
-        <span
-          className={`${styles.badge} ${positive ? styles.badgeYes : styles.badgeNo}`}
-        >
-          예측: {outcome}
-        </span>
+        <div className={styles.badges}>
+          <span
+            className={`${styles.badge} ${positive ? styles.badgeYes : styles.badgeNo}`}
+          >
+            예측: {outcome}
+          </span>
+          {showActual && (
+            <span
+              className={`${styles.badge} ${
+                c.isCorrect ? styles.badgeActualOk : styles.badgeActualBad
+              }`}
+            >
+              {c.isCorrect ? "✓ 적중" : "✗ 빗나감"} · 실제: {actualText}
+            </span>
+          )}
+        </div>
       </header>
 
       <p className={styles.explanation}>{c.explanation}</p>

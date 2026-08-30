@@ -25,6 +25,11 @@ export type ShapReport = {
     predictedPositive: boolean;
     // Model's P(positive) for this case (0–1). Optional so old JSON still loads.
     probaPositive?: number;
+    // The row's true label from the CSV, and whether the prediction matched it.
+    // Optional so old JSON still loads.
+    actualLabel?: string;
+    actualPositive?: boolean;
+    isCorrect?: boolean;
     explanation: string;
     topFeatures: { feature: string; value: string | number; contribution: number }[];
   }[];

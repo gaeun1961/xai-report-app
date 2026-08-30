@@ -404,12 +404,21 @@
 
 .cardHead {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
+  gap: 10px;
 }
 
 .caseId {
   font-weight: 600;
+  white-space: nowrap;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
 }
 
 .badge {
@@ -417,6 +426,7 @@
   border-radius: 999px;
   font-size: 13px;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .badgeYes {
@@ -427,6 +437,18 @@
 .badgeNo {
   background: color-mix(in srgb, #dc2626 18%, transparent);
   color: #dc2626;
+}
+
+/* actual-label badge: calm when the prediction was right, warning when wrong */
+.badgeActualOk {
+  background: color-mix(in srgb, var(--text-muted) 16%, transparent);
+  color: var(--text-muted);
+}
+
+.badgeActualBad {
+  background: color-mix(in srgb, var(--warn) 22%, transparent);
+  color: #b45309;
+  font-weight: 700;
 }
 
 .explanation {

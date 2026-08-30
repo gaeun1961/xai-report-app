@@ -290,6 +290,9 @@ def export_report_json(
         predicted_positive = bool(predictions[idx] == 1)
         prediction_raw = pos_raw if predicted_positive else neg_raw
         prediction_display = pos_display if predicted_positive else neg_display
+        actual_positive = bool(y.iloc[idx] == 1)
+        actual_raw = pos_raw if actual_positive else neg_raw
+        is_correct = actual_positive == predicted_positive
         confidence = proba_pos[idx] if predicted_positive else 1 - proba_pos[idx]
         feature_summary = ", ".join(
             f"{tf['feature']}={tf['value']} (기여도 {tf['contribution']:+.3f})" for tf in top_features
@@ -304,6 +307,9 @@ def export_report_json(
                 "prediction": prediction_raw,
                 "predictedPositive": predicted_positive,
                 "probaPositive": round(float(proba_pos[idx]), 4),
+                "actualLabel": actual_raw,
+                "actualPositive": actual_positive,
+                "isCorrect": is_correct,
                 "explanation": explanation,
                 "topFeatures": top_features,
             }
