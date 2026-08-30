@@ -258,7 +258,6 @@ def export_report_json(
     eval_stats: dict = None,
     base_value: float = None,
     n_cases: int = 30,
-    top_features_overall: int = 15,
     corr_max_cols: int = 12,
 ):
     """Assemble a ShapReport-shaped dict (see web/lib/types.ts) and write it
@@ -323,9 +322,11 @@ def export_report_json(
         "modelAccuracy": float(model_accuracy),
         "positiveLabel": pos_display,
         "negativeLabel": neg_display,
+        # every feature, importance descending — the frontend caps the chart but
+        # uses the full order for "this factor ranks Nth overall" in search
         "featureImportance": [
-            {"feature": row.feature, "importance": float(row.importance)}
-            for row in feature_importance_df.head(top_features_overall).itertuples()
+            {"feature": row.feature, "importance": round(float(row.importance), 5)}
+            for row in feature_importance_df.itertuples()
         ],
         "cases": cases,
     }

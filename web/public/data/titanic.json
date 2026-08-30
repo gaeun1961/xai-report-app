@@ -6,31 +6,31 @@
   "featureImportance": [
     {
       "feature": "Sex",
-      "importance": 0.1405277416779418
+      "importance": 0.14053
     },
     {
       "feature": "Fare",
-      "importance": 0.0696211525559409
+      "importance": 0.06962
     },
     {
       "feature": "Age",
-      "importance": 0.05933249966072509
+      "importance": 0.05933
     },
     {
       "feature": "Pclass",
-      "importance": 0.05879608289314515
+      "importance": 0.0588
     },
     {
       "feature": "Embarked",
-      "importance": 0.023613768361958484
+      "importance": 0.02361
     },
     {
       "feature": "sibsp",
-      "importance": 0.018587736934673908
+      "importance": 0.01859
     },
     {
       "feature": "Parch",
-      "importance": 0.018450653729933146
+      "importance": 0.01845
     }
   ],
   "cases": [

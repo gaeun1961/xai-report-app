@@ -591,12 +591,19 @@
 }
 
 .baseline {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
   padding: 10px 14px;
   border-radius: 8px;
   background: var(--surface);
   font-size: 13px;
   line-height: 1.7;
   color: var(--text-muted);
+}
+
+.baseline p {
+  margin: 0;
 }
 
 .baseline b {
@@ -741,11 +748,32 @@
 
 .contribRow {
   display: flex;
-  justify-content: space-between;
-  gap: 12px;
+  flex-direction: column;
+  gap: 5px;
   font-size: 13px;
   padding: 10px 0;
   border-top: 1px solid var(--border);
+}
+
+.contribMain {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.rankChip {
+  align-self: flex-start;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  color: var(--accent-strong);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.rankChipLow {
+  background: var(--surface);
+  color: var(--text-muted);
 }
 
 .contribFeature {
