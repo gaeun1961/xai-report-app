@@ -15,6 +15,23 @@
   max-width: 1000px;
 }
 
+/* larger screens: use more of the width instead of leaving big side margins */
+@media (min-width: 1440px) {
+  .landing {
+    max-width: 1160px;
+  }
+
+  .report {
+    max-width: 1280px;
+  }
+}
+
+@media (min-width: 1800px) {
+  .report {
+    max-width: 1440px;
+  }
+}
+
 /* report: 2-column split (model summary | case report) */
 .reportGrid {
   display: grid;
@@ -261,9 +278,9 @@
 
 .selectorBtn {
   padding: 4px 10px;
-  border: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+  border: 1px solid var(--border);
   border-radius: 6px;
-  background: transparent;
+  background: var(--surface);
   color: inherit;
   font-size: 13px;
   cursor: pointer;

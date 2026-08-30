@@ -1,9 +1,9 @@
 .sidebar {
-  flex: 0 0 170px;
-  width: 170px;
+  flex: 0 0 255px;
+  width: 255px;
   height: 100dvh;
-  padding: 24px 12px;
-  background: var(--background);
+  padding: 24px 16px;
+  background: var(--surface);
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
@@ -38,7 +38,7 @@
 }
 
 .item:hover {
-  background: var(--surface);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
 }
 
 .itemActive {
