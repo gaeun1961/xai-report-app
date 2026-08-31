@@ -35,17 +35,20 @@ function explainAccuracy(
   const majority = (baseValue ?? 0.5) < 0.5 ? negLabel : posLabel;
   const minority = majority === posLabel ? negLabel : posLabel;
 
-  const baselineSentence = `이 데이터는 실제 결과가 '${majority}'인 경우가 더 많아요. 그래서 아무 근거 없이 전부 '${majority}'${irago(majority)}만 찍어도 ${b}%는 맞습니다 — 이걸 비교 기준으로 삼아요.`;
+  const line1 = `이 데이터는 실제 결과가 '${majority}'인 경우가 ${b}%로 더 많아요.`;
+  const line2 = `그래서 아무 근거 없이 전부 '${majority}'${irago(majority)}만 찍어도 ${b}%는 맞는 셈이라, 모델은 최소한 이보다는 나아야 의미가 있어요.`;
 
-  let verdictSentence: string;
+  let line3: string;
   if (verdict === "good") {
-    verdictSentence = `이 모델의 정확도 ${a}%는 그 기준보다 ${gap}%p 높고, '${posLabel}'·'${negLabel}' 어느 쪽도 한쪽으로 몰아 찍지 않고 예측해요.`;
+    line3 = `이 모델의 정확도 ${a}%는 그 기준보다 ${gap}%p 높고, '${posLabel}'·'${negLabel}' 어느 쪽도 한쪽으로 몰아 찍지 않고 예측해요.`;
+  } else if (a < b) {
+    line3 = `이 모델의 정확도 ${a}%는 그 기준보다 오히려 ${b - a}%p 낮아서, 이 모델을 쓸 이유가 없어요.`;
   } else if (a <= b + 2) {
-    verdictSentence = `이 모델의 정확도 ${a}%는 그 기준(${b}%)과 거의 같아서, 이 모델을 따로 쓸 이유가 크지 않아요.`;
+    line3 = `이 모델의 정확도 ${a}%는 그 기준과 거의 같아서 (차이 +${gap}%p), 이 모델을 따로 쓸 이유가 크지 않아요.`;
   } else {
-    verdictSentence = `이 모델의 정확도 ${a}%는 기준보다 높아 보이지만, 수가 적은 '${minority}' 쪽은 거의 못 맞혀요.`;
+    line3 = `이 모델의 정확도 ${a}%는 기준보다 높지만, 수가 적은 '${minority}' 쪽은 거의 못 맞혀요.`;
   }
-  return [baselineSentence, verdictSentence];
+  return [line1, line2, line3];
 }
 
 export default function ReportPage() {
