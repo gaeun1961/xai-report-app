@@ -1,6 +1,9 @@
 from pathlib import Path
 
+from sklearn.ensemble import RandomForestClassifier
+
 from common import (
+    RANDOM_STATE,
     compute_shap,
     export_report_json,
     load_and_preprocess,
@@ -24,7 +27,16 @@ TARGET_COLUMN = "2urvived"
 
 def main():
     X, y, display_df, target_labels = load_and_preprocess(CSV_PATH, TARGET_COLUMN)
-    model, accuracy, eval_stats = train_model(X, y)
+    model, accuracy, eval_stats = train_model(
+        X,
+        y,
+        RandomForestClassifier(
+            n_estimators=500,
+            max_depth=7,
+            min_samples_leaf=4,
+            random_state=RANDOM_STATE,
+        ),
+    )
     X, y, display_df = sample_for_shap(X, y, display_df)
     shap_values, feature_importance_df, base_value = compute_shap(model, X)
     report = export_report_json(

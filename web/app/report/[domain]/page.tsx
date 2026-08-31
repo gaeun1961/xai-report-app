@@ -24,16 +24,21 @@ function irago(w: string): string {
 function explainAccuracy(
   acc: number,
   baseline: number,
-  verdict: "good" | "weak",
-  baseValue: number | undefined,
+  verdict: "good" | "fair" | "weak",
   posLabel: string,
   negLabel: string,
+  minorityRecall: number | undefined,
+  minorityLabel: string | undefined,
 ): string[] {
   const a = Math.round(acc * 100);
   const b = Math.round(baseline * 100);
   const gap = a - b;
-  const majority = (baseValue ?? 0.5) < 0.5 ? negLabel : posLabel;
-  const minority = majority === posLabel ? negLabel : posLabel;
+  // the rarer class in the data (backend computed it from the true labels).
+  // The more common one is whatever's left.
+  const minority = minorityLabel ?? negLabel;
+  const majority = minority === posLabel ? negLabel : posLabel;
+  const rec =
+    minorityRecall !== undefined ? Math.round(minorityRecall * 100) : null;
 
   const line1 = `이 데이터는 실제 결과가 '${majority}'인 경우가 ${b}%로 더 많아요.`;
   const line2 = `그래서 아무 근거 없이 전부 '${majority}'${irago(majority)}만 찍어도 ${b}%는 맞는 셈이라, 모델은 최소한 이보다는 나아야 의미가 있어요.`;
@@ -41,12 +46,15 @@ function explainAccuracy(
   let line3: string;
   if (verdict === "good") {
     line3 = `이 모델의 정확도 ${a}%는 그 기준보다 ${gap}%p 높고, '${posLabel}'·'${negLabel}' 어느 쪽도 한쪽으로 몰아 찍지 않고 예측해요.`;
+  } else if (verdict === "fair") {
+    const recPart = rec !== null ? ` 실제 '${minority}' 중 ${rec}%를 잡아내요` : "";
+    line3 = `이 모델의 정확도 ${a}%는 그 기준과 비슷하지만(${
+      gap >= 0 ? "+" : ""
+    }${gap}%p), 대신 놓치면 안 되는 '${minority}'에 집중해요 —${recPart}. 그게 목적이면 쓸만해요.`;
   } else if (a < b) {
-    line3 = `이 모델의 정확도 ${a}%는 그 기준보다 오히려 ${b - a}%p 낮아서, 이 모델을 쓸 이유가 없어요.`;
-  } else if (a <= b + 2) {
-    line3 = `이 모델의 정확도 ${a}%는 그 기준과 거의 같아서 (차이 +${gap}%p), 이 모델을 따로 쓸 이유가 크지 않아요.`;
+    line3 = `이 모델의 정확도 ${a}%는 그 기준보다 오히려 ${b - a}%p 낮은 데다, 수가 적은 '${minority}'도 거의 못 맞혀서 쓸 이유가 없어요.`;
   } else {
-    line3 = `이 모델의 정확도 ${a}%는 기준보다 높지만, 수가 적은 '${minority}' 쪽은 거의 못 맞혀요.`;
+    line3 = `이 모델의 정확도 ${a}%는 기준과 큰 차이가 없고, 수가 적은 '${minority}' 쪽은 거의 못 맞혀요.`;
   }
   return [line1, line2, line3];
 }
@@ -143,12 +151,18 @@ function ModelBody({ report, domain, selectedId, onSelect }: BodyProps) {
               {report.modelQuality && (
                 <span
                   className={`${styles.qualityBadge} ${
-                    report.modelQuality.verdict === "good"
-                      ? styles.qualityGood
-                      : styles.qualityWeak
+                    {
+                      good: styles.qualityGood,
+                      fair: styles.qualityFair,
+                      weak: styles.qualityWeak,
+                    }[report.modelQuality.verdict]
                   }`}
                 >
-                  {report.modelQuality.verdict === "good" ? "양호" : "주의"}
+                  {
+                    { good: "양호", fair: "참고", weak: "주의" }[
+                      report.modelQuality.verdict
+                    ]
+                  }
                 </span>
               )}
             </div>
@@ -158,9 +172,10 @@ function ModelBody({ report, domain, selectedId, onSelect }: BodyProps) {
                   report.modelAccuracy,
                   report.modelQuality.baselineAccuracy,
                   report.modelQuality.verdict,
-                  report.baseValue,
                   positiveLabel ?? "양성",
                   negativeLabel ?? "음성",
+                  report.modelQuality.minorityRecall,
+                  report.modelQuality.minorityLabel,
                 ).map((s, i) => (
                   <p key={i}>{s}</p>
                 ))}

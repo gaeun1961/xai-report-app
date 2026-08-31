@@ -1,6 +1,6 @@
 {
   "domain": "telco_churn",
-  "modelAccuracy": 0.7849538679914834,
+  "modelAccuracy": 0.7895783046997018,
   "positiveLabel": "이탈",
   "negativeLabel": "유지",
   "featureImportance": [
@@ -3331,6 +3331,8 @@
   "modelQuality": {
     "verdict": "good",
     "message": "이 모델은 baseline보다 낫고, 두 클래스 모두 어느 정도 예측하고 있어요.",
-    "baselineAccuracy": 0.7345635202271115
+    "baselineAccuracy": 0.7346301292063041,
+    "minorityRecall": 0.4959871589085072,
+    "minorityLabel": "이탈"
   }
 }
