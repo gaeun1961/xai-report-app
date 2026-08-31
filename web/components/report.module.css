@@ -283,6 +283,13 @@
   color: var(--text-muted);
 }
 
+.sectionNote {
+  margin-top: -4px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
 /* domain card grid (landing) */
 .cardGrid {
   display: grid;

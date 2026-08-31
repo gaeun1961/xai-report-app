@@ -123,8 +123,12 @@ function ModelBody({ report, domain, selectedId, onSelect }: BodyProps) {
 
           <section className={styles.section}>
             <h2 className={styles.h2}>특성 중요도</h2>
+            <p className={styles.sectionNote}>
+              막대가 길수록 그 특성이 예측을 평균적으로 더 크게 움직였다는
+              뜻이에요.
+            </p>
             <FeatureImportanceChart
-              items={report.featureImportance.slice(0, CHART_LIMIT)}
+              items={report.featureImportance}
               domain={domain}
             />
           </section>
