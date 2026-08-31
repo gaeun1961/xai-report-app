@@ -73,8 +73,11 @@ type BodyProps = {
 };
 
 function ModelBody({ report, domain, selectedId, onSelect }: BodyProps) {
-  const selected =
-    report.cases.find((c) => c.id === selectedId) ?? report.cases[0];
+  const selectedIndex = Math.max(
+    0,
+    report.cases.findIndex((c) => c.id === selectedId),
+  );
+  const selected = report.cases[selectedIndex] ?? report.cases[0];
   const { positiveLabel, negativeLabel } = report;
 
   const CHART_LIMIT = 15;
@@ -145,6 +148,7 @@ function ModelBody({ report, domain, selectedId, onSelect }: BodyProps) {
               baseValue={report.baseValue}
               importanceOrder={importanceOrder}
               chartLimit={CHART_LIMIT}
+              caseNo={selectedIndex + 1}
             />
           </section>
         </div>

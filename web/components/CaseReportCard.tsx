@@ -16,6 +16,8 @@ type Props = {
   importanceOrder?: string[];
   // how many features the left chart shows — anything past this is "하위권"
   chartLimit?: number;
+  // 1-based position of this case in the example set
+  caseNo: number;
 };
 
 const TOP_N = 5;
@@ -51,6 +53,7 @@ export default function CaseReportCard({
   baseValue,
   importanceOrder = [],
   chartLimit = 15,
+  caseNo,
 }: Props) {
   const [showNumbers, setShowNumbers] = useState(false);
   const [factorQuery, setFactorQuery] = useState("");
@@ -84,20 +87,25 @@ export default function CaseReportCard({
   const sumRest = factors.slice(TOP_N).reduce((a, f) => a + f.contribution, 0);
   const restRatio =
     Math.abs(sumTop) > 1e-9 ? Math.abs(sumRest) / Math.abs(sumTop) : 0;
-  const topPp = Math.round(Math.abs(sumTop) * 100);
   const restPp = Math.round(Math.abs(sumRest) * 100);
+  const finalPct = Math.round((c.probaPositive ?? 0) * 100);
+  const top5OnlyPct = Math.round(
+    Math.max(0, Math.min(1, (baseValue ?? 0.5) + sumTop)) * 100,
+  );
 
-  let restNote: string;
+  // sentence 3 of the baseline box: how the "rest" moved the top-5-only value
+  // to the final one
+  let restStageNote: string;
   if (factors.length <= TOP_N || restRatio < 0.25) {
-    restNote = `이 ${TOP_N}개가 ${topPp}%p를 움직였고, 나머지는 다 합쳐도 ${restPp}%p뿐이에요.`;
+    restStageNote = `나머지 요인들은 다 합쳐도 ${restPp}%p뿐이라, 최종값도 ${finalPct}%로 이 ${TOP_N}개가 거의 다 정한 셈이에요.`;
   } else if (sumTop >= 0 === sumRest >= 0) {
-    restNote = `이 ${TOP_N}개에 더해 나머지 요인들도 ${dirOf(sumTop)} 쪽으로 ${restPp}%p 더 작용했어요.`;
+    restStageNote = `여기에 나머지 요인들이 ${dirOf(sumRest)} 쪽으로 ${restPp}%p를 더 보태서 최종 ${finalPct}%가 됩니다.`;
   } else {
     const top5OnlyPositive = (baseValue ?? 0.5) + sumTop >= 0.5;
     const flipped = top5OnlyPositive !== positive;
-    restNote = flipped
-      ? `위 ${TOP_N}개는 ${dirOf(sumTop)} 쪽(${topPp}%p)이었지만, 나머지 요인들이 ${dirOf(sumRest)} 쪽으로 ${restPp}%p 작용해서 최종 결과가 뒤집혔어요.`
-      : `위 ${TOP_N}개는 ${dirOf(sumTop)} 쪽이었지만, 나머지 요인들이 ${dirOf(sumRest)} 쪽으로 ${restPp}%p 작용해서 확신을 다소 낮췄어요.`;
+    restStageNote = flipped
+      ? `그런데 나머지 요인들이 ${dirOf(sumRest)} 쪽으로 ${restPp}%p 작용해서, 최종 ${finalPct}%로 방향이 뒤집혔어요.`
+      : `나머지 요인들이 ${dirOf(sumRest)} 쪽으로 ${restPp}%p 작용해서 최종 ${finalPct}%로, 확신이 다소 줄었어요.`;
   }
 
   const query = factorQuery.trim().toLowerCase();
@@ -113,7 +121,7 @@ export default function CaseReportCard({
   return (
     <article className={styles.card}>
       <header className={styles.cardHead}>
-        <span className={styles.caseId}>케이스 #{c.id}</span>
+        <span className={styles.caseId}>케이스 {caseNo}</span>
         <div className={styles.badges}>
           <span
             className={`${styles.badge} ${positive ? styles.badgeYes : styles.badgeNo}`}
@@ -154,12 +162,14 @@ export default function CaseReportCard({
             {pct(baseValue!)}예요.
           </p>
           <p>
-            그런데 이 케이스의 실제 특성값({ex1}, {ex2} 등)을 반영하면{" "}
-            <b>{pct(c.probaPositive!)}</b>가 됩니다.
+            이 케이스의 실제 특성값({ex1}, {ex2} 등) 중 영향이 큰 {TOP_N}개만
+            반영하면 {top5OnlyPct}%예요.
           </p>
+          <p>{restStageNote}</p>
           <p>
-            {c.probaPositive! >= 0.5 ? "50%를 넘어" : "50%에 못 미쳐"} &lsquo;
-            {outcome}&rsquo;으로 예측했어요. {restNote}
+            <b>{pct(c.probaPositive!)}</b>는{" "}
+            {c.probaPositive! >= 0.5 ? "50% 이상이라" : "50%에 못 미쳐서"} &lsquo;
+            {outcome}&rsquo;(으)로 예측했어요.
           </p>
         </div>
       )}
