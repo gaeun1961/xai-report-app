@@ -6,8 +6,15 @@ type Props = {
   title: string;
   description: string;
   accuracy?: number;
-  verdict?: "good" | "weak";
+  verdict?: "good" | "fair" | "weak";
 };
+
+const VERDICT_LABEL = { good: "양호", fair: "참고", weak: "주의" } as const;
+const VERDICT_CLASS = {
+  good: styles.qualityGood,
+  fair: styles.qualityFair,
+  weak: styles.qualityWeak,
+} as const;
 
 export default function DomainCard({
   href,
@@ -21,12 +28,8 @@ export default function DomainCard({
       <div className={styles.domainCardTop}>
         <h3 className={styles.domainTitle}>{title}</h3>
         {verdict && (
-          <span
-            className={`${styles.qualityBadge} ${
-              verdict === "good" ? styles.qualityGood : styles.qualityWeak
-            }`}
-          >
-            {verdict === "good" ? "양호" : "주의"}
+          <span className={`${styles.qualityBadge} ${VERDICT_CLASS[verdict]}`}>
+            {VERDICT_LABEL[verdict]}
           </span>
         )}
       </div>

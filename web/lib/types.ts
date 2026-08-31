@@ -13,9 +13,14 @@ export type ShapReport = {
   // Plain-language check on whether the model actually beats a majority-class
   // guess. Optional so old JSON still loads.
   modelQuality?: {
-    verdict: "good" | "weak";
+    // good = beats baseline & predicts both classes
+    // fair = accuracy ~matches baseline but still catches the rare class
+    // weak = no better than guessing the majority class
+    verdict: "good" | "fair" | "weak";
     message: string;
     baselineAccuracy: number;
+    minorityRecall?: number;
+    minorityLabel?: string;
   };
   // Pairwise correlations between the numeric columns (model-independent —
   // just how the raw data moves together). Optional so old JSON still loads.

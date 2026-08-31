@@ -1,614 +1,507 @@
 {
   "domain": "telco_churn",
-  "modelAccuracy": 0.7849538679914834,
+  "modelAccuracy": 0.8029248899616641,
   "positiveLabel": "이탈",
   "negativeLabel": "유지",
   "featureImportance": [
     {
       "feature": "Contract",
-      "importance": 0.0757
+      "importance": 0.07519
     },
     {
       "feature": "tenure",
-      "importance": 0.05718
+      "importance": 0.05172
     },
     {
       "feature": "OnlineSecurity",
-      "importance": 0.04322
-    },
-    {
-      "feature": "TotalCharges",
-      "importance": 0.03859
+      "importance": 0.04189
     },
     {
       "feature": "TechSupport",
-      "importance": 0.03539
+      "importance": 0.03428
     },
     {
       "feature": "MonthlyCharges",
-      "importance": 0.03491
+      "importance": 0.0302
     },
     {
       "feature": "PaymentMethod",
-      "importance": 0.03124
+      "importance": 0.02963
+    },
+    {
+      "feature": "TotalCharges",
+      "importance": 0.02777
     },
     {
       "feature": "InternetService",
-      "importance": 0.02791
+      "importance": 0.02519
     },
     {
       "feature": "PaperlessBilling",
-      "importance": 0.01675
-    },
-    {
-      "feature": "MultipleLines",
-      "importance": 0.0122
-    },
-    {
-      "feature": "OnlineBackup",
-      "importance": 0.01219
-    },
-    {
-      "feature": "StreamingTV",
-      "importance": 0.01199
+      "importance": 0.01055
     },
     {
       "feature": "DeviceProtection",
-      "importance": 0.01161
+      "importance": 0.00883
+    },
+    {
+      "feature": "OnlineBackup",
+      "importance": 0.0077
+    },
+    {
+      "feature": "StreamingTV",
+      "importance": 0.00717
     },
     {
       "feature": "StreamingMovies",
-      "importance": 0.01051
+      "importance": 0.00652
     },
     {
-      "feature": "gender",
-      "importance": 0.00817
-    },
-    {
-      "feature": "SeniorCitizen",
-      "importance": 0.00813
+      "feature": "MultipleLines",
+      "importance": 0.00578
     },
     {
       "feature": "Dependents",
-      "importance": 0.00691
+      "importance": 0.00412
+    },
+    {
+      "feature": "SeniorCitizen",
+      "importance": 0.00375
     },
     {
       "feature": "Partner",
-      "importance": 0.00565
+      "importance": 0.00187
+    },
+    {
+      "feature": "gender",
+      "importance": 0.00149
     },
     {
       "feature": "PhoneService",
-      "importance": 0.00204
+      "importance": 0.00093
     }
   ],
   "cases": [
     {
-      "id": "233",
+      "id": "4645",
+      "prediction": "Yes",
+      "predictedPositive": true,
+      "probaPositive": 0.5007,
+      "actualLabel": "Yes",
+      "actualPositive": true,
+      "isCorrect": true,
+      "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 50%).",
+      "topFeatures": [
+        {
+          "feature": "Contract",
+          "value": "Month-to-month",
+          "contribution": 0.0806
+        },
+        {
+          "feature": "MonthlyCharges",
+          "value": 104.4,
+          "contribution": 0.0544
+        },
+        {
+          "feature": "tenure",
+          "value": 33,
+          "contribution": -0.0499
+        },
+        {
+          "feature": "PaymentMethod",
+          "value": "Electronic check",
+          "contribution": 0.045
+        },
+        {
+          "feature": "OnlineSecurity",
+          "value": "No",
+          "contribution": 0.0437
+        },
+        {
+          "feature": "TotalCharges",
+          "value": 3409.6,
+          "contribution": -0.0366
+        },
+        {
+          "feature": "TechSupport",
+          "value": "No",
+          "contribution": 0.0365
+        },
+        {
+          "feature": "InternetService",
+          "value": "Fiber optic",
+          "contribution": 0.0332
+        },
+        {
+          "feature": "StreamingTV",
+          "value": "Yes",
+          "contribution": 0.0134
+        },
+        {
+          "feature": "StreamingMovies",
+          "value": "Yes",
+          "contribution": 0.0096
+        },
+        {
+          "feature": "MultipleLines",
+          "value": "Yes",
+          "contribution": 0.0094
+        },
+        {
+          "feature": "PaperlessBilling",
+          "value": "Yes",
+          "contribution": 0.0093
+        },
+        {
+          "feature": "OnlineBackup",
+          "value": "Yes",
+          "contribution": -0.0066
+        },
+        {
+          "feature": "Dependents",
+          "value": "No",
+          "contribution": 0.0037
+        },
+        {
+          "feature": "SeniorCitizen",
+          "value": 0,
+          "contribution": -0.0032
+        },
+        {
+          "feature": "gender",
+          "value": "Female",
+          "contribution": -0.0025
+        },
+        {
+          "feature": "DeviceProtection",
+          "value": "Yes",
+          "contribution": -0.002
+        },
+        {
+          "feature": "Partner",
+          "value": "Yes",
+          "contribution": -0.002
+        },
+        {
+          "feature": "PhoneService",
+          "value": "Yes",
+          "contribution": -0.0007
+        }
+      ]
+    },
+    {
+      "id": "6261",
       "prediction": "No",
       "predictedPositive": false,
-      "probaPositive": 0.0,
+      "probaPositive": 0.0064,
       "actualLabel": "No",
       "actualPositive": false,
       "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 100%).",
+      "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 99%).",
       "topFeatures": [
         {
           "feature": "Contract",
           "value": "Two year",
-          "contribution": -0.0797
-        },
-        {
-          "feature": "tenure",
-          "value": 72,
-          "contribution": -0.0372
+          "contribution": -0.0644
         },
         {
           "feature": "OnlineSecurity",
           "value": "No internet service",
-          "contribution": -0.037
+          "contribution": -0.0343
+        },
+        {
+          "feature": "tenure",
+          "value": 62,
+          "contribution": -0.0323
         },
         {
           "feature": "TechSupport",
           "value": "No internet service",
-          "contribution": -0.0268
+          "contribution": -0.0291
+        },
+        {
+          "feature": "MonthlyCharges",
+          "value": 20.45,
+          "contribution": -0.0213
         },
         {
           "feature": "PaymentMethod",
-          "value": "Credit card (automatic)",
-          "contribution": -0.0171
+          "value": "Bank transfer (automatic)",
+          "contribution": -0.0149
         },
         {
           "feature": "DeviceProtection",
           "value": "No internet service",
-          "contribution": -0.0118
+          "contribution": -0.0114
         },
         {
-          "feature": "MonthlyCharges",
-          "value": 20.25,
-          "contribution": -0.0105
+          "feature": "TotalCharges",
+          "value": 1297.35,
+          "contribution": -0.0098
         },
         {
           "feature": "StreamingTV",
           "value": "No internet service",
-          "contribution": -0.0096
+          "contribution": -0.0086
         },
         {
           "feature": "PaperlessBilling",
           "value": "No",
-          "contribution": -0.009
+          "contribution": -0.0072
+        },
+        {
+          "feature": "StreamingMovies",
+          "value": "No internet service",
+          "contribution": -0.0067
         },
         {
           "feature": "OnlineBackup",
           "value": "No internet service",
-          "contribution": -0.0083
+          "contribution": -0.0063
+        },
+        {
+          "feature": "Dependents",
+          "value": "Yes",
+          "contribution": -0.0043
+        },
+        {
+          "feature": "MultipleLines",
+          "value": "No",
+          "contribution": -0.0028
+        },
+        {
+          "feature": "Partner",
+          "value": "Yes",
+          "contribution": -0.0018
+        },
+        {
+          "feature": "InternetService",
+          "value": "No",
+          "contribution": -0.0015
+        },
+        {
+          "feature": "SeniorCitizen",
+          "value": 0,
+          "contribution": -0.0011
+        },
+        {
+          "feature": "gender",
+          "value": "Male",
+          "contribution": -0.0006
+        },
+        {
+          "feature": "PhoneService",
+          "value": "Yes",
+          "contribution": -0.0003
+        }
+      ]
+    },
+    {
+      "id": "3862",
+      "prediction": "No",
+      "predictedPositive": false,
+      "probaPositive": 0.0059,
+      "actualLabel": "No",
+      "actualPositive": false,
+      "isCorrect": true,
+      "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 99%).",
+      "topFeatures": [
+        {
+          "feature": "Contract",
+          "value": "Two year",
+          "contribution": -0.0648
+        },
+        {
+          "feature": "OnlineSecurity",
+          "value": "No internet service",
+          "contribution": -0.0364
+        },
+        {
+          "feature": "tenure",
+          "value": 70,
+          "contribution": -0.0335
+        },
+        {
+          "feature": "TechSupport",
+          "value": "No internet service",
+          "contribution": -0.0304
+        },
+        {
+          "feature": "MonthlyCharges",
+          "value": 25.4,
+          "contribution": -0.0194
         },
         {
           "feature": "TotalCharges",
-          "value": 1566.9,
+          "value": 1782.05,
+          "contribution": -0.0148
+        },
+        {
+          "feature": "PaymentMethod",
+          "value": "Mailed check",
+          "contribution": -0.0122
+        },
+        {
+          "feature": "DeviceProtection",
+          "value": "No internet service",
+          "contribution": -0.0113
+        },
+        {
+          "feature": "StreamingTV",
+          "value": "No internet service",
+          "contribution": -0.0087
+        },
+        {
+          "feature": "PaperlessBilling",
+          "value": "No",
           "contribution": -0.0076
         },
         {
           "feature": "StreamingMovies",
           "value": "No internet service",
-          "contribution": -0.0071
+          "contribution": -0.0069
+        },
+        {
+          "feature": "OnlineBackup",
+          "value": "No internet service",
+          "contribution": -0.0058
+        },
+        {
+          "feature": "Dependents",
+          "value": "Yes",
+          "contribution": -0.0046
         },
         {
           "feature": "MultipleLines",
-          "value": "No",
-          "contribution": -0.0056
+          "value": "Yes",
+          "contribution": 0.0019
         },
         {
           "feature": "Partner",
+          "value": "Yes",
+          "contribution": -0.0019
+        },
+        {
+          "feature": "InternetService",
           "value": "No",
-          "contribution": 0.0019
+          "contribution": -0.0012
         },
         {
           "feature": "SeniorCitizen",
           "value": 0,
-          "contribution": -0.0019
+          "contribution": -0.0011
+        },
+        {
+          "feature": "gender",
+          "value": "Male",
+          "contribution": -0.0004
+        },
+        {
+          "feature": "PhoneService",
+          "value": "Yes",
+          "contribution": -0.0003
+        }
+      ]
+    },
+    {
+      "id": "585",
+      "prediction": "Yes",
+      "predictedPositive": true,
+      "probaPositive": 0.8393,
+      "actualLabel": "Yes",
+      "actualPositive": true,
+      "isCorrect": true,
+      "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 84%).",
+      "topFeatures": [
+        {
+          "feature": "tenure",
+          "value": 1,
+          "contribution": 0.1279
+        },
+        {
+          "feature": "Contract",
+          "value": "Month-to-month",
+          "contribution": 0.0904
+        },
+        {
+          "feature": "TotalCharges",
+          "value": 85.7,
+          "contribution": 0.0758
+        },
+        {
+          "feature": "OnlineSecurity",
+          "value": "No",
+          "contribution": 0.0483
+        },
+        {
+          "feature": "MonthlyCharges",
+          "value": 85.7,
+          "contribution": 0.039
+        },
+        {
+          "feature": "TechSupport",
+          "value": "No",
+          "contribution": 0.0388
+        },
+        {
+          "feature": "PaymentMethod",
+          "value": "Electronic check",
+          "contribution": 0.0384
+        },
+        {
+          "feature": "InternetService",
+          "value": "Fiber optic",
+          "contribution": 0.0381
+        },
+        {
+          "feature": "DeviceProtection",
+          "value": "No",
+          "contribution": 0.0134
+        },
+        {
+          "feature": "StreamingTV",
+          "value": "Yes",
+          "contribution": 0.0133
+        },
+        {
+          "feature": "SeniorCitizen",
+          "value": 1,
+          "contribution": 0.012
+        },
+        {
+          "feature": "OnlineBackup",
+          "value": "No",
+          "contribution": 0.0113
+        },
+        {
+          "feature": "MultipleLines",
+          "value": "Yes",
+          "contribution": 0.0112
+        },
+        {
+          "feature": "PaperlessBilling",
+          "value": "Yes",
+          "contribution": 0.009
         },
         {
           "feature": "Dependents",
+          "value": "No",
+          "contribution": 0.0032
+        },
+        {
+          "feature": "Partner",
+          "value": "No",
+          "contribution": 0.0022
+        },
+        {
+          "feature": "StreamingMovies",
           "value": "No",
           "contribution": 0.0017
         },
         {
           "feature": "gender",
           "value": "Female",
-          "contribution": 0.0009
-        },
-        {
-          "feature": "PhoneService",
-          "value": "Yes",
-          "contribution": -0.0003
-        },
-        {
-          "feature": "InternetService",
-          "value": "No",
-          "contribution": -0.0001
-        }
-      ]
-    },
-    {
-      "id": "970",
-      "prediction": "Yes",
-      "predictedPositive": true,
-      "probaPositive": 0.9933,
-      "actualLabel": "Yes",
-      "actualPositive": true,
-      "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 99%).",
-      "topFeatures": [
-        {
-          "feature": "tenure",
-          "value": 1,
-          "contribution": 0.1678
-        },
-        {
-          "feature": "TotalCharges",
-          "value": 90.55,
-          "contribution": 0.1244
-        },
-        {
-          "feature": "Contract",
-          "value": "Month-to-month",
-          "contribution": 0.0816
-        },
-        {
-          "feature": "MonthlyCharges",
-          "value": 90.55,
-          "contribution": 0.0723
-        },
-        {
-          "feature": "OnlineSecurity",
-          "value": "No",
-          "contribution": 0.0628
-        },
-        {
-          "feature": "InternetService",
-          "value": "Fiber optic",
-          "contribution": 0.0543
-        },
-        {
-          "feature": "TechSupport",
-          "value": "No",
-          "contribution": 0.0458
-        },
-        {
-          "feature": "PaymentMethod",
-          "value": "Electronic check",
-          "contribution": 0.0419
-        },
-        {
-          "feature": "StreamingMovies",
-          "value": "Yes",
-          "contribution": 0.0299
-        },
-        {
-          "feature": "StreamingTV",
-          "value": "Yes",
-          "contribution": 0.0224
-        },
-        {
-          "feature": "PaperlessBilling",
-          "value": "No",
-          "contribution": -0.0211
-        },
-        {
-          "feature": "OnlineBackup",
-          "value": "No",
-          "contribution": 0.019
-        },
-        {
-          "feature": "DeviceProtection",
-          "value": "No",
-          "contribution": 0.0143
-        },
-        {
-          "feature": "Dependents",
-          "value": "No",
-          "contribution": 0.0095
-        },
-        {
-          "feature": "gender",
-          "value": "Female",
-          "contribution": 0.0059
-        },
-        {
-          "feature": "Partner",
-          "value": "No",
-          "contribution": 0.0052
-        },
-        {
-          "feature": "MultipleLines",
-          "value": "No",
-          "contribution": -0.0049
-        },
-        {
-          "feature": "SeniorCitizen",
-          "value": 0,
-          "contribution": -0.0026
-        },
-        {
-          "feature": "PhoneService",
-          "value": "Yes",
-          "contribution": -0.0003
-        }
-      ]
-    },
-    {
-      "id": "6933",
-      "prediction": "Yes",
-      "predictedPositive": true,
-      "probaPositive": 1.0,
-      "actualLabel": "Yes",
-      "actualPositive": true,
-      "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 100%).",
-      "topFeatures": [
-        {
-          "feature": "TotalCharges",
-          "value": 69.6,
-          "contribution": 0.1762
-        },
-        {
-          "feature": "tenure",
-          "value": 1,
-          "contribution": 0.1761
-        },
-        {
-          "feature": "Contract",
-          "value": "Month-to-month",
-          "contribution": 0.0845
-        },
-        {
-          "feature": "TechSupport",
-          "value": "No",
-          "contribution": 0.0548
-        },
-        {
-          "feature": "InternetService",
-          "value": "Fiber optic",
-          "contribution": 0.0543
-        },
-        {
-          "feature": "PaymentMethod",
-          "value": "Electronic check",
-          "contribution": 0.0491
-        },
-        {
-          "feature": "OnlineSecurity",
-          "value": "No",
-          "contribution": 0.0469
-        },
-        {
-          "feature": "MonthlyCharges",
-          "value": 69.6,
-          "contribution": 0.0296
-        },
-        {
-          "feature": "DeviceProtection",
-          "value": "No",
-          "contribution": 0.0227
-        },
-        {
-          "feature": "OnlineBackup",
-          "value": "No",
-          "contribution": 0.0152
-        },
-        {
-          "feature": "PaperlessBilling",
-          "value": "Yes",
-          "contribution": 0.0149
-        },
-        {
-          "feature": "StreamingMovies",
-          "value": "No",
-          "contribution": 0.0054
-        },
-        {
-          "feature": "StreamingTV",
-          "value": "No",
-          "contribution": 0.0042
-        },
-        {
-          "feature": "Dependents",
-          "value": "No",
-          "contribution": 0.0028
-        },
-        {
-          "feature": "PhoneService",
-          "value": "Yes",
-          "contribution": -0.0015
-        },
-        {
-          "feature": "gender",
-          "value": "Male",
-          "contribution": -0.0007
-        },
-        {
-          "feature": "MultipleLines",
-          "value": "No",
-          "contribution": 0.0003
-        },
-        {
-          "feature": "Partner",
-          "value": "No",
-          "contribution": 0.0001
-        },
-        {
-          "feature": "SeniorCitizen",
-          "value": 0,
-          "contribution": 0.0001
-        }
-      ]
-    },
-    {
-      "id": "1410",
-      "prediction": "Yes",
-      "predictedPositive": true,
-      "probaPositive": 0.9933,
-      "actualLabel": "Yes",
-      "actualPositive": true,
-      "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 99%).",
-      "topFeatures": [
-        {
-          "feature": "tenure",
-          "value": 2,
-          "contribution": 0.1295
-        },
-        {
-          "feature": "Contract",
-          "value": "Month-to-month",
-          "contribution": 0.0859
-        },
-        {
-          "feature": "TotalCharges",
-          "value": 170.85,
-          "contribution": 0.0816
-        },
-        {
-          "feature": "MonthlyCharges",
-          "value": 93.85,
-          "contribution": 0.075
-        },
-        {
-          "feature": "OnlineSecurity",
-          "value": "No",
-          "contribution": 0.0565
-        },
-        {
-          "feature": "TechSupport",
-          "value": "No",
-          "contribution": 0.0444
-        },
-        {
-          "feature": "PaymentMethod",
-          "value": "Electronic check",
-          "contribution": 0.0433
-        },
-        {
-          "feature": "InternetService",
-          "value": "Fiber optic",
-          "contribution": 0.0428
-        },
-        {
-          "feature": "MultipleLines",
-          "value": "Yes",
-          "contribution": 0.0419
-        },
-        {
-          "feature": "StreamingMovies",
-          "value": "Yes",
-          "contribution": 0.0245
-        },
-        {
-          "feature": "PaperlessBilling",
-          "value": "Yes",
-          "contribution": 0.0238
-        },
-        {
-          "feature": "StreamingTV",
-          "value": "Yes",
-          "contribution": 0.0176
-        },
-        {
-          "feature": "OnlineBackup",
-          "value": "No",
-          "contribution": 0.0174
-        },
-        {
-          "feature": "SeniorCitizen",
-          "value": 1,
-          "contribution": 0.0148
-        },
-        {
-          "feature": "DeviceProtection",
-          "value": "No",
-          "contribution": 0.0121
-        },
-        {
-          "feature": "Dependents",
-          "value": "No",
-          "contribution": 0.0075
-        },
-        {
-          "feature": "Partner",
-          "value": "No",
-          "contribution": 0.0067
-        },
-        {
-          "feature": "gender",
-          "value": "Female",
-          "contribution": 0.0037
-        },
-        {
-          "feature": "PhoneService",
-          "value": "Yes",
-          "contribution": -0.0007
-        }
-      ]
-    },
-    {
-      "id": "2184",
-      "prediction": "Yes",
-      "predictedPositive": true,
-      "probaPositive": 1.0,
-      "actualLabel": "Yes",
-      "actualPositive": true,
-      "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 100%).",
-      "topFeatures": [
-        {
-          "feature": "tenure",
-          "value": 2,
-          "contribution": 0.1438
-        },
-        {
-          "feature": "Contract",
-          "value": "Month-to-month",
-          "contribution": 0.0964
-        },
-        {
-          "feature": "TotalCharges",
-          "value": 179.25,
-          "contribution": 0.0876
-        },
-        {
-          "feature": "OnlineSecurity",
-          "value": "No",
-          "contribution": 0.0728
-        },
-        {
-          "feature": "MonthlyCharges",
-          "value": 88.55,
-          "contribution": 0.0574
-        },
-        {
-          "feature": "PaymentMethod",
-          "value": "Electronic check",
-          "contribution": 0.0458
-        },
-        {
-          "feature": "TechSupport",
-          "value": "No",
-          "contribution": 0.0443
-        },
-        {
-          "feature": "MultipleLines",
-          "value": "Yes",
-          "contribution": 0.0394
-        },
-        {
-          "feature": "InternetService",
-          "value": "Fiber optic",
-          "contribution": 0.0392
-        },
-        {
-          "feature": "StreamingMovies",
-          "value": "Yes",
-          "contribution": 0.0239
-        },
-        {
-          "feature": "PaperlessBilling",
-          "value": "Yes",
-          "contribution": 0.0211
-        },
-        {
-          "feature": "SeniorCitizen",
-          "value": 1,
-          "contribution": 0.0192
-        },
-        {
-          "feature": "OnlineBackup",
-          "value": "No",
-          "contribution": 0.016
-        },
-        {
-          "feature": "gender",
-          "value": "Female",
-          "contribution": 0.0087
-        },
-        {
-          "feature": "StreamingTV",
-          "value": "No",
-          "contribution": 0.0063
-        },
-        {
-          "feature": "Dependents",
-          "value": "No",
-          "contribution": 0.0053
-        },
-        {
-          "feature": "Partner",
-          "value": "No",
-          "contribution": 0.0044
-        },
-        {
-          "feature": "DeviceProtection",
-          "value": "Yes",
-          "contribution": 0.0039
+          "contribution": 0.0006
         },
         {
           "feature": "PhoneService",
@@ -618,1276 +511,313 @@
       ]
     },
     {
-      "id": "6168",
-      "prediction": "Yes",
-      "predictedPositive": true,
-      "probaPositive": 1.0,
+      "id": "381",
+      "prediction": "No",
+      "predictedPositive": false,
+      "probaPositive": 0.4994,
       "actualLabel": "Yes",
       "actualPositive": true,
-      "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 100%).",
+      "isCorrect": false,
+      "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 50%).",
       "topFeatures": [
         {
           "feature": "tenure",
           "value": 1,
-          "contribution": 0.1738
+          "contribution": 0.1213
         },
         {
           "feature": "TotalCharges",
-          "value": 79.25,
-          "contribution": 0.1498
+          "value": 50.65,
+          "contribution": 0.0828
         },
         {
           "feature": "Contract",
           "value": "Month-to-month",
-          "contribution": 0.0829
-        },
-        {
-          "feature": "MonthlyCharges",
-          "value": 79.25,
-          "contribution": 0.0564
+          "contribution": 0.0689
         },
         {
           "feature": "OnlineSecurity",
           "value": "No",
-          "contribution": 0.0526
+          "contribution": 0.0444
         },
         {
           "feature": "InternetService",
-          "value": "Fiber optic",
-          "contribution": 0.0513
+          "value": "DSL",
+          "contribution": -0.0418
         },
         {
           "feature": "TechSupport",
           "value": "No",
-          "contribution": 0.0502
-        },
-        {
-          "feature": "PaymentMethod",
-          "value": "Electronic check",
-          "contribution": 0.0471
-        },
-        {
-          "feature": "StreamingMovies",
-          "value": "Yes",
-          "contribution": 0.0233
-        },
-        {
-          "feature": "DeviceProtection",
-          "value": "No",
-          "contribution": 0.0192
-        },
-        {
-          "feature": "MultipleLines",
-          "value": "No",
-          "contribution": -0.0172
-        },
-        {
-          "feature": "OnlineBackup",
-          "value": "No",
-          "contribution": 0.0156
-        },
-        {
-          "feature": "PaperlessBilling",
-          "value": "Yes",
-          "contribution": 0.0142
-        },
-        {
-          "feature": "Dependents",
-          "value": "No",
-          "contribution": 0.0077
-        },
-        {
-          "feature": "StreamingTV",
-          "value": "No",
-          "contribution": 0.0076
-        },
-        {
-          "feature": "Partner",
-          "value": "No",
-          "contribution": 0.0056
-        },
-        {
-          "feature": "gender",
-          "value": "Male",
-          "contribution": -0.0038
-        },
-        {
-          "feature": "PhoneService",
-          "value": "Yes",
-          "contribution": -0.0015
-        },
-        {
-          "feature": "SeniorCitizen",
-          "value": 0,
-          "contribution": 0.0001
-        }
-      ]
-    },
-    {
-      "id": "3352",
-      "prediction": "Yes",
-      "predictedPositive": true,
-      "probaPositive": 0.9967,
-      "actualLabel": "Yes",
-      "actualPositive": true,
-      "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 100%).",
-      "topFeatures": [
-        {
-          "feature": "tenure",
-          "value": 1,
-          "contribution": 0.1788
-        },
-        {
-          "feature": "TotalCharges",
-          "value": 85.45,
-          "contribution": 0.1127
-        },
-        {
-          "feature": "Contract",
-          "value": "Month-to-month",
-          "contribution": 0.0915
-        },
-        {
-          "feature": "OnlineSecurity",
-          "value": "No",
-          "contribution": 0.0621
-        },
-        {
-          "feature": "TechSupport",
-          "value": "No",
-          "contribution": 0.0616
+          "contribution": 0.0379
         },
         {
           "feature": "MonthlyCharges",
-          "value": 85.45,
-          "contribution": 0.059
-        },
-        {
-          "feature": "InternetService",
-          "value": "Fiber optic",
-          "contribution": 0.0527
-        },
-        {
-          "feature": "StreamingMovies",
-          "value": "Yes",
-          "contribution": 0.0342
-        },
-        {
-          "feature": "MultipleLines",
-          "value": "Yes",
-          "contribution": 0.0226
-        },
-        {
-          "feature": "PaperlessBilling",
-          "value": "Yes",
-          "contribution": 0.0182
-        },
-        {
-          "feature": "OnlineBackup",
-          "value": "No",
-          "contribution": 0.0172
-        },
-        {
-          "feature": "DeviceProtection",
-          "value": "No",
-          "contribution": 0.0141
+          "value": 50.65,
+          "contribution": -0.0378
         },
         {
           "feature": "PaymentMethod",
           "value": "Mailed check",
-          "contribution": -0.0123
+          "contribution": -0.021
         },
         {
-          "feature": "StreamingTV",
+          "feature": "PaperlessBilling",
           "value": "No",
-          "contribution": 0.0084
+          "contribution": -0.0201
         },
         {
-          "feature": "Dependents",
+          "feature": "DeviceProtection",
           "value": "No",
-          "contribution": 0.0062
+          "contribution": 0.0072
         },
         {
-          "feature": "gender",
-          "value": "Female",
-          "contribution": 0.0052
+          "feature": "OnlineBackup",
+          "value": "Yes",
+          "contribution": -0.0071
         },
         {
-          "feature": "Partner",
+          "feature": "MultipleLines",
           "value": "No",
-          "contribution": 0.0031
+          "contribution": -0.0057
         },
         {
           "feature": "SeniorCitizen",
           "value": 0,
-          "contribution": -0.003
-        },
-        {
-          "feature": "PhoneService",
-          "value": "Yes",
-          "contribution": -0.0005
-        }
-      ]
-    },
-    {
-      "id": "4995",
-      "prediction": "Yes",
-      "predictedPositive": true,
-      "probaPositive": 0.5033,
-      "actualLabel": "Yes",
-      "actualPositive": true,
-      "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 50%).",
-      "topFeatures": [
-        {
-          "feature": "Contract",
-          "value": "Month-to-month",
-          "contribution": 0.0795
-        },
-        {
-          "feature": "tenure",
-          "value": 7,
-          "contribution": 0.0642
-        },
-        {
-          "feature": "InternetService",
-          "value": "Fiber optic",
-          "contribution": 0.0465
-        },
-        {
-          "feature": "OnlineSecurity",
-          "value": "No",
-          "contribution": 0.0409
-        },
-        {
-          "feature": "PaymentMethod",
-          "value": "Bank transfer (automatic)",
-          "contribution": -0.033
-        },
-        {
-          "feature": "TechSupport",
-          "value": "No",
-          "contribution": 0.0287
-        },
-        {
-          "feature": "MultipleLines",
-          "value": "Yes",
-          "contribution": 0.0215
-        },
-        {
-          "feature": "OnlineBackup",
-          "value": "No",
-          "contribution": 0.021
-        },
-        {
-          "feature": "StreamingMovies",
-          "value": "No",
-          "contribution": -0.0165
-        },
-        {
-          "feature": "Partner",
-          "value": "No",
-          "contribution": -0.0119
-        },
-        {
-          "feature": "PaperlessBilling",
-          "value": "Yes",
-          "contribution": 0.0115
-        },
-        {
-          "feature": "MonthlyCharges",
-          "value": 75.1,
-          "contribution": 0.0096
-        },
-        {
-          "feature": "gender",
-          "value": "Female",
-          "contribution": -0.0088
+          "contribution": -0.0032
         },
         {
           "feature": "StreamingTV",
           "value": "No",
-          "contribution": -0.0075
-        },
-        {
-          "feature": "SeniorCitizen",
-          "value": 0,
-          "contribution": -0.0065
-        },
-        {
-          "feature": "TotalCharges",
-          "value": 552.95,
-          "contribution": -0.0054
-        },
-        {
-          "feature": "DeviceProtection",
-          "value": "No",
-          "contribution": 0.0051
+          "contribution": 0.003
         },
         {
           "feature": "Dependents",
           "value": "No",
-          "contribution": -0.0003
-        },
-        {
-          "feature": "PhoneService",
-          "value": "Yes",
-          "contribution": -0.0003
-        }
-      ]
-    },
-    {
-      "id": "5782",
-      "prediction": "Yes",
-      "predictedPositive": true,
-      "probaPositive": 1.0,
-      "actualLabel": "Yes",
-      "actualPositive": true,
-      "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 100%).",
-      "topFeatures": [
-        {
-          "feature": "tenure",
-          "value": 1,
-          "contribution": 0.1738
-        },
-        {
-          "feature": "TotalCharges",
-          "value": 69.65,
-          "contribution": 0.1586
-        },
-        {
-          "feature": "Contract",
-          "value": "Month-to-month",
-          "contribution": 0.0895
-        },
-        {
-          "feature": "InternetService",
-          "value": "Fiber optic",
-          "contribution": 0.0485
-        },
-        {
-          "feature": "TechSupport",
-          "value": "No",
-          "contribution": 0.0462
-        },
-        {
-          "feature": "PaymentMethod",
-          "value": "Electronic check",
-          "contribution": 0.046
-        },
-        {
-          "feature": "OnlineSecurity",
-          "value": "No",
-          "contribution": 0.0451
-        },
-        {
-          "feature": "MonthlyCharges",
-          "value": 69.65,
-          "contribution": 0.0349
-        },
-        {
-          "feature": "DeviceProtection",
-          "value": "No",
-          "contribution": 0.0194
-        },
-        {
-          "feature": "PaperlessBilling",
-          "value": "Yes",
-          "contribution": 0.0189
-        },
-        {
-          "feature": "SeniorCitizen",
-          "value": 1,
-          "contribution": 0.0159
-        },
-        {
-          "feature": "OnlineBackup",
-          "value": "No",
-          "contribution": 0.0138
-        },
-        {
-          "feature": "MultipleLines",
-          "value": "No",
-          "contribution": 0.0064
+          "contribution": 0.003
         },
         {
           "feature": "StreamingMovies",
-          "value": "No",
-          "contribution": 0.0053
-        },
-        {
-          "feature": "gender",
-          "value": "Female",
-          "contribution": 0.0051
-        },
-        {
-          "feature": "StreamingTV",
-          "value": "No",
-          "contribution": 0.0032
-        },
-        {
-          "feature": "Partner",
-          "value": "No",
-          "contribution": 0.0032
-        },
-        {
-          "feature": "Dependents",
-          "value": "No",
-          "contribution": 0.0022
-        },
-        {
-          "feature": "PhoneService",
-          "value": "Yes",
-          "contribution": -0.001
-        }
-      ]
-    },
-    {
-      "id": "4800",
-      "prediction": "Yes",
-      "predictedPositive": true,
-      "probaPositive": 1.0,
-      "actualLabel": "Yes",
-      "actualPositive": true,
-      "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 100%).",
-      "topFeatures": [
-        {
-          "feature": "tenure",
-          "value": 1,
-          "contribution": 0.1512
-        },
-        {
-          "feature": "TotalCharges",
-          "value": 94.0,
-          "contribution": 0.1069
-        },
-        {
-          "feature": "Contract",
-          "value": "Month-to-month",
-          "contribution": 0.0868
-        },
-        {
-          "feature": "MonthlyCharges",
-          "value": 94.0,
-          "contribution": 0.0699
-        },
-        {
-          "feature": "TechSupport",
-          "value": "No",
-          "contribution": 0.0516
-        },
-        {
-          "feature": "OnlineSecurity",
-          "value": "No",
-          "contribution": 0.0473
-        },
-        {
-          "feature": "InternetService",
-          "value": "Fiber optic",
-          "contribution": 0.0465
-        },
-        {
-          "feature": "PaymentMethod",
-          "value": "Electronic check",
-          "contribution": 0.041
-        },
-        {
-          "feature": "MultipleLines",
-          "value": "Yes",
-          "contribution": 0.0257
-        },
-        {
-          "feature": "StreamingMovies",
-          "value": "Yes",
-          "contribution": 0.0197
-        },
-        {
-          "feature": "SeniorCitizen",
-          "value": 1,
-          "contribution": 0.0195
-        },
-        {
-          "feature": "PaperlessBilling",
-          "value": "Yes",
-          "contribution": 0.0164
-        },
-        {
-          "feature": "StreamingTV",
-          "value": "Yes",
-          "contribution": 0.0164
-        },
-        {
-          "feature": "OnlineBackup",
-          "value": "No",
-          "contribution": 0.0161
-        },
-        {
-          "feature": "DeviceProtection",
-          "value": "No",
-          "contribution": 0.013
-        },
-        {
-          "feature": "Dependents",
-          "value": "No",
-          "contribution": 0.0063
-        },
-        {
-          "feature": "Partner",
-          "value": "No",
-          "contribution": 0.0028
-        },
-        {
-          "feature": "PhoneService",
-          "value": "Yes",
-          "contribution": -0.0013
-        },
-        {
-          "feature": "gender",
-          "value": "Male",
-          "contribution": -0.0007
-        }
-      ]
-    },
-    {
-      "id": "4463",
-      "prediction": "Yes",
-      "predictedPositive": true,
-      "probaPositive": 0.9967,
-      "actualLabel": "Yes",
-      "actualPositive": true,
-      "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 100%).",
-      "topFeatures": [
-        {
-          "feature": "TotalCharges",
-          "value": 69.85,
-          "contribution": 0.1782
-        },
-        {
-          "feature": "tenure",
-          "value": 1,
-          "contribution": 0.1759
-        },
-        {
-          "feature": "Contract",
-          "value": "Month-to-month",
-          "contribution": 0.0839
-        },
-        {
-          "feature": "TechSupport",
-          "value": "No",
-          "contribution": 0.0548
-        },
-        {
-          "feature": "InternetService",
-          "value": "Fiber optic",
-          "contribution": 0.0531
-        },
-        {
-          "feature": "PaymentMethod",
-          "value": "Electronic check",
-          "contribution": 0.048
-        },
-        {
-          "feature": "OnlineSecurity",
-          "value": "No",
-          "contribution": 0.047
-        },
-        {
-          "feature": "MonthlyCharges",
-          "value": 69.85,
-          "contribution": 0.0273
-        },
-        {
-          "feature": "DeviceProtection",
-          "value": "No",
-          "contribution": 0.0225
-        },
-        {
-          "feature": "PaperlessBilling",
-          "value": "Yes",
-          "contribution": 0.0152
-        },
-        {
-          "feature": "OnlineBackup",
-          "value": "No",
-          "contribution": 0.0149
-        },
-        {
-          "feature": "StreamingMovies",
-          "value": "No",
-          "contribution": 0.0051
-        },
-        {
-          "feature": "StreamingTV",
-          "value": "No",
-          "contribution": 0.004
-        },
-        {
-          "feature": "Dependents",
           "value": "No",
           "contribution": 0.0027
         },
         {
           "feature": "PhoneService",
           "value": "Yes",
-          "contribution": -0.0016
+          "contribution": -0.0022
+        },
+        {
+          "feature": "Partner",
+          "value": "No",
+          "contribution": 0.0017
         },
         {
           "feature": "gender",
           "value": "Male",
-          "contribution": 0.0006
-        },
-        {
-          "feature": "SeniorCitizen",
-          "value": 0,
-          "contribution": 0.0006
-        },
-        {
-          "feature": "MultipleLines",
-          "value": "No",
-          "contribution": -0.0003
-        },
-        {
-          "feature": "Partner",
-          "value": "No",
-          "contribution": -0.0002
-        }
-      ]
-    },
-    {
-      "id": "6450",
-      "prediction": "No",
-      "predictedPositive": false,
-      "probaPositive": 0.0,
-      "actualLabel": "No",
-      "actualPositive": false,
-      "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 100%).",
-      "topFeatures": [
-        {
-          "feature": "Contract",
-          "value": "Two year",
-          "contribution": -0.0696
-        },
-        {
-          "feature": "OnlineSecurity",
-          "value": "No internet service",
-          "contribution": -0.0455
-        },
-        {
-          "feature": "TechSupport",
-          "value": "No internet service",
-          "contribution": -0.0352
-        },
-        {
-          "feature": "tenure",
-          "value": 27,
-          "contribution": -0.0193
-        },
-        {
-          "feature": "StreamingTV",
-          "value": "No internet service",
-          "contribution": -0.0149
-        },
-        {
-          "feature": "DeviceProtection",
-          "value": "No internet service",
-          "contribution": -0.0148
-        },
-        {
-          "feature": "MonthlyCharges",
-          "value": 19.9,
-          "contribution": -0.0135
-        },
-        {
-          "feature": "OnlineBackup",
-          "value": "No internet service",
-          "contribution": -0.0135
-        },
-        {
-          "feature": "PaperlessBilling",
-          "value": "No",
-          "contribution": -0.013
-        },
-        {
-          "feature": "PaymentMethod",
-          "value": "Mailed check",
-          "contribution": -0.0117
-        },
-        {
-          "feature": "StreamingMovies",
-          "value": "No internet service",
-          "contribution": -0.0077
-        },
-        {
-          "feature": "MultipleLines",
-          "value": "No",
-          "contribution": -0.0068
-        },
-        {
-          "feature": "TotalCharges",
-          "value": 550.1,
-          "contribution": 0.0067
-        },
-        {
-          "feature": "Dependents",
-          "value": "Yes",
-          "contribution": -0.006
-        },
-        {
-          "feature": "SeniorCitizen",
-          "value": 0,
-          "contribution": -0.002
-        },
-        {
-          "feature": "gender",
-          "value": "Female",
-          "contribution": 0.0012
-        },
-        {
-          "feature": "InternetService",
-          "value": "No",
-          "contribution": 0.001
-        },
-        {
-          "feature": "PhoneService",
-          "value": "Yes",
-          "contribution": -0.0004
-        },
-        {
-          "feature": "Partner",
-          "value": "Yes",
-          "contribution": 0.0
-        }
-      ]
-    },
-    {
-      "id": "1420",
-      "prediction": "Yes",
-      "predictedPositive": true,
-      "probaPositive": 0.5067,
-      "actualLabel": "No",
-      "actualPositive": false,
-      "isCorrect": false,
-      "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 51%).",
-      "topFeatures": [
-        {
-          "feature": "tenure",
-          "value": 60,
-          "contribution": -0.1028
-        },
-        {
-          "feature": "Contract",
-          "value": "Month-to-month",
-          "contribution": 0.0934
-        },
-        {
-          "feature": "TotalCharges",
-          "value": 5985.75,
-          "contribution": -0.0712
-        },
-        {
-          "feature": "OnlineSecurity",
-          "value": "No",
-          "contribution": 0.0638
-        },
-        {
-          "feature": "MonthlyCharges",
-          "value": 99.8,
-          "contribution": 0.059
-        },
-        {
-          "feature": "TechSupport",
-          "value": "No",
-          "contribution": 0.0454
-        },
-        {
-          "feature": "PaymentMethod",
-          "value": "Electronic check",
-          "contribution": 0.0406
-        },
-        {
-          "feature": "InternetService",
-          "value": "Fiber optic",
-          "contribution": 0.0319
-        },
-        {
-          "feature": "StreamingTV",
-          "value": "Yes",
-          "contribution": 0.0267
-        },
-        {
-          "feature": "Dependents",
-          "value": "No",
-          "contribution": 0.0137
-        },
-        {
-          "feature": "MultipleLines",
-          "value": "Yes",
-          "contribution": 0.0121
-        },
-        {
-          "feature": "SeniorCitizen",
-          "value": 0,
-          "contribution": 0.0107
-        },
-        {
-          "feature": "PaperlessBilling",
-          "value": "Yes",
-          "contribution": 0.0096
-        },
-        {
-          "feature": "StreamingMovies",
-          "value": "Yes",
-          "contribution": 0.0076
-        },
-        {
-          "feature": "DeviceProtection",
-          "value": "No",
-          "contribution": 0.0061
-        },
-        {
-          "feature": "gender",
-          "value": "Female",
-          "contribution": -0.0045
-        },
-        {
-          "feature": "PhoneService",
-          "value": "Yes",
-          "contribution": -0.0009
-        },
-        {
-          "feature": "Partner",
-          "value": "Yes",
-          "contribution": 0.0005
-        },
-        {
-          "feature": "OnlineBackup",
-          "value": "Yes",
-          "contribution": -0.0002
-        }
-      ]
-    },
-    {
-      "id": "530",
-      "prediction": "No",
-      "predictedPositive": false,
-      "probaPositive": 0.0,
-      "actualLabel": "No",
-      "actualPositive": false,
-      "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 100%).",
-      "topFeatures": [
-        {
-          "feature": "Contract",
-          "value": "Two year",
-          "contribution": -0.0729
-        },
-        {
-          "feature": "OnlineSecurity",
-          "value": "No internet service",
-          "contribution": -0.0455
-        },
-        {
-          "feature": "TechSupport",
-          "value": "No internet service",
-          "contribution": -0.0405
-        },
-        {
-          "feature": "PaymentMethod",
-          "value": "Credit card (automatic)",
-          "contribution": -0.018
-        },
-        {
-          "feature": "StreamingTV",
-          "value": "No internet service",
-          "contribution": -0.0166
-        },
-        {
-          "feature": "tenure",
-          "value": 24,
-          "contribution": -0.0161
-        },
-        {
-          "feature": "DeviceProtection",
-          "value": "No internet service",
-          "contribution": -0.0159
-        },
-        {
-          "feature": "MonthlyCharges",
-          "value": 21.1,
-          "contribution": -0.0143
-        },
-        {
-          "feature": "OnlineBackup",
-          "value": "No internet service",
-          "contribution": -0.0139
-        },
-        {
-          "feature": "StreamingMovies",
-          "value": "No internet service",
-          "contribution": -0.0101
-        },
-        {
-          "feature": "MultipleLines",
-          "value": "No",
-          "contribution": -0.0093
-        },
-        {
-          "feature": "TotalCharges",
-          "value": 490.65,
-          "contribution": 0.0077
-        },
-        {
-          "feature": "Dependents",
-          "value": "Yes",
-          "contribution": -0.0062
-        },
-        {
-          "feature": "PaperlessBilling",
-          "value": "Yes",
-          "contribution": 0.0057
-        },
-        {
-          "feature": "gender",
-          "value": "Female",
-          "contribution": 0.0021
-        },
-        {
-          "feature": "SeniorCitizen",
-          "value": 0,
-          "contribution": -0.0015
-        },
-        {
-          "feature": "InternetService",
-          "value": "No",
-          "contribution": 0.0006
-        },
-        {
-          "feature": "PhoneService",
-          "value": "Yes",
-          "contribution": -0.0002
-        },
-        {
-          "feature": "Partner",
-          "value": "Yes",
-          "contribution": 0.0001
-        }
-      ]
-    },
-    {
-      "id": "5872",
-      "prediction": "Yes",
-      "predictedPositive": true,
-      "probaPositive": 0.9967,
-      "actualLabel": "Yes",
-      "actualPositive": true,
-      "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 100%).",
-      "topFeatures": [
-        {
-          "feature": "tenure",
-          "value": 1,
-          "contribution": 0.1805
-        },
-        {
-          "feature": "TotalCharges",
-          "value": 69.65,
-          "contribution": 0.1622
-        },
-        {
-          "feature": "Contract",
-          "value": "Month-to-month",
-          "contribution": 0.0857
-        },
-        {
-          "feature": "InternetService",
-          "value": "Fiber optic",
-          "contribution": 0.0568
-        },
-        {
-          "feature": "OnlineSecurity",
-          "value": "No",
-          "contribution": 0.0486
-        },
-        {
-          "feature": "TechSupport",
-          "value": "No",
-          "contribution": 0.0485
-        },
-        {
-          "feature": "PaymentMethod",
-          "value": "Electronic check",
-          "contribution": 0.0396
-        },
-        {
-          "feature": "MonthlyCharges",
-          "value": 69.65,
-          "contribution": 0.0362
-        },
-        {
-          "feature": "DeviceProtection",
-          "value": "No",
-          "contribution": 0.0195
-        },
-        {
-          "feature": "PaperlessBilling",
-          "value": "Yes",
-          "contribution": 0.0184
-        },
-        {
-          "feature": "OnlineBackup",
-          "value": "No",
-          "contribution": 0.0168
-        },
-        {
-          "feature": "StreamingTV",
-          "value": "No",
-          "contribution": 0.0074
-        },
-        {
-          "feature": "StreamingMovies",
-          "value": "No",
-          "contribution": 0.0072
-        },
-        {
-          "feature": "Dependents",
-          "value": "Yes",
-          "contribution": -0.0071
-        },
-        {
-          "feature": "Partner",
-          "value": "No",
-          "contribution": 0.0063
-        },
-        {
-          "feature": "MultipleLines",
-          "value": "No",
-          "contribution": 0.0045
-        },
-        {
-          "feature": "gender",
-          "value": "Female",
-          "contribution": 0.0022
-        },
-        {
-          "feature": "SeniorCitizen",
-          "value": 0,
-          "contribution": -0.001
-        },
-        {
-          "feature": "PhoneService",
-          "value": "Yes",
-          "contribution": -0.0005
-        }
-      ]
-    },
-    {
-      "id": "6226",
-      "prediction": "No",
-      "predictedPositive": false,
-      "probaPositive": 0.0,
-      "actualLabel": "No",
-      "actualPositive": false,
-      "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 100%).",
-      "topFeatures": [
-        {
-          "feature": "Contract",
-          "value": "Two year",
-          "contribution": -0.074
-        },
-        {
-          "feature": "OnlineSecurity",
-          "value": "No internet service",
-          "contribution": -0.0376
-        },
-        {
-          "feature": "tenure",
-          "value": 65,
-          "contribution": -0.0289
-        },
-        {
-          "feature": "TechSupport",
-          "value": "No internet service",
-          "contribution": -0.0284
-        },
-        {
-          "feature": "TotalCharges",
-          "value": 1654.75,
-          "contribution": -0.0222
-        },
-        {
-          "feature": "MonthlyCharges",
-          "value": 25.75,
-          "contribution": -0.0168
-        },
-        {
-          "feature": "PaymentMethod",
-          "value": "Mailed check",
-          "contribution": -0.0159
-        },
-        {
-          "feature": "StreamingTV",
-          "value": "No internet service",
-          "contribution": -0.0108
-        },
-        {
-          "feature": "DeviceProtection",
-          "value": "No internet service",
-          "contribution": -0.0106
-        },
-        {
-          "feature": "PaperlessBilling",
-          "value": "No",
-          "contribution": -0.0105
-        },
-        {
-          "feature": "OnlineBackup",
-          "value": "No internet service",
-          "contribution": -0.01
-        },
-        {
-          "feature": "StreamingMovies",
-          "value": "No internet service",
-          "contribution": -0.0073
-        },
-        {
-          "feature": "MultipleLines",
-          "value": "Yes",
-          "contribution": 0.0035
-        },
-        {
-          "feature": "Dependents",
-          "value": "No",
-          "contribution": 0.0031
-        },
-        {
-          "feature": "Partner",
-          "value": "No",
-          "contribution": 0.002
-        },
-        {
-          "feature": "SeniorCitizen",
-          "value": 0,
-          "contribution": -0.0019
-        },
-        {
-          "feature": "gender",
-          "value": "Male",
-          "contribution": 0.0014
-        },
-        {
-          "feature": "PhoneService",
-          "value": "Yes",
-          "contribution": -0.0004
-        },
-        {
-          "feature": "InternetService",
-          "value": "No",
           "contribution": 0.0002
         }
       ]
     },
     {
-      "id": "4715",
-      "prediction": "No",
-      "predictedPositive": false,
-      "probaPositive": 0.0,
-      "actualLabel": "No",
-      "actualPositive": false,
+      "id": "534",
+      "prediction": "Yes",
+      "predictedPositive": true,
+      "probaPositive": 0.8357,
+      "actualLabel": "Yes",
+      "actualPositive": true,
       "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 100%).",
+      "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 84%).",
       "topFeatures": [
         {
-          "feature": "Contract",
-          "value": "Two year",
-          "contribution": -0.0913
-        },
-        {
           "feature": "tenure",
-          "value": 64,
-          "contribution": -0.0475
+          "value": 1,
+          "contribution": 0.1286
         },
         {
-          "feature": "OnlineSecurity",
-          "value": "Yes",
-          "contribution": -0.0325
-        },
-        {
-          "feature": "TechSupport",
-          "value": "Yes",
-          "contribution": -0.0287
-        },
-        {
-          "feature": "InternetService",
-          "value": "DSL",
-          "contribution": -0.0275
+          "feature": "Contract",
+          "value": "Month-to-month",
+          "contribution": 0.0886
         },
         {
           "feature": "TotalCharges",
-          "value": 5442.05,
-          "contribution": -0.0255
+          "value": 85.0,
+          "contribution": 0.0783
         },
         {
-          "feature": "PaymentMethod",
-          "value": "Credit card (automatic)",
-          "contribution": -0.0152
+          "feature": "OnlineSecurity",
+          "value": "No",
+          "contribution": 0.0516
+        },
+        {
+          "feature": "TechSupport",
+          "value": "No",
+          "contribution": 0.0406
         },
         {
           "feature": "MonthlyCharges",
-          "value": 86.4,
-          "contribution": -0.0071
+          "value": 85.0,
+          "contribution": 0.0403
+        },
+        {
+          "feature": "InternetService",
+          "value": "Fiber optic",
+          "contribution": 0.0386
+        },
+        {
+          "feature": "PaymentMethod",
+          "value": "Electronic check",
+          "contribution": 0.0372
         },
         {
           "feature": "DeviceProtection",
-          "value": "Yes",
-          "contribution": -0.0057
+          "value": "No",
+          "contribution": 0.0137
         },
         {
           "feature": "StreamingMovies",
           "value": "Yes",
-          "contribution": 0.0052
+          "contribution": 0.0137
         },
         {
-          "feature": "PaperlessBilling",
-          "value": "Yes",
-          "contribution": 0.0048
-        },
-        {
-          "feature": "StreamingTV",
-          "value": "Yes",
-          "contribution": 0.004
-        },
-        {
-          "feature": "SeniorCitizen",
-          "value": 0,
-          "contribution": -0.0039
+          "feature": "OnlineBackup",
+          "value": "No",
+          "contribution": 0.0117
         },
         {
           "feature": "MultipleLines",
           "value": "Yes",
-          "contribution": 0.0039
+          "contribution": 0.0113
         },
         {
-          "feature": "OnlineBackup",
+          "feature": "PaperlessBilling",
           "value": "Yes",
-          "contribution": -0.0033
+          "contribution": 0.0107
         },
         {
-          "feature": "Partner",
+          "feature": "StreamingTV",
           "value": "No",
-          "contribution": 0.0031
+          "contribution": 0.0032
         },
         {
           "feature": "Dependents",
           "value": "No",
+          "contribution": 0.0029
+        },
+        {
+          "feature": "SeniorCitizen",
+          "value": 0,
+          "contribution": -0.0029
+        },
+        {
+          "feature": "Partner",
+          "value": "No",
           "contribution": 0.002
+        },
+        {
+          "feature": "gender",
+          "value": "Female",
+          "contribution": 0.0009
+        },
+        {
+          "feature": "PhoneService",
+          "value": "Yes",
+          "contribution": -0.0006
+        }
+      ]
+    },
+    {
+      "id": "6880",
+      "prediction": "No",
+      "predictedPositive": false,
+      "probaPositive": 0.0055,
+      "actualLabel": "No",
+      "actualPositive": false,
+      "isCorrect": true,
+      "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 99%).",
+      "topFeatures": [
+        {
+          "feature": "Contract",
+          "value": "Two year",
+          "contribution": -0.0675
+        },
+        {
+          "feature": "tenure",
+          "value": 72,
+          "contribution": -0.0372
+        },
+        {
+          "feature": "OnlineSecurity",
+          "value": "No internet service",
+          "contribution": -0.0349
+        },
+        {
+          "feature": "TechSupport",
+          "value": "No internet service",
+          "contribution": -0.0289
+        },
+        {
+          "feature": "MonthlyCharges",
+          "value": 25.2,
+          "contribution": -0.0184
+        },
+        {
+          "feature": "PaymentMethod",
+          "value": "Bank transfer (automatic)",
+          "contribution": -0.0151
+        },
+        {
+          "feature": "TotalCharges",
+          "value": 1787.35,
+          "contribution": -0.0143
+        },
+        {
+          "feature": "DeviceProtection",
+          "value": "No internet service",
+          "contribution": -0.0112
+        },
+        {
+          "feature": "StreamingTV",
+          "value": "No internet service",
+          "contribution": -0.0079
+        },
+        {
+          "feature": "PaperlessBilling",
+          "value": "No",
+          "contribution": -0.0071
+        },
+        {
+          "feature": "StreamingMovies",
+          "value": "No internet service",
+          "contribution": -0.006
+        },
+        {
+          "feature": "OnlineBackup",
+          "value": "No internet service",
+          "contribution": -0.0055
+        },
+        {
+          "feature": "Dependents",
+          "value": "Yes",
+          "contribution": -0.0042
+        },
+        {
+          "feature": "MultipleLines",
+          "value": "Yes",
+          "contribution": 0.0017
+        },
+        {
+          "feature": "Partner",
+          "value": "Yes",
+          "contribution": -0.0016
+        },
+        {
+          "feature": "SeniorCitizen",
+          "value": 0,
+          "contribution": -0.0011
+        },
+        {
+          "feature": "InternetService",
+          "value": "No",
+          "contribution": -0.0007
         },
         {
           "feature": "gender",
@@ -1902,614 +832,84 @@
       ]
     },
     {
-      "id": "1872",
-      "prediction": "No",
-      "predictedPositive": false,
-      "probaPositive": 0.0,
-      "actualLabel": "No",
-      "actualPositive": false,
-      "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 100%).",
-      "topFeatures": [
-        {
-          "feature": "Contract",
-          "value": "Two year",
-          "contribution": -0.0761
-        },
-        {
-          "feature": "OnlineSecurity",
-          "value": "No internet service",
-          "contribution": -0.0443
-        },
-        {
-          "feature": "TechSupport",
-          "value": "No internet service",
-          "contribution": -0.0328
-        },
-        {
-          "feature": "tenure",
-          "value": 41,
-          "contribution": -0.0273
-        },
-        {
-          "feature": "StreamingTV",
-          "value": "No internet service",
-          "contribution": -0.0145
-        },
-        {
-          "feature": "DeviceProtection",
-          "value": "No internet service",
-          "contribution": -0.0143
-        },
-        {
-          "feature": "OnlineBackup",
-          "value": "No internet service",
-          "contribution": -0.0132
-        },
-        {
-          "feature": "PaperlessBilling",
-          "value": "No",
-          "contribution": -0.0111
-        },
-        {
-          "feature": "PaymentMethod",
-          "value": "Bank transfer (automatic)",
-          "contribution": -0.0111
-        },
-        {
-          "feature": "TotalCharges",
-          "value": 804.25,
-          "contribution": 0.0085
-        },
-        {
-          "feature": "StreamingMovies",
-          "value": "No internet service",
-          "contribution": -0.0084
-        },
-        {
-          "feature": "MonthlyCharges",
-          "value": 19.7,
-          "contribution": -0.0078
-        },
-        {
-          "feature": "Dependents",
-          "value": "Yes",
-          "contribution": -0.0064
-        },
-        {
-          "feature": "MultipleLines",
-          "value": "No",
-          "contribution": -0.0053
-        },
-        {
-          "feature": "SeniorCitizen",
-          "value": 0,
-          "contribution": -0.0019
-        },
-        {
-          "feature": "Partner",
-          "value": "Yes",
-          "contribution": -0.0018
-        },
-        {
-          "feature": "InternetService",
-          "value": "No",
-          "contribution": 0.0017
-        },
-        {
-          "feature": "gender",
-          "value": "Female",
-          "contribution": 0.0014
-        },
-        {
-          "feature": "PhoneService",
-          "value": "Yes",
-          "contribution": -0.0003
-        }
-      ]
-    },
-    {
-      "id": "2481",
-      "prediction": "No",
-      "predictedPositive": false,
-      "probaPositive": 0.0,
-      "actualLabel": "No",
-      "actualPositive": false,
-      "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 100%).",
-      "topFeatures": [
-        {
-          "feature": "Contract",
-          "value": "Two year",
-          "contribution": -0.0839
-        },
-        {
-          "feature": "OnlineSecurity",
-          "value": "No internet service",
-          "contribution": -0.035
-        },
-        {
-          "feature": "tenure",
-          "value": 61,
-          "contribution": -0.0332
-        },
-        {
-          "feature": "TechSupport",
-          "value": "No internet service",
-          "contribution": -0.0273
-        },
-        {
-          "feature": "PaymentMethod",
-          "value": "Bank transfer (automatic)",
-          "contribution": -0.0211
-        },
-        {
-          "feature": "MonthlyCharges",
-          "value": 25.0,
-          "contribution": -0.0171
-        },
-        {
-          "feature": "TotalCharges",
-          "value": 1501.75,
-          "contribution": -0.0146
-        },
-        {
-          "feature": "SeniorCitizen",
-          "value": 1,
-          "contribution": 0.0133
-        },
-        {
-          "feature": "DeviceProtection",
-          "value": "No internet service",
-          "contribution": -0.0112
-        },
-        {
-          "feature": "PaperlessBilling",
-          "value": "No",
-          "contribution": -0.0106
-        },
-        {
-          "feature": "OnlineBackup",
-          "value": "No internet service",
-          "contribution": -0.0103
-        },
-        {
-          "feature": "StreamingTV",
-          "value": "No internet service",
-          "contribution": -0.0093
-        },
-        {
-          "feature": "StreamingMovies",
-          "value": "No internet service",
-          "contribution": -0.0091
-        },
-        {
-          "feature": "Dependents",
-          "value": "No",
-          "contribution": 0.0031
-        },
-        {
-          "feature": "MultipleLines",
-          "value": "Yes",
-          "contribution": 0.0021
-        },
-        {
-          "feature": "InternetService",
-          "value": "No",
-          "contribution": -0.0013
-        },
-        {
-          "feature": "gender",
-          "value": "Male",
-          "contribution": 0.0006
-        },
-        {
-          "feature": "PhoneService",
-          "value": "Yes",
-          "contribution": -0.0004
-        },
-        {
-          "feature": "Partner",
-          "value": "Yes",
-          "contribution": 0.0003
-        }
-      ]
-    },
-    {
-      "id": "5002",
-      "prediction": "No",
-      "predictedPositive": false,
-      "probaPositive": 0.0,
-      "actualLabel": "No",
-      "actualPositive": false,
-      "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 100%).",
-      "topFeatures": [
-        {
-          "feature": "Contract",
-          "value": "Two year",
-          "contribution": -0.0905
-        },
-        {
-          "feature": "tenure",
-          "value": 69,
-          "contribution": -0.0506
-        },
-        {
-          "feature": "OnlineSecurity",
-          "value": "Yes",
-          "contribution": -0.0384
-        },
-        {
-          "feature": "PaymentMethod",
-          "value": "Credit card (automatic)",
-          "contribution": -0.0267
-        },
-        {
-          "feature": "InternetService",
-          "value": "DSL",
-          "contribution": -0.0255
-        },
-        {
-          "feature": "MonthlyCharges",
-          "value": 43.95,
-          "contribution": -0.0229
-        },
-        {
-          "feature": "TotalCharges",
-          "value": 2960.1,
-          "contribution": -0.0214
-        },
-        {
-          "feature": "TechSupport",
-          "value": "No",
-          "contribution": 0.0207
-        },
-        {
-          "feature": "StreamingMovies",
-          "value": "Yes",
-          "contribution": 0.0086
-        },
-        {
-          "feature": "Dependents",
-          "value": "Yes",
-          "contribution": -0.0078
-        },
-        {
-          "feature": "MultipleLines",
-          "value": "No phone service",
-          "contribution": -0.0071
-        },
-        {
-          "feature": "OnlineBackup",
-          "value": "No",
-          "contribution": 0.0041
-        },
-        {
-          "feature": "SeniorCitizen",
-          "value": 0,
-          "contribution": -0.0034
-        },
-        {
-          "feature": "PaperlessBilling",
-          "value": "Yes",
-          "contribution": 0.0033
-        },
-        {
-          "feature": "DeviceProtection",
-          "value": "Yes",
-          "contribution": -0.0032
-        },
-        {
-          "feature": "Partner",
-          "value": "Yes",
-          "contribution": -0.002
-        },
-        {
-          "feature": "StreamingTV",
-          "value": "No",
-          "contribution": -0.0017
-        },
-        {
-          "feature": "gender",
-          "value": "Female",
-          "contribution": -0.0011
-        },
-        {
-          "feature": "PhoneService",
-          "value": "No",
-          "contribution": 0.0005
-        }
-      ]
-    },
-    {
-      "id": "969",
+      "id": "2821",
       "prediction": "Yes",
       "predictedPositive": true,
-      "probaPositive": 0.9933,
+      "probaPositive": 0.8193,
       "actualLabel": "Yes",
       "actualPositive": true,
       "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 99%).",
+      "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 82%).",
       "topFeatures": [
         {
           "feature": "tenure",
-          "value": 2,
-          "contribution": 0.1239
+          "value": 1,
+          "contribution": 0.1294
         },
         {
           "feature": "Contract",
           "value": "Month-to-month",
-          "contribution": 0.082
-        },
-        {
-          "feature": "MonthlyCharges",
-          "value": 96.0,
-          "contribution": 0.0802
+          "contribution": 0.0879
         },
         {
           "feature": "TotalCharges",
-          "value": 174.8,
-          "contribution": 0.076
+          "value": 74.4,
+          "contribution": 0.0826
         },
         {
           "feature": "OnlineSecurity",
           "value": "No",
-          "contribution": 0.0566
-        },
-        {
-          "feature": "InternetService",
-          "value": "Fiber optic",
-          "contribution": 0.0476
+          "contribution": 0.0488
         },
         {
           "feature": "TechSupport",
           "value": "No",
-          "contribution": 0.0471
+          "contribution": 0.0446
         },
         {
           "feature": "PaymentMethod",
           "value": "Electronic check",
-          "contribution": 0.0428
+          "contribution": 0.0426
         },
         {
-          "feature": "MultipleLines",
-          "value": "Yes",
-          "contribution": 0.0401
+          "feature": "InternetService",
+          "value": "Fiber optic",
+          "contribution": 0.0362
         },
         {
-          "feature": "StreamingMovies",
-          "value": "Yes",
-          "contribution": 0.0307
+          "feature": "MonthlyCharges",
+          "value": 74.4,
+          "contribution": 0.0175
+        },
+        {
+          "feature": "DeviceProtection",
+          "value": "No",
+          "contribution": 0.0138
+        },
+        {
+          "feature": "SeniorCitizen",
+          "value": 1,
+          "contribution": 0.0117
         },
         {
           "feature": "PaperlessBilling",
           "value": "Yes",
-          "contribution": 0.0292
+          "contribution": 0.0114
         },
         {
-          "feature": "StreamingTV",
+          "feature": "MultipleLines",
           "value": "Yes",
-          "contribution": 0.0223
+          "contribution": 0.0113
         },
         {
           "feature": "OnlineBackup",
-          "value": "No",
-          "contribution": 0.0187
-        },
-        {
-          "feature": "DeviceProtection",
           "value": "No",
           "contribution": 0.0107
         },
         {
-          "feature": "Partner",
-          "value": "No",
-          "contribution": 0.0085
-        },
-        {
-          "feature": "Dependents",
-          "value": "No",
-          "contribution": 0.0073
-        },
-        {
-          "feature": "gender",
-          "value": "Female",
-          "contribution": 0.0059
-        },
-        {
-          "feature": "PhoneService",
-          "value": "Yes",
-          "contribution": -0.0006
-        },
-        {
-          "feature": "SeniorCitizen",
-          "value": 0,
-          "contribution": -0.0005
-        }
-      ]
-    },
-    {
-      "id": "4847",
-      "prediction": "No",
-      "predictedPositive": false,
-      "probaPositive": 0.4933,
-      "actualLabel": "Yes",
-      "actualPositive": true,
-      "isCorrect": false,
-      "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 51%).",
-      "topFeatures": [
-        {
-          "feature": "Contract",
-          "value": "Month-to-month",
-          "contribution": 0.0888
-        },
-        {
-          "feature": "PaymentMethod",
-          "value": "Electronic check",
-          "contribution": 0.0763
-        },
-        {
-          "feature": "tenure",
-          "value": 37,
-          "contribution": -0.0472
-        },
-        {
-          "feature": "OnlineSecurity",
-          "value": "No",
-          "contribution": 0.0457
-        },
-        {
-          "feature": "InternetService",
-          "value": "Fiber optic",
-          "contribution": 0.036
-        },
-        {
-          "feature": "TotalCharges",
-          "value": 2841.55,
-          "contribution": -0.0336
-        },
-        {
-          "feature": "MonthlyCharges",
-          "value": 76.25,
-          "contribution": -0.0239
-        },
-        {
-          "feature": "TechSupport",
-          "value": "No",
-          "contribution": 0.0211
-        },
-        {
-          "feature": "MultipleLines",
-          "value": "Yes",
-          "contribution": 0.0195
-        },
-        {
-          "feature": "SeniorCitizen",
-          "value": 1,
-          "contribution": 0.0168
-        },
-        {
-          "feature": "DeviceProtection",
-          "value": "No",
-          "contribution": 0.0143
-        },
-        {
           "feature": "StreamingTV",
           "value": "No",
-          "contribution": -0.0137
-        },
-        {
-          "feature": "PaperlessBilling",
-          "value": "Yes",
-          "contribution": 0.0116
-        },
-        {
-          "feature": "OnlineBackup",
-          "value": "No",
-          "contribution": 0.0097
-        },
-        {
-          "feature": "Dependents",
-          "value": "No",
-          "contribution": 0.0044
-        },
-        {
-          "feature": "Partner",
-          "value": "No",
-          "contribution": 0.0023
-        },
-        {
-          "feature": "PhoneService",
-          "value": "Yes",
-          "contribution": -0.0007
-        },
-        {
-          "feature": "StreamingMovies",
-          "value": "No",
-          "contribution": 0.0005
-        },
-        {
-          "feature": "gender",
-          "value": "Female",
-          "contribution": 0.0003
-        }
-      ]
-    },
-    {
-      "id": "809",
-      "prediction": "Yes",
-      "predictedPositive": true,
-      "probaPositive": 0.9933,
-      "actualLabel": "Yes",
-      "actualPositive": true,
-      "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 99%).",
-      "topFeatures": [
-        {
-          "feature": "TotalCharges",
-          "value": 69.55,
-          "contribution": 0.1795
-        },
-        {
-          "feature": "tenure",
-          "value": 1,
-          "contribution": 0.175
-        },
-        {
-          "feature": "Contract",
-          "value": "Month-to-month",
-          "contribution": 0.0845
-        },
-        {
-          "feature": "InternetService",
-          "value": "Fiber optic",
-          "contribution": 0.0564
-        },
-        {
-          "feature": "TechSupport",
-          "value": "No",
-          "contribution": 0.0537
-        },
-        {
-          "feature": "PaymentMethod",
-          "value": "Electronic check",
-          "contribution": 0.0491
-        },
-        {
-          "feature": "OnlineSecurity",
-          "value": "No",
-          "contribution": 0.0461
-        },
-        {
-          "feature": "MonthlyCharges",
-          "value": 69.55,
-          "contribution": 0.0235
-        },
-        {
-          "feature": "DeviceProtection",
-          "value": "No",
-          "contribution": 0.0222
-        },
-        {
-          "feature": "OnlineBackup",
-          "value": "No",
-          "contribution": 0.0153
-        },
-        {
-          "feature": "PaperlessBilling",
-          "value": "Yes",
-          "contribution": 0.0145
-        },
-        {
-          "feature": "StreamingMovies",
-          "value": "No",
-          "contribution": 0.005
-        },
-        {
-          "feature": "StreamingTV",
-          "value": "No",
-          "contribution": 0.0038
+          "contribution": 0.0037
         },
         {
           "feature": "Dependents",
@@ -2517,238 +917,340 @@
           "contribution": 0.003
         },
         {
+          "feature": "StreamingMovies",
+          "value": "No",
+          "contribution": 0.0019
+        },
+        {
+          "feature": "Partner",
+          "value": "Yes",
+          "contribution": -0.0018
+        },
+        {
           "feature": "PhoneService",
           "value": "Yes",
-          "contribution": -0.0015
+          "contribution": -0.0008
         },
         {
           "feature": "gender",
           "value": "Male",
-          "contribution": -0.0009
-        },
-        {
-          "feature": "MultipleLines",
-          "value": "No",
-          "contribution": -0.0006
-        },
-        {
-          "feature": "SeniorCitizen",
-          "value": 0,
-          "contribution": -0.0003
-        },
-        {
-          "feature": "Partner",
-          "value": "No",
-          "contribution": -0.0001
+          "contribution": -0.0005
         }
       ]
     },
     {
-      "id": "5728",
+      "id": "3504",
       "prediction": "No",
       "predictedPositive": false,
-      "probaPositive": 0.5,
-      "actualLabel": "Yes",
-      "actualPositive": true,
-      "isCorrect": false,
-      "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 50%).",
+      "probaPositive": 0.0062,
+      "actualLabel": "No",
+      "actualPositive": false,
+      "isCorrect": true,
+      "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 99%).",
       "topFeatures": [
         {
           "feature": "Contract",
-          "value": "Month-to-month",
-          "contribution": 0.0855
+          "value": "Two year",
+          "contribution": -0.0661
+        },
+        {
+          "feature": "OnlineSecurity",
+          "value": "No internet service",
+          "contribution": -0.0343
+        },
+        {
+          "feature": "tenure",
+          "value": 68,
+          "contribution": -0.033
+        },
+        {
+          "feature": "TechSupport",
+          "value": "No internet service",
+          "contribution": -0.029
+        },
+        {
+          "feature": "MonthlyCharges",
+          "value": 19.95,
+          "contribution": -0.0198
+        },
+        {
+          "feature": "PaymentMethod",
+          "value": "Bank transfer (automatic)",
+          "contribution": -0.015
+        },
+        {
+          "feature": "DeviceProtection",
+          "value": "No internet service",
+          "contribution": -0.0114
+        },
+        {
+          "feature": "TotalCharges",
+          "value": 1377.7,
+          "contribution": -0.0106
+        },
+        {
+          "feature": "StreamingTV",
+          "value": "No internet service",
+          "contribution": -0.0084
         },
         {
           "feature": "PaperlessBilling",
           "value": "No",
-          "contribution": -0.0687
+          "contribution": -0.0073
+        },
+        {
+          "feature": "StreamingMovies",
+          "value": "No internet service",
+          "contribution": -0.0064
+        },
+        {
+          "feature": "OnlineBackup",
+          "value": "No internet service",
+          "contribution": -0.006
+        },
+        {
+          "feature": "Dependents",
+          "value": "Yes",
+          "contribution": -0.0042
+        },
+        {
+          "feature": "MultipleLines",
+          "value": "No",
+          "contribution": -0.0025
+        },
+        {
+          "feature": "Partner",
+          "value": "Yes",
+          "contribution": -0.0019
         },
         {
           "feature": "InternetService",
-          "value": "Fiber optic",
-          "contribution": 0.049
+          "value": "No",
+          "contribution": -0.0014
         },
         {
-          "feature": "MonthlyCharges",
-          "value": 89.4,
-          "contribution": 0.0482
+          "feature": "SeniorCitizen",
+          "value": 0,
+          "contribution": -0.0011
+        },
+        {
+          "feature": "gender",
+          "value": "Male",
+          "contribution": -0.0005
+        },
+        {
+          "feature": "PhoneService",
+          "value": "Yes",
+          "contribution": -0.0003
+        }
+      ]
+    },
+    {
+      "id": "2191",
+      "prediction": "Yes",
+      "predictedPositive": true,
+      "probaPositive": 0.8266,
+      "actualLabel": "Yes",
+      "actualPositive": true,
+      "isCorrect": true,
+      "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 83%).",
+      "topFeatures": [
+        {
+          "feature": "tenure",
+          "value": 1,
+          "contribution": 0.1263
+        },
+        {
+          "feature": "Contract",
+          "value": "Month-to-month",
+          "contribution": 0.0881
+        },
+        {
+          "feature": "TotalCharges",
+          "value": 91.3,
+          "contribution": 0.0763
         },
         {
           "feature": "OnlineSecurity",
           "value": "No",
-          "contribution": 0.0471
+          "contribution": 0.0459
         },
         {
-          "feature": "tenure",
-          "value": 13,
+          "feature": "MonthlyCharges",
+          "value": 91.3,
           "contribution": 0.0429
         },
         {
-          "feature": "TotalCharges",
-          "value": 1132.35,
-          "contribution": 0.0371
-        },
-        {
           "feature": "TechSupport",
-          "value": "Yes",
-          "contribution": -0.0342
+          "value": "No",
+          "contribution": 0.0396
         },
         {
           "feature": "PaymentMethod",
           "value": "Electronic check",
-          "contribution": 0.0329
+          "contribution": 0.0375
+        },
+        {
+          "feature": "InternetService",
+          "value": "Fiber optic",
+          "contribution": 0.0371
+        },
+        {
+          "feature": "StreamingTV",
+          "value": "Yes",
+          "contribution": 0.0146
+        },
+        {
+          "feature": "StreamingMovies",
+          "value": "Yes",
+          "contribution": 0.0133
+        },
+        {
+          "feature": "DeviceProtection",
+          "value": "No",
+          "contribution": 0.0133
         },
         {
           "feature": "OnlineBackup",
+          "value": "No",
+          "contribution": 0.0117
+        },
+        {
+          "feature": "MultipleLines",
+          "value": "No",
+          "contribution": -0.0114
+        },
+        {
+          "feature": "SeniorCitizen",
+          "value": 1,
+          "contribution": 0.011
+        },
+        {
+          "feature": "PaperlessBilling",
           "value": "Yes",
-          "contribution": -0.0124
+          "contribution": 0.0081
+        },
+        {
+          "feature": "Dependents",
+          "value": "No",
+          "contribution": 0.0036
+        },
+        {
+          "feature": "Partner",
+          "value": "No",
+          "contribution": 0.0024
         },
         {
           "feature": "gender",
           "value": "Female",
+          "contribution": 0.0017
+        },
+        {
+          "feature": "PhoneService",
+          "value": "Yes",
+          "contribution": -0.0007
+        }
+      ]
+    },
+    {
+      "id": "2577",
+      "prediction": "Yes",
+      "predictedPositive": true,
+      "probaPositive": 0.8478,
+      "actualLabel": "Yes",
+      "actualPositive": true,
+      "isCorrect": true,
+      "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 85%).",
+      "topFeatures": [
+        {
+          "feature": "tenure",
+          "value": 1,
+          "contribution": 0.125
+        },
+        {
+          "feature": "Contract",
+          "value": "Month-to-month",
+          "contribution": 0.0873
+        },
+        {
+          "feature": "TotalCharges",
+          "value": 94.6,
+          "contribution": 0.0738
+        },
+        {
+          "feature": "MonthlyCharges",
+          "value": 94.6,
+          "contribution": 0.0551
+        },
+        {
+          "feature": "OnlineSecurity",
+          "value": "No",
+          "contribution": 0.0444
+        },
+        {
+          "feature": "TechSupport",
+          "value": "No",
+          "contribution": 0.0407
+        },
+        {
+          "feature": "InternetService",
+          "value": "Fiber optic",
+          "contribution": 0.0396
+        },
+        {
+          "feature": "PaymentMethod",
+          "value": "Electronic check",
+          "contribution": 0.0376
+        },
+        {
+          "feature": "StreamingTV",
+          "value": "Yes",
+          "contribution": 0.0145
+        },
+        {
+          "feature": "StreamingMovies",
+          "value": "Yes",
+          "contribution": 0.0143
+        },
+        {
+          "feature": "DeviceProtection",
+          "value": "No",
+          "contribution": 0.0125
+        },
+        {
+          "feature": "OnlineBackup",
+          "value": "No",
           "contribution": 0.0124
         },
         {
           "feature": "MultipleLines",
           "value": "Yes",
-          "contribution": 0.0096
-        },
-        {
-          "feature": "SeniorCitizen",
-          "value": 0,
-          "contribution": -0.0096
-        },
-        {
-          "feature": "StreamingTV",
-          "value": "No",
-          "contribution": -0.0067
-        },
-        {
-          "feature": "StreamingMovies",
-          "value": "No",
-          "contribution": 0.0065
-        },
-        {
-          "feature": "DeviceProtection",
-          "value": "Yes",
-          "contribution": -0.0054
-        },
-        {
-          "feature": "Dependents",
-          "value": "No",
-          "contribution": 0.002
-        },
-        {
-          "feature": "Partner",
-          "value": "No",
-          "contribution": -0.002
-        },
-        {
-          "feature": "PhoneService",
-          "value": "Yes",
-          "contribution": 0.0008
-        }
-      ]
-    },
-    {
-      "id": "2521",
-      "prediction": "No",
-      "predictedPositive": false,
-      "probaPositive": 0.4967,
-      "actualLabel": "Yes",
-      "actualPositive": true,
-      "isCorrect": false,
-      "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 50%).",
-      "topFeatures": [
-        {
-          "feature": "Contract",
-          "value": "Month-to-month",
-          "contribution": 0.0929
-        },
-        {
-          "feature": "PaymentMethod",
-          "value": "Credit card (automatic)",
-          "contribution": -0.0591
-        },
-        {
-          "feature": "tenure",
-          "value": 36,
-          "contribution": -0.0545
-        },
-        {
-          "feature": "TechSupport",
-          "value": "No",
-          "contribution": 0.0476
-        },
-        {
-          "feature": "OnlineSecurity",
-          "value": "No",
-          "contribution": 0.0466
-        },
-        {
-          "feature": "TotalCharges",
-          "value": 3132.75,
-          "contribution": -0.0422
-        },
-        {
-          "feature": "SeniorCitizen",
-          "value": 1,
-          "contribution": 0.0375
-        },
-        {
-          "feature": "MonthlyCharges",
-          "value": 85.25,
-          "contribution": 0.035
-        },
-        {
-          "feature": "InternetService",
-          "value": "Fiber optic",
-          "contribution": 0.0341
-        },
-        {
-          "feature": "StreamingMovies",
-          "value": "Yes",
-          "contribution": 0.032
-        },
-        {
-          "feature": "DeviceProtection",
-          "value": "No",
-          "contribution": 0.0284
-        },
-        {
-          "feature": "OnlineBackup",
-          "value": "No",
-          "contribution": 0.0206
-        },
-        {
-          "feature": "MultipleLines",
-          "value": "Yes",
-          "contribution": 0.0126
-        },
-        {
-          "feature": "StreamingTV",
-          "value": "No",
-          "contribution": -0.0112
-        },
-        {
-          "feature": "gender",
-          "value": "Male",
-          "contribution": -0.0107
+          "contribution": 0.0119
         },
         {
           "feature": "PaperlessBilling",
           "value": "Yes",
-          "contribution": 0.009
-        },
-        {
-          "feature": "Partner",
-          "value": "Yes",
-          "contribution": 0.0072
+          "contribution": 0.0098
         },
         {
           "feature": "Dependents",
           "value": "No",
-          "contribution": 0.0061
+          "contribution": 0.0034
+        },
+        {
+          "feature": "SeniorCitizen",
+          "value": 0,
+          "contribution": -0.0029
+        },
+        {
+          "feature": "Partner",
+          "value": "No",
+          "contribution": 0.0027
+        },
+        {
+          "feature": "gender",
+          "value": "Female",
+          "contribution": 0.001
         },
         {
           "feature": "PhoneService",
@@ -2758,78 +1260,165 @@
       ]
     },
     {
-      "id": "6455",
+      "id": "3352",
       "prediction": "Yes",
       "predictedPositive": true,
-      "probaPositive": 0.5067,
-      "actualLabel": "No",
-      "actualPositive": false,
-      "isCorrect": false,
-      "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 51%).",
+      "probaPositive": 0.821,
+      "actualLabel": "Yes",
+      "actualPositive": true,
+      "isCorrect": true,
+      "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 82%).",
       "topFeatures": [
+        {
+          "feature": "tenure",
+          "value": 1,
+          "contribution": 0.1395
+        },
         {
           "feature": "Contract",
           "value": "Month-to-month",
-          "contribution": 0.0678
+          "contribution": 0.0905
         },
         {
-          "feature": "PaymentMethod",
-          "value": "Electronic check",
-          "contribution": 0.0634
+          "feature": "TotalCharges",
+          "value": 85.45,
+          "contribution": 0.0858
         },
         {
           "feature": "OnlineSecurity",
           "value": "No",
-          "contribution": 0.0625
+          "contribution": 0.0546
+        },
+        {
+          "feature": "MonthlyCharges",
+          "value": 85.45,
+          "contribution": 0.0453
         },
         {
           "feature": "TechSupport",
           "value": "No",
-          "contribution": 0.0562
-        },
-        {
-          "feature": "tenure",
-          "value": 59,
-          "contribution": -0.0519
+          "contribution": 0.0438
         },
         {
           "feature": "InternetService",
-          "value": "DSL",
-          "contribution": -0.0449
+          "value": "Fiber optic",
+          "contribution": 0.0438
         },
         {
-          "feature": "StreamingTV",
-          "value": "Yes",
-          "contribution": 0.0279
-        },
-        {
-          "feature": "gender",
-          "value": "Male",
-          "contribution": 0.0204
-        },
-        {
-          "feature": "SeniorCitizen",
-          "value": 0,
-          "contribution": -0.0149
-        },
-        {
-          "feature": "PhoneService",
-          "value": "No",
-          "contribution": 0.0148
-        },
-        {
-          "feature": "TotalCharges",
-          "value": 2666.75,
-          "contribution": -0.013
-        },
-        {
-          "feature": "Dependents",
-          "value": "No",
-          "contribution": 0.0125
+          "feature": "PaymentMethod",
+          "value": "Mailed check",
+          "contribution": -0.0184
         },
         {
           "feature": "StreamingMovies",
           "value": "Yes",
+          "contribution": 0.0148
+        },
+        {
+          "feature": "MultipleLines",
+          "value": "Yes",
+          "contribution": 0.0133
+        },
+        {
+          "feature": "DeviceProtection",
+          "value": "No",
+          "contribution": 0.0128
+        },
+        {
+          "feature": "OnlineBackup",
+          "value": "No",
+          "contribution": 0.0111
+        },
+        {
+          "feature": "PaperlessBilling",
+          "value": "Yes",
+          "contribution": 0.01
+        },
+        {
+          "feature": "StreamingTV",
+          "value": "No",
+          "contribution": 0.0044
+        },
+        {
+          "feature": "gender",
+          "value": "Female",
+          "contribution": 0.0028
+        },
+        {
+          "feature": "SeniorCitizen",
+          "value": 0,
+          "contribution": -0.0027
+        },
+        {
+          "feature": "Dependents",
+          "value": "No",
+          "contribution": 0.0025
+        },
+        {
+          "feature": "Partner",
+          "value": "No",
+          "contribution": 0.0021
+        },
+        {
+          "feature": "PhoneService",
+          "value": "Yes",
+          "contribution": -0.0003
+        }
+      ]
+    },
+    {
+      "id": "2155",
+      "prediction": "No",
+      "predictedPositive": false,
+      "probaPositive": 0.4982,
+      "actualLabel": "Yes",
+      "actualPositive": true,
+      "isCorrect": false,
+      "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 50%).",
+      "topFeatures": [
+        {
+          "feature": "Contract",
+          "value": "Month-to-month",
+          "contribution": 0.0837
+        },
+        {
+          "feature": "tenure",
+          "value": 30,
+          "contribution": -0.0543
+        },
+        {
+          "feature": "PaymentMethod",
+          "value": "Electronic check",
+          "contribution": 0.05
+        },
+        {
+          "feature": "OnlineSecurity",
+          "value": "No",
+          "contribution": 0.0446
+        },
+        {
+          "feature": "TechSupport",
+          "value": "No",
+          "contribution": 0.0346
+        },
+        {
+          "feature": "InternetService",
+          "value": "Fiber optic",
+          "contribution": 0.0344
+        },
+        {
+          "feature": "TotalCharges",
+          "value": 2624.25,
+          "contribution": -0.0283
+        },
+        {
+          "feature": "MonthlyCharges",
+          "value": 85.0,
+          "contribution": 0.0238
+        },
+        {
+          "feature": "DeviceProtection",
+          "value": "No",
           "contribution": 0.0124
         },
         {
@@ -2840,119 +1429,353 @@
         {
           "feature": "PaperlessBilling",
           "value": "Yes",
-          "contribution": 0.0109
-        },
-        {
-          "feature": "MonthlyCharges",
-          "value": 44.3,
-          "contribution": -0.009
+          "contribution": 0.0101
         },
         {
           "feature": "MultipleLines",
-          "value": "No phone service",
-          "contribution": 0.0089
-        },
-        {
-          "feature": "DeviceProtection",
-          "value": "No",
-          "contribution": 0.0065
-        },
-        {
-          "feature": "Partner",
           "value": "Yes",
-          "contribution": -0.0001
-        }
-      ]
-    },
-    {
-      "id": "896",
-      "prediction": "No",
-      "predictedPositive": false,
-      "probaPositive": 0.0,
-      "actualLabel": "No",
-      "actualPositive": false,
-      "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 100%).",
-      "topFeatures": [
-        {
-          "feature": "Contract",
-          "value": "Two year",
-          "contribution": -0.1077
-        },
-        {
-          "feature": "tenure",
-          "value": 71,
-          "contribution": -0.0716
-        },
-        {
-          "feature": "OnlineSecurity",
-          "value": "Yes",
-          "contribution": -0.0535
-        },
-        {
-          "feature": "TotalCharges",
-          "value": 8310.55,
-          "contribution": -0.0401
-        },
-        {
-          "feature": "MonthlyCharges",
-          "value": 116.1,
-          "contribution": 0.0302
-        },
-        {
-          "feature": "TechSupport",
-          "value": "Yes",
-          "contribution": -0.028
-        },
-        {
-          "feature": "InternetService",
-          "value": "Fiber optic",
-          "contribution": 0.0187
-        },
-        {
-          "feature": "PaymentMethod",
-          "value": "Bank transfer (automatic)",
-          "contribution": -0.017
-        },
-        {
-          "feature": "OnlineBackup",
-          "value": "Yes",
-          "contribution": -0.008
-        },
-        {
-          "feature": "StreamingTV",
-          "value": "Yes",
-          "contribution": 0.0074
+          "contribution": 0.0093
         },
         {
           "feature": "StreamingMovies",
           "value": "Yes",
-          "contribution": 0.0067
+          "contribution": 0.009
         },
         {
-          "feature": "DeviceProtection",
-          "value": "Yes",
-          "contribution": -0.0059
-        },
-        {
-          "feature": "Dependents",
-          "value": "No",
-          "contribution": 0.0032
+          "feature": "SeniorCitizen",
+          "value": 0,
+          "contribution": -0.0037
         },
         {
           "feature": "Partner",
           "value": "Yes",
-          "contribution": -0.0026
+          "contribution": -0.0027
+        },
+        {
+          "feature": "Dependents",
+          "value": "No",
+          "contribution": 0.0026
+        },
+        {
+          "feature": "StreamingTV",
+          "value": "No",
+          "contribution": -0.0021
+        },
+        {
+          "feature": "gender",
+          "value": "Female",
+          "contribution": -0.0009
+        },
+        {
+          "feature": "PhoneService",
+          "value": "Yes",
+          "contribution": -0.0006
+        }
+      ]
+    },
+    {
+      "id": "2189",
+      "prediction": "No",
+      "predictedPositive": false,
+      "probaPositive": 0.0061,
+      "actualLabel": "No",
+      "actualPositive": false,
+      "isCorrect": true,
+      "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 99%).",
+      "topFeatures": [
+        {
+          "feature": "Contract",
+          "value": "Two year",
+          "contribution": -0.0652
+        },
+        {
+          "feature": "OnlineSecurity",
+          "value": "No internet service",
+          "contribution": -0.0348
+        },
+        {
+          "feature": "tenure",
+          "value": 69,
+          "contribution": -0.0338
+        },
+        {
+          "feature": "TechSupport",
+          "value": "No internet service",
+          "contribution": -0.0292
+        },
+        {
+          "feature": "MonthlyCharges",
+          "value": 24.45,
+          "contribution": -0.0195
+        },
+        {
+          "feature": "PaymentMethod",
+          "value": "Bank transfer (automatic)",
+          "contribution": -0.0154
+        },
+        {
+          "feature": "TotalCharges",
+          "value": 1718.2,
+          "contribution": -0.0145
+        },
+        {
+          "feature": "DeviceProtection",
+          "value": "No internet service",
+          "contribution": -0.0114
+        },
+        {
+          "feature": "StreamingTV",
+          "value": "No internet service",
+          "contribution": -0.0088
         },
         {
           "feature": "PaperlessBilling",
+          "value": "No",
+          "contribution": -0.0072
+        },
+        {
+          "feature": "StreamingMovies",
+          "value": "No internet service",
+          "contribution": -0.0065
+        },
+        {
+          "feature": "OnlineBackup",
+          "value": "No internet service",
+          "contribution": -0.0059
+        },
+        {
+          "feature": "Dependents",
           "value": "Yes",
-          "contribution": 0.0024
+          "contribution": -0.0041
         },
         {
           "feature": "MultipleLines",
           "value": "Yes",
+          "contribution": 0.0021
+        },
+        {
+          "feature": "Partner",
+          "value": "Yes",
+          "contribution": -0.0017
+        },
+        {
+          "feature": "SeniorCitizen",
+          "value": 0,
+          "contribution": -0.0011
+        },
+        {
+          "feature": "InternetService",
+          "value": "No",
+          "contribution": -0.0011
+        },
+        {
+          "feature": "gender",
+          "value": "Male",
+          "contribution": -0.0007
+        },
+        {
+          "feature": "PhoneService",
+          "value": "Yes",
+          "contribution": -0.0003
+        }
+      ]
+    },
+    {
+      "id": "1600",
+      "prediction": "Yes",
+      "predictedPositive": true,
+      "probaPositive": 0.8375,
+      "actualLabel": "Yes",
+      "actualPositive": true,
+      "isCorrect": true,
+      "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 84%).",
+      "topFeatures": [
+        {
+          "feature": "tenure",
+          "value": 1,
+          "contribution": 0.1291
+        },
+        {
+          "feature": "Contract",
+          "value": "Month-to-month",
+          "contribution": 0.0921
+        },
+        {
+          "feature": "TotalCharges",
+          "value": 88.8,
+          "contribution": 0.0767
+        },
+        {
+          "feature": "OnlineSecurity",
+          "value": "No",
+          "contribution": 0.0532
+        },
+        {
+          "feature": "TechSupport",
+          "value": "No",
+          "contribution": 0.0421
+        },
+        {
+          "feature": "PaymentMethod",
+          "value": "Electronic check",
+          "contribution": 0.0408
+        },
+        {
+          "feature": "MonthlyCharges",
+          "value": 88.8,
+          "contribution": 0.038
+        },
+        {
+          "feature": "InternetService",
+          "value": "Fiber optic",
+          "contribution": 0.0366
+        },
+        {
+          "feature": "StreamingTV",
+          "value": "Yes",
+          "contribution": 0.0144
+        },
+        {
+          "feature": "MultipleLines",
+          "value": "Yes",
+          "contribution": 0.0125
+        },
+        {
+          "feature": "SeniorCitizen",
+          "value": 1,
+          "contribution": 0.0115
+        },
+        {
+          "feature": "OnlineBackup",
+          "value": "No",
+          "contribution": 0.0115
+        },
+        {
+          "feature": "PaperlessBilling",
+          "value": "Yes",
+          "contribution": 0.0097
+        },
+        {
+          "feature": "Dependents",
+          "value": "No",
+          "contribution": 0.0034
+        },
+        {
+          "feature": "Partner",
+          "value": "No",
           "contribution": 0.0019
+        },
+        {
+          "feature": "StreamingMovies",
+          "value": "No",
+          "contribution": 0.0019
+        },
+        {
+          "feature": "DeviceProtection",
+          "value": "Yes",
+          "contribution": -0.0019
+        },
+        {
+          "feature": "gender",
+          "value": "Male",
+          "contribution": -0.0008
+        },
+        {
+          "feature": "PhoneService",
+          "value": "Yes",
+          "contribution": -0.0007
+        }
+      ]
+    },
+    {
+      "id": "3707",
+      "prediction": "No",
+      "predictedPositive": false,
+      "probaPositive": 0.0063,
+      "actualLabel": "No",
+      "actualPositive": false,
+      "isCorrect": true,
+      "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 99%).",
+      "topFeatures": [
+        {
+          "feature": "Contract",
+          "value": "Two year",
+          "contribution": -0.0661
+        },
+        {
+          "feature": "OnlineSecurity",
+          "value": "No internet service",
+          "contribution": -0.0341
+        },
+        {
+          "feature": "tenure",
+          "value": 69,
+          "contribution": -0.0332
+        },
+        {
+          "feature": "TechSupport",
+          "value": "No internet service",
+          "contribution": -0.0289
+        },
+        {
+          "feature": "MonthlyCharges",
+          "value": 19.9,
+          "contribution": -0.0197
+        },
+        {
+          "feature": "PaymentMethod",
+          "value": "Bank transfer (automatic)",
+          "contribution": -0.0151
+        },
+        {
+          "feature": "DeviceProtection",
+          "value": "No internet service",
+          "contribution": -0.0114
+        },
+        {
+          "feature": "TotalCharges",
+          "value": 1356.7,
+          "contribution": -0.0103
+        },
+        {
+          "feature": "StreamingTV",
+          "value": "No internet service",
+          "contribution": -0.0084
+        },
+        {
+          "feature": "PaperlessBilling",
+          "value": "No",
+          "contribution": -0.0073
+        },
+        {
+          "feature": "StreamingMovies",
+          "value": "No internet service",
+          "contribution": -0.0064
+        },
+        {
+          "feature": "OnlineBackup",
+          "value": "No internet service",
+          "contribution": -0.006
+        },
+        {
+          "feature": "Dependents",
+          "value": "Yes",
+          "contribution": -0.0042
+        },
+        {
+          "feature": "MultipleLines",
+          "value": "No",
+          "contribution": -0.0025
+        },
+        {
+          "feature": "Partner",
+          "value": "Yes",
+          "contribution": -0.0019
+        },
+        {
+          "feature": "InternetService",
+          "value": "No",
+          "contribution": -0.0014
         },
         {
           "feature": "SeniorCitizen",
@@ -2962,328 +1785,7 @@
         {
           "feature": "gender",
           "value": "Male",
-          "contribution": 0.0002
-        },
-        {
-          "feature": "PhoneService",
-          "value": "Yes",
-          "contribution": -0.0001
-        }
-      ]
-    },
-    {
-      "id": "5785",
-      "prediction": "No",
-      "predictedPositive": false,
-      "probaPositive": 0.0,
-      "actualLabel": "No",
-      "actualPositive": false,
-      "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 100%).",
-      "topFeatures": [
-        {
-          "feature": "Contract",
-          "value": "Two year",
-          "contribution": -0.0719
-        },
-        {
-          "feature": "OnlineSecurity",
-          "value": "No internet service",
-          "contribution": -0.047
-        },
-        {
-          "feature": "TechSupport",
-          "value": "No internet service",
-          "contribution": -0.0398
-        },
-        {
-          "feature": "tenure",
-          "value": 46,
-          "contribution": -0.0278
-        },
-        {
-          "feature": "MonthlyCharges",
-          "value": 20.2,
-          "contribution": -0.0158
-        },
-        {
-          "feature": "DeviceProtection",
-          "value": "No internet service",
-          "contribution": -0.0142
-        },
-        {
-          "feature": "StreamingTV",
-          "value": "No internet service",
-          "contribution": -0.0132
-        },
-        {
-          "feature": "OnlineBackup",
-          "value": "No internet service",
-          "contribution": -0.0128
-        },
-        {
-          "feature": "PaymentMethod",
-          "value": "Mailed check",
-          "contribution": -0.0101
-        },
-        {
-          "feature": "StreamingMovies",
-          "value": "No internet service",
-          "contribution": -0.0099
-        },
-        {
-          "feature": "TotalCharges",
-          "value": 917.45,
-          "contribution": 0.0074
-        },
-        {
-          "feature": "MultipleLines",
-          "value": "No",
-          "contribution": -0.0069
-        },
-        {
-          "feature": "PaperlessBilling",
-          "value": "Yes",
-          "contribution": 0.0067
-        },
-        {
-          "feature": "Dependents",
-          "value": "Yes",
-          "contribution": -0.0063
-        },
-        {
-          "feature": "SeniorCitizen",
-          "value": 0,
-          "contribution": -0.002
-        },
-        {
-          "feature": "gender",
-          "value": "Male",
-          "contribution": -0.0018
-        },
-        {
-          "feature": "InternetService",
-          "value": "No",
-          "contribution": 0.001
-        },
-        {
-          "feature": "Partner",
-          "value": "Yes",
           "contribution": -0.0005
-        },
-        {
-          "feature": "PhoneService",
-          "value": "Yes",
-          "contribution": -0.0002
-        }
-      ]
-    },
-    {
-      "id": "1773",
-      "prediction": "No",
-      "predictedPositive": false,
-      "probaPositive": 0.0,
-      "actualLabel": "No",
-      "actualPositive": false,
-      "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 100%).",
-      "topFeatures": [
-        {
-          "feature": "Contract",
-          "value": "Two year",
-          "contribution": -0.1024
-        },
-        {
-          "feature": "OnlineSecurity",
-          "value": "No internet service",
-          "contribution": -0.0356
-        },
-        {
-          "feature": "TechSupport",
-          "value": "No internet service",
-          "contribution": -0.0311
-        },
-        {
-          "feature": "tenure",
-          "value": 68,
-          "contribution": -0.0287
-        },
-        {
-          "feature": "PaymentMethod",
-          "value": "Bank transfer (automatic)",
-          "contribution": -0.0188
-        },
-        {
-          "feature": "DeviceProtection",
-          "value": "No internet service",
-          "contribution": -0.0127
-        },
-        {
-          "feature": "StreamingTV",
-          "value": "No internet service",
-          "contribution": -0.0092
-        },
-        {
-          "feature": "MonthlyCharges",
-          "value": 19.35,
-          "contribution": -0.0092
-        },
-        {
-          "feature": "OnlineBackup",
-          "value": "No internet service",
-          "contribution": -0.0079
-        },
-        {
-          "feature": "MultipleLines",
-          "value": "No",
-          "contribution": -0.0067
-        },
-        {
-          "feature": "StreamingMovies",
-          "value": "No internet service",
-          "contribution": -0.0067
-        },
-        {
-          "feature": "PaperlessBilling",
-          "value": "Yes",
-          "contribution": 0.0065
-        },
-        {
-          "feature": "Dependents",
-          "value": "Yes",
-          "contribution": -0.0033
-        },
-        {
-          "feature": "InternetService",
-          "value": "No",
-          "contribution": 0.0027
-        },
-        {
-          "feature": "gender",
-          "value": "Female",
-          "contribution": 0.0018
-        },
-        {
-          "feature": "SeniorCitizen",
-          "value": 0,
-          "contribution": -0.0016
-        },
-        {
-          "feature": "TotalCharges",
-          "value": 1292.65,
-          "contribution": -0.0013
-        },
-        {
-          "feature": "Partner",
-          "value": "Yes",
-          "contribution": -0.0005
-        },
-        {
-          "feature": "PhoneService",
-          "value": "Yes",
-          "contribution": -0.0002
-        }
-      ]
-    },
-    {
-      "id": "4731",
-      "prediction": "No",
-      "predictedPositive": false,
-      "probaPositive": 0.0,
-      "actualLabel": "No",
-      "actualPositive": false,
-      "isCorrect": true,
-      "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 100%).",
-      "topFeatures": [
-        {
-          "feature": "OnlineSecurity",
-          "value": "No internet service",
-          "contribution": -0.0554
-        },
-        {
-          "feature": "Contract",
-          "value": "One year",
-          "contribution": -0.0537
-        },
-        {
-          "feature": "TechSupport",
-          "value": "No internet service",
-          "contribution": -0.0388
-        },
-        {
-          "feature": "StreamingTV",
-          "value": "No internet service",
-          "contribution": -0.0193
-        },
-        {
-          "feature": "OnlineBackup",
-          "value": "No internet service",
-          "contribution": -0.0186
-        },
-        {
-          "feature": "DeviceProtection",
-          "value": "No internet service",
-          "contribution": -0.0173
-        },
-        {
-          "feature": "PaymentMethod",
-          "value": "Mailed check",
-          "contribution": -0.0158
-        },
-        {
-          "feature": "MonthlyCharges",
-          "value": 19.9,
-          "contribution": -0.0152
-        },
-        {
-          "feature": "PaperlessBilling",
-          "value": "No",
-          "contribution": -0.0149
-        },
-        {
-          "feature": "TotalCharges",
-          "value": 357.7,
-          "contribution": 0.014
-        },
-        {
-          "feature": "StreamingMovies",
-          "value": "No internet service",
-          "contribution": -0.0103
-        },
-        {
-          "feature": "MultipleLines",
-          "value": "No",
-          "contribution": -0.0056
-        },
-        {
-          "feature": "Dependents",
-          "value": "Yes",
-          "contribution": -0.0052
-        },
-        {
-          "feature": "gender",
-          "value": "Male",
-          "contribution": -0.0032
-        },
-        {
-          "feature": "SeniorCitizen",
-          "value": 0,
-          "contribution": -0.002
-        },
-        {
-          "feature": "tenure",
-          "value": 19,
-          "contribution": -0.0014
-        },
-        {
-          "feature": "Partner",
-          "value": "Yes",
-          "contribution": -0.0012
-        },
-        {
-          "feature": "InternetService",
-          "value": "No",
-          "contribution": -0.0008
         },
         {
           "feature": "PhoneService",
@@ -3291,39 +1793,1537 @@
           "contribution": -0.0003
         }
       ]
+    },
+    {
+      "id": "1869",
+      "prediction": "No",
+      "predictedPositive": false,
+      "probaPositive": 0.006,
+      "actualLabel": "No",
+      "actualPositive": false,
+      "isCorrect": true,
+      "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 99%).",
+      "topFeatures": [
+        {
+          "feature": "Contract",
+          "value": "Two year",
+          "contribution": -0.0661
+        },
+        {
+          "feature": "tenure",
+          "value": 72,
+          "contribution": -0.0361
+        },
+        {
+          "feature": "OnlineSecurity",
+          "value": "No internet service",
+          "contribution": -0.0348
+        },
+        {
+          "feature": "TechSupport",
+          "value": "No internet service",
+          "contribution": -0.0294
+        },
+        {
+          "feature": "MonthlyCharges",
+          "value": 24.1,
+          "contribution": -0.0178
+        },
+        {
+          "feature": "PaymentMethod",
+          "value": "Credit card (automatic)",
+          "contribution": -0.0165
+        },
+        {
+          "feature": "TotalCharges",
+          "value": 1734.65,
+          "contribution": -0.0135
+        },
+        {
+          "feature": "DeviceProtection",
+          "value": "No internet service",
+          "contribution": -0.0115
+        },
+        {
+          "feature": "StreamingTV",
+          "value": "No internet service",
+          "contribution": -0.0081
+        },
+        {
+          "feature": "PaperlessBilling",
+          "value": "No",
+          "contribution": -0.0072
+        },
+        {
+          "feature": "StreamingMovies",
+          "value": "No internet service",
+          "contribution": -0.0061
+        },
+        {
+          "feature": "OnlineBackup",
+          "value": "No internet service",
+          "contribution": -0.0057
+        },
+        {
+          "feature": "Dependents",
+          "value": "Yes",
+          "contribution": -0.0043
+        },
+        {
+          "feature": "MultipleLines",
+          "value": "Yes",
+          "contribution": 0.0025
+        },
+        {
+          "feature": "Partner",
+          "value": "Yes",
+          "contribution": -0.0019
+        },
+        {
+          "feature": "SeniorCitizen",
+          "value": 0,
+          "contribution": -0.0011
+        },
+        {
+          "feature": "InternetService",
+          "value": "No",
+          "contribution": -0.0009
+        },
+        {
+          "feature": "gender",
+          "value": "Male",
+          "contribution": -0.0005
+        },
+        {
+          "feature": "PhoneService",
+          "value": "Yes",
+          "contribution": -0.0003
+        }
+      ]
+    },
+    {
+      "id": "4800",
+      "prediction": "Yes",
+      "predictedPositive": true,
+      "probaPositive": 0.8588,
+      "actualLabel": "Yes",
+      "actualPositive": true,
+      "isCorrect": true,
+      "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 86%).",
+      "topFeatures": [
+        {
+          "feature": "tenure",
+          "value": 1,
+          "contribution": 0.1244
+        },
+        {
+          "feature": "Contract",
+          "value": "Month-to-month",
+          "contribution": 0.0867
+        },
+        {
+          "feature": "TotalCharges",
+          "value": 94.0,
+          "contribution": 0.0734
+        },
+        {
+          "feature": "MonthlyCharges",
+          "value": 94.0,
+          "contribution": 0.0513
+        },
+        {
+          "feature": "OnlineSecurity",
+          "value": "No",
+          "contribution": 0.046
+        },
+        {
+          "feature": "TechSupport",
+          "value": "No",
+          "contribution": 0.0421
+        },
+        {
+          "feature": "PaymentMethod",
+          "value": "Electronic check",
+          "contribution": 0.0395
+        },
+        {
+          "feature": "InternetService",
+          "value": "Fiber optic",
+          "contribution": 0.038
+        },
+        {
+          "feature": "StreamingTV",
+          "value": "Yes",
+          "contribution": 0.0148
+        },
+        {
+          "feature": "StreamingMovies",
+          "value": "Yes",
+          "contribution": 0.0137
+        },
+        {
+          "feature": "MultipleLines",
+          "value": "Yes",
+          "contribution": 0.0131
+        },
+        {
+          "feature": "DeviceProtection",
+          "value": "No",
+          "contribution": 0.0127
+        },
+        {
+          "feature": "OnlineBackup",
+          "value": "No",
+          "contribution": 0.0122
+        },
+        {
+          "feature": "SeniorCitizen",
+          "value": 1,
+          "contribution": 0.0116
+        },
+        {
+          "feature": "PaperlessBilling",
+          "value": "Yes",
+          "contribution": 0.0098
+        },
+        {
+          "feature": "Dependents",
+          "value": "No",
+          "contribution": 0.0036
+        },
+        {
+          "feature": "Partner",
+          "value": "No",
+          "contribution": 0.0024
+        },
+        {
+          "feature": "gender",
+          "value": "Male",
+          "contribution": -0.0013
+        },
+        {
+          "feature": "PhoneService",
+          "value": "Yes",
+          "contribution": -0.0007
+        }
+      ]
+    },
+    {
+      "id": "2208",
+      "prediction": "Yes",
+      "predictedPositive": true,
+      "probaPositive": 0.8446,
+      "actualLabel": "Yes",
+      "actualPositive": true,
+      "isCorrect": true,
+      "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 84%).",
+      "topFeatures": [
+        {
+          "feature": "tenure",
+          "value": 1,
+          "contribution": 0.1224
+        },
+        {
+          "feature": "Contract",
+          "value": "Month-to-month",
+          "contribution": 0.0913
+        },
+        {
+          "feature": "TotalCharges",
+          "value": 100.8,
+          "contribution": 0.0679
+        },
+        {
+          "feature": "MonthlyCharges",
+          "value": 100.8,
+          "contribution": 0.059
+        },
+        {
+          "feature": "OnlineSecurity",
+          "value": "No",
+          "contribution": 0.045
+        },
+        {
+          "feature": "TechSupport",
+          "value": "No",
+          "contribution": 0.0404
+        },
+        {
+          "feature": "PaymentMethod",
+          "value": "Electronic check",
+          "contribution": 0.0373
+        },
+        {
+          "feature": "InternetService",
+          "value": "Fiber optic",
+          "contribution": 0.037
+        },
+        {
+          "feature": "StreamingTV",
+          "value": "Yes",
+          "contribution": 0.0154
+        },
+        {
+          "feature": "MultipleLines",
+          "value": "Yes",
+          "contribution": 0.0143
+        },
+        {
+          "feature": "StreamingMovies",
+          "value": "Yes",
+          "contribution": 0.0135
+        },
+        {
+          "feature": "OnlineBackup",
+          "value": "No",
+          "contribution": 0.0123
+        },
+        {
+          "feature": "SeniorCitizen",
+          "value": 1,
+          "contribution": 0.0122
+        },
+        {
+          "feature": "PaperlessBilling",
+          "value": "Yes",
+          "contribution": 0.01
+        },
+        {
+          "feature": "Dependents",
+          "value": "No",
+          "contribution": 0.0038
+        },
+        {
+          "feature": "Partner",
+          "value": "Yes",
+          "contribution": -0.003
+        },
+        {
+          "feature": "gender",
+          "value": "Female",
+          "contribution": 0.0007
+        },
+        {
+          "feature": "PhoneService",
+          "value": "Yes",
+          "contribution": -0.0006
+        },
+        {
+          "feature": "DeviceProtection",
+          "value": "Yes",
+          "contribution": 0.0005
+        }
+      ]
+    },
+    {
+      "id": "3984",
+      "prediction": "No",
+      "predictedPositive": false,
+      "probaPositive": 0.0054,
+      "actualLabel": "No",
+      "actualPositive": false,
+      "isCorrect": true,
+      "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 99%).",
+      "topFeatures": [
+        {
+          "feature": "Contract",
+          "value": "Two year",
+          "contribution": -0.0674
+        },
+        {
+          "feature": "tenure",
+          "value": 72,
+          "contribution": -0.0372
+        },
+        {
+          "feature": "OnlineSecurity",
+          "value": "No internet service",
+          "contribution": -0.035
+        },
+        {
+          "feature": "TechSupport",
+          "value": "No internet service",
+          "contribution": -0.0288
+        },
+        {
+          "feature": "MonthlyCharges",
+          "value": 25.1,
+          "contribution": -0.0185
+        },
+        {
+          "feature": "PaymentMethod",
+          "value": "Bank transfer (automatic)",
+          "contribution": -0.0151
+        },
+        {
+          "feature": "TotalCharges",
+          "value": 1857.85,
+          "contribution": -0.0144
+        },
+        {
+          "feature": "DeviceProtection",
+          "value": "No internet service",
+          "contribution": -0.0112
+        },
+        {
+          "feature": "StreamingTV",
+          "value": "No internet service",
+          "contribution": -0.0079
+        },
+        {
+          "feature": "PaperlessBilling",
+          "value": "No",
+          "contribution": -0.0072
+        },
+        {
+          "feature": "StreamingMovies",
+          "value": "No internet service",
+          "contribution": -0.006
+        },
+        {
+          "feature": "OnlineBackup",
+          "value": "No internet service",
+          "contribution": -0.0056
+        },
+        {
+          "feature": "Dependents",
+          "value": "Yes",
+          "contribution": -0.0042
+        },
+        {
+          "feature": "MultipleLines",
+          "value": "Yes",
+          "contribution": 0.0017
+        },
+        {
+          "feature": "Partner",
+          "value": "Yes",
+          "contribution": -0.0016
+        },
+        {
+          "feature": "SeniorCitizen",
+          "value": 0,
+          "contribution": -0.0011
+        },
+        {
+          "feature": "InternetService",
+          "value": "No",
+          "contribution": -0.0007
+        },
+        {
+          "feature": "gender",
+          "value": "Female",
+          "contribution": 0.0004
+        },
+        {
+          "feature": "PhoneService",
+          "value": "Yes",
+          "contribution": -0.0003
+        }
+      ]
+    },
+    {
+      "id": "4761",
+      "prediction": "No",
+      "predictedPositive": false,
+      "probaPositive": 0.0055,
+      "actualLabel": "No",
+      "actualPositive": false,
+      "isCorrect": true,
+      "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 99%).",
+      "topFeatures": [
+        {
+          "feature": "Contract",
+          "value": "Two year",
+          "contribution": -0.0655
+        },
+        {
+          "feature": "tenure",
+          "value": 72,
+          "contribution": -0.036
+        },
+        {
+          "feature": "OnlineSecurity",
+          "value": "No internet service",
+          "contribution": -0.0349
+        },
+        {
+          "feature": "TechSupport",
+          "value": "No internet service",
+          "contribution": -0.0293
+        },
+        {
+          "feature": "MonthlyCharges",
+          "value": 25.0,
+          "contribution": -0.0186
+        },
+        {
+          "feature": "PaymentMethod",
+          "value": "Bank transfer (automatic)",
+          "contribution": -0.0158
+        },
+        {
+          "feature": "TotalCharges",
+          "value": 1738.9,
+          "contribution": -0.0142
+        },
+        {
+          "feature": "DeviceProtection",
+          "value": "No internet service",
+          "contribution": -0.0114
+        },
+        {
+          "feature": "StreamingTV",
+          "value": "No internet service",
+          "contribution": -0.0081
+        },
+        {
+          "feature": "PaperlessBilling",
+          "value": "No",
+          "contribution": -0.0073
+        },
+        {
+          "feature": "StreamingMovies",
+          "value": "No internet service",
+          "contribution": -0.0062
+        },
+        {
+          "feature": "OnlineBackup",
+          "value": "No internet service",
+          "contribution": -0.0058
+        },
+        {
+          "feature": "Dependents",
+          "value": "Yes",
+          "contribution": -0.0042
+        },
+        {
+          "feature": "MultipleLines",
+          "value": "Yes",
+          "contribution": 0.0019
+        },
+        {
+          "feature": "Partner",
+          "value": "Yes",
+          "contribution": -0.0017
+        },
+        {
+          "feature": "SeniorCitizen",
+          "value": 0,
+          "contribution": -0.0011
+        },
+        {
+          "feature": "InternetService",
+          "value": "No",
+          "contribution": -0.001
+        },
+        {
+          "feature": "gender",
+          "value": "Male",
+          "contribution": -0.0004
+        },
+        {
+          "feature": "PhoneService",
+          "value": "Yes",
+          "contribution": -0.0003
+        }
+      ]
+    },
+    {
+      "id": "640",
+      "prediction": "No",
+      "predictedPositive": false,
+      "probaPositive": 0.0064,
+      "actualLabel": "No",
+      "actualPositive": false,
+      "isCorrect": true,
+      "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 99%).",
+      "topFeatures": [
+        {
+          "feature": "Contract",
+          "value": "Two year",
+          "contribution": -0.0657
+        },
+        {
+          "feature": "OnlineSecurity",
+          "value": "No internet service",
+          "contribution": -0.0348
+        },
+        {
+          "feature": "tenure",
+          "value": 68,
+          "contribution": -0.0335
+        },
+        {
+          "feature": "TechSupport",
+          "value": "No internet service",
+          "contribution": -0.0291
+        },
+        {
+          "feature": "MonthlyCharges",
+          "value": 25.4,
+          "contribution": -0.0188
+        },
+        {
+          "feature": "PaymentMethod",
+          "value": "Bank transfer (automatic)",
+          "contribution": -0.0157
+        },
+        {
+          "feature": "TotalCharges",
+          "value": 1620.2,
+          "contribution": -0.0139
+        },
+        {
+          "feature": "DeviceProtection",
+          "value": "No internet service",
+          "contribution": -0.0114
+        },
+        {
+          "feature": "StreamingTV",
+          "value": "No internet service",
+          "contribution": -0.0086
+        },
+        {
+          "feature": "PaperlessBilling",
+          "value": "No",
+          "contribution": -0.0073
+        },
+        {
+          "feature": "StreamingMovies",
+          "value": "No internet service",
+          "contribution": -0.0067
+        },
+        {
+          "feature": "OnlineBackup",
+          "value": "No internet service",
+          "contribution": -0.0058
+        },
+        {
+          "feature": "Dependents",
+          "value": "Yes",
+          "contribution": -0.0044
+        },
+        {
+          "feature": "MultipleLines",
+          "value": "Yes",
+          "contribution": 0.0019
+        },
+        {
+          "feature": "Partner",
+          "value": "Yes",
+          "contribution": -0.0019
+        },
+        {
+          "feature": "InternetService",
+          "value": "No",
+          "contribution": -0.0014
+        },
+        {
+          "feature": "SeniorCitizen",
+          "value": 0,
+          "contribution": -0.0011
+        },
+        {
+          "feature": "gender",
+          "value": "Male",
+          "contribution": -0.0004
+        },
+        {
+          "feature": "PhoneService",
+          "value": "Yes",
+          "contribution": -0.0003
+        }
+      ]
+    },
+    {
+      "id": "1945",
+      "prediction": "No",
+      "predictedPositive": false,
+      "probaPositive": 0.0057,
+      "actualLabel": "No",
+      "actualPositive": false,
+      "isCorrect": true,
+      "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 99%).",
+      "topFeatures": [
+        {
+          "feature": "Contract",
+          "value": "Two year",
+          "contribution": -0.0669
+        },
+        {
+          "feature": "tenure",
+          "value": 71,
+          "contribution": -0.036
+        },
+        {
+          "feature": "OnlineSecurity",
+          "value": "No internet service",
+          "contribution": -0.0341
+        },
+        {
+          "feature": "TechSupport",
+          "value": "No internet service",
+          "contribution": -0.0289
+        },
+        {
+          "feature": "MonthlyCharges",
+          "value": 20.5,
+          "contribution": -0.0202
+        },
+        {
+          "feature": "PaymentMethod",
+          "value": "Bank transfer (automatic)",
+          "contribution": -0.0144
+        },
+        {
+          "feature": "DeviceProtection",
+          "value": "No internet service",
+          "contribution": -0.0113
+        },
+        {
+          "feature": "TotalCharges",
+          "value": 1500.95,
+          "contribution": -0.0109
+        },
+        {
+          "feature": "StreamingTV",
+          "value": "No internet service",
+          "contribution": -0.0078
+        },
+        {
+          "feature": "PaperlessBilling",
+          "value": "No",
+          "contribution": -0.0071
+        },
+        {
+          "feature": "StreamingMovies",
+          "value": "No internet service",
+          "contribution": -0.0061
+        },
+        {
+          "feature": "OnlineBackup",
+          "value": "No internet service",
+          "contribution": -0.0059
+        },
+        {
+          "feature": "Dependents",
+          "value": "Yes",
+          "contribution": -0.0041
+        },
+        {
+          "feature": "MultipleLines",
+          "value": "No",
+          "contribution": -0.0024
+        },
+        {
+          "feature": "Partner",
+          "value": "Yes",
+          "contribution": -0.0016
+        },
+        {
+          "feature": "SeniorCitizen",
+          "value": 0,
+          "contribution": -0.0011
+        },
+        {
+          "feature": "InternetService",
+          "value": "No",
+          "contribution": -0.0011
+        },
+        {
+          "feature": "gender",
+          "value": "Female",
+          "contribution": 0.0006
+        },
+        {
+          "feature": "PhoneService",
+          "value": "Yes",
+          "contribution": -0.0003
+        }
+      ]
+    },
+    {
+      "id": "6089",
+      "prediction": "Yes",
+      "predictedPositive": true,
+      "probaPositive": 0.8345,
+      "actualLabel": "Yes",
+      "actualPositive": true,
+      "isCorrect": true,
+      "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 83%).",
+      "topFeatures": [
+        {
+          "feature": "tenure",
+          "value": 1,
+          "contribution": 0.1301
+        },
+        {
+          "feature": "Contract",
+          "value": "Month-to-month",
+          "contribution": 0.0909
+        },
+        {
+          "feature": "TotalCharges",
+          "value": 90.6,
+          "contribution": 0.0767
+        },
+        {
+          "feature": "OnlineSecurity",
+          "value": "No",
+          "contribution": 0.0481
+        },
+        {
+          "feature": "MonthlyCharges",
+          "value": 90.6,
+          "contribution": 0.0462
+        },
+        {
+          "feature": "InternetService",
+          "value": "Fiber optic",
+          "contribution": 0.0394
+        },
+        {
+          "feature": "TechSupport",
+          "value": "No",
+          "contribution": 0.0386
+        },
+        {
+          "feature": "PaymentMethod",
+          "value": "Electronic check",
+          "contribution": 0.0376
+        },
+        {
+          "feature": "StreamingTV",
+          "value": "Yes",
+          "contribution": 0.0136
+        },
+        {
+          "feature": "SeniorCitizen",
+          "value": 1,
+          "contribution": 0.013
+        },
+        {
+          "feature": "DeviceProtection",
+          "value": "No",
+          "contribution": 0.0124
+        },
+        {
+          "feature": "MultipleLines",
+          "value": "Yes",
+          "contribution": 0.0123
+        },
+        {
+          "feature": "PaperlessBilling",
+          "value": "Yes",
+          "contribution": 0.01
+        },
+        {
+          "feature": "Dependents",
+          "value": "No",
+          "contribution": 0.0037
+        },
+        {
+          "feature": "Partner",
+          "value": "Yes",
+          "contribution": -0.0027
+        },
+        {
+          "feature": "OnlineBackup",
+          "value": "Yes",
+          "contribution": -0.0022
+        },
+        {
+          "feature": "StreamingMovies",
+          "value": "No",
+          "contribution": 0.0018
+        },
+        {
+          "feature": "PhoneService",
+          "value": "Yes",
+          "contribution": -0.0006
+        },
+        {
+          "feature": "gender",
+          "value": "Female",
+          "contribution": 0.0004
+        }
+      ]
+    },
+    {
+      "id": "5474",
+      "prediction": "Yes",
+      "predictedPositive": true,
+      "probaPositive": 0.8234,
+      "actualLabel": "No",
+      "actualPositive": false,
+      "isCorrect": false,
+      "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 82%).",
+      "topFeatures": [
+        {
+          "feature": "tenure",
+          "value": 1,
+          "contribution": 0.1267
+        },
+        {
+          "feature": "Contract",
+          "value": "Month-to-month",
+          "contribution": 0.089
+        },
+        {
+          "feature": "TotalCharges",
+          "value": 84.6,
+          "contribution": 0.0757
+        },
+        {
+          "feature": "OnlineSecurity",
+          "value": "No",
+          "contribution": 0.0497
+        },
+        {
+          "feature": "InternetService",
+          "value": "Fiber optic",
+          "contribution": 0.04
+        },
+        {
+          "feature": "MonthlyCharges",
+          "value": 84.6,
+          "contribution": 0.0389
+        },
+        {
+          "feature": "TechSupport",
+          "value": "No",
+          "contribution": 0.0386
+        },
+        {
+          "feature": "PaymentMethod",
+          "value": "Electronic check",
+          "contribution": 0.0381
+        },
+        {
+          "feature": "DeviceProtection",
+          "value": "No",
+          "contribution": 0.0134
+        },
+        {
+          "feature": "StreamingTV",
+          "value": "Yes",
+          "contribution": 0.0126
+        },
+        {
+          "feature": "OnlineBackup",
+          "value": "No",
+          "contribution": 0.0115
+        },
+        {
+          "feature": "MultipleLines",
+          "value": "Yes",
+          "contribution": 0.0105
+        },
+        {
+          "feature": "PaperlessBilling",
+          "value": "Yes",
+          "contribution": 0.0093
+        },
+        {
+          "feature": "Dependents",
+          "value": "No",
+          "contribution": 0.0031
+        },
+        {
+          "feature": "SeniorCitizen",
+          "value": 0,
+          "contribution": -0.0029
+        },
+        {
+          "feature": "Partner",
+          "value": "No",
+          "contribution": 0.0023
+        },
+        {
+          "feature": "StreamingMovies",
+          "value": "No",
+          "contribution": 0.0017
+        },
+        {
+          "feature": "PhoneService",
+          "value": "Yes",
+          "contribution": -0.0006
+        },
+        {
+          "feature": "gender",
+          "value": "Female",
+          "contribution": 0.0005
+        }
+      ]
+    },
+    {
+      "id": "3612",
+      "prediction": "Yes",
+      "predictedPositive": true,
+      "probaPositive": 0.5009,
+      "actualLabel": "No",
+      "actualPositive": false,
+      "isCorrect": false,
+      "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 50%).",
+      "topFeatures": [
+        {
+          "feature": "Contract",
+          "value": "Month-to-month",
+          "contribution": 0.0807
+        },
+        {
+          "feature": "PaymentMethod",
+          "value": "Electronic check",
+          "contribution": 0.0593
+        },
+        {
+          "feature": "OnlineSecurity",
+          "value": "No",
+          "contribution": 0.0361
+        },
+        {
+          "feature": "TechSupport",
+          "value": "No",
+          "contribution": 0.0359
+        },
+        {
+          "feature": "InternetService",
+          "value": "Fiber optic",
+          "contribution": 0.035
+        },
+        {
+          "feature": "TotalCharges",
+          "value": 1558.7,
+          "contribution": -0.0293
+        },
+        {
+          "feature": "tenure",
+          "value": 21,
+          "contribution": -0.0187
+        },
+        {
+          "feature": "DeviceProtection",
+          "value": "No",
+          "contribution": 0.0121
+        },
+        {
+          "feature": "PaperlessBilling",
+          "value": "Yes",
+          "contribution": 0.0117
+        },
+        {
+          "feature": "MultipleLines",
+          "value": "Yes",
+          "contribution": 0.0091
+        },
+        {
+          "feature": "OnlineBackup",
+          "value": "No",
+          "contribution": 0.0088
+        },
+        {
+          "feature": "MonthlyCharges",
+          "value": 73.7,
+          "contribution": -0.0042
+        },
+        {
+          "feature": "SeniorCitizen",
+          "value": 0,
+          "contribution": -0.0029
+        },
+        {
+          "feature": "Dependents",
+          "value": "No",
+          "contribution": 0.0023
+        },
+        {
+          "feature": "StreamingTV",
+          "value": "No",
+          "contribution": -0.0015
+        },
+        {
+          "feature": "Partner",
+          "value": "No",
+          "contribution": 0.0014
+        },
+        {
+          "feature": "PhoneService",
+          "value": "Yes",
+          "contribution": -0.0006
+        },
+        {
+          "feature": "gender",
+          "value": "Male",
+          "contribution": 0.0005
+        },
+        {
+          "feature": "StreamingMovies",
+          "value": "No",
+          "contribution": -0.0
+        }
+      ]
+    },
+    {
+      "id": "2868",
+      "prediction": "Yes",
+      "predictedPositive": true,
+      "probaPositive": 0.5005,
+      "actualLabel": "No",
+      "actualPositive": false,
+      "isCorrect": false,
+      "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 50%).",
+      "topFeatures": [
+        {
+          "feature": "Contract",
+          "value": "Month-to-month",
+          "contribution": 0.0838
+        },
+        {
+          "feature": "PaymentMethod",
+          "value": "Electronic check",
+          "contribution": 0.0553
+        },
+        {
+          "feature": "OnlineSecurity",
+          "value": "No",
+          "contribution": 0.0408
+        },
+        {
+          "feature": "TechSupport",
+          "value": "No",
+          "contribution": 0.0377
+        },
+        {
+          "feature": "tenure",
+          "value": 26,
+          "contribution": -0.0362
+        },
+        {
+          "feature": "InternetService",
+          "value": "Fiber optic",
+          "contribution": 0.0339
+        },
+        {
+          "feature": "MonthlyCharges",
+          "value": 85.75,
+          "contribution": 0.0241
+        },
+        {
+          "feature": "TotalCharges",
+          "value": 2146.5,
+          "contribution": -0.0221
+        },
+        {
+          "feature": "MultipleLines",
+          "value": "No",
+          "contribution": -0.0152
+        },
+        {
+          "feature": "StreamingTV",
+          "value": "Yes",
+          "contribution": 0.0129
+        },
+        {
+          "feature": "DeviceProtection",
+          "value": "No",
+          "contribution": 0.0127
+        },
+        {
+          "feature": "PaperlessBilling",
+          "value": "Yes",
+          "contribution": 0.0101
+        },
+        {
+          "feature": "OnlineBackup",
+          "value": "Yes",
+          "contribution": -0.004
+        },
+        {
+          "feature": "SeniorCitizen",
+          "value": 0,
+          "contribution": -0.003
+        },
+        {
+          "feature": "Dependents",
+          "value": "No",
+          "contribution": 0.0029
+        },
+        {
+          "feature": "Partner",
+          "value": "No",
+          "contribution": 0.0024
+        },
+        {
+          "feature": "PhoneService",
+          "value": "Yes",
+          "contribution": -0.0005
+        },
+        {
+          "feature": "StreamingMovies",
+          "value": "No",
+          "contribution": -0.0003
+        },
+        {
+          "feature": "gender",
+          "value": "Male",
+          "contribution": 0.0
+        }
+      ]
+    },
+    {
+      "id": "6316",
+      "prediction": "No",
+      "predictedPositive": false,
+      "probaPositive": 0.0059,
+      "actualLabel": "No",
+      "actualPositive": false,
+      "isCorrect": true,
+      "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 99%).",
+      "topFeatures": [
+        {
+          "feature": "Contract",
+          "value": "Two year",
+          "contribution": -0.0646
+        },
+        {
+          "feature": "OnlineSecurity",
+          "value": "No internet service",
+          "contribution": -0.0366
+        },
+        {
+          "feature": "tenure",
+          "value": 63,
+          "contribution": -0.0333
+        },
+        {
+          "feature": "TechSupport",
+          "value": "No internet service",
+          "contribution": -0.0307
+        },
+        {
+          "feature": "MonthlyCharges",
+          "value": 25.25,
+          "contribution": -0.0194
+        },
+        {
+          "feature": "TotalCharges",
+          "value": 1573.05,
+          "contribution": -0.0137
+        },
+        {
+          "feature": "PaymentMethod",
+          "value": "Mailed check",
+          "contribution": -0.0123
+        },
+        {
+          "feature": "DeviceProtection",
+          "value": "No internet service",
+          "contribution": -0.0112
+        },
+        {
+          "feature": "StreamingTV",
+          "value": "No internet service",
+          "contribution": -0.0089
+        },
+        {
+          "feature": "PaperlessBilling",
+          "value": "No",
+          "contribution": -0.0076
+        },
+        {
+          "feature": "StreamingMovies",
+          "value": "No internet service",
+          "contribution": -0.0071
+        },
+        {
+          "feature": "OnlineBackup",
+          "value": "No internet service",
+          "contribution": -0.006
+        },
+        {
+          "feature": "Dependents",
+          "value": "Yes",
+          "contribution": -0.0046
+        },
+        {
+          "feature": "MultipleLines",
+          "value": "Yes",
+          "contribution": 0.0019
+        },
+        {
+          "feature": "Partner",
+          "value": "Yes",
+          "contribution": -0.0018
+        },
+        {
+          "feature": "InternetService",
+          "value": "No",
+          "contribution": -0.0015
+        },
+        {
+          "feature": "SeniorCitizen",
+          "value": 0,
+          "contribution": -0.0012
+        },
+        {
+          "feature": "gender",
+          "value": "Male",
+          "contribution": -0.0004
+        },
+        {
+          "feature": "PhoneService",
+          "value": "Yes",
+          "contribution": -0.0003
+        }
+      ]
+    },
+    {
+      "id": "2464",
+      "prediction": "Yes",
+      "predictedPositive": true,
+      "probaPositive": 0.8209,
+      "actualLabel": "Yes",
+      "actualPositive": true,
+      "isCorrect": true,
+      "explanation": "모델은 이 케이스를 '이탈'(으)로 예측했습니다 (확신도 82%).",
+      "topFeatures": [
+        {
+          "feature": "tenure",
+          "value": 1,
+          "contribution": 0.1309
+        },
+        {
+          "feature": "Contract",
+          "value": "Month-to-month",
+          "contribution": 0.0894
+        },
+        {
+          "feature": "TotalCharges",
+          "value": 77.15,
+          "contribution": 0.0845
+        },
+        {
+          "feature": "OnlineSecurity",
+          "value": "No",
+          "contribution": 0.0504
+        },
+        {
+          "feature": "TechSupport",
+          "value": "No",
+          "contribution": 0.0417
+        },
+        {
+          "feature": "PaymentMethod",
+          "value": "Electronic check",
+          "contribution": 0.0397
+        },
+        {
+          "feature": "InternetService",
+          "value": "Fiber optic",
+          "contribution": 0.0387
+        },
+        {
+          "feature": "MonthlyCharges",
+          "value": 77.15,
+          "contribution": 0.0286
+        },
+        {
+          "feature": "DeviceProtection",
+          "value": "No",
+          "contribution": 0.0139
+        },
+        {
+          "feature": "OnlineBackup",
+          "value": "No",
+          "contribution": 0.0111
+        },
+        {
+          "feature": "PaperlessBilling",
+          "value": "Yes",
+          "contribution": 0.0106
+        },
+        {
+          "feature": "MultipleLines",
+          "value": "Yes",
+          "contribution": 0.0095
+        },
+        {
+          "feature": "StreamingTV",
+          "value": "No",
+          "contribution": 0.0035
+        },
+        {
+          "feature": "SeniorCitizen",
+          "value": 0,
+          "contribution": -0.0027
+        },
+        {
+          "feature": "Dependents",
+          "value": "No",
+          "contribution": 0.0025
+        },
+        {
+          "feature": "StreamingMovies",
+          "value": "No",
+          "contribution": 0.0021
+        },
+        {
+          "feature": "Partner",
+          "value": "No",
+          "contribution": 0.0017
+        },
+        {
+          "feature": "PhoneService",
+          "value": "Yes",
+          "contribution": -0.0006
+        },
+        {
+          "feature": "gender",
+          "value": "Female",
+          "contribution": 0.0003
+        }
+      ]
+    },
+    {
+      "id": "2673",
+      "prediction": "No",
+      "predictedPositive": false,
+      "probaPositive": 0.4994,
+      "actualLabel": "Yes",
+      "actualPositive": true,
+      "isCorrect": false,
+      "explanation": "모델은 이 케이스를 '유지'(으)로 예측했습니다 (확신도 50%).",
+      "topFeatures": [
+        {
+          "feature": "Contract",
+          "value": "Month-to-month",
+          "contribution": 0.0938
+        },
+        {
+          "feature": "MonthlyCharges",
+          "value": 101.35,
+          "contribution": 0.0761
+        },
+        {
+          "feature": "OnlineSecurity",
+          "value": "Yes",
+          "contribution": -0.0416
+        },
+        {
+          "feature": "TechSupport",
+          "value": "No",
+          "contribution": 0.0396
+        },
+        {
+          "feature": "InternetService",
+          "value": "Fiber optic",
+          "contribution": 0.0374
+        },
+        {
+          "feature": "PaymentMethod",
+          "value": "Bank transfer (automatic)",
+          "contribution": -0.0373
+        },
+        {
+          "feature": "StreamingTV",
+          "value": "Yes",
+          "contribution": 0.0169
+        },
+        {
+          "feature": "StreamingMovies",
+          "value": "Yes",
+          "contribution": 0.0143
+        },
+        {
+          "feature": "OnlineBackup",
+          "value": "No",
+          "contribution": 0.0127
+        },
+        {
+          "feature": "DeviceProtection",
+          "value": "No",
+          "contribution": 0.0112
+        },
+        {
+          "feature": "PaperlessBilling",
+          "value": "Yes",
+          "contribution": 0.0096
+        },
+        {
+          "feature": "TotalCharges",
+          "value": 2317.1,
+          "contribution": -0.0092
+        },
+        {
+          "feature": "MultipleLines",
+          "value": "Yes",
+          "contribution": 0.0067
+        },
+        {
+          "feature": "tenure",
+          "value": 22,
+          "contribution": 0.0055
+        },
+        {
+          "feature": "Dependents",
+          "value": "No",
+          "contribution": 0.0034
+        },
+        {
+          "feature": "SeniorCitizen",
+          "value": 0,
+          "contribution": -0.0026
+        },
+        {
+          "feature": "gender",
+          "value": "Male",
+          "contribution": -0.0026
+        },
+        {
+          "feature": "Partner",
+          "value": "No",
+          "contribution": 0.0005
+        },
+        {
+          "feature": "PhoneService",
+          "value": "Yes",
+          "contribution": -0.0002
+        }
+      ]
     }
   ],
-  "baseValue": 0.265,
+  "baseValue": 0.2653,
   "correlations": {
     "columns": [
       "tenure",
-      "TotalCharges",
       "MonthlyCharges",
+      "TotalCharges",
       "SeniorCitizen"
     ],
     "matrix": [
       [
         1.0,
-        0.824,
         0.24,
+        0.824,
         0.035
       ],
       [
-        0.824,
-        1.0,
-        0.646,
-        0.12
-      ],
-      [
         0.24,
-        0.646,
         1.0,
+        0.646,
         0.222
       ],
       [
+        0.824,
+        0.646,
+        1.0,
+        0.12
+      ],
+      [
         0.035,
-        0.12,
         0.222,
+        0.12,
         1.0
       ]
     ]
@@ -3331,6 +3331,8 @@
   "modelQuality": {
     "verdict": "good",
     "message": "이 모델은 baseline보다 낫고, 두 클래스 모두 어느 정도 예측하고 있어요.",
-    "baselineAccuracy": 0.7345635202271115
+    "baselineAccuracy": 0.7346301292063041,
+    "minorityRecall": 0.5034777956126271,
+    "minorityLabel": "이탈"
   }
 }

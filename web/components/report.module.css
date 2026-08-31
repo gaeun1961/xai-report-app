@@ -272,6 +272,11 @@
   color: var(--accent-strong);
 }
 
+.qualityFair {
+  background: color-mix(in srgb, var(--text-muted) 18%, transparent);
+  color: var(--foreground);
+}
+
 .qualityWeak {
   background: color-mix(in srgb, var(--warn) 20%, transparent);
   color: #b45309;

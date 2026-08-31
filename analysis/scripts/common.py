@@ -9,9 +9,14 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import shap
+from sklearn.base import clone
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, recall_score
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import (
+    StratifiedKFold,
+    cross_val_predict,
+    train_test_split,
+)
 
 RANDOM_STATE = 42
 
@@ -113,28 +118,37 @@ def load_and_preprocess(csv_path: str, target_column: str):
     return X, y, display_df, target_labels
 
 
-def train_model(X: pd.DataFrame, y: pd.Series):
-    """Train a baseline RandomForest classifier and evaluate it on a holdout.
+def train_model(X: pd.DataFrame, y: pd.Series, model=None):
+    """Fit `model` (default: a 300-tree RandomForest) and score it.
 
-    Returns (model, accuracy, eval_stats) where eval_stats carries the numbers
-    _judge_model_quality needs: majority-class baseline accuracy, the recall on
-    the minority class, and which class that is.
+    Accuracy and minority-class recall are estimated with 5-fold cross-
+    validation (a single 80/20 split is too noisy at this dataset size to
+    trust the reported number). The returned model itself is fit on an 80%
+    train split — that's the one SHAP explains and cases are drawn from.
+
+    Returns (model, cv_accuracy, eval_stats).
     """
-    X_train, X_test, y_train, y_test = train_test_split(
+    if model is None:
+        model = RandomForestClassifier(n_estimators=300, random_state=RANDOM_STATE)
+
+    pos_rate = float(y.mean())
+    minority_cls = 1 if pos_rate < 0.5 else 0
+
+    cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=RANDOM_STATE)
+    oof = cross_val_predict(clone(model), X, y, cv=cv)
+    accuracy = accuracy_score(y, oof)
+    minority_recall = float(
+        recall_score(y, oof, pos_label=minority_cls, zero_division=0)
+    )
+
+    X_train, _, y_train, _ = train_test_split(
         X, y, test_size=0.2, random_state=RANDOM_STATE, stratify=y
     )
-    model = RandomForestClassifier(n_estimators=300, random_state=RANDOM_STATE)
     model.fit(X_train, y_train)
-    preds = model.predict(X_test)
 
-    accuracy = accuracy_score(y_test, preds)
-    pos_rate = float(y_test.mean())
-    minority_cls = 1 if pos_rate < 0.5 else 0
     eval_stats = {
         "baseline_accuracy": max(pos_rate, 1.0 - pos_rate),
-        "minority_recall": float(
-            recall_score(y_test, preds, pos_label=minority_cls, zero_division=0)
-        ),
+        "minority_recall": minority_recall,
         "minority_is_positive": minority_cls == 1,
     }
     return model, accuracy, eval_stats
@@ -142,23 +156,34 @@ def train_model(X: pd.DataFrame, y: pd.Series):
 
 def _judge_model_quality(accuracy, baseline_accuracy, minority_recall, minority_label):
     """Plain-language verdict on whether the model is actually useful.
-    Domain-agnostic: works for any uploaded CSV, no column/label hardcoding."""
-    if accuracy <= baseline_accuracy + 0.02:
+
+    good — beats the majority-class baseline and predicts both classes.
+    fair — accuracy only ~matches the baseline, but it still catches a good
+           share of the rare class (a deliberate recall-focused trade-off).
+    weak — no better than guessing the majority class.
+    Domain-agnostic: no column/label hardcoding.
+    """
+    common = {
+        "baselineAccuracy": baseline_accuracy,
+        "minorityRecall": minority_recall,
+        "minorityLabel": minority_label,
+    }
+    if accuracy > baseline_accuracy + 0.02 and minority_recall >= 0.2:
         return {
-            "verdict": "weak",
-            "message": "이 모델은 그냥 다수 클래스로 찍는 것보다 나을 게 거의 없어요.",
-            "baselineAccuracy": baseline_accuracy,
+            "verdict": "good",
+            "message": "이 모델은 baseline보다 낫고, 두 클래스 모두 어느 정도 예측하고 있어요.",
+            **common,
         }
-    if minority_recall < 0.2:
+    if minority_recall >= 0.4:
         return {
-            "verdict": "weak",
-            "message": f"이 모델은 '{minority_label}'을(를) 거의 못 잡아내요.",
-            "baselineAccuracy": baseline_accuracy,
+            "verdict": "fair",
+            "message": f"전체 정확도는 다수 클래스로 찍는 것과 비슷하지만, '{minority_label}'는 어느 정도 잡아내요.",
+            **common,
         }
     return {
-        "verdict": "good",
-        "message": "이 모델은 baseline보다 낫고, 두 클래스 모두 어느 정도 예측하고 있어요.",
-        "baselineAccuracy": baseline_accuracy,
+        "verdict": "weak",
+        "message": "이 모델은 그냥 다수 클래스로 찍는 것보다 나을 게 거의 없어요.",
+        **common,
     }
 
 
