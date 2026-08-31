@@ -224,6 +224,29 @@
   font-variant-numeric: tabular-nums;
 }
 
+.corrNotes {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border-left: 3px solid var(--accent);
+  background: var(--surface);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.corrNotes b {
+  color: var(--foreground);
+}
+
+.corrNotesEmpty {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
 .accuracy {
   font-size: 40px;
   font-weight: 700;
@@ -255,7 +278,21 @@
 }
 
 .qualityMessage {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
   font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.qualityMessage p {
+  margin: 0;
+}
+
+.sectionNote {
+  margin-top: -4px;
+  font-size: 12px;
   line-height: 1.5;
   color: var(--text-muted);
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { ShapReport } from "@/lib/types";
 import styles from "./report.module.css";
 
@@ -23,16 +23,19 @@ export default function CaseSelector({
   positiveLabel,
   negativeLabel,
 }: Props) {
-  const [q, setQ] = useState("");
   const [filter, setFilter] = useState<Filter>("all");
   const [minC, setMinC] = useState(0);
   const [maxC, setMaxC] = useState(100);
-  const query = q.trim();
   const lo = Math.min(minC, maxC);
   const hi = Math.max(minC, maxC);
 
+  // stable 1-based number per case (position in the example set)
+  const noById = useMemo(
+    () => new Map(cases.map((c, i) => [c.id, i + 1])),
+    [cases],
+  );
+
   const shown = cases.filter((c) => {
-    if (query && !c.id.includes(query)) return false;
     if (filter === "pos" && !c.predictedPositive) return false;
     if (filter === "neg" && c.predictedPositive) return false;
     if (c.probaPositive !== undefined) {
@@ -48,19 +51,6 @@ export default function CaseSelector({
 
   return (
     <div className={styles.selectorWrap}>
-      <input
-        className={styles.selectorSearch}
-        type="search"
-        inputMode="numeric"
-        placeholder={`케이스 ID 검색 (${cases.length}개)`}
-        value={q}
-        onChange={(e) => setQ(e.target.value)}
-      />
-      <p className={styles.selectorHint}>
-        숫자를 입력하면 그 숫자가 <b>포함된</b> 케이스 ID를 모두 찾아요 (예:{" "}
-        <code>62</code> → #762, #1062)
-      </p>
-
       <div className={styles.selectorFilter}>
         {(
           [
@@ -137,7 +127,7 @@ export default function CaseSelector({
                 c.id === selectedId ? styles.selectorBtnActive : ""
               }`}
             >
-              #{c.id}
+              {noById.get(c.id)}
             </button>
           ))
         )}

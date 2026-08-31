@@ -12,6 +12,45 @@ import styles from "@/components/report.module.css";
 
 type Tab = "model" | "data";
 
+// 라고 / 이라고 by whether the word's last Hangul char has a final consonant
+function irago(w: string): string {
+  const ch = w.charCodeAt(w.length - 1);
+  const batchim = ch >= 0xac00 && ch <= 0xd7a3 && (ch - 0xac00) % 28 !== 0;
+  return batchim ? "이라고" : "라고";
+}
+
+// Plain-language "is this model any good" explanation, built from the numbers
+// alone (same branching as common._judge_model_quality).
+function explainAccuracy(
+  acc: number,
+  baseline: number,
+  verdict: "good" | "weak",
+  baseValue: number | undefined,
+  posLabel: string,
+  negLabel: string,
+): string[] {
+  const a = Math.round(acc * 100);
+  const b = Math.round(baseline * 100);
+  const gap = a - b;
+  const majority = (baseValue ?? 0.5) < 0.5 ? negLabel : posLabel;
+  const minority = majority === posLabel ? negLabel : posLabel;
+
+  const line1 = `이 데이터는 실제 결과가 '${majority}'인 경우가 ${b}%로 더 많아요.`;
+  const line2 = `그래서 아무 근거 없이 전부 '${majority}'${irago(majority)}만 찍어도 ${b}%는 맞는 셈이라, 모델은 최소한 이보다는 나아야 의미가 있어요.`;
+
+  let line3: string;
+  if (verdict === "good") {
+    line3 = `이 모델의 정확도 ${a}%는 그 기준보다 ${gap}%p 높고, '${posLabel}'·'${negLabel}' 어느 쪽도 한쪽으로 몰아 찍지 않고 예측해요.`;
+  } else if (a < b) {
+    line3 = `이 모델의 정확도 ${a}%는 그 기준보다 오히려 ${b - a}%p 낮아서, 이 모델을 쓸 이유가 없어요.`;
+  } else if (a <= b + 2) {
+    line3 = `이 모델의 정확도 ${a}%는 그 기준과 거의 같아서 (차이 +${gap}%p), 이 모델을 따로 쓸 이유가 크지 않아요.`;
+  } else {
+    line3 = `이 모델의 정확도 ${a}%는 기준보다 높지만, 수가 적은 '${minority}' 쪽은 거의 못 맞혀요.`;
+  }
+  return [line1, line2, line3];
+}
+
 export default function ReportPage() {
   const { domain } = useParams<{ domain: string }>();
   const meta = findDomain(domain);
@@ -73,8 +112,11 @@ type BodyProps = {
 };
 
 function ModelBody({ report, domain, selectedId, onSelect }: BodyProps) {
-  const selected =
-    report.cases.find((c) => c.id === selectedId) ?? report.cases[0];
+  const selectedIndex = Math.max(
+    0,
+    report.cases.findIndex((c) => c.id === selectedId),
+  );
+  const selected = report.cases[selectedIndex] ?? report.cases[0];
   const { positiveLabel, negativeLabel } = report;
 
   const CHART_LIMIT = 15;
@@ -111,17 +153,29 @@ function ModelBody({ report, domain, selectedId, onSelect }: BodyProps) {
               )}
             </div>
             {report.modelQuality && (
-              <p className={styles.qualityMessage}>
-                {report.modelQuality.message} (다수 클래스로만 찍었을 때 정확도{" "}
-                {(report.modelQuality.baselineAccuracy * 100).toFixed(1)}%)
-              </p>
+              <div className={styles.qualityMessage}>
+                {explainAccuracy(
+                  report.modelAccuracy,
+                  report.modelQuality.baselineAccuracy,
+                  report.modelQuality.verdict,
+                  report.baseValue,
+                  positiveLabel ?? "양성",
+                  negativeLabel ?? "음성",
+                ).map((s, i) => (
+                  <p key={i}>{s}</p>
+                ))}
+              </div>
             )}
           </section>
 
           <section className={styles.section}>
             <h2 className={styles.h2}>특성 중요도</h2>
+            <p className={styles.sectionNote}>
+              막대가 길수록 그 특성이 예측을 평균적으로 더 크게 움직였다는
+              뜻이에요.
+            </p>
             <FeatureImportanceChart
-              items={report.featureImportance.slice(0, CHART_LIMIT)}
+              items={report.featureImportance}
               domain={domain}
             />
           </section>
@@ -145,6 +199,7 @@ function ModelBody({ report, domain, selectedId, onSelect }: BodyProps) {
               baseValue={report.baseValue}
               importanceOrder={importanceOrder}
               chartLimit={CHART_LIMIT}
+              caseNo={selectedIndex + 1}
             />
           </section>
         </div>
