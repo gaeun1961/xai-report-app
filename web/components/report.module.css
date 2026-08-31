@@ -278,9 +278,16 @@
 }
 
 .qualityMessage {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
   font-size: 13px;
-  line-height: 1.5;
+  line-height: 1.6;
   color: var(--text-muted);
+}
+
+.qualityMessage p {
+  margin: 0;
 }
 
 .sectionNote {

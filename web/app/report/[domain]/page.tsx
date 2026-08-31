@@ -12,6 +12,42 @@ import styles from "@/components/report.module.css";
 
 type Tab = "model" | "data";
 
+// 라고 / 이라고 by whether the word's last Hangul char has a final consonant
+function irago(w: string): string {
+  const ch = w.charCodeAt(w.length - 1);
+  const batchim = ch >= 0xac00 && ch <= 0xd7a3 && (ch - 0xac00) % 28 !== 0;
+  return batchim ? "이라고" : "라고";
+}
+
+// Plain-language "is this model any good" explanation, built from the numbers
+// alone (same branching as common._judge_model_quality).
+function explainAccuracy(
+  acc: number,
+  baseline: number,
+  verdict: "good" | "weak",
+  baseValue: number | undefined,
+  posLabel: string,
+  negLabel: string,
+): string[] {
+  const a = Math.round(acc * 100);
+  const b = Math.round(baseline * 100);
+  const gap = a - b;
+  const majority = (baseValue ?? 0.5) < 0.5 ? negLabel : posLabel;
+  const minority = majority === posLabel ? negLabel : posLabel;
+
+  const baselineSentence = `이 데이터는 실제 결과가 '${majority}'인 경우가 더 많아요. 그래서 아무 근거 없이 전부 '${majority}'${irago(majority)}만 찍어도 ${b}%는 맞습니다 — 이걸 비교 기준으로 삼아요.`;
+
+  let verdictSentence: string;
+  if (verdict === "good") {
+    verdictSentence = `이 모델의 정확도 ${a}%는 그 기준보다 ${gap}%p 높고, '${posLabel}'·'${negLabel}' 어느 쪽도 한쪽으로 몰아 찍지 않고 예측해요.`;
+  } else if (a <= b + 2) {
+    verdictSentence = `이 모델의 정확도 ${a}%는 그 기준(${b}%)과 거의 같아서, 이 모델을 따로 쓸 이유가 크지 않아요.`;
+  } else {
+    verdictSentence = `이 모델의 정확도 ${a}%는 기준보다 높아 보이지만, 수가 적은 '${minority}' 쪽은 거의 못 맞혀요.`;
+  }
+  return [baselineSentence, verdictSentence];
+}
+
 export default function ReportPage() {
   const { domain } = useParams<{ domain: string }>();
   const meta = findDomain(domain);
@@ -114,10 +150,18 @@ function ModelBody({ report, domain, selectedId, onSelect }: BodyProps) {
               )}
             </div>
             {report.modelQuality && (
-              <p className={styles.qualityMessage}>
-                {report.modelQuality.message} (다수 클래스로만 찍었을 때 정확도{" "}
-                {(report.modelQuality.baselineAccuracy * 100).toFixed(1)}%)
-              </p>
+              <div className={styles.qualityMessage}>
+                {explainAccuracy(
+                  report.modelAccuracy,
+                  report.modelQuality.baselineAccuracy,
+                  report.modelQuality.verdict,
+                  report.baseValue,
+                  positiveLabel ?? "양성",
+                  negativeLabel ?? "음성",
+                ).map((s, i) => (
+                  <p key={i}>{s}</p>
+                ))}
+              </div>
             )}
           </section>
 
