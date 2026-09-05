@@ -214,26 +214,70 @@ def compute_missingness(raw_df: pd.DataFrame, feature_cols) -> list:
 IQR_MULTIPLIER = 1.5
 
 
+OUTLIER_SAMPLE_CAP = 20
+
+
 def compute_outliers(raw_df: pd.DataFrame, numeric_cols) -> list:
-    """Per-numeric-feature outlier count/share via the classic IQR fence
-    (outside Q1 - 1.5*IQR .. Q3 + 1.5*IQR). A light, well-known heuristic —
-    no model involved, just a description of the raw column's own spread."""
+    """Per-numeric-feature outlier stats via the classic IQR fence (outside
+    Q1 - 1.5*IQR .. Q3 + 1.5*IQR). A light, well-known heuristic — no model
+    involved, just a description of the raw column's own spread. Returns the
+    five-number summary plus whisker bounds (the most extreme non-outlier
+    values) so the frontend can draw an actual box plot instead of just a
+    count; outlierSample caps how many raw outlier values it ships (a column
+    that's mostly outliers — e.g. a near-constant binary column — shouldn't
+    balloon the JSON)."""
     n = len(raw_df)
     rows = []
     for col in numeric_cols:
         series = pd.to_numeric(raw_df[col], errors="coerce").dropna()
         if len(series) == 0:
-            rows.append({"column": col, "outlierCount": 0, "outlierPct": 0.0})
+            rows.append(
+                {
+                    "column": col,
+                    "outlierCount": 0,
+                    "outlierPct": 0.0,
+                    "min": 0.0,
+                    "q1": 0.0,
+                    "median": 0.0,
+                    "q3": 0.0,
+                    "max": 0.0,
+                    "whiskerLow": 0.0,
+                    "whiskerHigh": 0.0,
+                    "outlierSample": [],
+                }
+            )
             continue
-        q1, q3 = series.quantile([0.25, 0.75])
+        q1, med, q3 = series.quantile([0.25, 0.5, 0.75])
         iqr = q3 - q1
         lo, hi = q1 - IQR_MULTIPLIER * iqr, q3 + IQR_MULTIPLIER * iqr
-        n_out = int(((series < lo) | (series > hi)).sum())
+        is_outlier = (series < lo) | (series > hi)
+        inliers = series[~is_outlier]
+        outlier_vals = series[is_outlier]
+        n_out = int(is_outlier.sum())
+        sample = (
+            outlier_vals.sample(
+                n=min(OUTLIER_SAMPLE_CAP, n_out), random_state=RANDOM_STATE
+            ).tolist()
+            if n_out
+            else []
+        )
         rows.append(
             {
                 "column": col,
                 "outlierCount": n_out,
                 "outlierPct": round(n_out / n, 4) if n else 0.0,
+                "min": round(float(series.min()), 4),
+                "q1": round(float(q1), 4),
+                "median": round(float(med), 4),
+                "q3": round(float(q3), 4),
+                "max": round(float(series.max()), 4),
+                "whiskerLow": round(
+                    float(inliers.min()) if len(inliers) else float(series.min()), 4
+                ),
+                "whiskerHigh": round(
+                    float(inliers.max()) if len(inliers) else float(series.max()), 4
+                ),
+                "outlierSample": [round(float(v), 4) for v in sample],
             }
         )
     return rows
@@ -478,7 +522,13 @@ def _demo():
     assert missingness[0]["missingPct"] == round(1 / 5, 4)
 
     outliers = compute_outliers(df, ["a"])
-    assert outliers[0]["outlierCount"] == 1
+    o = outliers[0]
+    assert o["outlierCount"] == 1
+    assert o["min"] == 1 and o["max"] == 100
+    assert o["q1"] == 1.75 and o["q3"] == 28
+    # 100 is the outlier, so the whisker high is the most extreme non-outlier (4)
+    assert o["whiskerHigh"] == 4, o
+    assert o["outlierSample"] == [100], o
 
     # blank-string "missing" (Telco's TotalCharges quirk): a mostly-clean
     # numeric column (>=95% parse rate) should get its blanks coerced to NaN

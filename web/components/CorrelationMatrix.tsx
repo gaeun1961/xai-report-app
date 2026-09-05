@@ -4,6 +4,7 @@ import { Fragment, useRef, useState } from "react";
 import type { ShapReport } from "@/lib/types";
 import { columnDesc } from "@/lib/columnGlossary";
 import PercentBarChart from "./PercentBarChart";
+import OutlierBoxPlot from "./OutlierBoxPlot";
 import styles from "./report.module.css";
 
 type Props = {
@@ -166,16 +167,10 @@ export default function CorrelationMatrix({
               <div className={styles.reportCol}>
                 <h3 className={styles.h2}>이상치</h3>
                 <p className={styles.sectionNote}>
-                  숫자형 컬럼에서 사분위범위(IQR) 기준을 벗어난 값의 비율이에요.
+                  숫자형 컬럼의 값 분포예요. 상자는 사분위범위(중간 50%), 선은
+                  중앙값, 점은 그 범위를 크게 벗어난 이상치예요.
                 </p>
-                <PercentBarChart
-                  items={outliers.map((o) => ({
-                    label: o.column,
-                    value: o.outlierPct,
-                  }))}
-                  domain={domain}
-                  valueFormat={pctFmt}
-                />
+                <OutlierBoxPlot items={outliers} domain={domain} />
               </div>
             )}
           </div>

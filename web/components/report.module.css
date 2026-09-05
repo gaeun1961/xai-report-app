@@ -475,6 +475,70 @@
   color: color-mix(in srgb, currentColor 60%, transparent);
 }
 
+/* outlier box plot — each row is scaled to its own column's min–max, so
+   there's no shared axis across rows (unlike the percent bar charts) */
+.boxPlotTrack {
+  position: relative;
+  height: 16px;
+}
+
+.boxPlotWhisker {
+  position: absolute;
+  top: 50%;
+  height: 1px;
+  background: var(--text-muted);
+  transform: translateY(-50%);
+}
+
+.boxPlotBox {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  background: color-mix(in srgb, var(--accent) 25%, transparent);
+  border: 1px solid var(--accent-strong);
+  border-radius: 2px;
+}
+
+.boxPlotMedian {
+  position: absolute;
+  top: 1px;
+  bottom: 1px;
+  width: 2px;
+  background: var(--accent-strong);
+  transform: translateX(-50%);
+}
+
+.boxPlotDot {
+  position: absolute;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--warn);
+  opacity: 0.75;
+  transform: translate(-50%, -50%);
+}
+
+.boxPlotLegendBox {
+  display: inline-block;
+  width: 12px;
+  height: 9px;
+  background: color-mix(in srgb, var(--accent) 25%, transparent);
+  border: 1px solid var(--accent-strong);
+  border-radius: 2px;
+}
+
+.boxPlotLegendMedian {
+  display: inline-block;
+  width: 2px;
+  height: 9px;
+  background: var(--accent-strong);
+}
+
+.boxPlotLegendDot {
+  background: var(--warn);
+}
+
 /* case selector */
 .selectorWrap {
   display: flex;

@@ -3436,22 +3436,75 @@
     {
       "column": "SeniorCitizen",
       "outlierCount": 1142,
-      "outlierPct": 0.1621
+      "outlierPct": 0.1621,
+      "min": 0.0,
+      "q1": 0.0,
+      "median": 0.0,
+      "q3": 0.0,
+      "max": 1.0,
+      "whiskerLow": 0.0,
+      "whiskerHigh": 0.0,
+      "outlierSample": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
     },
     {
       "column": "tenure",
       "outlierCount": 0,
-      "outlierPct": 0.0
+      "outlierPct": 0.0,
+      "min": 0.0,
+      "q1": 9.0,
+      "median": 29.0,
+      "q3": 55.0,
+      "max": 72.0,
+      "whiskerLow": 0.0,
+      "whiskerHigh": 72.0,
+      "outlierSample": []
     },
     {
       "column": "MonthlyCharges",
       "outlierCount": 0,
-      "outlierPct": 0.0
+      "outlierPct": 0.0,
+      "min": 18.25,
+      "q1": 35.5,
+      "median": 70.35,
+      "q3": 89.85,
+      "max": 118.75,
+      "whiskerLow": 18.25,
+      "whiskerHigh": 118.75,
+      "outlierSample": []
     },
     {
       "column": "TotalCharges",
       "outlierCount": 0,
-      "outlierPct": 0.0
+      "outlierPct": 0.0,
+      "min": 18.8,
+      "q1": 401.45,
+      "median": 1397.475,
+      "q3": 3794.7375,
+      "max": 8684.8,
+      "whiskerLow": 18.8,
+      "whiskerHigh": 8684.8,
+      "outlierSample": []
     }
   ]
 }

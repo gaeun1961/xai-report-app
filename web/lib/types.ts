@@ -28,8 +28,22 @@ export type ShapReport = {
   // Per-feature-column missing-value count/share in the raw (pre-imputation)
   // data. Optional so old JSON still loads.
   missingness?: { column: string; missingCount: number; missingPct: number }[];
-  // Per-numeric-column IQR-outlier count/share. Optional so old JSON still loads.
-  outliers?: { column: string; outlierCount: number; outlierPct: number }[];
+  // Per-numeric-column IQR-outlier stats — five-number summary, whisker
+  // bounds, and a capped sample of the actual outlier values, so the
+  // frontend can draw a real box plot. Optional so old JSON still loads.
+  outliers?: {
+    column: string;
+    outlierCount: number;
+    outlierPct: number;
+    min: number;
+    q1: number;
+    median: number;
+    q3: number;
+    max: number;
+    whiskerLow: number;
+    whiskerHigh: number;
+    outlierSample: number[];
+  }[];
   featureImportance: { feature: string; importance: number }[];
   cases: {
     id: string;
