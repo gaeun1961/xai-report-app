@@ -39,6 +39,20 @@
   min-width: 0;
 }
 
+/* missingness / outliers side by side */
+.dataQualityGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 640px) {
+  .dataQualityGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 .h1 {
   font-size: 28px;
   font-weight: 700;

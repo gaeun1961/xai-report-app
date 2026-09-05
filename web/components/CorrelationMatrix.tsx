@@ -143,40 +143,42 @@ export default function CorrelationMatrix({
         <section className={styles.section}>
           <h2 className={styles.h2}>결측치·이상치</h2>
 
-          {!!missingness?.length && (
-            <div className={styles.reportCol}>
-              <h3 className={styles.h2}>결측치</h3>
-              <p className={styles.sectionNote}>
-                컬럼별로 값이 비어 있던 비율이에요. 모델은 숫자는 중간값, 범주는
-                &quot;결측&quot;이라는 값으로 채워서 학습했어요.
-              </p>
-              <PercentBarChart
-                items={missingness.map((m) => ({
-                  label: m.column,
-                  value: m.missingPct,
-                }))}
-                domain={domain}
-                valueFormat={pctFmt}
-              />
-            </div>
-          )}
+          <div className={styles.dataQualityGrid}>
+            {!!missingness?.length && (
+              <div className={styles.reportCol}>
+                <h3 className={styles.h2}>결측치</h3>
+                <p className={styles.sectionNote}>
+                  컬럼별로 값이 비어 있던 비율이에요. 모델은 숫자는 중간값, 범주는
+                  &quot;결측&quot;이라는 값으로 채워서 학습했어요.
+                </p>
+                <PercentBarChart
+                  items={missingness.map((m) => ({
+                    label: m.column,
+                    value: m.missingPct,
+                  }))}
+                  domain={domain}
+                  valueFormat={pctFmt}
+                />
+              </div>
+            )}
 
-          {!!outliers?.length && (
-            <div className={styles.reportCol}>
-              <h3 className={styles.h2}>이상치</h3>
-              <p className={styles.sectionNote}>
-                숫자형 컬럼에서 사분위범위(IQR) 기준을 벗어난 값의 비율이에요.
-              </p>
-              <PercentBarChart
-                items={outliers.map((o) => ({
-                  label: o.column,
-                  value: o.outlierPct,
-                }))}
-                domain={domain}
-                valueFormat={pctFmt}
-              />
-            </div>
-          )}
+            {!!outliers?.length && (
+              <div className={styles.reportCol}>
+                <h3 className={styles.h2}>이상치</h3>
+                <p className={styles.sectionNote}>
+                  숫자형 컬럼에서 사분위범위(IQR) 기준을 벗어난 값의 비율이에요.
+                </p>
+                <PercentBarChart
+                  items={outliers.map((o) => ({
+                    label: o.column,
+                    value: o.outlierPct,
+                  }))}
+                  domain={domain}
+                  valueFormat={pctFmt}
+                />
+              </div>
+            )}
+          </div>
         </section>
       )}
     </>
