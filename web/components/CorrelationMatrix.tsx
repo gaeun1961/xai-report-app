@@ -158,18 +158,26 @@ export default function CorrelationMatrix({
           {!!missingness?.length && (
             <div className={styles.reportCol}>
               <h3 className={styles.h2}>결측치</h3>
-              <p className={styles.sectionNote}>
-                컬럼별로 값이 비어 있던 비율이에요. 모델은 숫자는 중간값, 범주는
-                &quot;결측&quot;이라는 값으로 채워서 학습했어요.
-              </p>
-              <PercentBarChart
-                items={missingness.map((m) => ({
-                  label: m.column,
-                  value: m.missingPct,
-                }))}
-                domain={domain}
-                valueFormat={pctFmt}
-              />
+              {missingness.every((m) => m.missingCount === 0) ? (
+                <p className={styles.sectionNote}>
+                  이 데이터셋엔 결측치가 없어요 ✓
+                </p>
+              ) : (
+                <>
+                  <p className={styles.sectionNote}>
+                    컬럼별로 값이 비어 있던 비율이에요. 모델은 숫자는 중간값,
+                    범주는 &quot;결측&quot;이라는 값으로 채워서 학습했어요.
+                  </p>
+                  <PercentBarChart
+                    items={missingness.map((m) => ({
+                      label: m.column,
+                      value: m.missingPct,
+                    }))}
+                    domain={domain}
+                    valueFormat={pctFmt}
+                  />
+                </>
+              )}
             </div>
           )}
         </section>

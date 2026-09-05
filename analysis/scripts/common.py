@@ -225,27 +225,20 @@ def compute_outliers(raw_df: pd.DataFrame, numeric_cols) -> list:
     values) so the frontend can draw an actual box plot instead of just a
     count; outlierSample caps how many raw outlier values it ships (a column
     that's mostly outliers — e.g. a near-constant binary column — shouldn't
-    balloon the JSON)."""
+    balloon the JSON).
+
+    Columns with at most 2 distinct values (a 0/1 flag, or nothing valid at
+    all) are skipped entirely: a box plot has nothing meaningful to show for
+    them — depending on the split it either fills the whole box (both
+    quartiles land on the same two values) or collapses to a point with the
+    minority class flagged as a bogus "outlier". Neither is a real
+    data-quality signal, so rather than show a technically-correct-but-
+    misleading chart, we just don't report on those columns here."""
     n = len(raw_df)
     rows = []
     for col in numeric_cols:
         series = pd.to_numeric(raw_df[col], errors="coerce").dropna()
-        if len(series) == 0:
-            rows.append(
-                {
-                    "column": col,
-                    "outlierCount": 0,
-                    "outlierPct": 0.0,
-                    "min": 0.0,
-                    "q1": 0.0,
-                    "median": 0.0,
-                    "q3": 0.0,
-                    "max": 0.0,
-                    "whiskerLow": 0.0,
-                    "whiskerHigh": 0.0,
-                    "outlierSample": [],
-                }
-            )
+        if series.nunique() <= 2:
             continue
         q1, med, q3 = series.quantile([0.25, 0.5, 0.75])
         iqr = q3 - q1
@@ -529,6 +522,11 @@ def _demo():
     # 100 is the outlier, so the whisker high is the most extreme non-outlier (4)
     assert o["whiskerHigh"] == 4, o
     assert o["outlierSample"] == [100], o
+
+    # binary numeric columns (e.g. a 0/1 flag) are skipped entirely — a box
+    # plot can't show anything meaningful for only 2 distinct values
+    df_binary = pd.DataFrame({"flag": [0, 0, 0, 1, 1]})
+    assert compute_outliers(df_binary, ["flag"]) == []
 
     # blank-string "missing" (Telco's TotalCharges quirk): a mostly-clean
     # numeric column (>=95% parse rate) should get its blanks coerced to NaN
