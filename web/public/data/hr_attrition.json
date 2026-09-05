@@ -5803,5 +5803,8 @@
         16.0
       ]
     }
+  ],
+  "outliersExcludedColumns": [
+    "PerformanceRating"
   ]
 }

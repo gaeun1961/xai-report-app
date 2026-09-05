@@ -32,7 +32,7 @@ def main():
     X, y, display_df, target_labels = load_and_preprocess(CSV_PATH, TARGET_COLUMN)
     raw_df = pd.read_csv(CSV_PATH)
     missingness = compute_missingness(raw_df, list(X.columns))
-    outliers = compute_outliers(
+    outliers, outliers_excluded = compute_outliers(
         raw_df, display_df.select_dtypes(include="number").columns.tolist()
     )
     model, accuracy, eval_stats = train_model(
@@ -63,6 +63,7 @@ def main():
         base_value=base_value,
         missingness=missingness,
         outliers=outliers,
+        outliers_excluded_columns=outliers_excluded,
         output_path=OUTPUT_PATH,
     )
     print(f"titanic accuracy={accuracy:.4f} -> {OUTPUT_PATH}")

@@ -3472,5 +3472,8 @@
       "whiskerHigh": 8684.8,
       "outlierSample": []
     }
+  ],
+  "outliersExcludedColumns": [
+    "SeniorCitizen"
   ]
 }
