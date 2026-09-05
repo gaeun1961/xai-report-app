@@ -1,9 +1,12 @@
 from pathlib import Path
 
+import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 
 from common import (
     RANDOM_STATE,
+    compute_missingness,
+    compute_outliers,
     compute_shap,
     export_report_json,
     load_and_preprocess,
@@ -22,6 +25,11 @@ TARGET_COLUMN = "Churn"
 
 def main():
     X, y, display_df, target_labels = load_and_preprocess(CSV_PATH, TARGET_COLUMN)
+    raw_df = pd.read_csv(CSV_PATH)
+    missingness = compute_missingness(raw_df, list(X.columns))
+    outliers = compute_outliers(
+        raw_df, display_df.select_dtypes(include="number").columns.tolist()
+    )
     # Same RF settings as Titanic/HR: bounding tree depth also softens the
     # k/300 probability quantization that pushed churn's predictions to the
     # 0.0 / 1.0 extremes.
@@ -51,6 +59,8 @@ def main():
         model_accuracy=accuracy,
         eval_stats=eval_stats,
         base_value=base_value,
+        missingness=missingness,
+        outliers=outliers,
         output_path=OUTPUT_PATH,
     )
     print(f"telco_churn accuracy={accuracy:.4f} -> {OUTPUT_PATH}")

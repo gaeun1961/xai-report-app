@@ -1528,5 +1528,79 @@
     "baselineAccuracy": 0.7387318563789151,
     "minorityRecall": 0.4590643274853801,
     "minorityLabel": "생존"
-  }
+  },
+  "missingness": [
+    {
+      "column": "Age",
+      "missingCount": 0,
+      "missingPct": 0.0
+    },
+    {
+      "column": "Fare",
+      "missingCount": 0,
+      "missingPct": 0.0
+    },
+    {
+      "column": "Sex",
+      "missingCount": 0,
+      "missingPct": 0.0
+    },
+    {
+      "column": "sibsp",
+      "missingCount": 0,
+      "missingPct": 0.0
+    },
+    {
+      "column": "Parch",
+      "missingCount": 0,
+      "missingPct": 0.0
+    },
+    {
+      "column": "Pclass",
+      "missingCount": 0,
+      "missingPct": 0.0
+    },
+    {
+      "column": "Embarked",
+      "missingCount": 2,
+      "missingPct": 0.0015
+    }
+  ],
+  "outliers": [
+    {
+      "column": "Age",
+      "outlierCount": 101,
+      "outlierPct": 0.0772
+    },
+    {
+      "column": "Fare",
+      "outlierCount": 171,
+      "outlierPct": 0.1306
+    },
+    {
+      "column": "Sex",
+      "outlierCount": 0,
+      "outlierPct": 0.0
+    },
+    {
+      "column": "sibsp",
+      "outlierCount": 57,
+      "outlierPct": 0.0435
+    },
+    {
+      "column": "Parch",
+      "outlierCount": 307,
+      "outlierPct": 0.2345
+    },
+    {
+      "column": "Pclass",
+      "outlierCount": 0,
+      "outlierPct": 0.0
+    },
+    {
+      "column": "Embarked",
+      "outlierCount": 0,
+      "outlierPct": 0.0
+    }
+  ]
 }

@@ -147,13 +147,6 @@
   gap: 12px;
 }
 
-/* sub-tabs within "모델 설명" (요약 / 케이스 탐색) — reuses the filter-chip
-   look so it visually reads as a level below the page's own .tabs/.tab */
-.subTabRow {
-  display: flex;
-  gap: 6px;
-}
-
 /* correlation heatmap */
 .corrWrap {
   overflow-x: auto;
@@ -207,29 +200,45 @@
   min-height: 34px;
   border-radius: 3px;
   font-variant-numeric: tabular-nums;
+  border: 1px solid transparent;
 }
 
-.corrNotes {
-  list-style: none;
+/* strong-relation emphasis (|r| >= 0.6) — bold border instead of a repeated
+   sentence per pair; sign-colored to match the heatmap's own green/amber */
+.corrCellStrongPos {
+  border-color: var(--accent-strong);
+  font-weight: 700;
+}
+
+.corrCellStrongNeg {
+  border-color: #b45309;
+  font-weight: 700;
+}
+
+.corrCellFocused {
+  outline: 2px solid var(--accent-strong);
+  outline-offset: 1px;
+}
+
+.corrChipRow {
   display: flex;
-  flex-direction: column;
-  gap: 5px;
-  padding: 12px 16px;
-  border-radius: 8px;
-  border-left: 3px solid var(--accent);
-  background: var(--surface);
-  font-size: 13px;
-  line-height: 1.6;
-  color: var(--text-muted);
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
-.corrNotes b {
-  color: var(--foreground);
+.corrChip {
+  padding: 4px 10px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--accent-strong);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
 }
 
-.corrNotesEmpty {
-  font-size: 13px;
-  color: var(--text-muted);
+.corrChip:hover {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
 }
 
 .accuracy {
@@ -884,7 +893,7 @@
 .scatterDot {
   cursor: pointer;
   stroke: var(--background);
-  stroke-width: 1.5;
+  stroke-width: 1;
   opacity: 0.85;
 }
 

@@ -25,6 +25,11 @@ export type ShapReport = {
   // Pairwise correlations between the numeric columns (model-independent —
   // just how the raw data moves together). Optional so old JSON still loads.
   correlations?: { columns: string[]; matrix: number[][] };
+  // Per-feature-column missing-value count/share in the raw (pre-imputation)
+  // data. Optional so old JSON still loads.
+  missingness?: { column: string; missingCount: number; missingPct: number }[];
+  // Per-numeric-column IQR-outlier count/share. Optional so old JSON still loads.
+  outliers?: { column: string; outlierCount: number; outlierPct: number }[];
   featureImportance: { feature: string; importance: number }[];
   cases: {
     id: string;

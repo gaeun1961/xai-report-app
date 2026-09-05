@@ -3334,5 +3334,124 @@
     "baselineAccuracy": 0.7346301292063041,
     "minorityRecall": 0.5034777956126271,
     "minorityLabel": "이탈"
-  }
+  },
+  "missingness": [
+    {
+      "column": "gender",
+      "missingCount": 0,
+      "missingPct": 0.0
+    },
+    {
+      "column": "SeniorCitizen",
+      "missingCount": 0,
+      "missingPct": 0.0
+    },
+    {
+      "column": "Partner",
+      "missingCount": 0,
+      "missingPct": 0.0
+    },
+    {
+      "column": "Dependents",
+      "missingCount": 0,
+      "missingPct": 0.0
+    },
+    {
+      "column": "tenure",
+      "missingCount": 0,
+      "missingPct": 0.0
+    },
+    {
+      "column": "PhoneService",
+      "missingCount": 0,
+      "missingPct": 0.0
+    },
+    {
+      "column": "MultipleLines",
+      "missingCount": 0,
+      "missingPct": 0.0
+    },
+    {
+      "column": "InternetService",
+      "missingCount": 0,
+      "missingPct": 0.0
+    },
+    {
+      "column": "OnlineSecurity",
+      "missingCount": 0,
+      "missingPct": 0.0
+    },
+    {
+      "column": "OnlineBackup",
+      "missingCount": 0,
+      "missingPct": 0.0
+    },
+    {
+      "column": "DeviceProtection",
+      "missingCount": 0,
+      "missingPct": 0.0
+    },
+    {
+      "column": "TechSupport",
+      "missingCount": 0,
+      "missingPct": 0.0
+    },
+    {
+      "column": "StreamingTV",
+      "missingCount": 0,
+      "missingPct": 0.0
+    },
+    {
+      "column": "StreamingMovies",
+      "missingCount": 0,
+      "missingPct": 0.0
+    },
+    {
+      "column": "Contract",
+      "missingCount": 0,
+      "missingPct": 0.0
+    },
+    {
+      "column": "PaperlessBilling",
+      "missingCount": 0,
+      "missingPct": 0.0
+    },
+    {
+      "column": "PaymentMethod",
+      "missingCount": 0,
+      "missingPct": 0.0
+    },
+    {
+      "column": "MonthlyCharges",
+      "missingCount": 0,
+      "missingPct": 0.0
+    },
+    {
+      "column": "TotalCharges",
+      "missingCount": 11,
+      "missingPct": 0.0016
+    }
+  ],
+  "outliers": [
+    {
+      "column": "SeniorCitizen",
+      "outlierCount": 1142,
+      "outlierPct": 0.1621
+    },
+    {
+      "column": "tenure",
+      "outlierCount": 0,
+      "outlierPct": 0.0
+    },
+    {
+      "column": "MonthlyCharges",
+      "outlierCount": 0,
+      "outlierPct": 0.0
+    },
+    {
+      "column": "TotalCharges",
+      "outlierCount": 0,
+      "outlierPct": 0.0
+    }
+  ]
 }
