@@ -144,36 +144,34 @@ export default function CorrelationMatrix({
         <section className={styles.section}>
           <h2 className={styles.h2}>결측치·이상치</h2>
 
-          <div className={styles.dataQualityGrid}>
-            {!!missingness?.length && (
-              <div className={styles.reportCol}>
-                <h3 className={styles.h2}>결측치</h3>
-                <p className={styles.sectionNote}>
-                  컬럼별로 값이 비어 있던 비율이에요. 모델은 숫자는 중간값, 범주는
-                  &quot;결측&quot;이라는 값으로 채워서 학습했어요.
-                </p>
-                <PercentBarChart
-                  items={missingness.map((m) => ({
-                    label: m.column,
-                    value: m.missingPct,
-                  }))}
-                  domain={domain}
-                  valueFormat={pctFmt}
-                />
-              </div>
-            )}
+          {!!outliers?.length && (
+            <div className={styles.reportCol}>
+              <h3 className={styles.h2}>이상치</h3>
+              <p className={styles.sectionNote}>
+                숫자형 컬럼의 값 분포예요. 상자는 사분위범위(중간 50%), 선은
+                중앙값, 점은 그 범위를 크게 벗어난 이상치예요.
+              </p>
+              <OutlierBoxPlot items={outliers} domain={domain} />
+            </div>
+          )}
 
-            {!!outliers?.length && (
-              <div className={styles.reportCol}>
-                <h3 className={styles.h2}>이상치</h3>
-                <p className={styles.sectionNote}>
-                  숫자형 컬럼의 값 분포예요. 상자는 사분위범위(중간 50%), 선은
-                  중앙값, 점은 그 범위를 크게 벗어난 이상치예요.
-                </p>
-                <OutlierBoxPlot items={outliers} domain={domain} />
-              </div>
-            )}
-          </div>
+          {!!missingness?.length && (
+            <div className={styles.reportCol}>
+              <h3 className={styles.h2}>결측치</h3>
+              <p className={styles.sectionNote}>
+                컬럼별로 값이 비어 있던 비율이에요. 모델은 숫자는 중간값, 범주는
+                &quot;결측&quot;이라는 값으로 채워서 학습했어요.
+              </p>
+              <PercentBarChart
+                items={missingness.map((m) => ({
+                  label: m.column,
+                  value: m.missingPct,
+                }))}
+                domain={domain}
+                valueFormat={pctFmt}
+              />
+            </div>
+          )}
         </section>
       )}
     </>
