@@ -10,7 +10,7 @@ import styles from "@/components/report.module.css";
 
 type Step = "upload" | "target" | "analyzing" | "done";
 
-export default function UploadPage() {
+export default function UploadFlow() {
   const [step, setStep] = useState<Step>("upload");
   const [file, setFile] = useState<File | null>(null);
   const [columns, setColumns] = useState<ColumnInfo[]>([]);
@@ -56,17 +56,7 @@ export default function UploadPage() {
   }
 
   return (
-    <main className={styles.report}>
-      <h1 className={styles.h1}>CSV 업로드로 내 데이터 분석하기</h1>
-      <p className={styles.guide}>
-        직접 가진 CSV 파일을 올리면, 예시 리포트와 같은 방식으로 실시간으로
-        모델을 학습하고 분석 결과를 보여드려요.
-        <br />
-        이진분류(예측하려는 결과가 두 가지인) 데이터만 지원하고, 파일은 5MB·5만
-        행 이하여야 해요. 값 종류가 너무 많은 컬럼·긴 텍스트·날짜 컬럼은 자동으로
-        제외하고 분석해요.
-      </p>
-
+    <>
       {error && <p className={styles.errorBox}>{error}</p>}
 
       {step !== "done" && (
@@ -74,8 +64,8 @@ export default function UploadPage() {
       )}
 
       {(step === "target" || step === "analyzing") && (
-        <section className={styles.section}>
-          <h2 className={styles.h2}>타겟 컬럼 선택</h2>
+        <div className={styles.section}>
+          <h3 className={styles.h2}>타겟 컬럼 선택</h3>
           <p className={styles.sectionNote}>
             예측하려는 결과가 담긴 컬럼을 선택하세요. 고유값이 2개인 컬럼을
             추천해요.
@@ -98,7 +88,7 @@ export default function UploadPage() {
               서버를 깨우는 중이에요. 처음 요청은 최대 1분 정도 걸릴 수 있어요.
             </p>
           )}
-        </section>
+        </div>
       )}
 
       {step === "done" && report && (
@@ -109,6 +99,6 @@ export default function UploadPage() {
           <ReportView report={report} domain={report.domain} />
         </>
       )}
-    </main>
+    </>
   );
 }

@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { loadReport } from "@/lib/loadReport";
 import { DOMAINS } from "@/lib/domains";
 import DomainCard from "@/components/DomainCard";
+import UploadFlow from "@/components/UploadFlow";
 import styles from "@/components/report.module.css";
 
 export default function Home() {
@@ -12,6 +12,20 @@ export default function Home() {
         학습된 분류 모델이 왜 그렇게 예측했는지, SHAP 기여도를 자연어 리포트로
         보여줍니다.
       </p>
+
+      <section className={styles.section}>
+        <h2 className={`${styles.h2} ${styles.h2Accent}`}>
+          내 CSV로 바로 분석하기
+        </h2>
+        <p className={styles.sectionNote}>
+          이진분류(예측하려는 결과가 두 가지인) 데이터의 CSV 파일을 올리면,
+          실시간으로 모델을 학습하고 분석 결과를 보여드려요.
+          <br />
+          파일은 5MB·5만 행 이하여야 해요. 값 종류가 너무 많은 컬럼·긴 텍스트·날짜
+          컬럼은 자동으로 제외하고 분석해요.
+        </p>
+        <UploadFlow />
+      </section>
 
       <section className={styles.about}>
         <div className={styles.aboutBlock}>
@@ -36,7 +50,7 @@ export default function Home() {
         </div>
       </section>
 
-      <h2 className={`${styles.h2} ${styles.h2Accent}`}>예시 리포트</h2>
+      <h2 className={styles.h2}>또는 예시로 체험하기</h2>
       <div className={styles.cardGrid}>
         {DOMAINS.map((d) => {
           const report = loadReport(d.slug);
@@ -52,10 +66,6 @@ export default function Home() {
           );
         })}
       </div>
-
-      <p className={styles.note}>
-        <Link href="/upload">CSV 업로드로 내 데이터 분석하기 →</Link>
-      </p>
     </main>
   );
 }
