@@ -12,6 +12,10 @@ type Props = {
   collapsedCount?: number;
 };
 
+// fixed 0–1 domain (not each report's own max) so a bar's length means the
+// same thing across features and across domains, not just "biggest here"
+const AXIS_TICKS = [0, 0.25, 0.5, 0.75, 1];
+
 export default function FeatureImportanceChart({
   items,
   domain,
@@ -20,12 +24,31 @@ export default function FeatureImportanceChart({
   const [expanded, setExpanded] = useState(false);
 
   const sorted = [...items].sort((a, b) => b.importance - a.importance);
-  const max = sorted[0]?.importance ?? 1;
   const hidden = sorted.length - collapsedCount;
   const visible = expanded ? sorted : sorted.slice(0, collapsedCount);
 
   return (
     <>
+      <div className={styles.chartAxisRow}>
+        <span />
+        <div className={styles.chartAxisTrack}>
+          {AXIS_TICKS.map((t) => (
+            <span
+              key={t}
+              className={styles.chartAxisTick}
+              style={{
+                left: `${t * 100}%`,
+                transform:
+                  t === 0 ? "none" : t === 1 ? "translateX(-100%)" : "translateX(-50%)",
+              }}
+            >
+              {Math.round(t * 100)}%
+            </span>
+          ))}
+        </div>
+        <span />
+      </div>
+
       <ul className={styles.chart}>
         {visible.map(({ feature, importance }) => (
           <li key={feature} className={styles.chartRow}>
@@ -35,7 +58,7 @@ export default function FeatureImportanceChart({
             <span className={styles.chartTrack}>
               <span
                 className={styles.chartBar}
-                style={{ width: `${(importance / max) * 100}%` }}
+                style={{ width: `${Math.min(importance, 1) * 100}%` }}
               />
             </span>
             <span className={styles.chartValue}>{importance.toFixed(3)}</span>

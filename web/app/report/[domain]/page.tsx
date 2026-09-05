@@ -119,7 +119,10 @@ type BodyProps = {
   onSelect: (id: string) => void;
 };
 
+type SubTab = "summary" | "cases";
+
 function ModelBody({ report, domain, selectedId, onSelect }: BodyProps) {
+  const [subTab, setSubTab] = useState<SubTab>("summary");
   const selectedIndex = Math.max(
     0,
     report.cases.findIndex((c) => c.id === selectedId),
@@ -140,7 +143,28 @@ function ModelBody({ report, domain, selectedId, onSelect }: BodyProps) {
         됩니다.
       </p>
 
-      <div className={styles.reportGrid}>
+      <div className={styles.subTabRow}>
+        <button
+          type="button"
+          onClick={() => setSubTab("summary")}
+          className={`${styles.filterBtn} ${
+            subTab === "summary" ? styles.filterBtnActive : ""
+          }`}
+        >
+          요약
+        </button>
+        <button
+          type="button"
+          onClick={() => setSubTab("cases")}
+          className={`${styles.filterBtn} ${
+            subTab === "cases" ? styles.filterBtnActive : ""
+          }`}
+        >
+          케이스 탐색
+        </button>
+      </div>
+
+      {subTab === "summary" ? (
         <div className={styles.reportCol}>
           <section className={styles.section}>
             <h2 className={styles.h2}>전체 정확도</h2>
@@ -195,7 +219,7 @@ function ModelBody({ report, domain, selectedId, onSelect }: BodyProps) {
             />
           </section>
         </div>
-
+      ) : (
         <div className={styles.reportCol}>
           <section className={styles.section}>
             <h2 className={styles.h2}>케이스별 리포트</h2>
@@ -206,6 +230,9 @@ function ModelBody({ report, domain, selectedId, onSelect }: BodyProps) {
               positiveLabel={positiveLabel}
               negativeLabel={negativeLabel}
             />
+          </section>
+
+          <section className={styles.section}>
             <CaseReportCard
               case={selected}
               domain={domain}
@@ -218,7 +245,7 @@ function ModelBody({ report, domain, selectedId, onSelect }: BodyProps) {
             />
           </section>
         </div>
-      </div>
+      )}
     </>
   );
 }
