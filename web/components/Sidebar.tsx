@@ -29,6 +29,13 @@ export default function Sidebar() {
             </Link>
           );
         })}
+        <Link
+          href="/upload"
+          className={`${styles.item} ${pathname === "/upload" ? styles.itemActive : ""}`}
+          aria-current={pathname === "/upload" ? "page" : undefined}
+        >
+          CSV 업로드
+        </Link>
       </nav>
     </aside>
   );

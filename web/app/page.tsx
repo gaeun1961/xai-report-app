@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { loadReport } from "@/lib/loadReport";
 import { DOMAINS } from "@/lib/domains";
 import DomainCard from "@/components/DomainCard";
@@ -53,7 +54,7 @@ export default function Home() {
       </div>
 
       <p className={styles.note}>
-        CSV 업로드로 내 데이터 분석하기 — 다음 주 업데이트 예정
+        <Link href="/upload">CSV 업로드로 내 데이터 분석하기 →</Link>
       </p>
     </main>
   );
