@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { ShapReport } from "@/lib/types";
+import CaseScatterPlot from "./CaseScatterPlot";
 import styles from "./report.module.css";
 
 type Props = {
@@ -114,24 +115,14 @@ export default function CaseSelector({
 
       <div className={styles.selectorCount}>{shown.length}개 표시</div>
 
-      <div className={styles.selector}>
-        {shown.length === 0 ? (
-          <span className={styles.selectorEmpty}>일치하는 케이스 없음</span>
-        ) : (
-          shown.map((c) => (
-            <button
-              key={c.id}
-              type="button"
-              onClick={() => onSelect(c.id)}
-              className={`${styles.selectorBtn} ${
-                c.id === selectedId ? styles.selectorBtnActive : ""
-              }`}
-            >
-              {noById.get(c.id)}
-            </button>
-          ))
-        )}
-      </div>
+      <CaseScatterPlot
+        cases={shown}
+        noById={noById}
+        selectedId={selectedId}
+        onSelect={onSelect}
+        positiveLabel={posText}
+        negativeLabel={negText}
+      />
     </div>
   );
 }

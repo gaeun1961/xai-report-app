@@ -187,6 +187,95 @@ def _judge_model_quality(accuracy, baseline_accuracy, minority_recall, minority_
     }
 
 
+def compute_missingness(raw_df: pd.DataFrame, feature_cols) -> list:
+    """Per-feature missing count/share, computed from the raw (pre-imputation)
+    data so it reflects what load_and_preprocess actually had to fill in —
+    not the already-imputed X/display_df it returns. Runs object columns
+    through the same numeric-like-string coercion load_and_preprocess uses,
+    so e.g. Telco's blank-string TotalCharges rows count as missing here too
+    (isna() alone misses them — they're "" , not NaN)."""
+    n = len(raw_df)
+    rows = []
+    for col in feature_cols:
+        series = raw_df[col]
+        if series.dtype == object:
+            series = _coerce_numeric_like_strings(series)
+        n_missing = int(series.isna().sum())
+        rows.append(
+            {
+                "column": col,
+                "missingCount": n_missing,
+                "missingPct": round(n_missing / n, 4) if n else 0.0,
+            }
+        )
+    return rows
+
+
+IQR_MULTIPLIER = 1.5
+
+
+OUTLIER_SAMPLE_CAP = 20
+
+
+def compute_outliers(raw_df: pd.DataFrame, numeric_cols) -> list:
+    """Per-numeric-feature outlier stats via the classic IQR fence (outside
+    Q1 - 1.5*IQR .. Q3 + 1.5*IQR). A light, well-known heuristic — no model
+    involved, just a description of the raw column's own spread. Returns the
+    five-number summary plus whisker bounds (the most extreme non-outlier
+    values) so the frontend can draw an actual box plot instead of just a
+    count; outlierSample caps how many raw outlier values it ships (a column
+    that's mostly outliers — e.g. a near-constant binary column — shouldn't
+    balloon the JSON).
+
+    Columns with at most 2 distinct values (a 0/1 flag, or nothing valid at
+    all) are skipped entirely: a box plot has nothing meaningful to show for
+    them — depending on the split it either fills the whole box (both
+    quartiles land on the same two values) or collapses to a point with the
+    minority class flagged as a bogus "outlier". Neither is a real
+    data-quality signal, so rather than show a technically-correct-but-
+    misleading chart, we just don't report on those columns here."""
+    n = len(raw_df)
+    rows = []
+    for col in numeric_cols:
+        series = pd.to_numeric(raw_df[col], errors="coerce").dropna()
+        if series.nunique() <= 2:
+            continue
+        q1, med, q3 = series.quantile([0.25, 0.5, 0.75])
+        iqr = q3 - q1
+        lo, hi = q1 - IQR_MULTIPLIER * iqr, q3 + IQR_MULTIPLIER * iqr
+        is_outlier = (series < lo) | (series > hi)
+        inliers = series[~is_outlier]
+        outlier_vals = series[is_outlier]
+        n_out = int(is_outlier.sum())
+        sample = (
+            outlier_vals.sample(
+                n=min(OUTLIER_SAMPLE_CAP, n_out), random_state=RANDOM_STATE
+            ).tolist()
+            if n_out
+            else []
+        )
+        rows.append(
+            {
+                "column": col,
+                "outlierCount": n_out,
+                "outlierPct": round(n_out / n, 4) if n else 0.0,
+                "min": round(float(series.min()), 4),
+                "q1": round(float(q1), 4),
+                "median": round(float(med), 4),
+                "q3": round(float(q3), 4),
+                "max": round(float(series.max()), 4),
+                "whiskerLow": round(
+                    float(inliers.min()) if len(inliers) else float(series.min()), 4
+                ),
+                "whiskerHigh": round(
+                    float(inliers.max()) if len(inliers) else float(series.max()), 4
+                ),
+                "outlierSample": [round(float(v), 4) for v in sample],
+            }
+        )
+    return rows
+
+
 SHAP_MAX_ROWS = 2000
 
 
@@ -284,6 +373,8 @@ def export_report_json(
     base_value: float = None,
     n_cases: int = 30,
     corr_max_cols: int = 12,
+    missingness: list = None,
+    outliers: list = None,
 ):
     """Assemble a ShapReport-shaped dict (see web/lib/types.ts) and write it
     to output_path as JSON.
@@ -385,6 +476,12 @@ def export_report_json(
             minority_label,
         )
 
+    if missingness is not None:
+        report["missingness"] = missingness
+
+    if outliers is not None:
+        report["outliers"] = outliers
+
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, "w", encoding="utf-8") as f:
@@ -403,3 +500,42 @@ def _json_default(value):
     if pd.isna(value):
         return None
     return str(value)
+
+
+def _demo():
+    df = pd.DataFrame(
+        {
+            "a": [1, 2, None, 4, 100],  # 1 missing, 100 is an IQR outlier
+            "b": ["x", "y", "x", None, "x"],  # 1 missing, not numeric
+        }
+    )
+    missingness = compute_missingness(df, ["a", "b"])
+    counts = {r["column"]: r["missingCount"] for r in missingness}
+    assert counts == {"a": 1, "b": 1}, counts
+    assert missingness[0]["missingPct"] == round(1 / 5, 4)
+
+    outliers = compute_outliers(df, ["a"])
+    o = outliers[0]
+    assert o["outlierCount"] == 1
+    assert o["min"] == 1 and o["max"] == 100
+    assert o["q1"] == 1.75 and o["q3"] == 28
+    # 100 is the outlier, so the whisker high is the most extreme non-outlier (4)
+    assert o["whiskerHigh"] == 4, o
+    assert o["outlierSample"] == [100], o
+
+    # binary numeric columns (e.g. a 0/1 flag) are skipped entirely — a box
+    # plot can't show anything meaningful for only 2 distinct values
+    df_binary = pd.DataFrame({"flag": [0, 0, 0, 1, 1]})
+    assert compute_outliers(df_binary, ["flag"]) == []
+
+    # blank-string "missing" (Telco's TotalCharges quirk): a mostly-clean
+    # numeric column (>=95% parse rate) should get its blanks coerced to NaN
+    # and counted, not silently ignored by isna() on the raw object dtype.
+    df2 = pd.DataFrame({"c": [str(i) + ".5" for i in range(20)] + [""]})
+    counts2 = {r["column"]: r["missingCount"] for r in compute_missingness(df2, ["c"])}
+    assert counts2 == {"c": 1}, counts2
+    print("common._demo: ok")
+
+
+if __name__ == "__main__":
+    _demo()

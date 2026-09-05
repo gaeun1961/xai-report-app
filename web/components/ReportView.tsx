@@ -8,7 +8,7 @@ import CaseReportCard from "./CaseReportCard";
 import CorrelationMatrix from "./CorrelationMatrix";
 import styles from "./report.module.css";
 
-type Tab = "model" | "data";
+type Tab = "summary" | "cases" | "data";
 
 // 라고 / 이라고 by whether the word's last Hangul char has a final consonant
 function irago(w: string): string {
@@ -64,7 +64,7 @@ type Props = {
 
 export default function ReportView({ report, domain }: Props) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [tab, setTab] = useState<Tab>("model");
+  const [tab, setTab] = useState<Tab>("summary");
   const hasCorr = !!report.correlations;
 
   return (
@@ -72,10 +72,17 @@ export default function ReportView({ report, domain }: Props) {
       <div className={styles.tabs}>
         <button
           type="button"
-          onClick={() => setTab("model")}
-          className={`${styles.tab} ${tab === "model" ? styles.tabActive : ""}`}
+          onClick={() => setTab("summary")}
+          className={`${styles.tab} ${tab === "summary" ? styles.tabActive : ""}`}
         >
-          모델 설명
+          요약
+        </button>
+        <button
+          type="button"
+          onClick={() => setTab("cases")}
+          className={`${styles.tab} ${tab === "cases" ? styles.tabActive : ""}`}
+        >
+          케이스 탐색
         </button>
         <button
           type="button"
@@ -90,28 +97,100 @@ export default function ReportView({ report, domain }: Props) {
         </button>
       </div>
 
-      {tab === "data" && report.correlations ? (
-        <CorrelationMatrix data={report.correlations} domain={domain} />
-      ) : (
-        <ModelBody
+      {tab === "summary" && <SummaryBody report={report} domain={domain} />}
+      {tab === "cases" && (
+        <CasesBody
           report={report}
           domain={domain}
           selectedId={selectedId}
           onSelect={setSelectedId}
         />
       )}
+      {tab === "data" && report.correlations && (
+        <CorrelationMatrix
+          data={report.correlations}
+          domain={domain}
+          missingness={report.missingness}
+          outliers={report.outliers}
+        />
+      )}
     </>
   );
 }
 
-type BodyProps = {
+function SummaryBody({ report, domain }: { report: ShapReport; domain: string }) {
+  const { positiveLabel, negativeLabel } = report;
+
+  return (
+    <div className={styles.reportCol}>
+      <p className={styles.guide}>
+        이 리포트는 AI가 왜 이렇게 예측했는지 보여줍니다.
+        <br />각 요인이 예측을 어느 쪽으로, 얼마나 강하게 밀었는지 문장으로 풀어서
+        설명해요.
+        <br />원래 숫자가 궁금하면 케이스 탐색 탭에서 “숫자로 보기”를 누르면
+        됩니다.
+      </p>
+
+      <section className={styles.section}>
+        <h2 className={styles.h2}>전체 정확도</h2>
+        <div className={styles.accuracyRow}>
+          <p className={styles.accuracy}>
+            {(report.modelAccuracy * 100).toFixed(1)}%
+          </p>
+          {report.modelQuality && (
+            <span
+              className={`${styles.qualityBadge} ${
+                {
+                  good: styles.qualityGood,
+                  fair: styles.qualityFair,
+                  weak: styles.qualityWeak,
+                }[report.modelQuality.verdict]
+              }`}
+            >
+              {
+                { good: "양호", fair: "참고", weak: "주의" }[
+                  report.modelQuality.verdict
+                ]
+              }
+            </span>
+          )}
+        </div>
+        {report.modelQuality && (
+          <div className={styles.qualityMessage}>
+            {explainAccuracy(
+              report.modelAccuracy,
+              report.modelQuality.baselineAccuracy,
+              report.modelQuality.verdict,
+              positiveLabel ?? "양성",
+              negativeLabel ?? "음성",
+              report.modelQuality.minorityRecall,
+              report.modelQuality.minorityLabel,
+            ).map((s, i) => (
+              <p key={i}>{s}</p>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section className={styles.section}>
+        <h2 className={styles.h2}>특성 중요도</h2>
+        <p className={styles.sectionNote}>
+          막대가 길수록 그 특성이 예측을 평균적으로 더 크게 움직였다는 뜻이에요.
+        </p>
+        <FeatureImportanceChart items={report.featureImportance} domain={domain} />
+      </section>
+    </div>
+  );
+}
+
+type CasesBodyProps = {
   report: ShapReport;
   domain: string;
   selectedId: string | null;
   onSelect: (id: string) => void;
 };
 
-function ModelBody({ report, domain, selectedId, onSelect }: BodyProps) {
+function CasesBody({ report, domain, selectedId, onSelect }: CasesBodyProps) {
   const selectedIndex = Math.max(
     0,
     report.cases.findIndex((c) => c.id === selectedId),
@@ -123,94 +202,29 @@ function ModelBody({ report, domain, selectedId, onSelect }: BodyProps) {
   const importanceOrder = report.featureImportance.map((f) => f.feature);
 
   return (
-    <>
-      <p className={styles.guide}>
-        이 리포트는 AI가 왜 이렇게 예측했는지 보여줍니다.
-        <br />각 요인이 예측을 어느 쪽으로, 얼마나 강하게 밀었는지 문장으로 풀어서
-        설명해요.
-        <br />원래 숫자가 궁금하면 케이스별 리포트에서 “숫자로 보기”를 누르면
-        됩니다.
-      </p>
+    <div className={styles.reportCol}>
+      <section className={styles.section}>
+        <CaseSelector
+          cases={report.cases}
+          selectedId={selected.id}
+          onSelect={onSelect}
+          positiveLabel={positiveLabel}
+          negativeLabel={negativeLabel}
+        />
+      </section>
 
-      <div className={styles.reportGrid}>
-        <div className={styles.reportCol}>
-          <section className={styles.section}>
-            <h2 className={styles.h2}>전체 정확도</h2>
-            <div className={styles.accuracyRow}>
-              <p className={styles.accuracy}>
-                {(report.modelAccuracy * 100).toFixed(1)}%
-              </p>
-              {report.modelQuality && (
-                <span
-                  className={`${styles.qualityBadge} ${
-                    {
-                      good: styles.qualityGood,
-                      fair: styles.qualityFair,
-                      weak: styles.qualityWeak,
-                    }[report.modelQuality.verdict]
-                  }`}
-                >
-                  {
-                    { good: "양호", fair: "참고", weak: "주의" }[
-                      report.modelQuality.verdict
-                    ]
-                  }
-                </span>
-              )}
-            </div>
-            {report.modelQuality && (
-              <div className={styles.qualityMessage}>
-                {explainAccuracy(
-                  report.modelAccuracy,
-                  report.modelQuality.baselineAccuracy,
-                  report.modelQuality.verdict,
-                  positiveLabel ?? "양성",
-                  negativeLabel ?? "음성",
-                  report.modelQuality.minorityRecall,
-                  report.modelQuality.minorityLabel,
-                ).map((s, i) => (
-                  <p key={i}>{s}</p>
-                ))}
-              </div>
-            )}
-          </section>
-
-          <section className={styles.section}>
-            <h2 className={styles.h2}>특성 중요도</h2>
-            <p className={styles.sectionNote}>
-              막대가 길수록 그 특성이 예측을 평균적으로 더 크게 움직였다는
-              뜻이에요.
-            </p>
-            <FeatureImportanceChart
-              items={report.featureImportance}
-              domain={domain}
-            />
-          </section>
-        </div>
-
-        <div className={styles.reportCol}>
-          <section className={styles.section}>
-            <h2 className={styles.h2}>케이스별 리포트</h2>
-            <CaseSelector
-              cases={report.cases}
-              selectedId={selected.id}
-              onSelect={onSelect}
-              positiveLabel={positiveLabel}
-              negativeLabel={negativeLabel}
-            />
-            <CaseReportCard
-              case={selected}
-              domain={domain}
-              positiveLabel={positiveLabel}
-              negativeLabel={negativeLabel}
-              baseValue={report.baseValue}
-              importanceOrder={importanceOrder}
-              chartLimit={CHART_LIMIT}
-              caseNo={selectedIndex + 1}
-            />
-          </section>
-        </div>
-      </div>
-    </>
+      <section className={styles.section}>
+        <CaseReportCard
+          case={selected}
+          domain={domain}
+          positiveLabel={positiveLabel}
+          negativeLabel={negativeLabel}
+          baseValue={report.baseValue}
+          importanceOrder={importanceOrder}
+          chartLimit={CHART_LIMIT}
+          caseNo={selectedIndex + 1}
+        />
+      </section>
+    </div>
   );
 }

@@ -115,6 +115,11 @@ async def analyze(file: UploadFile = File(...), target_column: str = Form(...)):
         if X.shape[1] == 0:
             raise HTTPException(400, "분석에 쓸 수 있는 컬럼이 남지 않았어요.")
 
+        missingness = common.compute_missingness(df, list(X.columns))
+        outliers = common.compute_outliers(
+            df, display_df.select_dtypes(include="number").columns.tolist()
+        )
+
         # bounded depth, same tuning as the preset train_*.py scripts — an
         # unbounded default RF makes SHAP's TreeExplainer minutes-slow even on
         # a ~1000-row CSV, which breaks the "real-time" promise of this endpoint.
@@ -147,6 +152,8 @@ async def analyze(file: UploadFile = File(...), target_column: str = Form(...)):
             model_accuracy=accuracy,
             eval_stats=eval_stats,
             base_value=base_value,
+            missingness=missingness,
+            outliers=outliers,
             output_path=output_path,
         )
         # read back the file export_report_json already wrote instead of
