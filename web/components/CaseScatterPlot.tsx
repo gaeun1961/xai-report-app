@@ -15,14 +15,16 @@ type Props = {
 };
 
 const WIDTH = 640;
-const HEIGHT = 300;
-const MARGIN = { top: 16, right: 16, bottom: 40, left: 40 };
+const HEIGHT = 190;
+const MARGIN = { top: 10, right: 16, bottom: 24, left: 34 };
 const PLOT_W = WIDTH - MARGIN.left - MARGIN.right;
 const PLOT_H = HEIGHT - MARGIN.top - MARGIN.bottom;
 const NEG_X = MARGIN.left + PLOT_W * 0.25;
 const POS_X = MARGIN.left + PLOT_W * 0.75;
 const JITTER = PLOT_W * 0.14;
 const Y_TICKS = [0, 0.25, 0.5, 0.75, 1];
+const DOT_R = 3.2;
+const DOT_R_SELECTED = 5.5;
 
 // deterministic -1..1 jitter from the case id, so points stay put across
 // re-renders/filter changes instead of reshuffling every time.
@@ -92,7 +94,7 @@ export default function CaseScatterPlot({
 
         <text
           x={NEG_X}
-          y={HEIGHT - 12}
+          y={HEIGHT - 8}
           className={styles.scatterAxisLabel}
           textAnchor="middle"
         >
@@ -100,7 +102,7 @@ export default function CaseScatterPlot({
         </text>
         <text
           x={POS_X}
-          y={HEIGHT - 12}
+          y={HEIGHT - 8}
           className={styles.scatterAxisLabel}
           textAnchor="middle"
         >
@@ -118,7 +120,7 @@ export default function CaseScatterPlot({
               key={c.id}
               cx={x}
               cy={y}
-              r={selected ? 8 : 5}
+              r={selected ? DOT_R_SELECTED : DOT_R}
               className={`${styles.scatterDot} ${
                 c.isCorrect === false ? styles.scatterDotWrong : styles.scatterDotOk
               } ${selected ? styles.scatterDotSelected : ""}`}
