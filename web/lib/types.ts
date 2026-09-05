@@ -44,6 +44,10 @@ export type ShapReport = {
     whiskerHigh: number;
     outlierSample: number[];
   }[];
+  // Numeric columns left out of `outliers` because they have at most 2
+  // distinct values (a box plot can't show anything meaningful for those).
+  // Optional so old JSON still loads.
+  outliersExcludedColumns?: string[];
   featureImportance: { feature: string; importance: number }[];
   cases: {
     id: string;

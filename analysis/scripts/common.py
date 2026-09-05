@@ -217,7 +217,7 @@ IQR_MULTIPLIER = 1.5
 OUTLIER_SAMPLE_CAP = 20
 
 
-def compute_outliers(raw_df: pd.DataFrame, numeric_cols) -> list:
+def compute_outliers(raw_df: pd.DataFrame, numeric_cols) -> tuple:
     """Per-numeric-feature outlier stats via the classic IQR fence (outside
     Q1 - 1.5*IQR .. Q3 + 1.5*IQR). A light, well-known heuristic — no model
     involved, just a description of the raw column's own spread. Returns the
@@ -233,12 +233,18 @@ def compute_outliers(raw_df: pd.DataFrame, numeric_cols) -> list:
     quartiles land on the same two values) or collapses to a point with the
     minority class flagged as a bogus "outlier". Neither is a real
     data-quality signal, so rather than show a technically-correct-but-
-    misleading chart, we just don't report on those columns here."""
+    misleading chart, we just don't report on those columns here.
+
+    Returns (rows, excluded_columns) — excluded_columns lists exactly which
+    ones got skipped for that reason, so a caller can explain the omission
+    instead of silently dropping them."""
     n = len(raw_df)
     rows = []
+    excluded = []
     for col in numeric_cols:
         series = pd.to_numeric(raw_df[col], errors="coerce").dropna()
         if series.nunique() <= 2:
+            excluded.append(col)
             continue
         q1, med, q3 = series.quantile([0.25, 0.5, 0.75])
         iqr = q3 - q1
@@ -273,7 +279,7 @@ def compute_outliers(raw_df: pd.DataFrame, numeric_cols) -> list:
                 "outlierSample": [round(float(v), 4) for v in sample],
             }
         )
-    return rows
+    return rows, excluded
 
 
 SHAP_MAX_ROWS = 2000
@@ -375,6 +381,7 @@ def export_report_json(
     corr_max_cols: int = 12,
     missingness: list = None,
     outliers: list = None,
+    outliers_excluded_columns: list = None,
 ):
     """Assemble a ShapReport-shaped dict (see web/lib/types.ts) and write it
     to output_path as JSON.
@@ -482,6 +489,9 @@ def export_report_json(
     if outliers is not None:
         report["outliers"] = outliers
 
+    if outliers_excluded_columns:
+        report["outliersExcludedColumns"] = outliers_excluded_columns
+
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, "w", encoding="utf-8") as f:
@@ -514,7 +524,7 @@ def _demo():
     assert counts == {"a": 1, "b": 1}, counts
     assert missingness[0]["missingPct"] == round(1 / 5, 4)
 
-    outliers = compute_outliers(df, ["a"])
+    outliers, excluded = compute_outliers(df, ["a"])
     o = outliers[0]
     assert o["outlierCount"] == 1
     assert o["min"] == 1 and o["max"] == 100
@@ -522,11 +532,14 @@ def _demo():
     # 100 is the outlier, so the whisker high is the most extreme non-outlier (4)
     assert o["whiskerHigh"] == 4, o
     assert o["outlierSample"] == [100], o
+    assert excluded == []
 
     # binary numeric columns (e.g. a 0/1 flag) are skipped entirely — a box
-    # plot can't show anything meaningful for only 2 distinct values
+    # plot can't show anything meaningful for only 2 distinct values — but
+    # reported back in excluded_columns so a caller can explain the omission
     df_binary = pd.DataFrame({"flag": [0, 0, 0, 1, 1]})
-    assert compute_outliers(df_binary, ["flag"]) == []
+    rows_b, excluded_b = compute_outliers(df_binary, ["flag"])
+    assert rows_b == [] and excluded_b == ["flag"], (rows_b, excluded_b)
 
     # blank-string "missing" (Telco's TotalCharges quirk): a mostly-clean
     # numeric column (>=95% parse rate) should get its blanks coerced to NaN
