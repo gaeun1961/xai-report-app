@@ -47,22 +47,24 @@ export default function Home() {
         <UploadFlow />
       </section>
 
-      <h2 className={styles.h2}>또는 예시로 체험하기</h2>
-      <div className={styles.cardGrid}>
-        {DOMAINS.map((d) => {
-          const report = loadReport(d.slug);
-          return (
-            <DomainCard
-              key={d.slug}
-              href={`/report/${d.slug}`}
-              title={d.title}
-              description={d.description}
-              accuracy={report?.modelAccuracy}
-              verdict={report?.modelQuality?.verdict}
-            />
-          );
-        })}
-      </div>
+      <section className={styles.examplesSection}>
+        <h2 className={styles.h2}>또는 예시로 체험하기</h2>
+        <div className={styles.cardGrid}>
+          {DOMAINS.map((d) => {
+            const report = loadReport(d.slug);
+            return (
+              <DomainCard
+                key={d.slug}
+                href={`/report/${d.slug}`}
+                title={d.title}
+                description={d.description}
+                accuracy={report?.modelAccuracy}
+                verdict={report?.modelQuality?.verdict}
+              />
+            );
+          })}
+        </div>
+      </section>
     </main>
   );
 }
