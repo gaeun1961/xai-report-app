@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import type { ShapReport } from "@/lib/types";
+import { buildOverallSummary } from "@/lib/reportSummary";
 import FeatureImportanceChart from "./FeatureImportanceChart";
 import CaseSelector from "./CaseSelector";
 import CaseReportCard from "./CaseReportCard";
 import CorrelationMatrix from "./CorrelationMatrix";
+import CopySummaryButton from "./CopySummaryButton";
 import styles from "./report.module.css";
 
 type Tab = "summary" | "cases" | "data";
@@ -97,7 +99,9 @@ export default function ReportView({ report, domain }: Props) {
         </button>
       </div>
 
-      {tab === "summary" && <SummaryBody report={report} domain={domain} />}
+      {tab === "summary" && (
+        <SummaryBody report={report} domain={domain} selectedId={selectedId} />
+      )}
       {tab === "cases" && (
         <CasesBody
           report={report}
@@ -119,11 +123,25 @@ export default function ReportView({ report, domain }: Props) {
   );
 }
 
-function SummaryBody({ report, domain }: { report: ShapReport; domain: string }) {
+function SummaryBody({
+  report,
+  domain,
+  selectedId,
+}: {
+  report: ShapReport;
+  domain: string;
+  selectedId: string | null;
+}) {
   const { positiveLabel, negativeLabel } = report;
+  const selectedCase = selectedId
+    ? report.cases.find((c) => c.id === selectedId)
+    : undefined;
+  const overallSummary = buildOverallSummary(report, domain);
 
   return (
     <div className={styles.reportCol}>
+      <CopySummaryButton report={report} domain={domain} selectedCase={selectedCase} />
+
       <p className={styles.guide}>
         이 리포트는 AI가 왜 이렇게 예측했는지 보여줍니다.
         <br />각 요인이 예측을 어느 쪽으로, 얼마나 강하게 밀었는지 문장으로 풀어서
@@ -131,6 +149,17 @@ function SummaryBody({ report, domain }: { report: ShapReport; domain: string })
         <br />원래 숫자가 궁금하면 케이스 탐색 탭에서 “숫자로 보기”를 누르면
         됩니다.
       </p>
+
+      {overallSummary.length > 0 && (
+        <section className={styles.section}>
+          <h2 className={styles.h2}>총평</h2>
+          <div className={styles.qualityMessage}>
+            {overallSummary.map((s, i) => (
+              <p key={i}>{s}</p>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className={styles.section}>
         <h2 className={styles.h2}>전체 정확도</h2>

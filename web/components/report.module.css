@@ -749,6 +749,26 @@
   color: #7c4a12;
 }
 
+.copyBtnRow {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.copyBtn {
+  padding: 8px 16px;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.copyBtn:hover {
+  opacity: 0.9;
+}
+
 .guide {
   padding: 12px 16px;
   border-radius: 8px;
