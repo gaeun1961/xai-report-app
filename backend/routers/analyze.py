@@ -116,7 +116,7 @@ async def analyze(file: UploadFile = File(...), target_column: str = Form(...)):
             raise HTTPException(400, "분석에 쓸 수 있는 컬럼이 남지 않았어요.")
 
         missingness = common.compute_missingness(df, list(X.columns))
-        outliers = common.compute_outliers(
+        outliers, outliers_excluded = common.compute_outliers(
             df, display_df.select_dtypes(include="number").columns.tolist()
         )
 
@@ -154,6 +154,7 @@ async def analyze(file: UploadFile = File(...), target_column: str = Form(...)):
             base_value=base_value,
             missingness=missingness,
             outliers=outliers,
+            outliers_excluded_columns=outliers_excluded,
             output_path=output_path,
         )
         # read back the file export_report_json already wrote instead of

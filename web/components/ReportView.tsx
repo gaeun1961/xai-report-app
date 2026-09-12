@@ -112,6 +112,7 @@ export default function ReportView({ report, domain }: Props) {
           domain={domain}
           missingness={report.missingness}
           outliers={report.outliers}
+          outliersExcludedColumns={report.outliersExcludedColumns}
         />
       )}
     </>

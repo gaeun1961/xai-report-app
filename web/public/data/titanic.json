@@ -1729,5 +1729,8 @@
       "whiskerHigh": 2.0,
       "outlierSample": []
     }
+  ],
+  "outliersExcludedColumns": [
+    "Sex"
   ]
 }

@@ -12,6 +12,7 @@ type Props = {
   domain: string;
   missingness?: ShapReport["missingness"];
   outliers?: ShapReport["outliers"];
+  outliersExcludedColumns?: ShapReport["outliersExcludedColumns"];
 };
 
 // ".52" / "-.31" — drop the leading zero, it's always |v| <= 1
@@ -27,6 +28,7 @@ export default function CorrelationMatrix({
   domain,
   missingness,
   outliers,
+  outliersExcludedColumns,
 }: Props) {
   const { columns, matrix } = data;
   const n = columns.length;
@@ -151,6 +153,16 @@ export default function CorrelationMatrix({
                 숫자형 컬럼의 값 분포예요. 상자는 사분위범위(중간 50%), 선은
                 중앙값, 점은 그 범위를 크게 벗어난 이상치예요.
               </p>
+              {!!outliersExcludedColumns?.length && (
+                <p
+                  className={styles.sectionNote}
+                  title={outliersExcludedColumns.map(label).join(", ")}
+                >
+                  값 종류가 2개뿐인 컬럼({outliersExcludedColumns.length}개)은
+                  분포를 보여줄 게 없어서 뺐어요 — 어떤 컬럼인지는 여기에
+                  마우스를 올리면 나와요.
+                </p>
+              )}
               <OutlierBoxPlot items={outliers} domain={domain} />
             </div>
           )}
