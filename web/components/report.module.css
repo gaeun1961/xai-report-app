@@ -53,6 +53,7 @@
 
 /* kept for callers that still pass it; same as .h2 now */
 .h2Accent {
+  color: var(--accent-strong);
 }
 
 .lead {
@@ -913,7 +914,9 @@
 }
 
 .up {
-  color: var(--accent);
+  /* --accent (#1d9e75) on white is 3.39:1 — fails WCAG AA (4.5:1) for this
+     13px bold text. --accent-strong (#0f7a58) is 5.32:1, passes. */
+  color: var(--accent-strong);
 }
 
 .down {
@@ -1008,7 +1011,7 @@
   justify-content: center;
   gap: 4px;
   padding: 40px 20px;
-  border: 2px dashed var(--border);
+  border: 2px dashed var(--accent);
   border-radius: 12px;
   background: var(--surface);
   text-align: center;
