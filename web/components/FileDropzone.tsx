@@ -44,6 +44,22 @@ export default function FileDropzone({ onFile, fileName }: Props) {
         hidden
         onChange={(e) => handleFiles(e.target.files)}
       />
+      <svg
+        className={styles.dropzoneIcon}
+        width="30"
+        height="30"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M12 16V4M12 4l-4 4M12 4l4 4" />
+        <path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" />
+      </svg>
+
       {fileName ? (
         <p className={styles.dropzoneFile}>{fileName}</p>
       ) : (

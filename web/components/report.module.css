@@ -297,6 +297,17 @@
   color: var(--text-muted);
 }
 
+/* visually separates the example cards from the sections above — a plain
+   divider, not another card/box, so it doesn't compete with the CTA above it */
+.examplesSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 8px;
+  padding-top: 28px;
+  border-top: 1px solid var(--border);
+}
+
 /* domain card grid (landing) */
 .cardGrid {
   display: grid;
@@ -1043,6 +1054,11 @@
 .dropzoneActive {
   border-color: var(--accent);
   background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+}
+
+.dropzoneIcon {
+  color: var(--accent);
+  margin-bottom: 2px;
 }
 
 .dropzoneTitle {
