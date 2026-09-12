@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import type { ShapReport } from "@/lib/types";
 import styles from "./report.module.css";
 
@@ -21,17 +22,43 @@ const PLOT_W = WIDTH - MARGIN.left - MARGIN.right;
 const PLOT_H = HEIGHT - MARGIN.top - MARGIN.bottom;
 const NEG_X = MARGIN.left + PLOT_W * 0.25;
 const POS_X = MARGIN.left + PLOT_W * 0.75;
-const JITTER = PLOT_W * 0.14;
 const Y_TICKS = [0, 0.25, 0.5, 0.75, 1];
 const DOT_R = 3.2;
 const DOT_R_SELECTED = 5.5;
 
-// deterministic -1..1 jitter from the case id, so points stay put across
-// re-renders/filter changes instead of reshuffling every time.
-function jitterFor(id: string): number {
-  let h = 0;
-  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) | 0;
-  return ((Math.abs(h) % 1000) / 1000) * 2 - 1;
+// Beeswarm packing: points that land close together vertically get nudged
+// sideways just far enough to stop touching, instead of the old random-ish
+// jitter (which could still leave same-confidence cases overlapping and
+// unclickable). Greedy: process in y order, try offset 0 first, then
+// alternating +/- steps outward, and take the first spot that doesn't
+// collide with anything already placed.
+function packBeeswarm(points: { id: string; y: number }[]): Map<string, number> {
+  const minDist = DOT_R_SELECTED * 2 + 1;
+  const step = minDist * 0.9;
+  const order = [...points].sort((a, b) => a.y - b.y);
+  const placed: { x: number; y: number }[] = [];
+  const offsetById = new Map<string, number>();
+
+  for (const p of order) {
+    let chosen = 0;
+    let found = false;
+    for (let k = 0; k <= order.length && !found; k++) {
+      const candidates = k === 0 ? [0] : [k * step, -k * step];
+      for (const cand of candidates) {
+        const collides = placed.some(
+          (q) => Math.hypot(q.x - cand, q.y - p.y) < minDist,
+        );
+        if (!collides) {
+          chosen = cand;
+          found = true;
+          break;
+        }
+      }
+    }
+    placed.push({ x: chosen, y: p.y });
+    offsetById.set(p.id, chosen);
+  }
+  return offsetById;
 }
 
 export default function CaseScatterPlot({
@@ -42,6 +69,27 @@ export default function CaseScatterPlot({
   positiveLabel,
   negativeLabel,
 }: Props) {
+  const positions = useMemo(() => {
+    const withY = cases.map((c) => ({
+      id: c.id,
+      actualPositive: c.actualPositive,
+      y:
+        MARGIN.top +
+        (1 - (c.probaPositive ?? (c.predictedPositive ? 0.75 : 0.25))) * PLOT_H,
+    }));
+    const neg = withY.filter((c) => !c.actualPositive);
+    const pos = withY.filter((c) => c.actualPositive);
+    const negOffsets = packBeeswarm(neg);
+    const posOffsets = packBeeswarm(pos);
+
+    const result = new Map<string, { x: number; y: number }>();
+    for (const c of withY) {
+      const offset = (c.actualPositive ? posOffsets : negOffsets).get(c.id) ?? 0;
+      result.set(c.id, { x: (c.actualPositive ? POS_X : NEG_X) + offset, y: c.y });
+    }
+    return result;
+  }, [cases]);
+
   if (cases.length === 0) {
     return <p className={styles.selectorEmpty}>일치하는 케이스 없음</p>;
   }
@@ -110,16 +158,14 @@ export default function CaseScatterPlot({
         </text>
 
         {ordered.map((c) => {
-          const bandX = c.actualPositive ? POS_X : NEG_X;
-          const x = bandX + jitterFor(c.id) * JITTER;
-          const proba = c.probaPositive ?? (c.predictedPositive ? 0.75 : 0.25);
-          const y = MARGIN.top + (1 - proba) * PLOT_H;
+          const pos = positions.get(c.id);
+          if (!pos) return null;
           const selected = c.id === selectedId;
           return (
             <circle
               key={c.id}
-              cx={x}
-              cy={y}
+              cx={pos.x}
+              cy={pos.y}
               r={selected ? DOT_R_SELECTED : DOT_R}
               className={`${styles.scatterDot} ${
                 c.isCorrect === false ? styles.scatterDotWrong : styles.scatterDotOk
