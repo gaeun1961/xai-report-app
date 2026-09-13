@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import type { ShapReport } from "@/lib/types";
-import { buildOverallSummary } from "@/lib/reportSummary";
+import { buildOverallSummary, explainAccuracy } from "@/lib/reportSummary";
 import FeatureImportanceChart from "./FeatureImportanceChart";
 import CaseSelector from "./CaseSelector";
 import CaseReportCard from "./CaseReportCard";
@@ -11,53 +11,6 @@ import CopySummaryButton from "./CopySummaryButton";
 import styles from "./report.module.css";
 
 type Tab = "summary" | "cases" | "data";
-
-// 라고 / 이라고 by whether the word's last Hangul char has a final consonant
-function irago(w: string): string {
-  const ch = w.charCodeAt(w.length - 1);
-  const batchim = ch >= 0xac00 && ch <= 0xd7a3 && (ch - 0xac00) % 28 !== 0;
-  return batchim ? "이라고" : "라고";
-}
-
-// Plain-language "is this model any good" explanation, built from the numbers
-// alone (same branching as common._judge_model_quality).
-function explainAccuracy(
-  acc: number,
-  baseline: number,
-  verdict: "good" | "fair" | "weak",
-  posLabel: string,
-  negLabel: string,
-  minorityRecall: number | undefined,
-  minorityLabel: string | undefined,
-): string[] {
-  const a = Math.round(acc * 100);
-  const b = Math.round(baseline * 100);
-  const gap = a - b;
-  // the rarer class in the data (backend computed it from the true labels).
-  // The more common one is whatever's left.
-  const minority = minorityLabel ?? negLabel;
-  const majority = minority === posLabel ? negLabel : posLabel;
-  const rec =
-    minorityRecall !== undefined ? Math.round(minorityRecall * 100) : null;
-
-  const line1 = `이 데이터는 실제 결과가 '${majority}'인 경우가 ${b}%로 더 많아요.`;
-  const line2 = `그래서 아무 근거 없이 전부 '${majority}'${irago(majority)}만 찍어도 ${b}%는 맞는 셈이라, 모델은 최소한 이보다는 나아야 의미가 있어요.`;
-
-  let line3: string;
-  if (verdict === "good") {
-    line3 = `이 모델의 정확도 ${a}%는 그 기준보다 ${gap}%p 높고, '${posLabel}'·'${negLabel}' 어느 쪽도 한쪽으로 몰아 찍지 않고 예측해요.`;
-  } else if (verdict === "fair") {
-    const recPart = rec !== null ? ` 실제 '${minority}' 중 ${rec}%를 잡아내요` : "";
-    line3 = `이 모델의 정확도 ${a}%는 그 기준과 비슷하지만(${
-      gap >= 0 ? "+" : ""
-    }${gap}%p), 대신 놓치면 안 되는 '${minority}'에 집중해요 —${recPart}. 그게 목적이면 쓸만해요.`;
-  } else if (a < b) {
-    line3 = `이 모델의 정확도 ${a}%는 그 기준보다 오히려 ${b - a}%p 낮은 데다, 수가 적은 '${minority}'도 거의 못 맞혀서 쓸 이유가 없어요.`;
-  } else {
-    line3 = `이 모델의 정확도 ${a}%는 기준과 큰 차이가 없고, 수가 적은 '${minority}' 쪽은 거의 못 맞혀요.`;
-  }
-  return [line1, line2, line3];
-}
 
 type Props = {
   report: ShapReport;
@@ -150,17 +103,6 @@ function SummaryBody({
         됩니다.
       </p>
 
-      {overallSummary.length > 0 && (
-        <section className={styles.section}>
-          <h2 className={styles.h2}>총평</h2>
-          <div className={styles.qualityMessage}>
-            {overallSummary.map((s, i) => (
-              <p key={i}>{s}</p>
-            ))}
-          </div>
-        </section>
-      )}
-
       <section className={styles.section}>
         <h2 className={styles.h2}>전체 정확도</h2>
         <div className={styles.accuracyRow}>
@@ -209,6 +151,17 @@ function SummaryBody({
         </p>
         <FeatureImportanceChart items={report.featureImportance} domain={domain} />
       </section>
+
+      {overallSummary.length > 0 && (
+        <section className={styles.section}>
+          <h2 className={styles.h2}>총평</h2>
+          <div className={styles.qualityMessage}>
+            {overallSummary.map((s, i) => (
+              <p key={i}>{s}</p>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }
