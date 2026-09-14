@@ -15,7 +15,7 @@
 }
 
 .brand {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--accent-strong);
@@ -33,7 +33,7 @@
 .item {
   padding: 8px 10px;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 15px;
   color: var(--foreground);
   transition: background 0.12s;
 }
