@@ -63,5 +63,10 @@ export type ShapReport = {
     isCorrect?: boolean;
     explanation: string;
     topFeatures: { feature: string; value: string | number; contribution: number }[];
+    // every column from the originally uploaded row (including ones the
+    // model itself dropped, like ID/name columns) — lets the UI label a
+    // case by any attribute, not just modeling features. Optional so old
+    // JSON still loads.
+    raw?: Record<string, string | number | null>;
   }[];
 };
