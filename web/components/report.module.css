@@ -283,6 +283,16 @@
   background: color-mix(in srgb, var(--accent) 18%, transparent);
 }
 
+.corrExplain {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border-left: 3px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--foreground);
+}
+
 .accuracy {
   font-size: 40px;
   font-weight: 700;
@@ -556,6 +566,21 @@
   background: var(--warn);
   opacity: 0.75;
   transform: translate(-50%, -50%);
+  cursor: default;
+}
+
+.boxPlotTooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  transform: translateX(-50%);
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: var(--foreground);
+  color: #fff;
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 10;
 }
 
 .boxPlotLegendBox {
@@ -576,6 +601,75 @@
 
 .boxPlotLegendDot {
   background: var(--warn);
+}
+
+/* missingness: mini donut grid (each column's own 0–100% ring, so small
+   shares still read clearly instead of vanishing on a fixed 0–100% bar) */
+.donutGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+  gap: 18px 10px;
+}
+
+.donutCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.donutSvg {
+  width: 64px;
+  height: 64px;
+}
+
+.donutTrack {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 8;
+}
+
+.donutFill {
+  fill: none;
+  stroke-width: 8;
+  stroke-linecap: round;
+}
+
+.donutLow {
+  stroke: var(--accent);
+}
+
+.donutMid {
+  stroke: var(--warn);
+}
+
+.donutHigh {
+  stroke: #b91c1c;
+}
+
+.donutText {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.donutTextLow {
+  fill: var(--accent-strong);
+}
+
+.donutTextMid {
+  fill: var(--warn);
+}
+
+.donutTextHigh {
+  fill: #b91c1c;
+}
+
+.donutLabel {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: center;
+  max-width: 90px;
+  overflow-wrap: anywhere;
 }
 
 /* case selector */

@@ -3,7 +3,7 @@
 import { Fragment, useRef, useState } from "react";
 import type { ShapReport } from "@/lib/types";
 import { columnDesc } from "@/lib/columnGlossary";
-import PercentBarChart from "./PercentBarChart";
+import MissingnessDonutGrid from "./MissingnessDonutGrid";
 import OutlierBoxPlot from "./OutlierBoxPlot";
 import InfoTip from "./InfoTip";
 import styles from "./report.module.css";
@@ -20,9 +20,15 @@ type Props = {
 const fmt = (v: number) =>
   v.toFixed(2).replace(/^(-?)0\./, "$1.").replace("1.00", "1");
 
-const pctFmt = (v: number) => `${(v * 100).toFixed(1)}%`;
-
 const STRONG = 0.6;
+
+// Domain-agnostic reading of a strong pair — no column-specific knowledge
+// needed, just what the sign of r implies for using both columns in a model.
+function explainCorr(v: number): string {
+  return v >= 0
+    ? "이 둘은 함께 오르내리는 경향이 강해요. 모델에 두 컬럼을 같이 쓰면 비슷한 정보가 중복될 수 있어요."
+    : "한쪽이 오르면 다른 쪽은 내려가는 경향이 강해요. 두 컬럼이 반대 방향으로 같은 정보를 담고 있을 수 있어요.";
+}
 
 export default function CorrelationMatrix({
   data,
@@ -35,6 +41,9 @@ export default function CorrelationMatrix({
   const n = columns.length;
   const label = (c: string) => columnDesc(domain, c) ?? c;
   const [focused, setFocused] = useState<string | null>(null);
+  const [explainedPair, setExplainedPair] = useState<{ i: number; j: number; v: number } | null>(
+    null,
+  );
   const cellRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
   // strong pairs (upper triangle), strongest first, capped
@@ -48,9 +57,10 @@ export default function CorrelationMatrix({
     .sort((a, b) => Math.abs(b.v) - Math.abs(a.v))
     .slice(0, 5);
 
-  function focusPair(i: number, j: number) {
+  function focusPair(i: number, j: number, v: number) {
     const key = `${i}-${j}`;
     setFocused(key);
+    setExplainedPair({ i, j, v });
     cellRefs.current
       .get(key)
       ?.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
@@ -103,12 +113,22 @@ export default function CorrelationMatrix({
                 key={`chip-${i}-${j}`}
                 type="button"
                 className={styles.corrChip}
-                onClick={() => focusPair(i, j)}
+                onClick={() => focusPair(i, j, v)}
               >
                 {label(columns[i])} ↔ {label(columns[j])} · {v.toFixed(2)}
               </button>
             ))}
           </div>
+        )}
+
+        {explainedPair && (
+          <p className={styles.corrExplain}>
+            <b>
+              {label(columns[explainedPair.i])} ↔ {label(columns[explainedPair.j])} (r=
+              {explainedPair.v.toFixed(2)})
+            </b>{" "}
+            — {explainCorr(explainedPair.v)}
+          </p>
         )}
 
         <div className={styles.corrWrap}>
@@ -199,13 +219,12 @@ export default function CorrelationMatrix({
           {missingness.every((m) => m.missingCount === 0) ? (
             <p className={styles.sectionNote}>이 데이터셋엔 결측치가 없어요 ✓</p>
           ) : (
-            <PercentBarChart
+            <MissingnessDonutGrid
               items={missingness.map((m) => ({
                 label: m.column,
                 value: m.missingPct,
               }))}
               domain={domain}
-              valueFormat={pctFmt}
             />
           )}
         </section>
