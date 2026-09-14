@@ -26,7 +26,7 @@ export default function Home() {
         </div>
         <div className={styles.aboutBlock}>
           <p>
-            먼저 업로드하신 데이터로 baseline 모델을{" "}
+            먼저 업로드하신 데이터로 <strong>baseline 모델</strong>을{" "}
             <InfoTip text="baseline은 '빠르게 만든 기본 모델'이에요. 최고 성능을 내는 게 목표가 아니라, 이 데이터로 대략 어떤 판단을 내리고 왜 그런 판단을 하는지 보여주는 게 목적이에요. 그래서 정확도가 아주 높지 않게 나올 수도 있는데, 그것도 자연스러운 결과예요. 이미 직접 만든 모델이 있다면, 같은 학습 데이터를 올려서 이 baseline의 판단과 비교해보는 용도로도 쓸 수 있어요." />{" "}
             학습시키고, SHAP으로 그 모델의 판단 근거를 분석해드려요.
           </p>
