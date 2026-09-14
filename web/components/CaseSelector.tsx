@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import type { ShapReport } from "@/lib/types";
 import CaseScatterPlot from "./CaseScatterPlot";
+import InfoTip from "./InfoTip";
 import styles from "./report.module.css";
 
 type Props = {
@@ -74,7 +75,10 @@ export default function CaseSelector({
       </div>
 
       <div className={styles.rangeRow}>
-        <span className={styles.rangeLabel}>양성 확률</span>
+        <span className={styles.rangeLabel}>
+          양성 확률{" "}
+          <InfoTip text={`모델이 예측한 '${posText}'일 확률이에요 (50% 이상이면 ${posText}으로 예측). 범위를 45~55%처럼 좁히면 모델이 애매해한 케이스만 볼 수 있어요 — 확신이 없는 구간이라 적중률도 낮은 편이에요.`} />
+        </span>
         <input
           className={styles.rangeInput}
           type="number"
@@ -108,11 +112,6 @@ export default function CaseSelector({
           </button>
         )}
       </div>
-      <p className={styles.selectorHint}>
-        범위를 45~55%처럼 좁히면 모델이 애매해한 케이스만 볼 수 있어요.
-        <br />이 구간은 모델이 확신이 없는 케이스라, 적중률이 낮은 편이에요.
-      </p>
-
       <div className={styles.selectorCount}>{shown.length}개 표시</div>
 
       <CaseScatterPlot

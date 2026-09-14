@@ -5,6 +5,7 @@ import type { ShapReport } from "@/lib/types";
 import { columnDesc } from "@/lib/columnGlossary";
 import PercentBarChart from "./PercentBarChart";
 import OutlierBoxPlot from "./OutlierBoxPlot";
+import InfoTip from "./InfoTip";
 import styles from "./report.module.css";
 
 type Props = {
@@ -58,11 +59,10 @@ export default function CorrelationMatrix({
   return (
     <>
       <section className={styles.section}>
-        <h2 className={styles.h2}>숫자형 컬럼 관계</h2>
-        <p className={styles.sectionNote}>
-          모델과는 무관하게, 데이터 안에서 두 컬럼이 얼마나 같이 움직이는지
-          보여줘요. 진한 색일수록, 굵은 테두리 칸일수록 강한 관계예요.
-        </p>
+        <h2 className={styles.h2}>
+          숫자형 컬럼 관계{" "}
+          <InfoTip text="모델과는 무관하게, 데이터 안에서 두 컬럼이 얼마나 같이 움직이는지 보여줘요. 진한 색일수록, 굵은 테두리 칸일수록 강한 관계예요." />
+        </h2>
 
         {strongPairs.length > 0 && (
           <div className={styles.corrChipRow}>
@@ -148,11 +148,10 @@ export default function CorrelationMatrix({
 
           {!!outliers?.length && (
             <div className={styles.reportCol}>
-              <h3 className={styles.h2}>이상치</h3>
-              <p className={styles.sectionNote}>
-                숫자형 컬럼의 값 분포예요. 상자는 사분위범위(중간 50%), 선은
-                중앙값, 점은 그 범위를 크게 벗어난 이상치예요.
-              </p>
+              <h3 className={styles.h2}>
+                이상치{" "}
+                <InfoTip text="숫자형 컬럼의 값 분포예요. 상자는 사분위범위(IQR, 중간 50%), 선은 중앙값, 점은 그 범위를 1.5배 넘게 벗어난 이상치예요." />
+              </h3>
               {!!outliersExcludedColumns?.length && (
                 <p className={styles.sectionNote}>
                   값 종류가 2개뿐인 컬럼은 분포를 보여줄 게 없어서 뺐어요:{" "}
@@ -165,17 +164,16 @@ export default function CorrelationMatrix({
 
           {!!missingness?.length && (
             <div className={styles.reportCol}>
-              <h3 className={styles.h2}>결측치</h3>
+              <h3 className={styles.h2}>
+                결측치{" "}
+                <InfoTip text="컬럼별로 값이 비어 있던 비율이에요. 모델은 숫자는 중간값, 범주는 &quot;결측&quot;이라는 값으로 채워서 학습했어요." />
+              </h3>
               {missingness.every((m) => m.missingCount === 0) ? (
                 <p className={styles.sectionNote}>
                   이 데이터셋엔 결측치가 없어요 ✓
                 </p>
               ) : (
                 <>
-                  <p className={styles.sectionNote}>
-                    컬럼별로 값이 비어 있던 비율이에요. 모델은 숫자는 중간값,
-                    범주는 &quot;결측&quot;이라는 값으로 채워서 학습했어요.
-                  </p>
                   <PercentBarChart
                     items={missingness.map((m) => ({
                       label: m.column,

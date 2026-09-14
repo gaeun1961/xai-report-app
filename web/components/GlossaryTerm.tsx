@@ -12,7 +12,7 @@ type Props = {
 export default function GlossaryTerm({ term, desc, className = "" }: Props) {
   if (!desc) return <span className={className}>{term}</span>;
   return (
-    <span className={`${styles.glossary} ${className}`} tabIndex={0}>
+    <span className={`${styles.glossary} ${styles.tooltipHost} ${className}`} tabIndex={0}>
       {term}
       <span className={styles.glossaryBubble} role="tooltip">
         {desc}

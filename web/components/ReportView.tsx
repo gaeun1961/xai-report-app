@@ -8,6 +8,7 @@ import CaseSelector from "./CaseSelector";
 import CaseReportCard from "./CaseReportCard";
 import CorrelationMatrix from "./CorrelationMatrix";
 import CopySummaryButton from "./CopySummaryButton";
+import InfoTip from "./InfoTip";
 import styles from "./report.module.css";
 
 type Tab = "summary" | "cases" | "data";
@@ -145,10 +146,10 @@ function SummaryBody({
       </section>
 
       <section className={styles.section}>
-        <h2 className={styles.h2}>특성 중요도</h2>
-        <p className={styles.sectionNote}>
-          막대가 길수록 그 특성이 예측을 평균적으로 더 크게 움직였다는 뜻이에요.
-        </p>
+        <h2 className={styles.h2}>
+          특성 중요도{" "}
+          <InfoTip text="막대가 길수록 그 특성이 예측을 평균적으로 더 크게 움직였다는 뜻이에요." />
+        </h2>
         <FeatureImportanceChart items={report.featureImportance} domain={domain} />
       </section>
 
