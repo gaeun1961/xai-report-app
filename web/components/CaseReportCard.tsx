@@ -233,11 +233,16 @@ export default function CaseReportCard({
 
       {extraRaw.length > 0 && (
         <div className={styles.badges}>
-          {extraRaw.map(([col, value]) => (
-            <span key={col} className={`${styles.badge} ${styles.badgeActualOk}`}>
-              {label(col)}: {value ?? "-"}
-            </span>
-          ))}
+          {extraRaw.map(([col, value]) => {
+            const valueLabel = columnValueLabel(domain, col, value ?? "");
+            return (
+              <span key={col} className={`${styles.badge} ${styles.badgeActualOk}`}>
+                <GlossaryTerm term={col} desc={columnDesc(domain, col)} />:{" "}
+                {value ?? "-"}
+                {valueLabel ? `, ${valueLabel}` : ""}
+              </span>
+            );
+          })}
         </div>
       )}
 

@@ -771,6 +771,25 @@
   text-align: right;
 }
 
+.select {
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--background);
+  color: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.select:hover {
+  border-color: var(--accent);
+}
+
+.select:focus-visible {
+  outline: 2px solid var(--accent-strong);
+  outline-offset: 1px;
+}
+
 .rangeReset {
   padding: 2px 8px;
   border: 1px solid var(--border);

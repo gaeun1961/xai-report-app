@@ -412,6 +412,7 @@ def export_report_json(
     model_accuracy: float,
     output_path: str,
     target_labels: tuple = ("0", "1"),
+    target_column: str = None,
     positive_label: str = None,
     negative_label: str = None,
     eval_stats: dict = None,
@@ -429,15 +430,18 @@ def export_report_json(
     target_labels is (negative, positive) as they appeared in the CSV and is
     stored verbatim in each case's `prediction`. positive_label/negative_label
     are optional human-friendly overrides (e.g. '생존'/'사망' for a known
-    preset); when omitted the raw CSV labels are used everywhere.
+    preset); when omitted, a bare raw value like '1' means nothing to a
+    reader, so it's prefixed with the target column name ('Survived=1')
+    instead — target_column is only used for that fallback.
     """
     predictions = model.predict(X)
     proba_pos = model.predict_proba(X)[:, 1]
     feature_names = list(X.columns)
 
     neg_raw, pos_raw = target_labels
-    pos_display = positive_label or pos_raw
-    neg_display = negative_label or neg_raw
+    fallback = (lambda raw: f"{target_column}={raw}") if target_column else (lambda raw: raw)
+    pos_display = positive_label or fallback(pos_raw)
+    neg_display = negative_label or fallback(neg_raw)
 
     case_indices = _pick_case_indices(
         predictions, proba_pos, n_cases, actual=y.to_numpy(), focus=case_focus

@@ -34,11 +34,40 @@ def test_analyze_returns_report():
     body = res.json()
     assert "featureImportance" in body
     assert len(body["cases"]) == 5
-    # raw echoes every original CSV column (incl. ones dropped as unusable
-    # for modeling), so the frontend can label a case by any of them
-    assert set(body["cases"][0]["raw"].keys()) == {
-        "Survived", "Pclass", "Sex", "Age", "Fare",
-    }
+    # raw echoes original CSV columns dropped as unusable for modeling too
+    # (so the frontend can label a case by any of them), but not the target
+    # column itself (already shown via the 예측/실제 badges) or constant
+    # columns (carry no per-case info)
+    assert set(body["cases"][0]["raw"].keys()) == {"Pclass", "Sex", "Age", "Fare"}
+    # no domain override for an upload, so a bare "1"/"0" gets prefixed with
+    # the target column name instead of being shown unexplained
+    assert body["positiveLabel"] == "Survived=1"
+    assert body["negativeLabel"] == "Survived=0"
+
+
+CSV_WITH_CONSTANT_COL = b"""Survived,Pclass,Sex,Age,Fare,zero
+0,3,male,22,7.25,0
+1,1,female,38,71.28,0
+1,3,female,26,7.92,0
+1,1,female,35,53.1,0
+0,3,male,35,8.05,0
+0,3,male,28,8.46,0
+0,1,male,54,51.86,0
+0,3,male,2,21.08,0
+1,3,female,27,11.13,0
+1,2,female,14,30.07,0
+"""
+
+
+def test_analyze_drops_constant_column_from_raw():
+    client = TestClient(app)
+    res = client.post(
+        "/analyze",
+        files={"file": ("t.csv", CSV_WITH_CONSTANT_COL, "text/csv")},
+        data={"target_column": "Survived", "n_cases": "3"},
+    )
+    assert res.status_code == 200, res.text
+    assert "zero" not in res.json()["cases"][0]["raw"]
 
 
 def test_pick_case_indices_focus():
@@ -74,6 +103,7 @@ def test_case_focus_rejects_unknown_value():
 
 if __name__ == "__main__":
     test_analyze_returns_report()
+    test_analyze_drops_constant_column_from_raw()
     test_pick_case_indices_focus()
     test_case_focus_rejects_unknown_value()
     print("ok")
