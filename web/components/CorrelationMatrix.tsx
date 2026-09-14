@@ -6,6 +6,7 @@ import { columnDesc } from "@/lib/columnGlossary";
 import MissingnessDonutGrid from "./MissingnessDonutGrid";
 import OutlierBoxPlot from "./OutlierBoxPlot";
 import InfoTip from "./InfoTip";
+import GlossaryTerm from "./GlossaryTerm";
 import styles from "./report.module.css";
 
 type Props = {
@@ -140,22 +141,15 @@ export default function CorrelationMatrix({
           >
             <div className={styles.corrCorner} />
             {columns.map((c) => (
-              <div
-                key={`h-${c}`}
-                className={styles.corrColHead}
-                title={columnDesc(domain, c) ?? c}
-              >
-                <span>{c}</span>
+              <div key={`h-${c}`} className={styles.corrColHead}>
+                <GlossaryTerm term={c} desc={columnDesc(domain, c)} />
               </div>
             ))}
 
             {matrix.map((row, i) => (
               <Fragment key={`row-${i}`}>
-                <div
-                  className={styles.corrRowHead}
-                  title={columnDesc(domain, columns[i]) ?? columns[i]}
-                >
-                  {columns[i]}
+                <div className={styles.corrRowHead}>
+                  <GlossaryTerm term={columns[i]} desc={columnDesc(domain, columns[i])} />
                 </div>
                 {row.map((v, j) => {
                   const mag = Math.min(1, Math.abs(v));
