@@ -43,6 +43,11 @@ def test_analyze_returns_report():
     # the target column name instead of being shown unexplained
     assert body["positiveLabel"] == "Survived=1"
     assert body["negativeLabel"] == "Survived=0"
+    # raw target column/values exposed regardless of override, so the
+    # frontend can build a persistent, reusable value->meaning mapping
+    assert body["targetColumn"] == "Survived"
+    assert body["positiveRaw"] == "1"
+    assert body["negativeRaw"] == "0"
 
 
 CSV_WITH_CONSTANT_COL = b"""Survived,Pclass,Sex,Age,Fare,zero

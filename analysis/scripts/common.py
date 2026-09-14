@@ -491,6 +491,12 @@ def export_report_json(
         "modelAccuracy": float(model_accuracy),
         "positiveLabel": pos_display,
         "negativeLabel": neg_display,
+        # raw target column/values regardless of override — lets a caller
+        # build its own persistent value->meaning mapping (e.g. "Survived"
+        # + "1" -> a user-typed "생존") and reuse it across uploads
+        "targetColumn": target_column,
+        "positiveRaw": pos_raw,
+        "negativeRaw": neg_raw,
         # every feature, importance descending — the frontend caps the chart but
         # uses the full order for "this factor ranks Nth overall" in search
         "featureImportance": [

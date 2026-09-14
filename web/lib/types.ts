@@ -6,6 +6,13 @@ export type ShapReport = {
   // back to the target column's own values. Optional so old JSON still loads.
   positiveLabel?: string;
   negativeLabel?: string;
+  // The target column name and its two raw CSV values, regardless of
+  // override — lets the UI build a persistent value->meaning mapping (e.g.
+  // "Survived"+"1" -> a user-typed "생존") and reuse it across uploads.
+  // Optional so old JSON still loads.
+  targetColumn?: string;
+  positiveRaw?: string;
+  negativeRaw?: string;
   // Model's prior P(positive) before any feature is considered — lets the
   // report explain why the top-5 factors alone don't always match the
   // final prediction. Optional so old JSON still loads.
