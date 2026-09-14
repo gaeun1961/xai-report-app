@@ -175,11 +175,8 @@ type CasesBodyProps = {
 };
 
 function CasesBody({ report, domain, selectedId, onSelect }: CasesBodyProps) {
-  const selectedIndex = Math.max(
-    0,
-    report.cases.findIndex((c) => c.id === selectedId),
-  );
-  const selected = report.cases[selectedIndex] ?? report.cases[0];
+  const selectedIndex = report.cases.findIndex((c) => c.id === selectedId);
+  const selected = selectedIndex >= 0 ? report.cases[selectedIndex] : null;
   const { positiveLabel, negativeLabel } = report;
 
   const CHART_LIMIT = 15;
@@ -190,7 +187,7 @@ function CasesBody({ report, domain, selectedId, onSelect }: CasesBodyProps) {
       <section className={styles.section}>
         <CaseSelector
           cases={report.cases}
-          selectedId={selected.id}
+          selectedId={selectedId ?? ""}
           onSelect={onSelect}
           positiveLabel={positiveLabel}
           negativeLabel={negativeLabel}
@@ -198,16 +195,22 @@ function CasesBody({ report, domain, selectedId, onSelect }: CasesBodyProps) {
       </section>
 
       <section className={styles.section}>
-        <CaseReportCard
-          case={selected}
-          domain={domain}
-          positiveLabel={positiveLabel}
-          negativeLabel={negativeLabel}
-          baseValue={report.baseValue}
-          importanceOrder={importanceOrder}
-          chartLimit={CHART_LIMIT}
-          caseNo={selectedIndex + 1}
-        />
+        {selected ? (
+          <CaseReportCard
+            case={selected}
+            domain={domain}
+            positiveLabel={positiveLabel}
+            negativeLabel={negativeLabel}
+            baseValue={report.baseValue}
+            importanceOrder={importanceOrder}
+            chartLimit={CHART_LIMIT}
+            caseNo={selectedIndex + 1}
+          />
+        ) : (
+          <p className={styles.selectorEmpty}>
+            위 산점도에서 점을 클릭하면 케이스 상세를 볼 수 있어요.
+          </p>
+        )}
       </section>
     </div>
   );

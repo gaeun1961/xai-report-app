@@ -582,7 +582,7 @@
 .selectorWrap {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 14px;
 }
 
 .selectorSearch {
@@ -610,14 +610,16 @@
 .selectorFilter {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
 }
 
 .rangeRow {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
   font-size: 14px;
   color: var(--text-muted);
 }
@@ -649,6 +651,8 @@
 }
 
 .selectorCount {
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
   font-size: 13px;
   font-weight: 600;
   color: var(--text-muted);
@@ -717,8 +721,37 @@
 }
 
 .caseId {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   font-weight: 600;
   white-space: nowrap;
+}
+
+.caseNameEditBtn {
+  padding: 1px 5px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.caseNameEditBtn:hover {
+  color: var(--accent-strong);
+  background: var(--surface);
+}
+
+.caseNameInput {
+  padding: 3px 8px;
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  background: var(--background);
+  color: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  max-width: 220px;
 }
 
 .badges {
@@ -1080,9 +1113,29 @@
 
 /* case scatter plot: x = actual label (2 bands), y = predicted P(positive) */
 .scatterWrap {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 6px;
+}
+
+/* custom hover tooltip for scatter points — position is set inline as a %
+   of the svg's own box, so it tracks the point at any responsive width */
+.scatterTooltip {
+  position: absolute;
+  transform: translate(-50%, calc(-100% - 10px));
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--foreground);
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.4;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 10;
 }
 
 .scatter {

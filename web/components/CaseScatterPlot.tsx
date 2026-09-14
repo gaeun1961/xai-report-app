@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import type { ShapReport } from "@/lib/types";
 import styles from "./report.module.css";
 
@@ -90,12 +90,16 @@ export default function CaseScatterPlot({
     return result;
   }, [cases]);
 
+  const [hoverId, setHoverId] = useState<string | null>(null);
+
   if (cases.length === 0) {
     return <p className={styles.selectorEmpty}>일치하는 케이스 없음</p>;
   }
 
   // draw the selected point last so it sits on top of any overlapping dots
   const ordered = [...cases].sort((a) => (a.id === selectedId ? 1 : -1));
+  const hovered = hoverId ? cases.find((c) => c.id === hoverId) : undefined;
+  const hoverPos = hoverId ? positions.get(hoverId) : undefined;
 
   return (
     <div className={styles.scatterWrap}>
@@ -115,6 +119,7 @@ export default function CaseScatterPlot({
         className={styles.scatter}
         role="img"
         aria-label="케이스별 확신도-정답 산점도"
+        onMouseLeave={() => setHoverId(null)}
       >
         {Y_TICKS.map((t) => {
           const y = MARGIN.top + (1 - t) * PLOT_H;
@@ -171,18 +176,31 @@ export default function CaseScatterPlot({
                 c.isCorrect === false ? styles.scatterDotWrong : styles.scatterDotOk
               } ${selected ? styles.scatterDotSelected : ""}`}
               onClick={() => onSelect(c.id)}
-            >
-              <title>
-                {`케이스 ${noById.get(c.id)} · 예측 ${
-                  c.predictedPositive ? positiveLabel : negativeLabel
-                } (${Math.round((c.probaPositive ?? 0) * 100)}%) · 실제 ${
-                  c.actualPositive ? positiveLabel : negativeLabel
-                }${c.isCorrect === false ? " · 틀림" : ""}`}
-              </title>
-            </circle>
+              onMouseEnter={() => setHoverId(c.id)}
+            />
           );
         })}
       </svg>
+
+      {hovered && hoverPos && (
+        <div
+          className={styles.scatterTooltip}
+          style={{
+            left: `${(hoverPos.x / WIDTH) * 100}%`,
+            top: `${(hoverPos.y / HEIGHT) * 100}%`,
+          }}
+        >
+          <b>케이스 {noById.get(hovered.id)}</b>
+          <span>
+            예측: {hovered.predictedPositive ? positiveLabel : negativeLabel} (
+            {Math.round((hovered.probaPositive ?? 0) * 100)}%)
+          </span>
+          <span>
+            실제: {hovered.actualPositive ? positiveLabel : negativeLabel}
+            {hovered.isCorrect === false ? " · 틀림" : ""}
+          </span>
+        </div>
+      )}
     </div>
   );
 }

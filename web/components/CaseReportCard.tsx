@@ -1,10 +1,43 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ShapReport } from "@/lib/types";
 import { columnDesc } from "@/lib/columnGlossary";
 import GlossaryTerm from "./GlossaryTerm";
 import styles from "./report.module.css";
+
+const CASE_NAME_PREFIX = "xai-case-name:";
+
+// Custom case names persist per-browser only (localStorage), keyed by
+// domain+case id — no server/JSON round trip. Starts at the fallback on both
+// server and first client render (avoids a hydration mismatch), then syncs
+// from localStorage right after mount.
+function useCaseName(domain: string, caseId: string, fallback: string) {
+  const key = `${CASE_NAME_PREFIX}${domain}:${caseId}`;
+  const [name, setName] = useState(fallback);
+
+  useEffect(() => {
+    try {
+      setName(localStorage.getItem(key) ?? fallback);
+    } catch {
+      setName(fallback);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key]);
+
+  function save(next: string) {
+    const trimmed = next.trim();
+    setName(trimmed || fallback);
+    try {
+      if (trimmed && trimmed !== fallback) localStorage.setItem(key, trimmed);
+      else localStorage.removeItem(key);
+    } catch {
+      // localStorage unavailable (private mode etc.) — name still updates in-memory
+    }
+  }
+
+  return [name, save] as const;
+}
 
 type Props = {
   case: ShapReport["cases"][number];
@@ -58,6 +91,11 @@ export default function CaseReportCard({
   const [showNumbers, setShowNumbers] = useState(false);
   const [factorQuery, setFactorQuery] = useState("");
   const [expanded, setExpanded] = useState(false);
+
+  const fallbackName = `케이스 ${caseNo}`;
+  const [caseName, setCaseName] = useCaseName(domain, c.id, fallbackName);
+  const [editingName, setEditingName] = useState(false);
+  const [nameDraft, setNameDraft] = useState(caseName);
 
   const positive = c.predictedPositive;
   const posText = positiveLabel ?? c.prediction;
@@ -121,7 +159,45 @@ export default function CaseReportCard({
   return (
     <article className={styles.card}>
       <header className={styles.cardHead}>
-        <span className={styles.caseId}>케이스 {caseNo}</span>
+        {editingName ? (
+          <input
+            className={styles.caseNameInput}
+            value={nameDraft}
+            autoFocus
+            maxLength={40}
+            aria-label="케이스 이름 수정"
+            onChange={(e) => setNameDraft(e.target.value)}
+            onBlur={() => {
+              setCaseName(nameDraft);
+              setEditingName(false);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                setCaseName(nameDraft);
+                setEditingName(false);
+              }
+              if (e.key === "Escape") {
+                setNameDraft(caseName);
+                setEditingName(false);
+              }
+            }}
+          />
+        ) : (
+          <span className={styles.caseId}>
+            {caseName}
+            <button
+              type="button"
+              className={styles.caseNameEditBtn}
+              aria-label="케이스 이름 수정"
+              onClick={() => {
+                setNameDraft(caseName);
+                setEditingName(true);
+              }}
+            >
+              ✎
+            </button>
+          </span>
+        )}
         <div className={styles.badges}>
           <span
             className={`${styles.badge} ${positive ? styles.badgeYes : styles.badgeNo}`}
