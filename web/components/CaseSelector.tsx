@@ -77,7 +77,9 @@ export default function CaseSelector({
       <div className={styles.rangeRow}>
         <span className={styles.rangeLabel}>
           양성 확률{" "}
-          <InfoTip text={`모델이 예측한 '${posText}'일 확률이에요 (50% 이상이면 ${posText}으로 예측). 범위를 45~55%처럼 좁히면 모델이 애매해한 케이스만 볼 수 있어요 — 확신이 없는 구간이라 적중률도 낮은 편이에요.`} />
+          <InfoTip
+            text={`AI가 "이 사람은 ${posText}일 것 같아!"라고 얼마나 자신 있게 생각했는지를 숫자(%)로 나타낸 거예요. 100%에 가까울수록 AI가 아주 확신했다는 뜻이고, 50%에 가까울수록 동전 던지기처럼 AI도 헷갈려했다는 뜻이에요. 숫자 범위를 45~55%처럼 좁게 만들면, AI가 헷갈려했던 애매한 경우들만 골라 볼 수 있어요 — 그런 경우는 AI가 틀릴 확률도 더 높아요.`}
+          />
         </span>
         <input
           className={styles.rangeInput}

@@ -1113,23 +1113,27 @@
 
 .tooltipHost:hover .glossaryBubble,
 .tooltipHost:focus .glossaryBubble,
-.tooltipHost:focus-within .glossaryBubble {
+.tooltipHost:focus-within .glossaryBubble,
+.tooltipHost:hover .infoTipBubble,
+.tooltipHost:focus .infoTipBubble,
+.tooltipHost:focus-within .infoTipBubble {
   display: block;
 }
 
-/* info icon: same CSS-only tooltip bubble as .glossary, but for a section
-   heading rather than an inline term — small circular "?" trigger */
+/* info icon: a section-level "?" trigger — tinted green by default so it
+   reads as interactive at a glance, not just on hover */
 .infoTip {
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 17px;
-  height: 17px;
+  width: 19px;
+  height: 19px;
   border-radius: 999px;
-  border: 1px solid var(--text-muted);
-  color: var(--text-muted);
-  font-size: 11px;
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border));
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  color: var(--accent-strong);
+  font-size: 12px;
   font-weight: 700;
   line-height: 1;
   cursor: help;
@@ -1140,14 +1144,41 @@
 .infoTip:hover,
 .infoTip:focus-visible {
   border-color: var(--accent);
-  color: var(--accent-strong);
-  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  background: color-mix(in srgb, var(--accent) 20%, transparent);
 }
 
-.infoTip .glossaryBubble {
-  left: auto;
+/* longer, friendlier explanation bubble — separate from .glossaryBubble
+   (which stays small/dark for one-line column-name definitions) so a full
+   sentence doesn't wrap into a cramped dark column */
+.infoTipBubble {
+  display: none;
+  position: absolute;
   right: 0;
+  bottom: calc(100% + 10px);
+  z-index: 20;
+  width: max-content;
+  max-width: min(340px, 85vw);
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--foreground);
+  font-size: 14px;
   font-weight: 400;
+  line-height: 1.65;
+  text-decoration: none;
+  white-space: normal;
+  pointer-events: none;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+.infoTipBubble::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  right: 14px;
+  border: 6px solid transparent;
+  border-top-color: var(--surface);
 }
 
 .contribList {

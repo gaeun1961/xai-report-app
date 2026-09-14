@@ -15,7 +15,7 @@ export default function InfoTip({ text }: Props) {
       aria-label={text}
     >
       ?
-      <span className={styles.glossaryBubble} role="tooltip">
+      <span className={styles.infoTipBubble} role="tooltip">
         {text}
       </span>
     </span>
