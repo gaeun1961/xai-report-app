@@ -81,6 +81,9 @@ def load_and_preprocess(csv_path: str, target_column: str):
             (pre-encoding) for use when rendering individual case reports.
         target_labels: (negative_label, positive_label) as they appeared in
             the CSV, for showing the dataset's own wording in the report.
+        raw_df: the unmodified CSV as loaded (columns stripped only), for
+            callers that need missingness/outlier stats on the original
+            data — avoids re-reading the same CSV a second time.
     """
     df = pd.read_csv(csv_path)
     df.columns = df.columns.str.strip()
@@ -115,7 +118,7 @@ def load_and_preprocess(csv_path: str, target_column: str):
         display_df[col] = X[col]
         X[col], _ = pd.factorize(X[col])
 
-    return X, y, display_df, target_labels
+    return X, y, display_df, target_labels, df
 
 
 def train_model(X: pd.DataFrame, y: pd.Series, model=None):
@@ -306,7 +309,7 @@ def compute_shap(model, X: pd.DataFrame):
     considered — the report uses it to explain why the top-5 factors alone
     don't always match the final prediction)."""
     explainer = shap.TreeExplainer(model)
-    raw = explainer.shap_values(X)
+    raw = explainer.shap_values(X, check_additivity=False)
 
     if isinstance(raw, list):
         shap_values = raw[1] if len(raw) > 1 else raw[0]
