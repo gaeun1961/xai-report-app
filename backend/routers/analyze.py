@@ -89,6 +89,7 @@ async def get_columns(file: UploadFile = File(...)):
 
 MIN_CASES = 1
 MAX_CASES = 100
+CASE_FOCUS_OPTIONS = {"balanced", "wrong", "borderline"}
 
 
 @router.post("/analyze")
@@ -96,7 +97,12 @@ async def analyze(
     file: UploadFile = File(...),
     target_column: str = Form(...),
     n_cases: int = Form(30),
+    case_focus: str = Form("balanced"),
 ):
+    if case_focus not in CASE_FOCUS_OPTIONS:
+        raise HTTPException(
+            400, f"case_focus는 {sorted(CASE_FOCUS_OPTIONS)} 중 하나여야 해요."
+        )
     df = _read_csv(await file.read())
 
     if target_column not in df.columns:
@@ -170,6 +176,7 @@ async def analyze(
             outliers_excluded_columns=outliers_excluded,
             output_path=output_path,
             n_cases=n_cases,
+            case_focus=case_focus,
         )
         # read back the file export_report_json already wrote instead of
         # returning its in-memory dict: display_df keeps raw NaN for missing

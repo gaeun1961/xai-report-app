@@ -331,13 +331,49 @@ def compute_shap(model, X: pd.DataFrame):
 TYPICAL_SHARE = 0.8  # per class: 80% confident/typical rows, 20% borderline
 
 
-def _pick_case_indices(predictions: np.ndarray, proba_pos: np.ndarray, n_cases: int) -> list:
-    """Pick a representative case mix: an even split across predicted classes,
-    and within each class ~80% of the slots go to 'typical' rows the model is
+def _pick_case_indices(
+    predictions: np.ndarray,
+    proba_pos: np.ndarray,
+    n_cases: int,
+    actual: np.ndarray = None,
+    focus: str = "balanced",
+) -> list:
+    """Pick which rows become cases in the report.
+
+    focus="balanced" (default): an even split across predicted classes, and
+    within each class ~80% of the slots go to 'typical' rows the model is
     most confident about, ~20% to 'borderline' rows whose probability sits
     nearest 0.5 (so the default view reads as trustworthy as the accuracy
     implies; the borderline ones stay reachable via the confidence filter).
-    Deterministic (sorted by confidence, no sampling)."""
+    Deterministic (sorted by confidence, no sampling).
+
+    focus="wrong": the model's mistakes first (most-confidently-wrong first —
+    those are the most worth auditing), topped up with the balanced mix if
+    there aren't n_cases wrong predictions. Requires `actual`; silently falls
+    back to "balanced" if `actual` is omitted or nothing was wrong (e.g. a
+    perfect model).
+
+    focus="borderline": probability nearest 50% first, regardless of
+    predicted class or correctness — the "model couldn't decide" cases.
+    """
+    if focus == "borderline":
+        order = np.argsort(np.abs(proba_pos - 0.5))
+        return sorted(int(i) for i in order[:n_cases])
+
+    if focus == "wrong" and actual is not None:
+        wrong = np.where(predictions != actual)[0]
+        if len(wrong) > 0:
+            order = wrong[np.argsort(-np.abs(proba_pos[wrong] - 0.5))]
+            chosen = [int(i) for i in order[:n_cases]]
+            if len(chosen) < n_cases:
+                for i in np.argsort(np.abs(proba_pos - 0.5)):
+                    if int(i) not in chosen:
+                        chosen.append(int(i))
+                    if len(chosen) >= n_cases:
+                        break
+            return sorted(set(chosen))[:n_cases]
+        # no wrong predictions at all — fall through to "balanced" below
+
     per_class = max(1, n_cases // 2)
     chosen: list = []
 
@@ -381,6 +417,7 @@ def export_report_json(
     eval_stats: dict = None,
     base_value: float = None,
     n_cases: int = 30,
+    case_focus: str = "balanced",
     corr_max_cols: int = 12,
     missingness: list = None,
     outliers: list = None,
@@ -402,7 +439,9 @@ def export_report_json(
     pos_display = positive_label or pos_raw
     neg_display = negative_label or neg_raw
 
-    case_indices = _pick_case_indices(predictions, proba_pos, n_cases)
+    case_indices = _pick_case_indices(
+        predictions, proba_pos, n_cases, actual=y.to_numpy(), focus=case_focus
+    )
 
     cases = []
     for idx in case_indices:

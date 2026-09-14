@@ -2,9 +2,12 @@
 return signature changes (it grew a 5th value, raw_df, in the memory-optimization
 pass; this endpoint's unpacking has to track it). Run: python test_analyze.py
 """
+import numpy as np
 from fastapi.testclient import TestClient
 
-from main import app
+from main import app  # import first: inserts analysis/scripts onto sys.path
+
+import common
 
 CSV = b"""Survived,Pclass,Sex,Age,Fare
 0,3,male,22,7.25
@@ -38,6 +41,39 @@ def test_analyze_returns_report():
     }
 
 
+def test_pick_case_indices_focus():
+    # idx1 and idx4 are the model's mistakes; distances from 0.5 are all
+    # distinct by construction so ordering is unambiguous.
+    predictions = np.array([1, 1, 1, 0, 0, 0])
+    actual = np.array([1, 0, 1, 0, 1, 0])
+    proba_pos = np.array([0.95, 0.6, 0.52, 0.10, 0.47, 0.15])
+
+    # "wrong": most-confidently-wrong first (idx1, dist 0.10, before idx4, dist 0.03)
+    assert common._pick_case_indices(
+        predictions, proba_pos, 1, actual=actual, focus="wrong"
+    ) == [1]
+    assert common._pick_case_indices(
+        predictions, proba_pos, 2, actual=actual, focus="wrong"
+    ) == [1, 4]
+
+    # "borderline": closest to 0.5 first, regardless of correctness
+    assert common._pick_case_indices(
+        predictions, proba_pos, 2, focus="borderline"
+    ) == [2, 4]
+
+
+def test_case_focus_rejects_unknown_value():
+    client = TestClient(app)
+    res = client.post(
+        "/analyze",
+        files={"file": ("t.csv", CSV, "text/csv")},
+        data={"target_column": "Survived", "case_focus": "nonsense"},
+    )
+    assert res.status_code == 400, res.text
+
+
 if __name__ == "__main__":
     test_analyze_returns_report()
+    test_pick_case_indices_focus()
+    test_case_focus_rejects_unknown_value()
     print("ok")
