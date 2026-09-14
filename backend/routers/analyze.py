@@ -109,7 +109,7 @@ async def analyze(file: UploadFile = File(...), target_column: str = Form(...)):
         csv_path = Path(tmp) / "upload.csv"
         df.to_csv(csv_path, index=False)
 
-        X, y, display_df, target_labels = common.load_and_preprocess(
+        X, y, display_df, target_labels, _raw_df = common.load_and_preprocess(
             csv_path, target_column
         )
         if X.shape[1] == 0:
