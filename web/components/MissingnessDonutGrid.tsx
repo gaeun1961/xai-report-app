@@ -34,26 +34,33 @@ export default function MissingnessDonutGrid({
           const pct = Math.min(1, it.value);
           const filled = pct * CIRC;
           const sev = pct >= 0.3 ? "High" : pct >= 0.1 ? "Mid" : "Low";
+          const displayPct = (it.value * 100).toFixed(1);
+          // stroke-linecap: round still draws a visible dot for a zero-length
+          // dash, so a column that displays "0.0%" must skip the arc entirely
+          // rather than rely on dasharray math to hide it
+          const hasArc = parseFloat(displayPct) > 0;
 
           return (
             <div key={it.label} className={styles.donutCell}>
               <svg viewBox="0 0 64 64" className={styles.donutSvg}>
                 <circle cx={32} cy={32} r={R} className={styles.donutTrack} />
-                <circle
-                  cx={32}
-                  cy={32}
-                  r={R}
-                  className={`${styles.donutFill} ${styles[`donut${sev}`]}`}
-                  style={{ strokeDasharray: `${filled} ${CIRC - filled}` }}
-                  transform="rotate(-90 32 32)"
-                />
+                {hasArc && (
+                  <circle
+                    cx={32}
+                    cy={32}
+                    r={R}
+                    className={`${styles.donutFill} ${styles[`donut${sev}`]}`}
+                    style={{ strokeDasharray: `${filled} ${CIRC - filled}` }}
+                    transform="rotate(-90 32 32)"
+                  />
+                )}
                 <text
                   x={32}
                   y={37}
                   textAnchor="middle"
                   className={`${styles.donutText} ${styles[`donutText${sev}`]}`}
                 >
-                  {(it.value * 100).toFixed(1)}%
+                  {displayPct}%
                 </text>
               </svg>
               <GlossaryTerm
