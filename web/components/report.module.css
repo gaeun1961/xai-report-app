@@ -565,29 +565,51 @@
   transform: translateX(-50%);
 }
 
+/* the element itself is an invisible hit box, bigger than the mark it draws
+   via ::after — same "small mark, bigger target" split as the scatter plot's
+   hit circle, just done with real CSS px since this isn't SVG-viewBox-scaled */
 .boxPlotDot {
   position: absolute;
   top: 50%;
+  width: 16px;
+  height: 16px;
+  transform: translate(-50%, -50%);
+  cursor: default;
+}
+
+.boxPlotDot::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
   width: 5px;
   height: 5px;
   border-radius: 999px;
   background: var(--warn);
   opacity: 0.75;
   transform: translate(-50%, -50%);
-  cursor: default;
+}
+
+@media (max-width: 640px) {
+  .boxPlotDot {
+    width: 24px;
+    height: 24px;
+  }
 }
 
 .boxPlotTooltip {
   position: absolute;
   bottom: calc(100% + 6px);
   transform: translateX(-50%);
-  padding: 5px 8px;
-  border-radius: 6px;
-  background: var(--foreground);
-  color: #fff;
-  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--foreground);
+  font-size: 13px;
   white-space: nowrap;
   pointer-events: none;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
   z-index: 10;
 }
 
@@ -1343,13 +1365,16 @@
 }
 
 .scatterDot {
-  cursor: pointer;
   stroke: var(--background);
   stroke-width: 1;
   opacity: 0.85;
 }
 
-.scatterDot:hover {
+.scatterHit {
+  cursor: pointer;
+}
+
+.scatterHit:hover + .scatterDot {
   opacity: 1;
 }
 

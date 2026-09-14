@@ -1,8 +1,23 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { ShapReport } from "@/lib/types";
 import styles from "./report.module.css";
+
+// narrower viewport = fewer real pixels per SVG unit, so a touch target needs
+// more units there to stay reachable — not a pixel-exact 44px target (the
+// chart is too dense for that everywhere), but meaningfully bigger
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 640px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+  return isMobile;
+}
 
 type CaseItem = ShapReport["cases"][number];
 
@@ -91,6 +106,9 @@ export default function CaseScatterPlot({
   }, [cases]);
 
   const [hoverId, setHoverId] = useState<string | null>(null);
+  const isMobile = useIsMobile();
+  const hitR = isMobile ? 14 : 9;
+  const hitRSelected = isMobile ? 16 : 11;
 
   if (cases.length === 0) {
     return <p className={styles.selectorEmpty}>일치하는 케이스 없음</p>;
@@ -167,17 +185,28 @@ export default function CaseScatterPlot({
           if (!pos) return null;
           const selected = c.id === selectedId;
           return (
-            <circle
-              key={c.id}
-              cx={pos.x}
-              cy={pos.y}
-              r={selected ? DOT_R_SELECTED : DOT_R}
-              className={`${styles.scatterDot} ${
-                c.isCorrect === false ? styles.scatterDotWrong : styles.scatterDotOk
-              } ${selected ? styles.scatterDotSelected : ""}`}
-              onClick={() => onSelect(c.id)}
-              onMouseEnter={() => setHoverId(c.id)}
-            />
+            <g key={c.id}>
+              {/* invisible, larger hit target — all interaction lives here so
+                  the tiny visible dot never has to be the precise click target */}
+              <circle
+                cx={pos.x}
+                cy={pos.y}
+                r={selected ? hitRSelected : hitR}
+                fill="transparent"
+                className={styles.scatterHit}
+                onClick={() => onSelect(c.id)}
+                onMouseEnter={() => setHoverId(c.id)}
+              />
+              <circle
+                cx={pos.x}
+                cy={pos.y}
+                r={selected ? DOT_R_SELECTED : DOT_R}
+                className={`${styles.scatterDot} ${
+                  c.isCorrect === false ? styles.scatterDotWrong : styles.scatterDotOk
+                } ${selected ? styles.scatterDotSelected : ""}`}
+                style={{ pointerEvents: "none" }}
+              />
+            </g>
           );
         })}
       </svg>
