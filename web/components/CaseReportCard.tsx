@@ -148,7 +148,12 @@ export default function CaseReportCard({
 
   const query = factorQuery.trim().toLowerCase();
   const filtered = query
-    ? factors.filter((f) => f.feature.toLowerCase().includes(query))
+    ? factors.filter(
+        (f) =>
+          f.feature.toLowerCase().includes(query) ||
+          label(f.feature).toLowerCase().includes(query) ||
+          String(f.value).toLowerCase().includes(query),
+      )
     : factors;
   const visible = query || expanded ? filtered : filtered.slice(0, TOP_N);
   const hiddenCount = factors.length - TOP_N;
@@ -265,7 +270,7 @@ export default function CaseReportCard({
         <input
           className={styles.factorSearch}
           type="search"
-          placeholder={`요인 이름으로 검색 (전체 ${factors.length}개)`}
+          placeholder={`요인 이름·값으로 검색 (전체 ${factors.length}개)`}
           value={factorQuery}
           onChange={(e) => setFactorQuery(e.target.value)}
         />
