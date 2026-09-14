@@ -8,6 +8,7 @@ import CaseSelector from "./CaseSelector";
 import CaseReportCard from "./CaseReportCard";
 import CorrelationMatrix from "./CorrelationMatrix";
 import CopySummaryButton from "./CopySummaryButton";
+import InfoTip from "./InfoTip";
 import styles from "./report.module.css";
 
 type Tab = "summary" | "cases" | "data";
@@ -93,17 +94,20 @@ function SummaryBody({
 
   return (
     <div className={styles.reportCol}>
-      <CopySummaryButton report={report} domain={domain} selectedCase={selectedCase} />
+      <div className={styles.guideRow}>
+        <p className={styles.guide}>
+          이 리포트는 AI가 왜 이렇게 예측했는지 보여줍니다.
+          <br />각 요인이 예측을 어느 쪽으로, 얼마나 강하게 밀었는지 문장으로 풀어서
+          설명해요.
+          <br />원래 숫자가 궁금하면 케이스 탐색 탭에서 “숫자로 보기”를 누르면
+          됩니다.
+          <br />“결과 복사하기”를 누르면 이 리포트 내용을 요약해서 복사할 수 있어요.
+          ChatGPT 같은 AI 챗봇에 붙여넣으면 이어서 질문할 수 있어요.
+        </p>
+        <CopySummaryButton report={report} domain={domain} selectedCase={selectedCase} />
+      </div>
 
-      <p className={styles.guide}>
-        이 리포트는 AI가 왜 이렇게 예측했는지 보여줍니다.
-        <br />각 요인이 예측을 어느 쪽으로, 얼마나 강하게 밀었는지 문장으로 풀어서
-        설명해요.
-        <br />원래 숫자가 궁금하면 케이스 탐색 탭에서 “숫자로 보기”를 누르면
-        됩니다.
-      </p>
-
-      <section className={styles.section}>
+      <section className={styles.cardSection}>
         <h2 className={styles.h2}>전체 정확도</h2>
         <div className={styles.accuracyRow}>
           <p className={styles.accuracy}>
@@ -144,16 +148,16 @@ function SummaryBody({
         )}
       </section>
 
-      <section className={styles.section}>
-        <h2 className={styles.h2}>특성 중요도</h2>
-        <p className={styles.sectionNote}>
-          막대가 길수록 그 특성이 예측을 평균적으로 더 크게 움직였다는 뜻이에요.
-        </p>
+      <section className={styles.cardSection}>
+        <h2 className={styles.h2}>
+          특성 중요도{" "}
+          <InfoTip text="요리할 때 어떤 재료가 맛을 가장 많이 좌우하는지 궁금할 때가 있죠? 이 그래프가 딱 그거예요. 막대가 길수록, 그 항목이 AI의 예측 결과를 정하는 데 더 큰 힘을 썼다는 뜻이에요. 막대가 짧으면 그 항목은 예측에 별로 영향을 못 준 거예요." />
+        </h2>
         <FeatureImportanceChart items={report.featureImportance} domain={domain} />
       </section>
 
       {overallSummary.length > 0 && (
-        <section className={styles.section}>
+        <section className={styles.cardSection}>
           <h2 className={styles.h2}>총평</h2>
           <div className={styles.qualityMessage}>
             {overallSummary.map((s, i) => (
@@ -174,11 +178,8 @@ type CasesBodyProps = {
 };
 
 function CasesBody({ report, domain, selectedId, onSelect }: CasesBodyProps) {
-  const selectedIndex = Math.max(
-    0,
-    report.cases.findIndex((c) => c.id === selectedId),
-  );
-  const selected = report.cases[selectedIndex] ?? report.cases[0];
+  const selectedIndex = report.cases.findIndex((c) => c.id === selectedId);
+  const selected = selectedIndex >= 0 ? report.cases[selectedIndex] : null;
   const { positiveLabel, negativeLabel } = report;
 
   const CHART_LIMIT = 15;
@@ -186,17 +187,17 @@ function CasesBody({ report, domain, selectedId, onSelect }: CasesBodyProps) {
 
   return (
     <div className={styles.reportCol}>
-      <section className={styles.section}>
+      <section className={styles.cardSection}>
         <CaseSelector
           cases={report.cases}
-          selectedId={selected.id}
+          selectedId={selectedId ?? ""}
           onSelect={onSelect}
           positiveLabel={positiveLabel}
           negativeLabel={negativeLabel}
         />
       </section>
 
-      <section className={styles.section}>
+      {selected ? (
         <CaseReportCard
           case={selected}
           domain={domain}
@@ -207,7 +208,11 @@ function CasesBody({ report, domain, selectedId, onSelect }: CasesBodyProps) {
           chartLimit={CHART_LIMIT}
           caseNo={selectedIndex + 1}
         />
-      </section>
+      ) : (
+        <p className={styles.selectorEmpty}>
+          위 산점도에서 점을 클릭하면 케이스 상세를 볼 수 있어요.
+        </p>
+      )}
     </div>
   );
 }

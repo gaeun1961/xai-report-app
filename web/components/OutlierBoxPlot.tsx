@@ -25,6 +25,11 @@ export default function OutlierBoxPlot({
   collapsedCount = 8,
 }: Props) {
   const [expanded, setExpanded] = useState(false);
+  const [hover, setHover] = useState<{
+    column: string;
+    value: number;
+    leftPct: number;
+  } | null>(null);
 
   const sorted = [...items].sort((a, b) => b.outlierPct - a.outlierPct);
   const hidden = sorted.length - collapsedCount;
@@ -89,10 +94,22 @@ export default function OutlierBoxPlot({
                     key={i}
                     className={styles.boxPlotDot}
                     style={{ left: `${pct(v)}%` }}
+                    onMouseEnter={() =>
+                      setHover({ column: it.column, value: v, leftPct: pct(v) })
+                    }
+                    onMouseLeave={() => setHover(null)}
                   />
                 ))}
+                {hover && hover.column === it.column && (
+                  <span
+                    className={styles.boxPlotTooltip}
+                    style={{ left: `${hover.leftPct}%` }}
+                  >
+                    {columnDesc(domain, hover.column) ?? hover.column}: {hover.value}
+                  </span>
+                )}
               </span>
-              <span className={styles.chartValue}>
+              <span className={`${styles.chartValue} ${styles.boxPlotValue}`}>
                 {(it.outlierPct * 100).toFixed(1)}%
               </span>
             </li>

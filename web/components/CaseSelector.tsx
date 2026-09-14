@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import type { ShapReport } from "@/lib/types";
 import CaseScatterPlot from "./CaseScatterPlot";
+import InfoTip from "./InfoTip";
 import styles from "./report.module.css";
 
 type Props = {
@@ -74,7 +75,12 @@ export default function CaseSelector({
       </div>
 
       <div className={styles.rangeRow}>
-        <span className={styles.rangeLabel}>양성 확률</span>
+        <span className={styles.rangeLabel}>
+          양성 확률{" "}
+          <InfoTip
+            text={`AI가 "이 사람은 ${posText}일 것 같아!"라고 얼마나 자신 있게 생각했는지를 숫자(%)로 나타낸 거예요. 100%에 가까울수록 AI가 아주 확신했다는 뜻이고, 50%에 가까울수록 동전 던지기처럼 AI도 헷갈려했다는 뜻이에요. 숫자 범위를 45~55%처럼 좁게 만들면, AI가 헷갈려했던 애매한 경우들만 골라 볼 수 있어요 — 그런 경우는 AI가 틀릴 확률도 더 높아요.`}
+          />
+        </span>
         <input
           className={styles.rangeInput}
           type="number"
@@ -108,11 +114,6 @@ export default function CaseSelector({
           </button>
         )}
       </div>
-      <p className={styles.selectorHint}>
-        범위를 45~55%처럼 좁히면 모델이 애매해한 케이스만 볼 수 있어요.
-        <br />이 구간은 모델이 확신이 없는 케이스라, 적중률이 낮은 편이에요.
-      </p>
-
       <div className={styles.selectorCount}>{shown.length}개 표시</div>
 
       <CaseScatterPlot

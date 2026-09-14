@@ -70,8 +70,8 @@
   border-left: 4px solid var(--accent);
   border-radius: 12px;
   background: var(--surface);
-  font-size: 13px;
-  line-height: 1.7;
+  font-size: 14px;
+  line-height: 1.6;
   color: var(--text-muted);
 }
 
@@ -95,7 +95,7 @@
   padding: 12px 16px;
   border: 1px dashed var(--border);
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 15px;
   color: var(--text-muted);
 }
 
@@ -107,7 +107,7 @@
 
 .tab {
   padding: 8px 14px;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   border: none;
   border-bottom: 2px solid transparent;
@@ -134,7 +134,7 @@
 
 .soon {
   font-style: normal;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   padding: 1px 6px;
   border-radius: 999px;
@@ -148,6 +148,55 @@
   gap: 12px;
 }
 
+/* "데이터 관계" tab: jump nav + visually distinct cards per section, so the
+   3 sections (상관관계/이상치/결측치) read as separate blocks, not one long
+   scroll */
+.dataRelToc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  padding: 8px 0;
+  background: var(--background);
+}
+
+.dataRelTocLink {
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--foreground);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.dataRelTocLink:hover {
+  border-color: var(--accent);
+  color: var(--accent-strong);
+}
+
+.cardSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--background);
+  scroll-margin-top: 52px;
+}
+
+/* .h2's own margin-top (meant for headings that follow other content) would
+   stack on top of the card's padding here, leaving more empty space above
+   the heading than below the last line — the gap between flex children
+   already spaces things out, so the heading needs none of its own */
+.cardSection > h2 {
+  margin-top: 0;
+}
+
 /* correlation heatmap */
 .corrWrap {
   overflow-x: auto;
@@ -159,7 +208,7 @@
   gap: 2px;
   width: max-content;
   min-width: 100%;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .corrCorner {
@@ -173,7 +222,6 @@
   padding: 4px 2px;
   min-height: 96px;
   color: var(--text-muted);
-  cursor: help;
 }
 
 .corrColHead span {
@@ -191,7 +239,6 @@
   text-align: right;
   color: var(--text-muted);
   overflow-wrap: anywhere;
-  cursor: help;
 }
 
 .corrCell {
@@ -233,13 +280,23 @@
   border-radius: 999px;
   background: color-mix(in srgb, var(--accent) 10%, transparent);
   color: var(--accent-strong);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
 }
 
 .corrChip:hover {
   background: color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.corrExplain {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border-left: 3px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--foreground);
 }
 
 .accuracy {
@@ -258,7 +315,7 @@
 .qualityBadge {
   padding: 3px 10px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
 }
 
@@ -281,7 +338,7 @@
   display: flex;
   flex-direction: column;
   gap: 5px;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.6;
   color: var(--text-muted);
 }
@@ -292,8 +349,8 @@
 
 .sectionNote {
   margin-top: -4px;
-  font-size: 12px;
-  line-height: 1.5;
+  font-size: 13px;
+  line-height: 1.6;
   color: var(--text-muted);
 }
 
@@ -345,16 +402,16 @@
 }
 
 .domainTitle {
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 600;
 }
 
 .domainDesc {
   flex: 1;
   margin: 0;
-  font-size: 13px;
+  font-size: 14px;
   color: var(--text-muted);
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 .domainAccBlock {
@@ -374,12 +431,12 @@
 }
 
 .domainAccLabel {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-muted);
 }
 
 .domainAccPending {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--text-muted);
 }
 
@@ -396,7 +453,7 @@
   grid-template-columns: 160px minmax(0, 1fr) 44px;
   align-items: center;
   gap: 10px;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .chartLabel {
@@ -423,7 +480,7 @@
 .chartAxisTick {
   position: absolute;
   top: 0;
-  font-size: 10px;
+  font-size: 11px;
   color: var(--text-muted);
   white-space: nowrap;
 }
@@ -452,6 +509,14 @@
   .chartAxisRow {
     display: none;
   }
+
+  /* unlike the feature-importance bars (where bar length still carries the
+     value), the box plot's shape doesn't encode the outlier % anywhere else
+     — hiding it on mobile would lose the number entirely, so show it back */
+  .boxPlotValue {
+    display: inline-block;
+    margin-top: 4px;
+  }
 }
 
 .chartTrack {
@@ -476,6 +541,7 @@
 /* outlier box plot — each row is scaled to its own column's min–max, so
    there's no shared axis across rows (unlike the percent bar charts) */
 .boxPlotTrack {
+  display: block;
   position: relative;
   height: 16px;
 }
@@ -506,15 +572,52 @@
   transform: translateX(-50%);
 }
 
+/* the element itself is an invisible hit box, bigger than the mark it draws
+   via ::after — same "small mark, bigger target" split as the scatter plot's
+   hit circle, just done with real CSS px since this isn't SVG-viewBox-scaled */
 .boxPlotDot {
   position: absolute;
   top: 50%;
+  width: 16px;
+  height: 16px;
+  transform: translate(-50%, -50%);
+  cursor: default;
+}
+
+.boxPlotDot::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
   width: 5px;
   height: 5px;
   border-radius: 999px;
   background: var(--warn);
   opacity: 0.75;
   transform: translate(-50%, -50%);
+}
+
+@media (max-width: 640px) {
+  .boxPlotDot {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.boxPlotTooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  transform: translateX(-50%);
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--foreground);
+  font-size: 13px;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  z-index: 10;
 }
 
 .boxPlotLegendBox {
@@ -537,11 +640,80 @@
   background: var(--warn);
 }
 
+/* missingness: mini donut grid (each column's own 0–100% ring, so small
+   shares still read clearly instead of vanishing on a fixed 0–100% bar) */
+.donutGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+  gap: 18px 10px;
+}
+
+.donutCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.donutSvg {
+  width: 64px;
+  height: 64px;
+}
+
+.donutTrack {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 8;
+}
+
+.donutFill {
+  fill: none;
+  stroke-width: 8;
+  stroke-linecap: round;
+}
+
+.donutLow {
+  stroke: var(--accent);
+}
+
+.donutMid {
+  stroke: var(--warn);
+}
+
+.donutHigh {
+  stroke: #b91c1c;
+}
+
+.donutText {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.donutTextLow {
+  fill: var(--accent-strong);
+}
+
+.donutTextMid {
+  fill: var(--warn);
+}
+
+.donutTextHigh {
+  fill: #b91c1c;
+}
+
+.donutLabel {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: center;
+  max-width: 90px;
+  overflow-wrap: anywhere;
+}
+
 /* case selector */
 .selectorWrap {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 14px;
 }
 
 .selectorSearch {
@@ -550,12 +722,12 @@
   border-radius: 6px;
   background: var(--background);
   color: inherit;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .selectorHint {
-  font-size: 12px;
-  line-height: 1.5;
+  font-size: 13px;
+  line-height: 1.6;
   color: var(--text-muted);
 }
 
@@ -569,15 +741,17 @@
 .selectorFilter {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
 }
 
 .rangeRow {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 6px;
-  font-size: 13px;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  font-size: 14px;
   color: var(--text-muted);
 }
 
@@ -593,7 +767,7 @@
   border-radius: 6px;
   background: var(--background);
   color: inherit;
-  font-size: 13px;
+  font-size: 14px;
   text-align: right;
 }
 
@@ -603,12 +777,14 @@
   border-radius: 999px;
   background: var(--surface);
   color: var(--text-muted);
-  font-size: 12px;
+  font-size: 13px;
   cursor: pointer;
 }
 
 .selectorCount {
-  font-size: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-muted);
 }
@@ -619,7 +795,7 @@
   border-radius: 999px;
   background: var(--surface);
   color: var(--text-muted);
-  font-size: 12px;
+  font-size: 13px;
   cursor: pointer;
 }
 
@@ -638,7 +814,7 @@
 }
 
 .selectorEmpty {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--text-muted);
 }
 
@@ -648,7 +824,7 @@
   border-radius: 6px;
   background: var(--surface);
   color: inherit;
-  font-size: 13px;
+  font-size: 14px;
   cursor: pointer;
 }
 
@@ -661,8 +837,9 @@
 /* case report card */
 .card {
   padding: 20px;
-  border: 1px solid color-mix(in srgb, currentColor 15%, transparent);
+  border: 1px solid var(--border);
   border-radius: 12px;
+  background: var(--background);
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -676,8 +853,37 @@
 }
 
 .caseId {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   font-weight: 600;
   white-space: nowrap;
+}
+
+.caseNameEditBtn {
+  padding: 1px 5px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.caseNameEditBtn:hover {
+  color: var(--accent-strong);
+  background: var(--surface);
+}
+
+.caseNameInput {
+  padding: 3px 8px;
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  background: var(--background);
+  color: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  max-width: 220px;
 }
 
 .badges {
@@ -690,7 +896,7 @@
 .badge {
   padding: 3px 10px;
   border-radius: 999px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   white-space: nowrap;
 }
@@ -721,8 +927,8 @@
   display: flex;
   flex-direction: column;
   gap: 5px;
-  line-height: 1.7;
-  font-size: 14px;
+  line-height: 1.6;
+  font-size: 15px;
 }
 
 .explanation p {
@@ -736,8 +942,8 @@
   padding: 10px 14px;
   border-radius: 8px;
   background: var(--surface);
-  font-size: 13px;
-  line-height: 1.7;
+  font-size: 14px;
+  line-height: 1.6;
   color: var(--text-muted);
 }
 
@@ -755,13 +961,14 @@
   border-radius: 8px;
   border-left: 3px solid var(--warn);
   background: color-mix(in srgb, var(--warn) 10%, transparent);
-  font-size: 13px;
-  line-height: 1.7;
+  font-size: 14px;
+  line-height: 1.6;
   color: #7c4a12;
 }
 
 .copyBtnRow {
   display: flex;
+  flex-shrink: 0;
   justify-content: flex-end;
 }
 
@@ -771,7 +978,7 @@
   border-radius: 8px;
   background: var(--accent);
   color: #fff;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
 }
@@ -807,7 +1014,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
 }
 
@@ -820,7 +1027,7 @@
   border-radius: 8px;
   background: var(--surface);
   color: inherit;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.6;
   font-family: inherit;
 }
@@ -830,11 +1037,30 @@
   justify-content: flex-end;
 }
 
+.guideRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+@media (max-width: 640px) {
+  .guideRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .copyBtnRow {
+    justify-content: flex-start;
+  }
+}
+
 .guide {
+  flex: 1;
+  margin: 0;
   padding: 12px 16px;
   border-radius: 8px;
   background: var(--surface);
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.6;
   color: var(--text-muted);
 }
@@ -843,7 +1069,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   color: color-mix(in srgb, currentColor 70%, transparent);
 }
@@ -854,7 +1080,7 @@
   border-radius: 6px;
   background: transparent;
   color: inherit;
-  font-size: 12px;
+  font-size: 13px;
   cursor: pointer;
 }
 
@@ -864,7 +1090,7 @@
   border-radius: 6px;
   background: var(--background);
   color: inherit;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .moreFactorsBtn {
@@ -874,14 +1100,14 @@
   border-radius: 999px;
   background: var(--surface);
   color: var(--accent-strong);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
 }
 
 .contribSentence {
-  font-size: 13px;
-  line-height: 1.65;
+  font-size: 14px;
+  line-height: 1.6;
   text-wrap: pretty;
 }
 
@@ -904,7 +1130,7 @@
   text-decoration-color: var(--text-muted);
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
-  cursor: help;
+  cursor: default;
   outline: none;
 }
 
@@ -924,14 +1150,16 @@
   max-width: min(240px, 70vw);
   padding: 8px 10px;
   border-radius: 8px;
-  background: var(--foreground);
-  color: #fff;
-  font-size: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--foreground);
+  font-size: 13px;
   font-weight: 400;
-  line-height: 1.5;
+  line-height: 1.6;
   text-decoration: none;
   white-space: normal;
   pointer-events: none;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
 }
 
 .glossaryBubble::after {
@@ -940,13 +1168,100 @@
   top: 100%;
   left: 14px;
   border: 5px solid transparent;
-  border-top-color: var(--foreground);
+  border-top-color: var(--surface);
 }
 
-.glossary:hover .glossaryBubble,
-.glossary:focus .glossaryBubble,
-.glossary:focus-within .glossaryBubble {
+.tooltipHost:hover .glossaryBubble,
+.tooltipHost:focus .glossaryBubble,
+.tooltipHost:focus-within .glossaryBubble {
   display: block;
+}
+
+.tooltipHost:hover .infoTipBubble,
+.tooltipHost:focus .infoTipBubble,
+.tooltipHost:focus-within .infoTipBubble {
+  display: flex;
+}
+
+/* info icon: a section-level "?" trigger — tinted green by default so it
+   reads as interactive at a glance, not just on hover */
+.infoTip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 19px;
+  height: 19px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border));
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  color: var(--accent-strong);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: help;
+  outline: none;
+  vertical-align: middle;
+}
+
+.infoTip:hover,
+.infoTip:focus-visible {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+/* longer, friendlier explanation bubble — separate from .glossaryBubble
+   (which stays small/dark for one-line column-name definitions) so a full
+   sentence doesn't wrap into a cramped dark column */
+.infoTipBubble {
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 10px);
+  z-index: 20;
+  width: max-content;
+  max-width: min(420px, 85vw);
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--foreground);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.65;
+  text-decoration: none;
+  white-space: normal;
+  pointer-events: none;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+.infoTipLine {
+  display: block;
+}
+
+.infoTipBubble::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  right: 14px;
+  border: 6px solid transparent;
+  border-top-color: var(--surface);
+}
+
+/* flipped when the icon sits too close to the top of the viewport for the
+   default upward bubble to fit without being clipped */
+.infoTipBubbleBelow {
+  bottom: auto;
+  top: calc(100% + 10px);
+}
+
+.infoTipBubbleBelow::after {
+  top: auto;
+  bottom: 100%;
+  border-top-color: transparent;
+  border-bottom-color: var(--surface);
 }
 
 .contribList {
@@ -959,7 +1274,7 @@
   display: flex;
   flex-direction: column;
   gap: 5px;
-  font-size: 13px;
+  font-size: 14px;
   padding: 10px 0;
   border-top: 1px solid var(--border);
 }
@@ -976,7 +1291,7 @@
   border-radius: 999px;
   background: color-mix(in srgb, var(--accent) 14%, transparent);
   color: var(--accent-strong);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -1006,9 +1321,31 @@
 
 /* case scatter plot: x = actual label (2 bands), y = predicted P(positive) */
 .scatterWrap {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 6px;
+}
+
+/* custom hover tooltip for scatter points — position is set inline as a %
+   of the svg's own box, so it tracks the point at any responsive width */
+.scatterTooltip {
+  position: absolute;
+  transform: translate(-50%, calc(-100% - 10px));
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--foreground);
+  font-size: 13px;
+  line-height: 1.4;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  z-index: 10;
 }
 
 .scatter {
@@ -1028,24 +1365,27 @@
 }
 
 .scatterTick {
-  font-size: 10px;
+  font-size: 11px;
   fill: var(--text-muted);
 }
 
 .scatterAxisLabel {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   fill: var(--text-muted);
 }
 
 .scatterDot {
-  cursor: pointer;
   stroke: var(--background);
   stroke-width: 1;
   opacity: 0.85;
 }
 
-.scatterDot:hover {
+.scatterHit {
+  cursor: pointer;
+}
+
+.scatterHit:hover + .scatterDot {
   opacity: 1;
 }
 
@@ -1066,7 +1406,7 @@
 .scatterLegend {
   display: flex;
   gap: 14px;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-muted);
 }
 
@@ -1112,17 +1452,17 @@
 }
 
 .dropzoneTitle {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
 }
 
 .dropzoneHint {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-muted);
 }
 
 .dropzoneFile {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--accent-strong);
 }
@@ -1132,7 +1472,7 @@
   border-radius: 8px;
   border-left: 3px solid var(--warn);
   background: color-mix(in srgb, var(--warn) 10%, transparent);
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.6;
   color: #7c4a12;
 }
@@ -1155,7 +1495,7 @@
   border-radius: 8px;
   background: var(--background);
   color: inherit;
-  font-size: 13px;
+  font-size: 14px;
   text-align: left;
   cursor: pointer;
 }
@@ -1173,7 +1513,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-muted);
   white-space: nowrap;
 }
@@ -1183,6 +1523,6 @@
   border-radius: 999px;
   background: var(--accent);
   color: #fff;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
 }
