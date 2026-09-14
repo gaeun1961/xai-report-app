@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import FileDropzone from "@/components/FileDropzone";
 import TargetColumnSelector from "@/components/TargetColumnSelector";
-import { fetchColumns, analyzeCsv, type ColumnInfo } from "@/lib/api";
+import { fetchColumns, analyzeCsv, type CaseFocus, type ColumnInfo } from "@/lib/api";
 import { saveUploadReport } from "@/lib/uploadHistory";
 import styles from "@/components/report.module.css";
 
@@ -17,6 +17,7 @@ export default function UploadFlow() {
   const [columns, setColumns] = useState<ColumnInfo[]>([]);
   const [target, setTarget] = useState<string | null>(null);
   const [nCases, setNCases] = useState(30);
+  const [caseFocus, setCaseFocus] = useState<CaseFocus>("balanced");
   const [error, setError] = useState<string | null>(null);
   const [loadingColumns, setLoadingColumns] = useState(false);
 
@@ -42,7 +43,7 @@ export default function UploadFlow() {
     setError(null);
     setStep("analyzing");
     try {
-      const result = await analyzeCsv(file, target, nCases);
+      const result = await analyzeCsv(file, target, nCases, caseFocus);
       const id = saveUploadReport(result, file.name);
       router.push(`/my/${id}`);
     } catch (e) {
@@ -89,6 +90,18 @@ export default function UploadFlow() {
               className={styles.rangeInput}
               aria-label="살펴볼 케이스 개수"
             />
+          </label>
+          <label className={styles.sectionNote}>
+            어떤 케이스를 위주로 볼까요{" "}
+            <select
+              value={caseFocus}
+              onChange={(e) => setCaseFocus(e.target.value as CaseFocus)}
+              aria-label="케이스 선정 기준"
+            >
+              <option value="balanced">균형있게 (기본)</option>
+              <option value="wrong">예측이 틀린 케이스 위주</option>
+              <option value="borderline">확신도 애매한(40~60%) 케이스 위주</option>
+            </select>
           </label>
           <button
             type="button"

@@ -3,6 +3,7 @@ import type { ShapReport } from "./types";
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 export type ColumnInfo = { name: string; uniqueCount: number };
+export type CaseFocus = "balanced" | "wrong" | "borderline";
 
 async function errorMessage(res: Response): Promise<string> {
   try {
@@ -28,11 +29,13 @@ export async function analyzeCsv(
   file: File,
   targetColumn: string,
   nCases: number = 30,
+  caseFocus: CaseFocus = "balanced",
 ): Promise<ShapReport> {
   const form = new FormData();
   form.append("file", file);
   form.append("target_column", targetColumn);
   form.append("n_cases", String(nCases));
+  form.append("case_focus", caseFocus);
   const res = await fetch(`${API_BASE}/analyze`, { method: "POST", body: form });
   if (!res.ok) throw new Error(await errorMessage(res));
   return res.json();
