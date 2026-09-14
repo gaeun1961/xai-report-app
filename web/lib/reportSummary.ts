@@ -200,7 +200,11 @@ export function buildCopyText(
   selectedCase?: ShapReport["cases"][number],
 ): string {
   const { positiveLabel, negativeLabel } = report;
-  const lines: string[] = ["# XAI 리포트 요약"];
+  const lines: string[] = [
+    "# XAI 리포트 요약",
+    "",
+    "아래는 SHAP 기반 XAI 분석 리포트입니다. 이 내용을 참고해서 제가 질문하면 답변해주세요.",
+  ];
 
   const summary = buildOverallSummary(report, domain);
   if (summary.length > 0) {
@@ -240,8 +244,6 @@ export function buildCopyText(
   if (selectedCase) {
     lines.push("", "## 선택한 케이스 설명", selectedCase.explanation);
   }
-
-  lines.push("", "이 분석 결과에 대해 궁금한 점을 물어봐도 좋아요.");
 
   return lines.join("\n");
 }
