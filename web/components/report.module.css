@@ -185,7 +185,7 @@
   padding: 20px;
   border: 1px solid var(--border);
   border-radius: 12px;
-  background: var(--surface);
+  background: var(--background);
   scroll-margin-top: 52px;
 }
 
@@ -1162,7 +1162,7 @@
   bottom: calc(100% + 10px);
   z-index: 20;
   width: max-content;
-  max-width: min(340px, 85vw);
+  max-width: min(420px, 85vw);
   padding: 12px 14px;
   border-radius: 10px;
   border: 1px solid var(--border);
@@ -1188,6 +1188,20 @@
   right: 14px;
   border: 6px solid transparent;
   border-top-color: var(--surface);
+}
+
+/* flipped when the icon sits too close to the top of the viewport for the
+   default upward bubble to fit without being clipped */
+.infoTipBubbleBelow {
+  bottom: auto;
+  top: calc(100% + 10px);
+}
+
+.infoTipBubbleBelow::after {
+  top: auto;
+  bottom: 100%;
+  border-top-color: transparent;
+  border-bottom-color: var(--surface);
 }
 
 .contribList {
