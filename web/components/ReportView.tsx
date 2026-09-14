@@ -151,7 +151,7 @@ function SummaryBody({
       <section className={styles.cardSection}>
         <h2 className={styles.h2}>
           특성 중요도{" "}
-          <InfoTip text="요리할 때 어떤 재료가 맛을 가장 많이 좌우하는지 궁금할 때가 있죠? 이 그래프가 딱 그거예요. 막대가 길수록, 그 항목이 AI의 예측 결과를 정하는 데 더 큰 힘을 썼다는 뜻이에요. 막대가 짧으면 그 항목은 예측에 별로 영향을 못 준 거예요." />
+          <InfoTip text="요리할 때 어떤 재료가 맛을 가장 많이 좌우하는지 궁금할 때가 있죠? 이 그래프가 딱 그거예요. **막대가 길수록, 그 항목이 AI의 예측 결과를 정하는 데 더 큰 힘을 썼다**는 뜻이에요. 막대가 짧으면 그 항목은 예측에 별로 영향을 못 준 거예요." />
         </h2>
         <FeatureImportanceChart items={report.featureImportance} domain={domain} />
       </section>
