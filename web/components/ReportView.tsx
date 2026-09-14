@@ -181,13 +181,38 @@ function CasesBody({ report, domain, selectedId, onSelect }: CasesBodyProps) {
   const selectedIndex = report.cases.findIndex((c) => c.id === selectedId);
   const selected = selectedIndex >= 0 ? report.cases[selectedIndex] : null;
   const { positiveLabel, negativeLabel } = report;
+  const [labelColumn, setLabelColumn] = useState("");
 
   const CHART_LIMIT = 15;
   const importanceOrder = report.featureImportance.map((f) => f.feature);
+  const rawColumns = Object.keys(report.cases[0]?.raw ?? {});
+
+  const labelValue = labelColumn && selected?.raw?.[labelColumn];
+  const fallbackName =
+    labelValue !== undefined && labelValue !== null && labelValue !== ""
+      ? String(labelValue)
+      : `케이스 ${selectedIndex + 1}`;
 
   return (
     <div className={styles.reportCol}>
       <section className={styles.cardSection}>
+        {rawColumns.length > 0 && (
+          <label className={styles.sectionNote}>
+            케이스 이름 기준 컬럼{" "}
+            <select
+              value={labelColumn}
+              onChange={(e) => setLabelColumn(e.target.value)}
+              aria-label="케이스 이름 기준 컬럼"
+            >
+              <option value="">번호 (케이스 1, 2, ...)</option>
+              {rawColumns.map((col) => (
+                <option key={col} value={col}>
+                  {col}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
         <CaseSelector
           cases={report.cases}
           selectedId={selectedId ?? ""}
@@ -207,6 +232,7 @@ function CasesBody({ report, domain, selectedId, onSelect }: CasesBodyProps) {
           importanceOrder={importanceOrder}
           chartLimit={CHART_LIMIT}
           caseNo={selectedIndex + 1}
+          fallbackName={fallbackName}
         />
       ) : (
         <p className={styles.selectorEmpty}>

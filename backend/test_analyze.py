@@ -25,10 +25,17 @@ def test_analyze_returns_report():
     res = client.post(
         "/analyze",
         files={"file": ("t.csv", CSV, "text/csv")},
-        data={"target_column": "Survived"},
+        data={"target_column": "Survived", "n_cases": "5"},
     )
     assert res.status_code == 200, res.text
-    assert "featureImportance" in res.json()
+    body = res.json()
+    assert "featureImportance" in body
+    assert len(body["cases"]) == 5
+    # raw echoes every original CSV column (incl. ones dropped as unusable
+    # for modeling), so the frontend can label a case by any of them
+    assert set(body["cases"][0]["raw"].keys()) == {
+        "Survived", "Pclass", "Sex", "Age", "Fare",
+    }
 
 
 if __name__ == "__main__":

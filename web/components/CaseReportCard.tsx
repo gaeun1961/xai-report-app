@@ -22,8 +22,7 @@ function useCaseName(domain: string, caseId: string, fallback: string) {
     } catch {
       setName(fallback);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [key]);
+  }, [key, fallback]);
 
   function save(next: string) {
     const trimmed = next.trim();
@@ -51,6 +50,9 @@ type Props = {
   chartLimit?: number;
   // 1-based position of this case in the example set
   caseNo: number;
+  // default name shown before any manual per-case edit; defaults to
+  // "케이스 N" but the caller can pass a value from a chosen raw column
+  fallbackName?: string;
 };
 
 const TOP_N = 5;
@@ -87,12 +89,12 @@ export default function CaseReportCard({
   importanceOrder = [],
   chartLimit = 15,
   caseNo,
+  fallbackName = `케이스 ${caseNo}`,
 }: Props) {
   const [showNumbers, setShowNumbers] = useState(false);
   const [factorQuery, setFactorQuery] = useState("");
   const [expanded, setExpanded] = useState(false);
 
-  const fallbackName = `케이스 ${caseNo}`;
   const [caseName, setCaseName] = useCaseName(domain, c.id, fallbackName);
   const [editingName, setEditingName] = useState(false);
   const [nameDraft, setNameDraft] = useState(caseName);
@@ -118,6 +120,14 @@ export default function CaseReportCard({
   const rankOf = (name: string) => importanceOrder.indexOf(name) + 1; // 0 → unknown
   const totalFeatures = importanceOrder.length;
   const label = (name: string) => columnDesc(domain, name) ?? name;
+
+  // raw holds every original CSV column, including ones the model itself
+  // excluded (ID/name/date/long-text) — surface those here since they're
+  // useful context (e.g. "가입일") even though SHAP never scored them
+  const featureNames = new Set(factors.map((f) => f.feature));
+  const extraRaw = Object.entries(c.raw ?? {}).filter(
+    ([col]) => !featureNames.has(col),
+  );
 
   // top-5 pull vs everything else
   const dirOf = (s: number) => (s >= 0 ? posText : negText);
@@ -220,6 +230,16 @@ export default function CaseReportCard({
           )}
         </div>
       </header>
+
+      {extraRaw.length > 0 && (
+        <div className={styles.badges}>
+          {extraRaw.map(([col, value]) => (
+            <span key={col} className={`${styles.badge} ${styles.badgeActualOk}`}>
+              {label(col)}: {value ?? "-"}
+            </span>
+          ))}
+        </div>
+      )}
 
       <div className={styles.explanation}>
         {toSentences(c.explanation).map((s, i) => (

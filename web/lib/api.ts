@@ -27,10 +27,12 @@ export async function fetchColumns(file: File): Promise<ColumnInfo[]> {
 export async function analyzeCsv(
   file: File,
   targetColumn: string,
+  nCases: number = 30,
 ): Promise<ShapReport> {
   const form = new FormData();
   form.append("file", file);
   form.append("target_column", targetColumn);
+  form.append("n_cases", String(nCases));
   const res = await fetch(`${API_BASE}/analyze`, { method: "POST", body: form });
   if (!res.ok) throw new Error(await errorMessage(res));
   return res.json();
