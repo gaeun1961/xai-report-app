@@ -41,9 +41,28 @@ export default function Home() {
         </div>
       </section>
 
+      <section className={styles.examplesSection}>
+        <h2 className={styles.h2}>예시로 먼저 체험하기</h2>
+        <div className={styles.cardGrid}>
+          {DOMAINS.map((d) => {
+            const report = loadReport(d.slug);
+            return (
+              <DomainCard
+                key={d.slug}
+                href={`/report/${d.slug}`}
+                title={d.title}
+                description={d.description}
+                accuracy={report?.modelAccuracy}
+                verdict={report?.modelQuality?.verdict}
+              />
+            );
+          })}
+        </div>
+      </section>
+
       <section className={styles.cardSection}>
         <h2 className={`${styles.h2} ${styles.h2Accent}`}>
-          내 CSV로 바로 분석하기
+          또는 내 CSV로 바로 분석하기
         </h2>
         <p className={styles.sectionNote}>
           이진분류(예측하려는 결과가 두 가지인) 데이터의 CSV 파일을 올리면,
@@ -61,25 +80,6 @@ export default function Home() {
           </strong>
         </p>
         <UploadFlow />
-      </section>
-
-      <section className={styles.examplesSection}>
-        <h2 className={styles.h2}>또는 예시로 체험하기</h2>
-        <div className={styles.cardGrid}>
-          {DOMAINS.map((d) => {
-            const report = loadReport(d.slug);
-            return (
-              <DomainCard
-                key={d.slug}
-                href={`/report/${d.slug}`}
-                title={d.title}
-                description={d.description}
-                accuracy={report?.modelAccuracy}
-                verdict={report?.modelQuality?.verdict}
-              />
-            );
-          })}
-        </div>
       </section>
     </main>
   );
