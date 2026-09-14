@@ -1113,11 +1113,14 @@
 
 .tooltipHost:hover .glossaryBubble,
 .tooltipHost:focus .glossaryBubble,
-.tooltipHost:focus-within .glossaryBubble,
+.tooltipHost:focus-within .glossaryBubble {
+  display: block;
+}
+
 .tooltipHost:hover .infoTipBubble,
 .tooltipHost:focus .infoTipBubble,
 .tooltipHost:focus-within .infoTipBubble {
-  display: block;
+  display: flex;
 }
 
 /* info icon: a section-level "?" trigger — tinted green by default so it
@@ -1152,6 +1155,8 @@
    sentence doesn't wrap into a cramped dark column */
 .infoTipBubble {
   display: none;
+  flex-direction: column;
+  gap: 2px;
   position: absolute;
   right: 0;
   bottom: calc(100% + 10px);
@@ -1170,6 +1175,10 @@
   white-space: normal;
   pointer-events: none;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+.infoTipLine {
+  display: block;
 }
 
 .infoTipBubble::after {
