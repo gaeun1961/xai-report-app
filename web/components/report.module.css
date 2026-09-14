@@ -189,6 +189,14 @@
   scroll-margin-top: 52px;
 }
 
+/* .h2's own margin-top (meant for headings that follow other content) would
+   stack on top of the card's padding here, leaving more empty space above
+   the heading than below the last line — the gap between flex children
+   already spaces things out, so the heading needs none of its own */
+.cardSection > h2 {
+  margin-top: 0;
+}
+
 /* correlation heatmap */
 .corrWrap {
   overflow-x: auto;
