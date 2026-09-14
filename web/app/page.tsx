@@ -41,7 +41,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className={styles.section}>
+      <section className={styles.cardSection}>
         <h2 className={`${styles.h2} ${styles.h2Accent}`}>
           내 CSV로 바로 분석하기
         </h2>
@@ -54,6 +54,11 @@ export default function Home() {
           <br />
           정답(타겟) 컬럼이 포함된 학습용 데이터(train 파일)를 올려주세요.
           test.csv처럼 정답이 없는 파일은 분석할 수 없어요.
+          <br />
+          <strong>
+            파일을 올리면 잠시 기다려주세요. 서버가 쉬고 있었다면 처음 응답까지
+            최대 1분 정도 걸릴 수 있어요.
+          </strong>
         </p>
         <UploadFlow />
       </section>
