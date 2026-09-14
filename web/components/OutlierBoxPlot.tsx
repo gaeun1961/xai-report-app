@@ -109,7 +109,7 @@ export default function OutlierBoxPlot({
                   </span>
                 )}
               </span>
-              <span className={styles.chartValue}>
+              <span className={`${styles.chartValue} ${styles.boxPlotValue}`}>
                 {(it.outlierPct * 100).toFixed(1)}%
               </span>
             </li>
