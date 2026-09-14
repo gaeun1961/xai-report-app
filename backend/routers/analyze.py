@@ -162,6 +162,7 @@ async def analyze(
         common.export_report_json(
             domain=domain,
             target_labels=target_labels,
+            target_column=target_column,
             model=model,
             X=X,
             y=y,
@@ -192,11 +193,20 @@ async def analyze(
         # (load_and_preprocess/sample_for_shap only ever drop columns or
         # .loc-filter rows, never reindex) — so it maps straight back to
         # original_df, letting the frontend label cases by any raw column.
+        # Constant columns (same value on every row — junk one-hot padding
+        # columns show up a lot on real-world exports) and the target column
+        # itself (already shown via the 예측/실제 badges) carry no per-case
+        # info, so they're left out rather than cluttering every case card.
+        skip_cols = {target_column} | {
+            col for col in original_df.columns
+            if original_df[col].nunique(dropna=True) <= 1
+        }
         for case in report["cases"]:
             row = original_df.iloc[int(case["id"])]
             case["raw"] = {
                 col: (None if pd.isna(v) else v.item() if hasattr(v, "item") else v)
                 for col, v in row.items()
+                if col not in skip_cols
             }
 
         return report

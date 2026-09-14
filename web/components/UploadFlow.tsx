@@ -94,6 +94,7 @@ export default function UploadFlow() {
           <label className={styles.sectionNote}>
             어떤 케이스를 위주로 볼까요{" "}
             <select
+              className={styles.select}
               value={caseFocus}
               onChange={(e) => setCaseFocus(e.target.value as CaseFocus)}
               aria-label="케이스 선정 기준"

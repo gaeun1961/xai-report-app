@@ -200,6 +200,7 @@ function CasesBody({ report, domain, selectedId, onSelect }: CasesBodyProps) {
           <label className={styles.sectionNote}>
             케이스 이름 기준 컬럼{" "}
             <select
+              className={styles.select}
               value={labelColumn}
               onChange={(e) => setLabelColumn(e.target.value)}
               aria-label="케이스 이름 기준 컬럼"
