@@ -34,6 +34,7 @@ export default function Sidebar() {
       </Link>
 
       <nav className={styles.nav}>
+        <span className={styles.navHeading}>예시 데이터</span>
         {DOMAINS.map((d) => {
           const href = `/report/${d.slug}`;
           const active = pathname === href;
@@ -51,7 +52,7 @@ export default function Sidebar() {
       </nav>
 
       {history.length > 0 && (
-        <nav className={styles.nav}>
+        <nav className={`${styles.nav} ${styles.navDivider}`}>
           <span className={styles.navHeading}>내 분석 기록</span>
           {history.map((h) => {
             const href = `/my/${h.id}`;
