@@ -121,6 +121,14 @@ export default function CaseReportCard({
   const totalFeatures = importanceOrder.length;
   const label = (name: string) => columnDesc(domain, name) ?? name;
 
+  // raw holds every original CSV column, including ones the model itself
+  // excluded (ID/name/date/long-text) — surface those here since they're
+  // useful context (e.g. "가입일") even though SHAP never scored them
+  const featureNames = new Set(factors.map((f) => f.feature));
+  const extraRaw = Object.entries(c.raw ?? {}).filter(
+    ([col]) => !featureNames.has(col),
+  );
+
   // top-5 pull vs everything else
   const dirOf = (s: number) => (s >= 0 ? posText : negText);
   const sumTop = factors.slice(0, TOP_N).reduce((a, f) => a + f.contribution, 0);
@@ -222,6 +230,16 @@ export default function CaseReportCard({
           )}
         </div>
       </header>
+
+      {extraRaw.length > 0 && (
+        <div className={styles.badges}>
+          {extraRaw.map(([col, value]) => (
+            <span key={col} className={`${styles.badge} ${styles.badgeActualOk}`}>
+              {label(col)}: {value ?? "-"}
+            </span>
+          ))}
+        </div>
+      )}
 
       <div className={styles.explanation}>
         {toSentences(c.explanation).map((s, i) => (
