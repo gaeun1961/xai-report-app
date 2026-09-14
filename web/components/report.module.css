@@ -912,6 +912,11 @@
   gap: 6px;
 }
 
+.badgesStart {
+  justify-content: flex-start;
+  align-items: center;
+}
+
 .badge {
   padding: 3px 10px;
   border-radius: 999px;

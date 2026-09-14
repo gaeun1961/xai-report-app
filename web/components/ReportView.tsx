@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { ShapReport } from "@/lib/types";
 import { buildOverallSummary, explainAccuracy } from "@/lib/reportSummary";
+import { findDomain } from "@/lib/domains";
+import { getValueLabel, setValueLabel } from "@/lib/valueLabels";
 import FeatureImportanceChart from "./FeatureImportanceChart";
 import CaseSelector from "./CaseSelector";
 import CaseReportCard from "./CaseReportCard";
@@ -22,6 +24,40 @@ export default function ReportView({ report, domain }: Props) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [tab, setTab] = useState<Tab>("summary");
   const hasCorr = !!report.correlations;
+
+  // Only an uploaded CSV (no curated preset labels) can have a user-typed
+  // value label. Starts empty on both server and first client render (avoids
+  // a hydration mismatch), then loads from localStorage right after mount.
+  const isUpload = !findDomain(domain);
+  const { targetColumn, positiveRaw, negativeRaw } = report;
+  const [overrides, setOverrides] = useState<{ pos?: string; neg?: string }>({});
+
+  useEffect(() => {
+    if (!isUpload || !targetColumn) return;
+    setOverrides({
+      pos: positiveRaw !== undefined ? getValueLabel(targetColumn, positiveRaw) : undefined,
+      neg: negativeRaw !== undefined ? getValueLabel(targetColumn, negativeRaw) : undefined,
+    });
+  }, [isUpload, targetColumn, positiveRaw, negativeRaw]);
+
+  const effectiveReport = useMemo(
+    () =>
+      overrides.pos || overrides.neg
+        ? {
+            ...report,
+            positiveLabel: overrides.pos ?? report.positiveLabel,
+            negativeLabel: overrides.neg ?? report.negativeLabel,
+          }
+        : report,
+    [report, overrides],
+  );
+
+  function saveLabel(which: "pos" | "neg", label: string) {
+    const raw = which === "pos" ? positiveRaw : negativeRaw;
+    if (!targetColumn || raw === undefined) return;
+    setValueLabel(targetColumn, raw, label);
+    setOverrides((prev) => ({ ...prev, [which]: label.trim() || undefined }));
+  }
 
   return (
     <>
@@ -54,11 +90,27 @@ export default function ReportView({ report, domain }: Props) {
       </div>
 
       {tab === "summary" && (
-        <SummaryBody report={report} domain={domain} selectedId={selectedId} />
+        <SummaryBody
+          report={effectiveReport}
+          domain={domain}
+          selectedId={selectedId}
+          valueEditor={
+            isUpload && targetColumn && positiveRaw !== undefined && negativeRaw !== undefined
+              ? {
+                  targetColumn,
+                  positiveRaw,
+                  negativeRaw,
+                  positiveLabel: effectiveReport.positiveLabel ?? positiveRaw,
+                  negativeLabel: effectiveReport.negativeLabel ?? negativeRaw,
+                  onSave: saveLabel,
+                }
+              : undefined
+          }
+        />
       )}
       {tab === "cases" && (
         <CasesBody
-          report={report}
+          report={effectiveReport}
           domain={domain}
           selectedId={selectedId}
           onSelect={setSelectedId}
@@ -77,14 +129,75 @@ export default function ReportView({ report, domain }: Props) {
   );
 }
 
+type ValueEditorProps = {
+  targetColumn: string;
+  positiveRaw: string;
+  negativeRaw: string;
+  positiveLabel: string;
+  negativeLabel: string;
+  onSave: (which: "pos" | "neg", label: string) => void;
+};
+
+function ValueLabelChip({
+  fallback,
+  onSave,
+}: {
+  fallback: string;
+  onSave: (label: string) => void;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(fallback);
+
+  function save() {
+    onSave(draft);
+    setEditing(false);
+  }
+
+  if (editing) {
+    return (
+      <input
+        className={styles.caseNameInput}
+        value={draft}
+        autoFocus
+        maxLength={30}
+        aria-label="값 이름 수정"
+        onChange={(e) => setDraft(e.target.value)}
+        onBlur={save}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") save();
+          if (e.key === "Escape") setEditing(false);
+        }}
+      />
+    );
+  }
+  return (
+    <span className={styles.caseId}>
+      {fallback}
+      <button
+        type="button"
+        className={styles.caseNameEditBtn}
+        aria-label="값 이름 수정"
+        onClick={() => {
+          setDraft(fallback);
+          setEditing(true);
+        }}
+      >
+        ✎
+      </button>
+    </span>
+  );
+}
+
 function SummaryBody({
   report,
   domain,
   selectedId,
+  valueEditor,
 }: {
   report: ShapReport;
   domain: string;
   selectedId: string | null;
+  valueEditor?: ValueEditorProps;
 }) {
   const { positiveLabel, negativeLabel } = report;
   const selectedCase = selectedId
@@ -106,6 +219,31 @@ function SummaryBody({
         </p>
         <CopySummaryButton report={report} domain={domain} selectedCase={selectedCase} />
       </div>
+
+      {valueEditor && (
+        <section className={styles.cardSection}>
+          <h2 className={styles.h2}>
+            예측값 이름 설정{" "}
+            <InfoTip text={`업로드한 데이터엔 '${valueEditor.positiveRaw}', '${valueEditor.negativeRaw}' 같은 원본 값만 있고 그게 무슨 뜻인지는 데이터에 없어서 자동으로 알 수 없어요. 여기서 이름을 정해두면 이 브라우저에 저장되고, 같은 이름의 타겟 컬럼('${valueEditor.targetColumn}')을 쓰는 다른 CSV를 올릴 때도 자동으로 재사용돼요.`} />
+          </h2>
+          <div className={`${styles.badges} ${styles.badgesStart}`}>
+            <span className={styles.sectionNote}>
+              {valueEditor.targetColumn} = {valueEditor.positiveRaw}:
+            </span>
+            <ValueLabelChip
+              fallback={valueEditor.positiveLabel}
+              onSave={(label) => valueEditor.onSave("pos", label)}
+            />
+            <span className={styles.sectionNote}>
+              {valueEditor.targetColumn} = {valueEditor.negativeRaw}:
+            </span>
+            <ValueLabelChip
+              fallback={valueEditor.negativeLabel}
+              onSave={(label) => valueEditor.onSave("neg", label)}
+            />
+          </div>
+        </section>
+      )}
 
       <section className={styles.cardSection}>
         <h2 className={styles.h2}>전체 정확도</h2>
