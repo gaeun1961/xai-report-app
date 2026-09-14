@@ -194,7 +194,7 @@ export default function CaseScatterPlot({
                 r={selected ? hitRSelected : hitR}
                 fill="transparent"
                 className={styles.scatterHit}
-                onClick={() => onSelect(c.id)}
+                onClick={() => onSelect(selected ? "" : c.id)}
                 onMouseEnter={() => setHoverId(c.id)}
               />
               <circle

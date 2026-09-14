@@ -15,6 +15,7 @@ export default function UploadFlow() {
   const [file, setFile] = useState<File | null>(null);
   const [columns, setColumns] = useState<ColumnInfo[]>([]);
   const [target, setTarget] = useState<string | null>(null);
+  const [nCases, setNCases] = useState(30);
   const [report, setReport] = useState<ShapReport | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -37,7 +38,7 @@ export default function UploadFlow() {
     setError(null);
     setStep("analyzing");
     try {
-      const result = await analyzeCsv(file, target);
+      const result = await analyzeCsv(file, target, nCases);
       setReport(result);
       setStep("done");
     } catch (e) {
@@ -75,6 +76,20 @@ export default function UploadFlow() {
             value={target}
             onChange={setTarget}
           />
+          <label className={styles.sectionNote}>
+            살펴볼 케이스 개수{" "}
+            <input
+              type="number"
+              min={1}
+              max={100}
+              value={nCases}
+              onChange={(e) =>
+                setNCases(Math.max(1, Math.min(100, Number(e.target.value) || 1)))
+              }
+              className={styles.rangeInput}
+              aria-label="살펴볼 케이스 개수"
+            />
+          </label>
           <button
             type="button"
             className={styles.toggleBtn}

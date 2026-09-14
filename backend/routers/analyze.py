@@ -87,8 +87,16 @@ async def get_columns(file: UploadFile = File(...)):
     }
 
 
+MIN_CASES = 1
+MAX_CASES = 100
+
+
 @router.post("/analyze")
-async def analyze(file: UploadFile = File(...), target_column: str = Form(...)):
+async def analyze(
+    file: UploadFile = File(...),
+    target_column: str = Form(...),
+    n_cases: int = Form(30),
+):
     df = _read_csv(await file.read())
 
     if target_column not in df.columns:
@@ -102,6 +110,11 @@ async def analyze(file: UploadFile = File(...), target_column: str = Form(...)):
             "값이 정확히 두 가지인 컬럼을 선택해주세요.",
         )
 
+    n_cases = max(MIN_CASES, min(n_cases, MAX_CASES))
+    # kept before column-dropping so case labels can use ID/name columns the
+    # model itself excludes (high-cardinality columns aren't useful features,
+    # but they're exactly what a human would want to label a case by).
+    original_df = df.copy()
     df = _drop_unusable_columns(df, target_column)
     domain = Path(file.filename or "upload").stem
 
@@ -156,6 +169,7 @@ async def analyze(file: UploadFile = File(...), target_column: str = Form(...)):
             outliers=outliers,
             outliers_excluded_columns=outliers_excluded,
             output_path=output_path,
+            n_cases=n_cases,
         )
         # read back the file export_report_json already wrote instead of
         # returning its in-memory dict: display_df keeps raw NaN for missing
@@ -165,4 +179,17 @@ async def analyze(file: UploadFile = File(...), target_column: str = Form(...)):
         # default=_json_default. parse_constant turns that (invalid-JSON)
         # token into None on the way back in, same as a clean value would get.
         with open(output_path, encoding="utf-8") as f:
-            return json.load(f, parse_constant=lambda _: None)
+            report = json.load(f, parse_constant=lambda _: None)
+
+        # case "id" is the row's position in the CSV as originally uploaded
+        # (load_and_preprocess/sample_for_shap only ever drop columns or
+        # .loc-filter rows, never reindex) — so it maps straight back to
+        # original_df, letting the frontend label cases by any raw column.
+        for case in report["cases"]:
+            row = original_df.iloc[int(case["id"])]
+            case["raw"] = {
+                col: (None if pd.isna(v) else v.item() if hasattr(v, "item") else v)
+                for col, v in row.items()
+            }
+
+        return report

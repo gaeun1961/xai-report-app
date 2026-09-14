@@ -22,8 +22,7 @@ function useCaseName(domain: string, caseId: string, fallback: string) {
     } catch {
       setName(fallback);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [key]);
+  }, [key, fallback]);
 
   function save(next: string) {
     const trimmed = next.trim();
@@ -51,6 +50,9 @@ type Props = {
   chartLimit?: number;
   // 1-based position of this case in the example set
   caseNo: number;
+  // default name shown before any manual per-case edit; defaults to
+  // "케이스 N" but the caller can pass a value from a chosen raw column
+  fallbackName?: string;
 };
 
 const TOP_N = 5;
@@ -87,12 +89,12 @@ export default function CaseReportCard({
   importanceOrder = [],
   chartLimit = 15,
   caseNo,
+  fallbackName = `케이스 ${caseNo}`,
 }: Props) {
   const [showNumbers, setShowNumbers] = useState(false);
   const [factorQuery, setFactorQuery] = useState("");
   const [expanded, setExpanded] = useState(false);
 
-  const fallbackName = `케이스 ${caseNo}`;
   const [caseName, setCaseName] = useCaseName(domain, c.id, fallbackName);
   const [editingName, setEditingName] = useState(false);
   const [nameDraft, setNameDraft] = useState(caseName);
