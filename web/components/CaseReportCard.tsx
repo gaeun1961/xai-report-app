@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { ShapReport } from "@/lib/types";
-import { columnDesc } from "@/lib/columnGlossary";
+import { columnDesc, columnValueLabel } from "@/lib/columnGlossary";
 import GlossaryTerm from "./GlossaryTerm";
 import styles from "./report.module.css";
 
@@ -287,6 +287,8 @@ export default function CaseReportCard({
             const dir = up ? posText : negText;
             const rank = rankOf(f.feature);
             const low = rank > 0 && rank > chartLimit;
+            const valueLabel = columnValueLabel(domain, f.feature, f.value);
+            const valueText = valueLabel ? `${f.value}, ${valueLabel}` : `${f.value}`;
             return (
               <li key={f.feature} className={styles.contribRow}>
                 <div className={styles.contribMain}>
@@ -298,7 +300,7 @@ export default function CaseReportCard({
                           desc={columnDesc(domain, f.feature)}
                           className={styles.contribName}
                         />{" "}
-                        = {f.value}
+                        = {valueText}
                       </span>
                       <span
                         className={`${styles.contribValue} ${up ? styles.up : styles.down}`}
@@ -314,7 +316,7 @@ export default function CaseReportCard({
                         desc={columnDesc(domain, f.feature)}
                         className={styles.contribName}
                       />{" "}
-                      <span className={styles.nowrap}>({f.value})</span>{" "}
+                      <span className={styles.nowrap}>({valueText})</span>{" "}
                       <span className={styles.nowrap}>
                         &mdash;{" "}
                         <b className={up ? styles.up : styles.down}>{dir}</b>

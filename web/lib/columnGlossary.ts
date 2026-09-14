@@ -70,3 +70,22 @@ export const COLUMN_GLOSSARY: Record<string, Record<string, string>> = {
 export function columnDesc(domain: string, column: string): string | undefined {
   return COLUMN_GLOSSARY[domain]?.[column];
 }
+
+// Some descriptions bake in a "N=Label" enum hint (e.g. "성별 (0=남성,
+// 1=여성)"). Looks up the label for a specific raw value, so a case's "1"
+// can render as "1, 여성" without needing a hover. Columns without that
+// pattern (plain ranges like "(0~3)", or already-text values) just return
+// undefined — nothing to decode.
+export function columnValueLabel(
+  domain: string,
+  column: string,
+  value: string | number,
+): string | undefined {
+  const desc = columnDesc(domain, column);
+  if (!desc) return undefined;
+  const key = String(value).trim();
+  for (const m of desc.matchAll(/(-?\d+)\s*=\s*([^,()]+)/g)) {
+    if (m[1] === key) return m[2].trim();
+  }
+  return undefined;
+}
