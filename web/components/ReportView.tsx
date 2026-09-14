@@ -94,15 +94,18 @@ function SummaryBody({
 
   return (
     <div className={styles.reportCol}>
-      <CopySummaryButton report={report} domain={domain} selectedCase={selectedCase} />
-
-      <p className={styles.guide}>
-        이 리포트는 AI가 왜 이렇게 예측했는지 보여줍니다.
-        <br />각 요인이 예측을 어느 쪽으로, 얼마나 강하게 밀었는지 문장으로 풀어서
-        설명해요.
-        <br />원래 숫자가 궁금하면 케이스 탐색 탭에서 “숫자로 보기”를 누르면
-        됩니다.
-      </p>
+      <div className={styles.guideRow}>
+        <p className={styles.guide}>
+          이 리포트는 AI가 왜 이렇게 예측했는지 보여줍니다.
+          <br />각 요인이 예측을 어느 쪽으로, 얼마나 강하게 밀었는지 문장으로 풀어서
+          설명해요.
+          <br />원래 숫자가 궁금하면 케이스 탐색 탭에서 “숫자로 보기”를 누르면
+          됩니다.
+          <br />“결과 복사하기”를 누르면 이 리포트 내용을 요약해서 복사할 수 있어요.
+          ChatGPT 같은 AI 챗봇에 붙여넣으면 이어서 질문할 수 있어요.
+        </p>
+        <CopySummaryButton report={report} domain={domain} selectedCase={selectedCase} />
+      </div>
 
       <section className={styles.cardSection}>
         <h2 className={styles.h2}>전체 정확도</h2>
