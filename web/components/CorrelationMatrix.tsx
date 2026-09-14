@@ -56,9 +56,41 @@ export default function CorrelationMatrix({
       ?.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
   }
 
+  function scrollToSection(id: string) {
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   return (
     <>
-      <section className={styles.section}>
+      <nav className={styles.dataRelToc}>
+        <button
+          type="button"
+          className={styles.dataRelTocLink}
+          onClick={() => scrollToSection("dataRelCorrelation")}
+        >
+          상관관계
+        </button>
+        {!!outliers?.length && (
+          <button
+            type="button"
+            className={styles.dataRelTocLink}
+            onClick={() => scrollToSection("dataRelOutliers")}
+          >
+            이상치
+          </button>
+        )}
+        {!!missingness?.length && (
+          <button
+            type="button"
+            className={styles.dataRelTocLink}
+            onClick={() => scrollToSection("dataRelMissing")}
+          >
+            결측치
+          </button>
+        )}
+      </nav>
+
+      <section id="dataRelCorrelation" className={styles.dataRelSection}>
         <h2 className={styles.h2}>
           숫자형 컬럼 관계{" "}
           <InfoTip text="모델과는 무관하게, 데이터 안에서 두 컬럼이 얼마나 같이 움직이는지 보여줘요. 진한 색일수록, 굵은 테두리 칸일수록 강한 관계예요." />
@@ -142,49 +174,39 @@ export default function CorrelationMatrix({
         </div>
       </section>
 
-      {(!!missingness?.length || !!outliers?.length) && (
-        <section className={styles.section}>
-          <h2 className={styles.h2}>결측치·이상치</h2>
-
-          {!!outliers?.length && (
-            <div className={styles.reportCol}>
-              <h3 className={styles.h2}>
-                이상치{" "}
-                <InfoTip text="숫자형 컬럼의 값 분포예요. 상자는 사분위범위(IQR, 중간 50%), 선은 중앙값, 점은 그 범위를 1.5배 넘게 벗어난 이상치예요." />
-              </h3>
-              {!!outliersExcludedColumns?.length && (
-                <p className={styles.sectionNote}>
-                  값 종류가 2개뿐인 컬럼은 분포를 보여줄 게 없어서 뺐어요:{" "}
-                  {outliersExcludedColumns.map(label).join(", ")}
-                </p>
-              )}
-              <OutlierBoxPlot items={outliers} domain={domain} />
-            </div>
+      {!!outliers?.length && (
+        <section id="dataRelOutliers" className={styles.dataRelSection}>
+          <h2 className={styles.h2}>
+            이상치{" "}
+            <InfoTip text="숫자형 컬럼의 값 분포예요. 상자는 사분위범위(IQR, 중간 50%), 선은 중앙값, 점은 그 범위를 1.5배 넘게 벗어난 이상치예요." />
+          </h2>
+          {!!outliersExcludedColumns?.length && (
+            <p className={styles.sectionNote}>
+              값 종류가 2개뿐인 컬럼은 분포를 보여줄 게 없어서 뺐어요:{" "}
+              {outliersExcludedColumns.map(label).join(", ")}
+            </p>
           )}
+          <OutlierBoxPlot items={outliers} domain={domain} />
+        </section>
+      )}
 
-          {!!missingness?.length && (
-            <div className={styles.reportCol}>
-              <h3 className={styles.h2}>
-                결측치{" "}
-                <InfoTip text="컬럼별로 값이 비어 있던 비율이에요. 모델은 숫자는 중간값, 범주는 &quot;결측&quot;이라는 값으로 채워서 학습했어요." />
-              </h3>
-              {missingness.every((m) => m.missingCount === 0) ? (
-                <p className={styles.sectionNote}>
-                  이 데이터셋엔 결측치가 없어요 ✓
-                </p>
-              ) : (
-                <>
-                  <PercentBarChart
-                    items={missingness.map((m) => ({
-                      label: m.column,
-                      value: m.missingPct,
-                    }))}
-                    domain={domain}
-                    valueFormat={pctFmt}
-                  />
-                </>
-              )}
-            </div>
+      {!!missingness?.length && (
+        <section id="dataRelMissing" className={styles.dataRelSection}>
+          <h2 className={styles.h2}>
+            결측치{" "}
+            <InfoTip text="컬럼별로 값이 비어 있던 비율이에요. 모델은 숫자는 중간값, 범주는 &quot;결측&quot;이라는 값으로 채워서 학습했어요." />
+          </h2>
+          {missingness.every((m) => m.missingCount === 0) ? (
+            <p className={styles.sectionNote}>이 데이터셋엔 결측치가 없어요 ✓</p>
+          ) : (
+            <PercentBarChart
+              items={missingness.map((m) => ({
+                label: m.column,
+                value: m.missingPct,
+              }))}
+              domain={domain}
+              valueFormat={pctFmt}
+            />
           )}
         </section>
       )}
