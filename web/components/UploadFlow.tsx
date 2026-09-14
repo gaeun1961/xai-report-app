@@ -1,21 +1,21 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import FileDropzone from "@/components/FileDropzone";
 import TargetColumnSelector from "@/components/TargetColumnSelector";
-import ReportView from "@/components/ReportView";
 import { fetchColumns, analyzeCsv, type ColumnInfo } from "@/lib/api";
-import type { ShapReport } from "@/lib/types";
+import { saveUploadReport } from "@/lib/uploadHistory";
 import styles from "@/components/report.module.css";
 
-type Step = "upload" | "target" | "analyzing" | "done";
+type Step = "upload" | "target" | "analyzing";
 
 export default function UploadFlow() {
+  const router = useRouter();
   const [step, setStep] = useState<Step>("upload");
   const [file, setFile] = useState<File | null>(null);
   const [columns, setColumns] = useState<ColumnInfo[]>([]);
   const [target, setTarget] = useState<string | null>(null);
-  const [report, setReport] = useState<ShapReport | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   async function handleFile(f: File) {
@@ -38,30 +38,19 @@ export default function UploadFlow() {
     setStep("analyzing");
     try {
       const result = await analyzeCsv(file, target);
-      setReport(result);
-      setStep("done");
+      const id = saveUploadReport(result, file.name);
+      router.push(`/my/${id}`);
     } catch (e) {
       setError(e instanceof Error ? e.message : "분석 중 문제가 발생했어요.");
       setStep("target");
     }
   }
 
-  function reset() {
-    setStep("upload");
-    setFile(null);
-    setColumns([]);
-    setTarget(null);
-    setReport(null);
-    setError(null);
-  }
-
   return (
     <>
       {error && <p className={styles.errorBox}>{error}</p>}
 
-      {step !== "done" && (
-        <FileDropzone onFile={handleFile} fileName={file?.name} />
-      )}
+      <FileDropzone onFile={handleFile} fileName={file?.name} />
 
       {(step === "target" || step === "analyzing") && (
         <div className={styles.section}>
@@ -89,15 +78,6 @@ export default function UploadFlow() {
             </p>
           )}
         </div>
-      )}
-
-      {step === "done" && report && (
-        <>
-          <button type="button" className={styles.toggleBtn} onClick={reset}>
-            다른 파일 분석하기
-          </button>
-          <ReportView report={report} domain={report.domain} />
-        </>
       )}
     </>
   );
