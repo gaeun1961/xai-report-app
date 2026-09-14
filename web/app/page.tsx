@@ -8,7 +8,9 @@ export default function Home() {
   return (
     <main className={styles.landing}>
       <h1 className={styles.h1}>모델 설명 리포트</h1>
-      <p className={styles.lead}>AI가 왜 그렇게 판단했는지, 사람 말로 풀어드려요.</p>
+      <p className={styles.lead}>
+        내 데이터로, AI가 왜 그렇게 판단했는지 알려드려요.
+      </p>
 
       <section className={styles.about}>
         <div className={styles.aboutBlock}>
@@ -22,6 +24,10 @@ export default function Home() {
           <p>중요한 의사결정에 쓰려면 그 근거를 확인할 수 있어야 합니다.</p>
         </div>
         <div className={styles.aboutBlock}>
+          <p>
+            먼저 업로드하신 데이터로 baseline 모델을 학습시키고, SHAP으로 그
+            모델의 판단 근거를 분석해드려요.
+          </p>
           <p>
             <strong>SHAP</strong>은 하나의 예측을 “각 입력 특성이 결과를 얼마나,
             어느 방향으로 밀었는지”로 분해하는 기법입니다.
