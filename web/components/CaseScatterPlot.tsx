@@ -47,9 +47,25 @@ const DOT_R_SELECTED = 5.5;
 // unclickable). Greedy: process in y order, try offset 0 first, then
 // alternating +/- steps outward, and take the first spot that doesn't
 // collide with anything already placed.
-function packBeeswarm(points: { id: string; y: number }[]): Map<string, number> {
-  const minDist = DOT_R_SELECTED * 2 + 1;
-  const step = minDist * 0.9;
+//
+// maxOffset caps how far any point can be pushed sideways: with e.g. the
+// "borderline" case-focus filter, dozens of points can land at nearly the
+// same y (all near 50%), and without a cap the search pushes them out
+// indefinitely — past the SVG's viewBox, where they're clipped and simply
+// don't render. Past the cap, points scale down and pack tighter (allowing
+// a little overlap) instead of disappearing.
+function packBeeswarm(
+  points: { id: string; y: number }[],
+  maxOffset: number,
+): Map<string, number> {
+  const desiredMinDist = DOT_R_SELECTED * 2 + 1;
+  const desiredStep = desiredMinDist * 0.9;
+  const scale =
+    points.length > 0
+      ? Math.min(1, maxOffset / (desiredStep * points.length))
+      : 1;
+  const step = desiredStep * scale;
+  const minDist = desiredMinDist * scale;
   const order = [...points].sort((a, b) => a.y - b.y);
   const placed: { x: number; y: number }[] = [];
   const offsetById = new Map<string, number>();
@@ -94,8 +110,12 @@ export default function CaseScatterPlot({
     }));
     const neg = withY.filter((c) => !c.actualPositive);
     const pos = withY.filter((c) => c.actualPositive);
-    const negOffsets = packBeeswarm(neg);
-    const posOffsets = packBeeswarm(pos);
+    // each class's band is centered a quarter of the plot width from either
+    // edge/midpoint, so that distance (minus a little padding) is the most
+    // a point can move before it'd overlap the axis or the other class
+    const maxOffset = PLOT_W * 0.25 - 8;
+    const negOffsets = packBeeswarm(neg, maxOffset);
+    const posOffsets = packBeeswarm(pos, maxOffset);
 
     const result = new Map<string, { x: number; y: number }>();
     for (const c of withY) {

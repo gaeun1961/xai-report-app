@@ -94,6 +94,7 @@ export default function CaseReportCard({
   const [showNumbers, setShowNumbers] = useState(false);
   const [factorQuery, setFactorQuery] = useState("");
   const [expanded, setExpanded] = useState(false);
+  const [showExtraRaw, setShowExtraRaw] = useState(false);
 
   const [caseName, setCaseName] = useCaseName(domain, c.id, fallbackName);
   const [editingName, setEditingName] = useState(false);
@@ -214,6 +215,15 @@ export default function CaseReportCard({
           </span>
         )}
         <div className={styles.badges}>
+          {extraRaw.length > 0 && (
+            <button
+              type="button"
+              className={styles.moreFactorsBtn}
+              onClick={() => setShowExtraRaw((v) => !v)}
+            >
+              {showExtraRaw ? "추가 정보 접기" : `추가 정보 ${extraRaw.length}개 보기`}
+            </button>
+          )}
           <span
             className={`${styles.badge} ${positive ? styles.badgeYes : styles.badgeNo}`}
           >
@@ -231,7 +241,7 @@ export default function CaseReportCard({
         </div>
       </header>
 
-      {extraRaw.length > 0 && (
+      {showExtraRaw && extraRaw.length > 0 && (
         <div className={styles.badges}>
           {extraRaw.map(([col, value]) => {
             const valueLabel = columnValueLabel(domain, col, value ?? "");
