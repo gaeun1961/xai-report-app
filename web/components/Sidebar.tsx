@@ -4,18 +4,27 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { DOMAINS } from "@/lib/domains";
-import { listUploadHistory, type UploadHistoryEntry } from "@/lib/uploadHistory";
+import {
+  HISTORY_CHANGED_EVENT,
+  listUploadHistory,
+  type UploadHistoryEntry,
+} from "@/lib/uploadHistory";
 import styles from "./sidebar.module.css";
 
 export default function Sidebar() {
   const pathname = usePathname();
   // starts empty on both server and first client render (avoids a hydration
-  // mismatch), then loads from localStorage right after mount — and again
-  // whenever the route changes, so a just-saved upload shows up right away.
+  // mismatch), then loads from localStorage right after mount — again on
+  // route change (a just-saved upload), and again on HISTORY_CHANGED_EVENT
+  // (a rename on the report page you're already viewing, so the route
+  // doesn't change but the label in this list still needs to update).
   const [history, setHistory] = useState<UploadHistoryEntry[]>([]);
 
   useEffect(() => {
-    setHistory(listUploadHistory());
+    const refresh = () => setHistory(listUploadHistory());
+    refresh();
+    window.addEventListener(HISTORY_CHANGED_EVENT, refresh);
+    return () => window.removeEventListener(HISTORY_CHANGED_EVENT, refresh);
   }, [pathname]);
 
   return (
