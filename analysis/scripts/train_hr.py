@@ -1,6 +1,5 @@
 from pathlib import Path
 
-import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 
 from common import (
@@ -24,8 +23,7 @@ TARGET_COLUMN = "Attrition"
 
 
 def main():
-    X, y, display_df, target_labels = load_and_preprocess(CSV_PATH, TARGET_COLUMN)
-    raw_df = pd.read_csv(CSV_PATH)
+    X, y, display_df, target_labels, raw_df = load_and_preprocess(CSV_PATH, TARGET_COLUMN)
     missingness = compute_missingness(raw_df, list(X.columns))
     outliers, outliers_excluded = compute_outliers(
         raw_df, display_df.select_dtypes(include="number").columns.tolist()
