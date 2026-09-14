@@ -215,6 +215,15 @@ export default function CaseReportCard({
           </span>
         )}
         <div className={styles.badges}>
+          {extraRaw.length > 0 && (
+            <button
+              type="button"
+              className={styles.moreFactorsBtn}
+              onClick={() => setShowExtraRaw((v) => !v)}
+            >
+              {showExtraRaw ? "추가 정보 접기" : `추가 정보 ${extraRaw.length}개 보기`}
+            </button>
+          )}
           <span
             className={`${styles.badge} ${positive ? styles.badgeYes : styles.badgeNo}`}
           >
@@ -232,26 +241,18 @@ export default function CaseReportCard({
         </div>
       </header>
 
-      {extraRaw.length > 0 && (
+      {showExtraRaw && extraRaw.length > 0 && (
         <div className={styles.badges}>
-          <button
-            type="button"
-            className={styles.moreFactorsBtn}
-            onClick={() => setShowExtraRaw((v) => !v)}
-          >
-            {showExtraRaw ? "추가 정보 접기" : `추가 정보 ${extraRaw.length}개 보기`}
-          </button>
-          {showExtraRaw &&
-            extraRaw.map(([col, value]) => {
-              const valueLabel = columnValueLabel(domain, col, value ?? "");
-              return (
-                <span key={col} className={`${styles.badge} ${styles.badgeActualOk}`}>
-                  <GlossaryTerm term={col} desc={columnDesc(domain, col)} />:{" "}
-                  {value ?? "-"}
-                  {valueLabel ? `, ${valueLabel}` : ""}
-                </span>
-              );
-            })}
+          {extraRaw.map(([col, value]) => {
+            const valueLabel = columnValueLabel(domain, col, value ?? "");
+            return (
+              <span key={col} className={`${styles.badge} ${styles.badgeActualOk}`}>
+                <GlossaryTerm term={col} desc={columnDesc(domain, col)} />:{" "}
+                {value ?? "-"}
+                {valueLabel ? `, ${valueLabel}` : ""}
+              </span>
+            );
+          })}
         </div>
       )}
 
