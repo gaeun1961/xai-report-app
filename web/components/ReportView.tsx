@@ -104,7 +104,7 @@ function SummaryBody({
         됩니다.
       </p>
 
-      <section className={styles.section}>
+      <section className={styles.cardSection}>
         <h2 className={styles.h2}>전체 정확도</h2>
         <div className={styles.accuracyRow}>
           <p className={styles.accuracy}>
@@ -145,7 +145,7 @@ function SummaryBody({
         )}
       </section>
 
-      <section className={styles.section}>
+      <section className={styles.cardSection}>
         <h2 className={styles.h2}>
           특성 중요도{" "}
           <InfoTip text="요리할 때 어떤 재료가 맛을 가장 많이 좌우하는지 궁금할 때가 있죠? 이 그래프가 딱 그거예요. 막대가 길수록, 그 항목이 AI의 예측 결과를 정하는 데 더 큰 힘을 썼다는 뜻이에요. 막대가 짧으면 그 항목은 예측에 별로 영향을 못 준 거예요." />
@@ -154,7 +154,7 @@ function SummaryBody({
       </section>
 
       {overallSummary.length > 0 && (
-        <section className={styles.section}>
+        <section className={styles.cardSection}>
           <h2 className={styles.h2}>총평</h2>
           <div className={styles.qualityMessage}>
             {overallSummary.map((s, i) => (
@@ -184,7 +184,7 @@ function CasesBody({ report, domain, selectedId, onSelect }: CasesBodyProps) {
 
   return (
     <div className={styles.reportCol}>
-      <section className={styles.section}>
+      <section className={styles.cardSection}>
         <CaseSelector
           cases={report.cases}
           selectedId={selectedId ?? ""}
@@ -194,24 +194,22 @@ function CasesBody({ report, domain, selectedId, onSelect }: CasesBodyProps) {
         />
       </section>
 
-      <section className={styles.section}>
-        {selected ? (
-          <CaseReportCard
-            case={selected}
-            domain={domain}
-            positiveLabel={positiveLabel}
-            negativeLabel={negativeLabel}
-            baseValue={report.baseValue}
-            importanceOrder={importanceOrder}
-            chartLimit={CHART_LIMIT}
-            caseNo={selectedIndex + 1}
-          />
-        ) : (
-          <p className={styles.selectorEmpty}>
-            위 산점도에서 점을 클릭하면 케이스 상세를 볼 수 있어요.
-          </p>
-        )}
-      </section>
+      {selected ? (
+        <CaseReportCard
+          case={selected}
+          domain={domain}
+          positiveLabel={positiveLabel}
+          negativeLabel={negativeLabel}
+          baseValue={report.baseValue}
+          importanceOrder={importanceOrder}
+          chartLimit={CHART_LIMIT}
+          caseNo={selectedIndex + 1}
+        />
+      ) : (
+        <p className={styles.selectorEmpty}>
+          위 산점도에서 점을 클릭하면 케이스 상세를 볼 수 있어요.
+        </p>
+      )}
     </div>
   );
 }

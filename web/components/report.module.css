@@ -178,7 +178,7 @@
   color: var(--accent-strong);
 }
 
-.dataRelSection {
+.cardSection {
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -800,8 +800,9 @@
 /* case report card */
 .card {
   padding: 20px;
-  border: 1px solid color-mix(in srgb, currentColor 15%, transparent);
+  border: 1px solid var(--border);
   border-radius: 12px;
+  background: var(--background);
   display: flex;
   flex-direction: column;
   gap: 14px;

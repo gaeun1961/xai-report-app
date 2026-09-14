@@ -100,7 +100,7 @@ export default function CorrelationMatrix({
         )}
       </nav>
 
-      <section id="dataRelCorrelation" className={styles.dataRelSection}>
+      <section id="dataRelCorrelation" className={styles.cardSection}>
         <h2 className={styles.h2}>
           숫자형 컬럼 관계{" "}
           <InfoTip text="두 가지 정보가 서로 관련이 있는지 보여주는 표예요. 예를 들어 키가 클수록 몸무게도 많이 나가는 경향이 있죠? 이렇게 하나가 변할 때 다른 하나도 같이 변하는 걸 '관계가 있다'고 해요. 색이 진하고 테두리가 두꺼운 칸일수록, 그 두 정보는 아주 강하게 관련되어 있다는 뜻이에요. (AI 모델이 아니라, 데이터 자체만 보고 계산한 거예요.)" />
@@ -195,7 +195,7 @@ export default function CorrelationMatrix({
       </section>
 
       {!!outliers?.length && (
-        <section id="dataRelOutliers" className={styles.dataRelSection}>
+        <section id="dataRelOutliers" className={styles.cardSection}>
           <h2 className={styles.h2}>
             이상치{" "}
             <InfoTip text="반 친구들의 키를 한 줄로 세운다고 생각해보세요. 대부분은 비슷비슷한 키에 모여있지만, 어쩌다 한두 명은 유난히 크거나 작을 수 있어요. 이렇게 '대부분과 아주 다른 값'을 이상치라고 불러요. 이 그림에서 상자는 친구들이 옹기종기 모여있는 가운데 구간(전체의 중간 50%)을 보여주고, 가운데 세로선은 딱 중간값이에요. 점으로 찍힌 건 그 무리에서 크게 벗어난 이상치예요." />
@@ -211,7 +211,7 @@ export default function CorrelationMatrix({
       )}
 
       {!!missingness?.length && (
-        <section id="dataRelMissing" className={styles.dataRelSection}>
+        <section id="dataRelMissing" className={styles.cardSection}>
           <h2 className={styles.h2}>
             결측치{" "}
             <InfoTip text="데이터에서 빈칸으로 남아있는 부분이에요. 예를 들어 설문지에서 어떤 사람이 나이를 안 적고 냈다면, 그 사람의 나이 칸은 '결측치'가 돼요. AI는 이런 빈칸을 그냥 두지 않고, 숫자 칸이면 다른 사람들의 중간값으로, 글자 칸이면 &quot;결측&quot;이라는 단어로 채워 넣은 다음 학습했어요." />
