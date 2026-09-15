@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useState } from "react";
 import type { ShapReport } from "@/lib/types";
 import { buildOverallSummary, explainAccuracy } from "@/lib/reportSummary";
-import { findDomain } from "@/lib/domains";
 import { getValueLabel, setValueLabel } from "@/lib/valueLabels";
 import FeatureImportanceChart from "./FeatureImportanceChart";
 import CaseSelector from "./CaseSelector";
@@ -26,10 +25,15 @@ export default function ReportView({ report, domain }: Props) {
   const hasCorr = !!report.correlations;
 
   // Only an uploaded CSV (no curated preset labels) can have a user-typed
-  // value label. Starts empty on both server and first client render (avoids
-  // a hydration mismatch), then loads from localStorage right after mount.
-  const isUpload = !findDomain(domain);
+  // value label. Detected via report.targetColumn rather than `!findDomain
+  // (domain)`: the static preset JSON files never carry that field, while
+  // every analyze.py response always does — unlike a domain-string check,
+  // this can't misfire when someone uploads a file literally named
+  // "titanic.csv" (whose domain then equals the preset's own slug). Starts
+  // empty on both server and first client render (avoids a hydration
+  // mismatch), then loads from localStorage right after mount.
   const { targetColumn, positiveRaw, negativeRaw } = report;
+  const isUpload = targetColumn !== undefined;
   const [overrides, setOverrides] = useState<{ pos?: string; neg?: string }>({});
 
   useEffect(() => {
