@@ -12,6 +12,11 @@ import {
 } from "@/lib/uploadHistory";
 import styles from "./sidebar.module.css";
 
+// Preset ids are namespaced ("preset:titanic") so they can share the same
+// compare-selection list as upload history ids (which are plain timestamps)
+// without ever colliding, and so /my/compare can tell the two apart.
+const presetCompareId = (slug: string) => `preset:${slug}`;
+
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
@@ -58,8 +63,52 @@ export default function Sidebar() {
       </Link>
 
       <nav className={styles.nav}>
-        <span className={styles.navHeading}>예시 데이터</span>
+        <span className={styles.navHeading}>
+          예시 데이터
+          {!compareMode && (
+            <button
+              type="button"
+              className={styles.compareToggle}
+              onClick={() => setCompareMode(true)}
+            >
+              비교
+            </button>
+          )}
+        </span>
+
+        {compareMode && (
+          <div className={styles.compareBar}>
+            <span className={styles.compareCount}>{selected.length}/2 선택</span>
+            <button
+              type="button"
+              className={styles.compareGoBtn}
+              disabled={selected.length !== 2}
+              onClick={goCompare}
+            >
+              비교하기
+            </button>
+            <button type="button" className={styles.compareCancelBtn} onClick={exitCompareMode}>
+              취소
+            </button>
+          </div>
+        )}
+
         {DOMAINS.map((d) => {
+          const compareId = presetCompareId(d.slug);
+          if (compareMode) {
+            return (
+              <label key={d.slug} className={styles.item}>
+                <input
+                  type="checkbox"
+                  className={styles.compareCheckbox}
+                  checked={selected.includes(compareId)}
+                  onChange={() => toggleSelected(compareId)}
+                  disabled={!selected.includes(compareId) && selected.length >= 2}
+                />
+                {d.label}
+              </label>
+            );
+          }
           const href = `/report/${d.slug}`;
           const active = pathname === href;
           return (
@@ -77,35 +126,7 @@ export default function Sidebar() {
 
       {history.length > 0 && (
         <nav className={`${styles.nav} ${styles.navDivider}`}>
-          <span className={styles.navHeading}>
-            내 분석 기록
-            {history.length >= 2 && !compareMode && (
-              <button
-                type="button"
-                className={styles.compareToggle}
-                onClick={() => setCompareMode(true)}
-              >
-                비교
-              </button>
-            )}
-          </span>
-
-          {compareMode && (
-            <div className={styles.compareBar}>
-              <span className={styles.compareCount}>{selected.length}/2 선택</span>
-              <button
-                type="button"
-                className={styles.compareGoBtn}
-                disabled={selected.length !== 2}
-                onClick={goCompare}
-              >
-                비교하기
-              </button>
-              <button type="button" className={styles.compareCancelBtn} onClick={exitCompareMode}>
-                취소
-              </button>
-            </div>
-          )}
+          <span className={styles.navHeading}>내 분석 기록</span>
 
           {history.map((h) => {
             const label = `${h.fileName} · ${formatSavedAt(h.savedAt)}`;
