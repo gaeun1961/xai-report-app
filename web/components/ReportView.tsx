@@ -226,7 +226,7 @@ function SummaryBody({
             예측값 이름 설정{" "}
             <InfoTip text={`업로드한 데이터엔 '${valueEditor.positiveRaw}', '${valueEditor.negativeRaw}' 같은 원본 값만 있고 그게 무슨 뜻인지는 데이터에 없어서 자동으로 알 수 없어요. 여기서 이름을 정해두면 이 브라우저에 저장되고, 같은 이름의 타겟 컬럼('${valueEditor.targetColumn}')을 쓰는 다른 CSV를 올릴 때도 자동으로 재사용돼요.`} />
           </h2>
-          <div className={`${styles.badges} ${styles.badgesStart}`}>
+          <div className={styles.valueLabelGrid}>
             <span className={styles.sectionNote}>
               {valueEditor.targetColumn} = {valueEditor.positiveRaw}:
             </span>

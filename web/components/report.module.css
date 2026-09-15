@@ -918,6 +918,15 @@
   align-items: center;
 }
 
+.valueLabelGrid {
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: 10px;
+  row-gap: 8px;
+  align-items: center;
+  justify-content: start;
+}
+
 .badge {
   padding: 3px 10px;
   border-radius: 999px;
