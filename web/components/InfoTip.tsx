@@ -8,11 +8,12 @@ type Props = {
 };
 
 // Break into short lines instead of one long wrapped paragraph: a new line
-// after every "-요." (or parenthesised "-요.)") sentence ending, and another
-// right before a "-"/"—" aside dash.
+// after every "-요." (or parenthesised "-요.)") sentence ending, another
+// right before a "-"/"—" aside dash, and wherever a caller puts an explicit
+// "\n" (e.g. to set a trailing "(상관계수 n)" note on its own line).
 function splitLines(text: string): string[] {
   return text
-    .split(/(?<=요\.\))\s*|(?<=요\.)(?!\))\s*|\s+(?=[-—])/)
+    .split(/(?<=요\.\))\s*|(?<=요\.)(?!\))\s*|\s+(?=[-—])|\n+/)
     .map((s) => s.trim())
     .filter(Boolean);
 }
@@ -25,9 +26,6 @@ function renderWithBold(line: string) {
     .map((part, i) => (i % 2 === 1 ? <strong key={i}>{part}</strong> : part));
 }
 
-// keep in sync with .infoTipBubble's max-width formula (min(420px, 85vw))
-const MAX_BUBBLE_WIDTH = 420;
-const BUBBLE_WIDTH_VW = 0.85;
 const EDGE_MARGIN = 8;
 const GAP = 10; // matches the CSS gap between icon and bubble
 
@@ -51,17 +49,18 @@ export default function InfoTip({ text }: Props) {
     const bubble = bubbleRef.current;
     if (!rect || !bubble) return;
 
-    const bubbleWidth = Math.min(MAX_BUBBLE_WIDTH, window.innerWidth * BUBBLE_WIDTH_VW);
-
-    // the bubble is display:none until hover, and its height depends on how
-    // many lines this particular text wraps into — measure the real height
-    // (briefly forced visible off-eye, reset before the browser ever paints)
-    // instead of guessing from the icon's position alone
+    // the bubble is display:none until hover, and both its height and width
+    // depend on how many lines this particular text wraps into (a short
+    // tooltip can render much narrower than the CSS max-width) — measure
+    // the real box (briefly forced visible off-eye, reset before the
+    // browser ever paints) instead of assuming the theoretical max width,
+    // which used to misalign short bubbles well past the icon's edge
     const prevDisplay = bubble.style.display;
     const prevVisibility = bubble.style.visibility;
     bubble.style.visibility = "hidden";
     bubble.style.display = "flex";
     const bubbleHeight = bubble.offsetHeight;
+    const bubbleWidth = bubble.offsetWidth;
     bubble.style.display = prevDisplay;
     bubble.style.visibility = prevVisibility;
 
