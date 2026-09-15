@@ -918,6 +918,24 @@
   align-items: center;
 }
 
+.valueLabelGrid {
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: 10px;
+  row-gap: 8px;
+  /* baseline, not center: the label (13px) and value (larger, bold) fonts
+     have different line-box metrics, so centering their boxes still leaves
+     a small visible baseline offset — aligning text baselines removes it */
+  align-items: baseline;
+  justify-content: start;
+}
+
+/* .sectionNote's -4px margin-top (meant to pull it closer to a heading
+   above) throws off this grid's own vertical centering, so cancel it here */
+.valueLabelGrid .sectionNote {
+  margin-top: 0;
+}
+
 .compareHeadRow {
   display: grid;
   grid-template-columns: 1fr 1fr;
