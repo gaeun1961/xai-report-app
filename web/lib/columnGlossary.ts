@@ -4,6 +4,7 @@
 
 export const COLUMN_GLOSSARY: Record<string, Record<string, string>> = {
   titanic: {
+    "2urvived": "생존 여부 (0=사망, 1=생존) — 원본 데이터의 컬럼명 오타(Survived)를 그대로 사용",
     Sex: "성별 (0=남성, 1=여성)",
     Pclass: "객실 등급 (1=1등석, 2=2등석, 3=3등석)",
     Age: "나이",
@@ -13,6 +14,7 @@ export const COLUMN_GLOSSARY: Record<string, Record<string, string>> = {
     Parch: "함께 탑승한 부모·자녀 수",
   },
   hr_attrition: {
+    Attrition: "이직(퇴사) 여부 (Yes/No)",
     Age: "나이",
     OverTime: "야근 여부 (Yes/No)",
     MonthlyIncome: "월 소득",
@@ -45,6 +47,7 @@ export const COLUMN_GLOSSARY: Record<string, Record<string, string>> = {
     PerformanceRating: "인사 고과 등급 (1~4)",
   },
   telco_churn: {
+    Churn: "고객 이탈 여부 (Yes/No)",
     Contract: "계약 형태 (월별 / 1년 / 2년)",
     tenure: "가입 유지 개월 수",
     MonthlyCharges: "월 요금",
