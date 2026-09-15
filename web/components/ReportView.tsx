@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { ShapReport } from "@/lib/types";
 import { buildOverallSummary, explainAccuracy } from "@/lib/reportSummary";
 import { getValueLabel, setValueLabel } from "@/lib/valueLabels";
+import { featureTendencies } from "@/lib/featureTendency";
 import FeatureImportanceChart from "./FeatureImportanceChart";
 import CaseSelector from "./CaseSelector";
 import CaseReportCard from "./CaseReportCard";
@@ -208,6 +209,7 @@ function SummaryBody({
     ? report.cases.find((c) => c.id === selectedId)
     : undefined;
   const overallSummary = buildOverallSummary(report, domain);
+  const tendencies = useMemo(() => featureTendencies(report), [report]);
 
   return (
     <div className={styles.reportCol}>
@@ -295,7 +297,11 @@ function SummaryBody({
           특성 중요도{" "}
           <InfoTip text="요리할 때 어떤 재료가 맛을 가장 많이 좌우하는지 궁금할 때가 있죠? 이 그래프가 딱 그거예요. **막대가 길수록, 그 항목이 AI의 예측 결과를 정하는 데 더 큰 힘을 썼다**는 뜻이에요. 막대가 짧으면 그 항목은 예측에 별로 영향을 못 준 거예요." />
         </h2>
-        <FeatureImportanceChart items={report.featureImportance} domain={domain} />
+        <FeatureImportanceChart
+          items={report.featureImportance}
+          domain={domain}
+          tooltips={tendencies}
+        />
       </section>
 
       {overallSummary.length > 0 && (

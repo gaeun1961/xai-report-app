@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { columnDesc } from "@/lib/columnGlossary";
 import GlossaryTerm from "./GlossaryTerm";
+import InfoTip from "./InfoTip";
 import styles from "./report.module.css";
 
 export type PercentBarItem = { label: string; value: number };
@@ -14,6 +15,8 @@ type Props = {
   // how to render the number next to each bar — defaults to a raw 0–1 value
   // (feature importance); pass e.g. `(v) => `${(v*100).toFixed(1)}%`` for a share
   valueFormat?: (v: number) => string;
+  // optional per-item hover note (e.g. a feature's tendency), keyed by label
+  tooltips?: Record<string, string>;
 };
 
 // fixed 0–1 domain (not each report's own max) so a bar's length means the
@@ -25,6 +28,7 @@ export default function PercentBarChart({
   domain,
   collapsedCount = 8,
   valueFormat = (v) => v.toFixed(3),
+  tooltips,
 }: Props) {
   const [expanded, setExpanded] = useState(false);
 
@@ -59,6 +63,7 @@ export default function PercentBarChart({
           <li key={label} className={styles.chartRow}>
             <span className={styles.chartLabel}>
               <GlossaryTerm term={label} desc={columnDesc(domain, label)} />
+              {tooltips?.[label] && <InfoTip text={tooltips[label]} />}
             </span>
             <span className={styles.chartTrack}>
               <span
