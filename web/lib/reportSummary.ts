@@ -143,6 +143,62 @@ function dataQualitySentence(report: ShapReport, domain: string): string | null 
   return `${notes.join(", ")}.`;
 }
 
+const MIN_WRONG_FOR_PATTERN = 3;
+const LOW_CONF_THRESHOLD = 0.6; // predicted-class confidence at/below this counts as "low"
+const HIGH_CONF_THRESHOLD = 0.8;
+
+// Looks for a common thread across the model's mistakes: were they mostly
+// close calls (confidence near 50%), or cases the model was confident about
+// and still got wrong (a pattern it hasn't learned)? Also flags a single
+// factor that dominates the #1 spot across those mistakes. Needs at least
+// MIN_WRONG_FOR_PATTERN wrong cases — with fewer, "대부분" would overclaim
+// from a sample too small to call a pattern.
+function wrongCasesSentence(report: ShapReport, domain: string): string | null {
+  const wrong = report.cases.filter(
+    (c) => c.isCorrect === false && c.probaPositive !== undefined,
+  );
+  if (wrong.length < MIN_WRONG_FOR_PATTERN) return null;
+
+  const confidences = wrong.map((c) =>
+    c.predictedPositive ? c.probaPositive! : 1 - c.probaPositive!,
+  );
+  const lowConfCount = confidences.filter((p) => p <= LOW_CONF_THRESHOLD).length;
+  const highConfCount = confidences.filter((p) => p >= HIGH_CONF_THRESHOLD).length;
+
+  const topFeatureCounts = new Map<string, number>();
+  for (const c of wrong) {
+    const top = c.topFeatures[0]?.feature;
+    if (top) topFeatureCounts.set(top, (topFeatureCounts.get(top) ?? 0) + 1);
+  }
+  let topFeature: string | null = null;
+  let topFeatureCount = 0;
+  for (const [f, n] of topFeatureCounts) {
+    if (n > topFeatureCount) {
+      topFeature = f;
+      topFeatureCount = n;
+    }
+  }
+
+  const sentences: string[] = [];
+  if (lowConfCount / wrong.length >= 0.6) {
+    sentences.push(
+      `빗나간 케이스(${wrong.length}개) 중 대부분은 확신도가 낮았어요 — 애매한 경계선에서 반대로 뒤집힌 경우가 많아요.`,
+    );
+  } else if (highConfCount / wrong.length >= 0.4) {
+    sentences.push(
+      `빗나간 케이스(${wrong.length}개) 중 ${highConfCount}개는 모델이 확신했는데도 틀렸어요 — 이런 패턴은 모델이 아직 잘 다루지 못하는 것 같아요.`,
+    );
+  }
+
+  if (topFeature && topFeatureCount / wrong.length >= 0.5) {
+    sentences.push(
+      `빗나간 케이스는 대부분 '${label(domain, topFeature)}' 요인이 가장 크게 작용했어요.`,
+    );
+  }
+
+  return sentences.length > 0 ? sentences.join(" ") : null;
+}
+
 // Conditional sentences only — a report with nothing notable yields [].
 export function buildOverallSummary(report: ShapReport, domain: string): string[] {
   return [
@@ -150,6 +206,7 @@ export function buildOverallSummary(report: ShapReport, domain: string): string[
     topFeaturesSentence(report, domain),
     correlationSentence(report, domain),
     dataQualitySentence(report, domain),
+    wrongCasesSentence(report, domain),
   ].filter((s): s is string => !!s);
 }
 
