@@ -936,6 +936,18 @@
   margin-top: 0;
 }
 
+.compareHeadRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 640px) {
+  .compareHeadRow {
+    grid-template-columns: 1fr;
+  }
+}
+
 .badge {
   padding: 3px 10px;
   border-radius: 999px;
