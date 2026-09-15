@@ -927,6 +927,12 @@
   justify-content: start;
 }
 
+/* .sectionNote's -4px margin-top (meant to pull it closer to a heading
+   above) throws off this grid's own vertical centering, so cancel it here */
+.valueLabelGrid .sectionNote {
+  margin-top: 0;
+}
+
 .badge {
   padding: 3px 10px;
   border-radius: 999px;
