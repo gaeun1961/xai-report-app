@@ -33,6 +33,14 @@ export function listUploadHistory(): UploadHistoryEntry[] {
   return readHistory();
 }
 
+// "09/05 14:30" — short enough for a sidebar row, precise enough to tell
+// apart repeated uploads of the same file name.
+export function formatSavedAt(savedAt: number): string {
+  const d = new Date(savedAt);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${pad(d.getMonth() + 1)}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
 export function getUploadHistoryEntry(id: string): UploadHistoryEntry | null {
   return readHistory().find((e) => e.id === id) ?? null;
 }
