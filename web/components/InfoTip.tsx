@@ -8,11 +8,12 @@ type Props = {
 };
 
 // Break into short lines instead of one long wrapped paragraph: a new line
-// after every "-요." (or parenthesised "-요.)") sentence ending, and another
-// right before a "-"/"—" aside dash.
+// after every "-요." (or parenthesised "-요.)") sentence ending, another
+// right before a "-"/"—" aside dash, and wherever a caller puts an explicit
+// "\n" (e.g. to set a trailing "(상관계수 n)" note on its own line).
 function splitLines(text: string): string[] {
   return text
-    .split(/(?<=요\.\))\s*|(?<=요\.)(?!\))\s*|\s+(?=[-—])/)
+    .split(/(?<=요\.\))\s*|(?<=요\.)(?!\))\s*|\s+(?=[-—])|\n+/)
     .map((s) => s.trim())
     .filter(Boolean);
 }

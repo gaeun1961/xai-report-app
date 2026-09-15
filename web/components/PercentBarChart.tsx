@@ -63,7 +63,12 @@ export default function PercentBarChart({
           <li key={label} className={styles.chartRow}>
             <span className={styles.chartLabel}>
               <GlossaryTerm term={label} desc={columnDesc(domain, label)} />
-              {tooltips?.[label] && <InfoTip text={tooltips[label]} />}
+              {tooltips?.[label] && (
+                <>
+                  {" "}
+                  <InfoTip text={tooltips[label]} />
+                </>
+              )}
             </span>
             <span className={styles.chartTrack}>
               <span
