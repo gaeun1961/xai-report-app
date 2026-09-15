@@ -923,7 +923,10 @@
   grid-template-columns: auto auto;
   column-gap: 10px;
   row-gap: 8px;
-  align-items: center;
+  /* baseline, not center: the label (13px) and value (larger, bold) fonts
+     have different line-box metrics, so centering their boxes still leaves
+     a small visible baseline offset — aligning text baselines removes it */
+  align-items: baseline;
   justify-content: start;
 }
 
