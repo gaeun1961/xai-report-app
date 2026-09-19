@@ -45,6 +45,17 @@ export function getUploadHistoryEntry(id: string): UploadHistoryEntry | null {
   return readHistory().find((e) => e.id === id) ?? null;
 }
 
+export function deleteUploadReport(id: string): void {
+  try {
+    const history = readHistory().filter((e) => e.id !== id);
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+    localStorage.removeItem(REPORT_PREFIX + id);
+    window.dispatchEvent(new Event(HISTORY_CHANGED_EVENT));
+  } catch {
+    // localStorage unavailable — nothing to clean up
+  }
+}
+
 export function renameUploadReport(id: string, name: string): void {
   const trimmed = name.trim();
   if (!trimmed) return;

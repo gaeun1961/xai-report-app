@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { DOMAINS } from "@/lib/domains";
 import {
   HISTORY_CHANGED_EVENT,
+  deleteUploadReport,
   formatSavedAt,
   listUploadHistory,
   type UploadHistoryEntry,
@@ -54,6 +55,12 @@ export default function Sidebar() {
     const [a, b] = selected;
     router.push(`/my/compare?a=${a}&b=${b}`);
     exitCompareMode();
+  }
+
+  function handleDelete(id: string, fileName: string) {
+    if (!window.confirm(`"${fileName}" 분석 기록을 삭제할까요?`)) return;
+    deleteUploadReport(id);
+    if (pathname === `/my/${id}`) router.push("/");
   }
 
   return (
@@ -147,15 +154,24 @@ export default function Sidebar() {
             const href = `/my/${h.id}`;
             const active = pathname === href;
             return (
-              <Link
-                key={h.id}
-                href={href}
-                className={`${styles.item} ${active ? styles.itemActive : ""}`}
-                aria-current={active ? "page" : undefined}
-                title={label}
-              >
-                {label}
-              </Link>
+              <div key={h.id} className={styles.historyRow}>
+                <Link
+                  href={href}
+                  className={`${styles.item} ${active ? styles.itemActive : ""}`}
+                  aria-current={active ? "page" : undefined}
+                  title={label}
+                >
+                  {label}
+                </Link>
+                <button
+                  type="button"
+                  className={styles.historyDeleteBtn}
+                  aria-label={`${h.fileName} 분석 기록 삭제`}
+                  onClick={() => handleDelete(h.id, h.fileName)}
+                >
+                  ×
+                </button>
+              </div>
             );
           })}
         </nav>

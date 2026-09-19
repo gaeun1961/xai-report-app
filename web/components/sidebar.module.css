@@ -115,6 +115,34 @@
   text-overflow: ellipsis;
 }
 
+.historyRow {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.historyRow .item {
+  flex: 1;
+  min-width: 0;
+}
+
+.historyDeleteBtn {
+  flex: 0 0 auto;
+  padding: 2px 7px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.historyDeleteBtn:hover {
+  color: #dc2626;
+  background: color-mix(in srgb, #dc2626 12%, transparent);
+}
+
 .item:hover {
   background: color-mix(in srgb, var(--accent) 12%, transparent);
 }
