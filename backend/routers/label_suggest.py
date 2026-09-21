@@ -1,4 +1,4 @@
-"""Best-effort Claude API guess at what a binary target column's raw values
+"""Best-effort Gemini API guess at what a binary target column's raw values
 mean (e.g. HeartDisease 1/0 -> "심장질환 있음"/"심장질환 없음"). Feeds straight
 into export_report_json's existing positive_label/negative_label params, so
 the guess pre-fills the same inline editor PR #77 already built (localStorage
@@ -10,16 +10,22 @@ Skipped without ever calling the API when:
 - the raw values already read as words (Yes/No, male/female, ...) - only a
   bare numeric code like "1"/"0" is actually unclear enough to be worth a
   guess, which also keeps this from firing on every preset-shaped upload.
-- ANTHROPIC_API_KEY isn't set (e.g. local dev, CI) - manual labeling still
+- GEMINI_API_KEY isn't set (e.g. local dev, CI) - manual labeling still
   works exactly as before.
 - the call itself fails for any reason (network, rate limit, bad output) -
   a suggestion is a nice-to-have, never a reason to fail the whole report.
+
+Uses Gemini (google-genai) rather than Claude: this project has no card on
+file for Anthropic billing, and Gemini's free tier needs none for its
+(rate-limited) usage — plenty for one call per report, cached per target
+column. gemini-flash-latest is the lightest tier, matching how small this
+task actually is (guess two short labels from a column name).
 """
 import os
 
-import anthropic
+from google import genai
 
-MODEL = "claude-haiku-4-5"
+MODEL = "gemini-flash-latest"
 MAX_CONTEXT_COLUMNS = 30
 
 _cache: dict = {}
@@ -28,10 +34,10 @@ _client = None
 
 def _client_or_none():
     global _client
-    if not os.environ.get("ANTHROPIC_API_KEY"):
+    if not os.environ.get("GEMINI_API_KEY"):
         return None
     if _client is None:
-        _client = anthropic.Anthropic()
+        _client = genai.Client()
     return _client
 
 
@@ -70,12 +76,8 @@ def suggest_value_labels(target_column, positive_raw, negative_raw, other_column
     )
 
     try:
-        response = client.messages.create(
-            model=MODEL,
-            max_tokens=100,
-            messages=[{"role": "user", "content": prompt}],
-        )
-        text = "".join(b.text for b in response.content if b.type == "text")
+        response = client.models.generate_content(model=MODEL, contents=prompt)
+        text = response.text or ""
         pos_label = neg_label = None
         for line in text.splitlines():
             if line.startswith("양성:"):

@@ -197,7 +197,7 @@ async def analyze(
         # token into None on the way back in, same as a clean value would get.
         with open(output_path, encoding="utf-8") as f:
             report = json.load(f, parse_constant=lambda _: None)
-        # tells the frontend positiveLabel/negativeLabel came from a Claude
+        # tells the frontend positiveLabel/negativeLabel came from a Gemini
         # guess (still just a pre-filled default the user can overwrite),
         # so it can flag it as unverified instead of showing it as settled
         report["labelSuggested"] = label_suggestion is not None

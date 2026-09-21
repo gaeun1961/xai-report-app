@@ -1,6 +1,6 @@
 """Unit checks for routers/label_suggest.py's gating and parsing logic.
-No network calls: the Claude client is swapped for a fake, so this runs the
-same with or without ANTHROPIC_API_KEY set. Run: python test_label_suggest.py
+No network calls: the Gemini client is swapped for a fake, so this runs the
+same with or without GEMINI_API_KEY set. Run: python test_label_suggest.py
 """
 import sys
 from pathlib import Path
@@ -9,29 +9,23 @@ sys.path.insert(0, str(Path(__file__).resolve().parent / "routers"))
 import label_suggest  # noqa: E402
 
 
-class _FakeTextBlock:
-    def __init__(self, text):
-        self.type = "text"
-        self.text = text
-
-
-class _FakeMessages:
+class _FakeModels:
     def __init__(self, text):
         self._text = text
 
-    def create(self, **kwargs):
-        return type("R", (), {"content": [_FakeTextBlock(self._text)]})()
+    def generate_content(self, **kwargs):
+        return type("R", (), {"text": self._text})()
 
 
 class _FakeClient:
     def __init__(self, text):
-        self.messages = _FakeMessages(text)
+        self.models = _FakeModels(text)
 
 
 def test_skips_non_numeric_raw_values_without_calling_client():
     # word-like values already read fine — must never reach the network. No
     # fake client installed here on purpose: a real client() call would blow
-    # up (no ANTHROPIC_API_KEY in CI) if the gate didn't short-circuit first.
+    # up (no GEMINI_API_KEY in CI) if the gate didn't short-circuit first.
     assert label_suggest.suggest_value_labels("Churn", "Yes", "No", ["gender"]) is None
 
 

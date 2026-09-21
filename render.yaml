@@ -11,5 +11,5 @@ services:
         value: 3.13.7
       - key: ALLOWED_ORIGINS
         value: https://xai-report.vercel.app
-      - key: ANTHROPIC_API_KEY
+      - key: GEMINI_API_KEY
         sync: false
