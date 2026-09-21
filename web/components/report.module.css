@@ -1290,6 +1290,23 @@
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
 }
 
+.glossaryBubbleEditing {
+  display: block;
+  width: 240px;
+  pointer-events: auto;
+}
+
+.glossaryEditor {
+  width: 100%;
+  resize: none;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--foreground);
+  font: inherit;
+  line-height: 1.6;
+}
+
 .glossaryBubble::after {
   content: "";
   position: absolute;

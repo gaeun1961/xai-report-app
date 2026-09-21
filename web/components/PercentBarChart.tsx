@@ -59,22 +59,33 @@ function EditableFeatureLabel({
     setEditing(false);
   }
 
+  // editing happens INSIDE the tooltip bubble (forced open) instead of
+  // swapping the row for an input — the text just becomes editable in place
   if (editing) {
     return (
-      <input
-        className={styles.caseNameInput}
-        value={draft}
-        autoFocus
-        maxLength={100}
-        placeholder={`${column} 설명`}
-        aria-label={`${column} 설명 수정`}
-        onChange={(e) => setDraft(e.target.value)}
-        onBlur={save}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") save();
-          if (e.key === "Escape") setEditing(false);
-        }}
-      />
+      <span className={`${styles.glossary} ${styles.tooltipHost}`}>
+        {column}
+        <span className={`${styles.glossaryBubble} ${styles.glossaryBubbleEditing}`} role="tooltip">
+          <textarea
+            className={styles.glossaryEditor}
+            value={draft}
+            autoFocus
+            rows={3}
+            maxLength={100}
+            placeholder={`${column} 설명 (Enter 저장, Esc 취소)`}
+            aria-label={`${column} 설명 수정`}
+            onChange={(e) => setDraft(e.target.value)}
+            onBlur={save}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                save();
+              }
+              if (e.key === "Escape") setEditing(false);
+            }}
+          />
+        </span>
+      </span>
     );
   }
 
