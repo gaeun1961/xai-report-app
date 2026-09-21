@@ -122,6 +122,10 @@ export default function Sidebar() {
         </button>
       </div>
 
+      <Link href="/#upload" className={styles.newAnalysis}>
+        <span aria-hidden>＋</span> 새 CSV 분석하기
+      </Link>
+
       <nav className={styles.nav}>
         <span className={styles.navHeading}>
           예시 데이터
