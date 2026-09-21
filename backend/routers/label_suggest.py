@@ -21,9 +21,12 @@ file for Anthropic billing, and Gemini's free tier needs none for its
 column. gemini-flash-latest is the lightest tier, matching how small this
 task actually is (guess two short labels from a column name).
 """
+import logging
 import os
 
 from google import genai
+
+log = logging.getLogger(__name__)
 
 MODEL = "gemini-flash-latest"
 MAX_CONTEXT_COLUMNS = 30
@@ -35,6 +38,7 @@ _client = None
 def _client_or_none():
     global _client
     if not os.environ.get("GEMINI_API_KEY"):
+        log.warning("GEMINI_API_KEY not set - skipping LLM suggestions")
         return None
     if _client is None:
         _client = genai.Client()
@@ -85,9 +89,11 @@ def suggest_value_labels(target_column, positive_raw, negative_raw, other_column
             elif line.startswith("음성:"):
                 neg_label = line.split(":", 1)[1].strip()
         if not pos_label or not neg_label:
+            log.warning("value-label response not parseable: %r", text[:200])
             return None
         result = (pos_label, neg_label)
     except Exception:
+        log.exception("Gemini value-label call failed")
         return None
 
     _cache[key] = result
@@ -145,8 +151,10 @@ def suggest_column_glossary(columns, samples):
             if name in col_set and desc.strip():
                 result[name] = desc.strip()
         if not result:
+            log.warning("glossary response not parseable: %r", text[:200])
             return None
     except Exception:
+        log.exception("Gemini glossary call failed")
         return None
 
     _glossary_cache[key] = result

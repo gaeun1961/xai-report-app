@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { columnDesc, isSuggestedDesc } from "@/lib/columnGlossary";
-import { getFeatureName, setFeatureName } from "@/lib/featureNames";
+import { getFeatureDesc, setFeatureDesc } from "@/lib/featureDescs";
 import GlossaryTerm from "./GlossaryTerm";
 import InfoTip from "./InfoTip";
 import styles from "./report.module.css";
@@ -24,11 +24,11 @@ type Props = {
 // same thing across rows and across domains, not just "biggest here"
 const AXIS_TICKS = [0, 0.25, 0.5, 0.75, 1];
 
-// Column name shown for this one row, click-to-rename (per-browser display
-// override via lib/featureNames.ts — the underlying `column` name used for
-// every lookup, e.g. columnDesc/tooltips, never changes, only what's shown).
-// Starts un-overridden on both server and first client render (avoids a
-// hydration mismatch), then loads from localStorage right after mount.
+// One row's column name + its hover description. The pencil edits the
+// DESCRIPTION (the tooltip text), not the column name — per-browser override
+// via lib/featureDescs.ts; an edited description is the user's own, so it
+// drops the "AI 추정" marker. Starts un-overridden on server and first client
+// render (avoids a hydration mismatch), then loads from localStorage.
 function EditableFeatureLabel({
   domain,
   column,
@@ -42,20 +42,18 @@ function EditableFeatureLabel({
 }) {
   const [override, setOverride] = useState<string | undefined>(undefined);
   const [editing, setEditing] = useState(false);
-  const [draft, setDraft] = useState(column);
+  const [draft, setDraft] = useState("");
 
   useEffect(() => {
-    setOverride(getFeatureName(domain, column));
+    setOverride(getFeatureDesc(domain, column));
   }, [domain, column]);
 
-  const displayName = override ?? column;
+  const shownDesc = override ?? desc;
 
-  // blur fires even with no edit made (click the pencil, click away) — only
-  // persist on an actual change, same reasoning as ReportView's value-label
-  // chip (a no-op save would otherwise still overwrite localStorage).
+  // blur fires even with no edit made — only persist on an actual change
   function save() {
-    if (draft.trim() !== displayName.trim()) {
-      setFeatureName(domain, column, draft);
+    if (draft.trim() !== (shownDesc ?? "").trim()) {
+      setFeatureDesc(domain, column, draft);
       setOverride(draft.trim() || undefined);
     }
     setEditing(false);
@@ -67,8 +65,9 @@ function EditableFeatureLabel({
         className={styles.caseNameInput}
         value={draft}
         autoFocus
-        maxLength={40}
-        aria-label={`${column} 표시 이름 수정`}
+        maxLength={100}
+        placeholder={`${column} 설명`}
+        aria-label={`${column} 설명 수정`}
         onChange={(e) => setDraft(e.target.value)}
         onBlur={save}
         onKeyDown={(e) => {
@@ -81,13 +80,13 @@ function EditableFeatureLabel({
 
   return (
     <span className={styles.caseId}>
-      <GlossaryTerm term={displayName} desc={desc} suggested={suggested} />
+      <GlossaryTerm term={column} desc={shownDesc} suggested={override ? false : suggested} />
       <button
         type="button"
         className={styles.caseNameEditBtn}
-        aria-label={`${column} 표시 이름 수정`}
+        aria-label={`${column} 설명 수정`}
         onClick={() => {
-          setDraft(displayName);
+          setDraft(shownDesc ?? "");
           setEditing(true);
         }}
       >
