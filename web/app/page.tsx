@@ -41,18 +41,20 @@ export default function Home() {
 
           <div className={styles.action}>
             <UploadFlow />
-            <details className={styles.finePrint}>
-              <summary>업로드 전에 알아두세요</summary>
-              <p>
-                이진분류(결과가 두 가지인) 데이터의 학습용 CSV를 올려주세요. 정답(타겟)
-                컬럼이 없는 test.csv는 분석할 수 없어요.
-                <br />
-                파일은 5MB·5만 행 이하, 값 종류가 너무 많은 컬럼·긴 텍스트·날짜 컬럼은
-                자동으로 제외해요.
-                <br />
-                서버가 쉬고 있었다면 처음 응답까지 최대 1분 걸릴 수 있어요.
-              </p>
-            </details>
+            <p className={styles.finePrint}>
+            정답(타겟) 컬럼이 있는 학습용 CSV · 5MB · 5만 행 이하
+          </p>
+          <details className={styles.more}>
+            <summary>자세한 조건 보기</summary>
+            <p>
+              결과가 두 가지(예: 생존/사망)인 이진분류 데이터만 분석할 수 있어요.
+              정답 컬럼이 없는 test.csv는 분석할 수 없어요.
+              <br />
+              값 종류가 너무 많은 컬럼·긴 텍스트·날짜 컬럼은 자동으로 제외해요.
+              <br />
+              서버가 쉬고 있었다면 처음 응답까지 최대 1분 걸릴 수 있어요.
+            </p>
+          </details>
           </div>
         </section>
 
