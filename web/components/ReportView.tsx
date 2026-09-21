@@ -169,8 +169,11 @@ function ValueLabelChip({
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(fallback);
 
+  // blur fires even when nothing was typed (click the pencil, then click
+  // away) — only persisting on an actual change keeps that from silently
+  // freezing a live AI suggestion into a permanent "user-edited" override
   function save() {
-    onSave(draft);
+    if (draft.trim() !== fallback.trim()) onSave(draft);
     setEditing(false);
   }
 
