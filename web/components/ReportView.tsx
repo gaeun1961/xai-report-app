@@ -107,6 +107,11 @@ export default function ReportView({ report, domain }: Props) {
                   negativeRaw,
                   positiveLabel: effectiveReport.positiveLabel ?? positiveRaw,
                   negativeLabel: effectiveReport.negativeLabel ?? negativeRaw,
+                  // only still a live (unedited) suggestion while no saved
+                  // override exists — once the user edits it, it's their
+                  // own label, not Claude's guess anymore
+                  positiveSuggested: !!report.labelSuggested && !overrides.pos,
+                  negativeSuggested: !!report.labelSuggested && !overrides.neg,
                   onSave: saveLabel,
                 }
               : undefined
@@ -140,14 +145,18 @@ type ValueEditorProps = {
   negativeRaw: string;
   positiveLabel: string;
   negativeLabel: string;
+  positiveSuggested: boolean;
+  negativeSuggested: boolean;
   onSave: (which: "pos" | "neg", label: string) => void;
 };
 
 function ValueLabelChip({
   fallback,
+  suggested,
   onSave,
 }: {
   fallback: string;
+  suggested?: boolean;
   onSave: (label: string) => void;
 }) {
   const [editing, setEditing] = useState(false);
@@ -178,6 +187,7 @@ function ValueLabelChip({
   return (
     <span className={styles.caseId}>
       {fallback}
+      {suggested && <em className={styles.soon}>AI 추정</em>}
       <button
         type="button"
         className={styles.caseNameEditBtn}
@@ -230,7 +240,13 @@ function SummaryBody({
         <section className={styles.cardSection}>
           <h2 className={styles.h2}>
             예측값 이름 설정{" "}
-            <InfoTip text={`업로드한 데이터엔 '${valueEditor.positiveRaw}', '${valueEditor.negativeRaw}' 같은 원본 값만 있고 그게 무슨 뜻인지는 데이터에 없어서 자동으로 알 수 없어요. 여기서 이름을 정해두면 이 브라우저에 저장되고, 같은 이름의 타겟 컬럼('${valueEditor.targetColumn}')을 쓰는 다른 CSV를 올릴 때도 자동으로 재사용돼요.`} />
+            <InfoTip
+              text={
+                valueEditor.positiveSuggested || valueEditor.negativeSuggested
+                  ? `'${valueEditor.positiveRaw}', '${valueEditor.negativeRaw}' 값의 의미를 AI가 추측해서 미리 채워뒀어요 (틀릴 수 있으니 꼭 확인해주세요). 이름을 수정하면 이 브라우저에 저장되고, 같은 이름의 타겟 컬럼('${valueEditor.targetColumn}')을 쓰는 다른 CSV를 올릴 때도 자동으로 재사용돼요.`
+                  : `업로드한 데이터엔 '${valueEditor.positiveRaw}', '${valueEditor.negativeRaw}' 같은 원본 값만 있고 그게 무슨 뜻인지는 데이터에 없어서 자동으로 알 수 없어요. 여기서 이름을 정해두면 이 브라우저에 저장되고, 같은 이름의 타겟 컬럼('${valueEditor.targetColumn}')을 쓰는 다른 CSV를 올릴 때도 자동으로 재사용돼요.`
+              }
+            />
           </h2>
           <div className={styles.valueLabelGrid}>
             <span className={styles.sectionNote}>
@@ -238,6 +254,7 @@ function SummaryBody({
             </span>
             <ValueLabelChip
               fallback={valueEditor.positiveLabel}
+              suggested={valueEditor.positiveSuggested}
               onSave={(label) => valueEditor.onSave("pos", label)}
             />
             <span className={styles.sectionNote}>
@@ -245,6 +262,7 @@ function SummaryBody({
             </span>
             <ValueLabelChip
               fallback={valueEditor.negativeLabel}
+              suggested={valueEditor.negativeSuggested}
               onSave={(label) => valueEditor.onSave("neg", label)}
             />
           </div>
