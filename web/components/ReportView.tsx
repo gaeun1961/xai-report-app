@@ -71,6 +71,15 @@ export default function ReportView({ report, domain }: Props) {
     setOverrides((prev) => ({ ...prev, [which]: label.trim() || undefined }));
   }
 
+  // drops both saved names so the AI guess (or the plain "Column=raw"
+  // fallback if there was none) shows again — no console needed
+  function resetLabels() {
+    if (!targetColumn) return;
+    if (positiveRaw !== undefined) setValueLabel(targetColumn, positiveRaw, "");
+    if (negativeRaw !== undefined) setValueLabel(targetColumn, negativeRaw, "");
+    setOverrides({});
+  }
+
   return (
     <>
       <div className={styles.tabs}>
@@ -120,6 +129,14 @@ export default function ReportView({ report, domain }: Props) {
                   positiveSuggested: !!report.labelSuggested && !overrides.pos,
                   negativeSuggested: !!report.labelSuggested && !overrides.neg,
                   onSave: saveLabel,
+                  hasSaved: !!(overrides.pos || overrides.neg),
+                  // the backend only tries a guess for bare numeric codes —
+                  // so numeric values with no guess means the call failed
+                  suggestFailed:
+                    !report.labelSuggested &&
+                    !Number.isNaN(Number(positiveRaw)) &&
+                    !Number.isNaN(Number(negativeRaw)),
+                  onReset: resetLabels,
                 }
               : undefined
           }
@@ -155,6 +172,9 @@ type ValueEditorProps = {
   positiveSuggested: boolean;
   negativeSuggested: boolean;
   onSave: (which: "pos" | "neg", label: string) => void;
+  hasSaved: boolean;
+  suggestFailed: boolean;
+  onReset: () => void;
 };
 
 function ValueLabelChip({
@@ -285,6 +305,21 @@ function SummaryBody({
               onSave={(label) => valueEditor.onSave("neg", label)}
             />
           </div>
+          {valueEditor.suggestFailed && (
+            <p className={styles.sectionNote}>
+              AI 추정을 불러오지 못했어요 (서버 사용 한도 초과 등일 수 있어요). 직접
+              입력하거나, 잠시 뒤 같은 파일을 다시 올리면 다시 시도해요.
+            </p>
+          )}
+          {valueEditor.hasSaved && (
+            <button
+              type="button"
+              className={styles.toggleBtn}
+              onClick={valueEditor.onReset}
+            >
+              저장한 이름 지우기 (AI 추정/기본값으로 되돌리기)
+            </button>
+          )}
         </section>
       )}
 
@@ -334,6 +369,12 @@ function SummaryBody({
           특성 중요도{" "}
           <InfoTip text="요리할 때 어떤 재료가 맛을 가장 많이 좌우하는지 궁금할 때가 있죠? 이 그래프가 딱 그거예요. **막대가 길수록, 그 항목이 AI의 예측 결과를 정하는 데 더 큰 힘을 썼다**는 뜻이에요. 막대가 짧으면 그 항목은 예측에 별로 영향을 못 준 거예요. 옆에 작은 물음표가 있는 항목은 어느 방향으로 작용하는 경향이 있는지도 볼 수 있어요 — 텍스트(범주형) 값을 가진 항목은 순서가 없어서 경향을 계산할 수 없어 물음표가 없어요." />
         </h2>
+        {valueEditor && report.columnGlossarySuggested === false && (
+          <p className={styles.sectionNote}>
+            컬럼 설명(AI 추정)을 불러오지 못했어요. 컬럼 옆 연필(✎)로 직접 써넣을 수
+            있고, 잠시 뒤 같은 파일을 다시 올리면 다시 시도해요.
+          </p>
+        )}
         <FeatureImportanceChart
           items={report.featureImportance}
           domain={domain}
