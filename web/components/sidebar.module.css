@@ -14,14 +14,56 @@
   overflow-y: auto;
 }
 
+.brandRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 8px 12px;
+  border-bottom: 2px solid var(--accent);
+}
+
 .brand {
   font-size: 16px;
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--accent-strong);
-  padding: 0 8px 12px;
-  border-bottom: 2px solid var(--accent);
   line-height: 1.4;
+}
+
+.collapseBtn,
+.expandBtn {
+  flex: 0 0 auto;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.collapseBtn {
+  padding: 4px 6px;
+}
+
+.collapseBtn:hover,
+.expandBtn:hover {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--accent-strong);
+}
+
+/* the reopen control replaces the whole sidebar while collapsed, so it
+   carries its own border/spacing instead of borrowing .sidebar's */
+.expandBtn {
+  align-self: flex-start;
+  position: sticky;
+  top: 16px;
+  margin: 16px 0 0 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
 }
 
 .nav {
