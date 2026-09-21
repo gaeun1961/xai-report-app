@@ -1,6 +1,13 @@
 /* Landing page — minimal-SaaS layout: one column, big type, one primary
-   action (the drop zone), hairline dividers instead of boxes. Neutral ink on
-   white with green used only for the action + small accents. */
+   action (the drop zone), hairline dividers instead of boxes. Same ivory
+   ground as the report/sidebar pages (so the app doesn't change identity at
+   the first click), with white surfaces floating on it and green used only
+   for the action + small accents. */
+.bg {
+  min-height: 100vh;
+  background: var(--surface);
+}
+
 .page {
   max-width: 880px;
   margin: 0 auto;
@@ -222,7 +229,7 @@
 
 .barRow {
   display: grid;
-  grid-template-columns: 64px 1fr 40px;
+  grid-template-columns: 56px 1fr 44px;
   align-items: center;
   gap: 10px;
   font-size: 13px;
@@ -231,7 +238,7 @@
 .barTrack {
   height: 8px;
   border-radius: 999px;
-  background: var(--surface);
+  background: var(--border);
   overflow: hidden;
 }
 
