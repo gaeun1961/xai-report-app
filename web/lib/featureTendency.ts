@@ -113,7 +113,7 @@ export function featureTendencies(
       const subject = desc ? coreNoun(desc) : "값";
       const target = r >= STRONG_R ? pos : neg;
       result[feature] =
-        `${subject}${subjectParticle(subject)} 클수록 대체로 '${target}' 쪽으로 작용하는 경향이 있어요.\n(상관계수 ${formatR(r)})`;
+        `${subject}${subjectParticle(subject)} 클수록\n대체로 '${target}' 쪽으로 작용하는 경향이 있어요.\n(상관계수 ${formatR(r)})`;
     }
   }
   return result;
