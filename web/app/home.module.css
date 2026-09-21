@@ -82,39 +82,9 @@
 .finePrint {
   margin: 0;
   font-size: 13px;
-  color: var(--text-muted);
-  text-align: center;
-}
-
-.more {
-  font-size: 13px;
   line-height: 1.7;
   color: var(--text-muted);
   text-align: center;
-}
-
-.more summary {
-  display: inline-block;
-  cursor: pointer;
-  list-style: none;
-  color: var(--accent-strong);
-  font-weight: 600;
-}
-
-.more summary::-webkit-details-marker {
-  display: none;
-}
-
-.more summary::after {
-  content: " ›";
-}
-
-.more[open] summary::after {
-  content: " ˄";
-}
-
-.more p {
-  margin: 8px 0 0;
 }
 
 .section {
@@ -141,7 +111,7 @@
 }
 
 .steps li {
-  padding: 24px;
+  padding: 24px 16px;
   border: 1px solid var(--border);
   border-radius: 14px;
   background: var(--background);
@@ -203,7 +173,7 @@
 
 .windowBody {
   display: grid;
-  grid-template-columns: 1fr 1.3fr;
+  grid-template-columns: 1.35fr 1fr;
 }
 
 .pane {
@@ -223,17 +193,71 @@
   color: var(--text-muted);
 }
 
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+.sheetWrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
 }
 
-.chip {
-  padding: 5px 11px;
+.sheet {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.sheet th,
+.sheet td {
+  padding: 5px 9px;
   border: 1px solid var(--border);
-  border-radius: 999px;
-  font-size: 13px;
+  border-top: none;
+  border-left: none;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.sheet tr > :last-child {
+  border-right: none;
+}
+
+.sheet tbody tr:last-child > * {
+  border-bottom: none;
+}
+
+.sheet th {
+  background: var(--surface);
+  color: var(--text-muted);
+  font-weight: 500;
+  text-align: center;
+}
+
+.sheetLetters th {
+  font-size: 11px;
+}
+
+.sheet td.sheetText {
+  text-align: left;
+}
+
+.sheetHead td {
+  font-weight: 700;
+  text-align: left;
+}
+
+.sheetHit td {
+  background: color-mix(in srgb, var(--accent) 16%, var(--background));
+  font-weight: 600;
+}
+
+.sheetHit th {
+  background: var(--accent);
+  color: #fff;
+}
+
+.paneNote {
+  font-size: 12px;
+  color: var(--accent-strong);
+  font-weight: 600;
 }
 
 .verdict {

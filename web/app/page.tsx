@@ -10,6 +10,16 @@ const STEPS = [
   { title: "판단 근거 읽기", desc: "어떤 정보가 예측을 얼마나 밀었는지 문장으로 봐요." },
 ];
 
+// real rows from the Titanic preset (Sex decoded from its 0/1 code); the
+// highlighted one is the case the mock explains (row id 215, 79% "survived")
+const SHEET_HEAD = ["Pclass", "Sex", "Age", "sibsp", "Parch", "Fare"];
+const SHEET_ROWS = [
+  { hit: false, cells: [3, "male", 39, 1, 5, 31.275] },
+  { hit: false, cells: [3, "male", 28, 3, 1, 25.4667] },
+  { hit: false, cells: [1, "female", 58, 0, 0, 146.5208] },
+  { hit: true, cells: [1, "female", 31, 1, 0, 113.275] },
+];
+
 // real Titanic feature importance, drawn on the same fixed 0-100% axis the
 // report's chart uses (so bar length = the value itself, not "longest = full")
 const FACTORS = [
@@ -43,18 +53,10 @@ export default function Home() {
             <UploadFlow />
             <p className={styles.finePrint}>
             정답(타겟) 컬럼이 있는 학습용 CSV · 5MB · 5만 행 이하
+            <br />
+            결과가 두 가지(예: 생존/사망)인 데이터만 가능해요 · 서버가 쉬고 있으면
+            첫 응답에 최대 1분 걸려요
           </p>
-          <details className={styles.more}>
-            <summary>자세한 조건 보기</summary>
-            <p>
-              결과가 두 가지(예: 생존/사망)인 이진분류 데이터만 분석할 수 있어요.
-              정답 컬럼이 없는 test.csv는 분석할 수 없어요.
-              <br />
-              값 종류가 너무 많은 컬럼·긴 텍스트·날짜 컬럼은 자동으로 제외해요.
-              <br />
-              서버가 쉬고 있었다면 처음 응답까지 최대 1분 걸릴 수 있어요.
-            </p>
-          </details>
           </div>
         </section>
 
@@ -78,17 +80,42 @@ export default function Home() {
               <i className={styles.dot} />
               <i className={styles.dot} />
               <i className={styles.dot} />
-              <span className={styles.windowTitle}>Titanic · 케이스 하나</span>
+              <span className={styles.windowTitle}>titanic.csv</span>
             </div>
             <div className={styles.windowBody}>
               <div className={styles.pane}>
-                <span className={styles.paneLabel}>입력된 데이터 한 줄</span>
-                <div className={styles.chips}>
-                  <span className={styles.chip}>나이 38세</span>
-                  <span className={styles.chip}>여성</span>
-                  <span className={styles.chip}>1등석</span>
-                  <span className={styles.chip}>요금 £113</span>
+                <span className={styles.paneLabel}>입력된 데이터 (CSV 파일)</span>
+                <div className={styles.sheetWrap}>
+                  <table className={styles.sheet}>
+                    <thead>
+                      <tr className={styles.sheetLetters}>
+                        <th />
+                        {SHEET_HEAD.map((_, i) => (
+                          <th key={i}>{String.fromCharCode(65 + i)}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className={styles.sheetHead}>
+                        <th>1</th>
+                        {SHEET_HEAD.map((h) => (
+                          <td key={h}>{h}</td>
+                        ))}
+                      </tr>
+                      {SHEET_ROWS.map((r, i) => (
+                        <tr key={i} className={r.hit ? styles.sheetHit : undefined}>
+                          <th>{i + 2}</th>
+                          {r.cells.map((v, j) => (
+                            <td key={j} className={typeof v === "string" ? styles.sheetText : undefined}>
+                              {v}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
+                <span className={styles.paneNote}>초록색 행 하나를 모델이 예측해요</span>
               </div>
               <div className={styles.pane}>
                 <span className={styles.paneLabel}>리포트가 보여주는 것 · 특성 중요도</span>
