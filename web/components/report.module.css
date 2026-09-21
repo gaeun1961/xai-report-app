@@ -9,6 +9,8 @@
 
 .landing {
   max-width: 960px;
+  background: var(--surface);
+  border-radius: 20px;
 }
 
 .report {
@@ -52,6 +54,7 @@
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1.15;
+  color: var(--accent-strong);
 }
 
 @media (max-width: 640px) {
@@ -84,7 +87,9 @@
   border: 1px solid var(--border);
   border-left: 4px solid var(--accent);
   border-radius: 12px;
-  background: var(--surface);
+  /* the landing page's own background is ivory (.landing) — white here is
+     what makes this box read as a distinct card instead of blending in */
+  background: var(--background);
   font-size: 14px;
   line-height: 1.6;
   color: var(--text-muted);
@@ -437,6 +442,8 @@
   padding: 20px;
   border: 1px solid var(--border);
   border-radius: 12px;
+  /* pops off the landing page's ivory background instead of blending in */
+  background: var(--background);
   transition: border-color 0.15s;
 }
 
