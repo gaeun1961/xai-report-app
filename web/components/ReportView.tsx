@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { ShapReport } from "@/lib/types";
 import { buildOverallSummary, explainAccuracy } from "@/lib/reportSummary";
 import { getValueLabel, setValueLabel } from "@/lib/valueLabels";
+import { registerUploadGlossary } from "@/lib/columnGlossary";
 import { featureTendencies } from "@/lib/featureTendency";
 import FeatureImportanceChart from "./FeatureImportanceChart";
 import CaseSelector from "./CaseSelector";
@@ -36,6 +37,12 @@ export default function ReportView({ report, domain }: Props) {
   const { targetColumn, positiveRaw, negativeRaw } = report;
   const isUpload = targetColumn !== undefined;
   const [overrides, setOverrides] = useState<{ pos?: string; neg?: string }>({});
+
+  // registered synchronously (not in an effect) so it's in place before any
+  // child below reads columnDesc() during this same render — no flash of a
+  // missing tooltip. Map.set is idempotent, so re-running this every render
+  // (including React's dev double-invoke) is harmless.
+  registerUploadGlossary(domain, report.columnGlossary);
 
   useEffect(() => {
     if (!isUpload || !targetColumn) return;

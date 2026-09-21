@@ -1,6 +1,8 @@
 // Short Korean descriptions for each preset domain's columns, shown as a
-// hover tooltip on feature names. Uploaded CSVs have no entry here — callers
-// should hide the tooltip affordance when columnDesc() returns undefined.
+// hover tooltip on feature names. Uploaded CSVs have no entry here directly —
+// ReportView registers the backend's per-report AI guess (report.columnGlossary)
+// into uploadGlossaries below instead, so columnDesc() and isSuggestedDesc()
+// both cover the upload case without every caller needing to know about it.
 
 export const COLUMN_GLOSSARY: Record<string, Record<string, string>> = {
   titanic: {
@@ -70,8 +72,31 @@ export const COLUMN_GLOSSARY: Record<string, Record<string, string>> = {
   },
 };
 
+// Per-report AI-guessed column descriptions for uploads (never persisted —
+// re-populated from the report JSON on every render, unlike valueLabels.ts's
+// localStorage overrides, since this isn't a user-authored correction to
+// carry across uploads). Keyed by domain (== report.domain for an upload),
+// same as COLUMN_GLOSSARY above.
+const uploadGlossaries = new Map<string, Record<string, string>>();
+
+export function registerUploadGlossary(
+  domain: string,
+  glossary: Record<string, string> | undefined,
+): void {
+  if (glossary && Object.keys(glossary).length > 0) {
+    uploadGlossaries.set(domain, glossary);
+  }
+}
+
 export function columnDesc(domain: string, column: string): string | undefined {
-  return COLUMN_GLOSSARY[domain]?.[column];
+  return COLUMN_GLOSSARY[domain]?.[column] ?? uploadGlossaries.get(domain)?.[column];
+}
+
+// True when a column's description came from the backend's AI guess rather
+// than this file's curated preset text — callers use it to show an "AI 추정"
+// marker so it isn't mistaken for a vetted definition.
+export function isSuggestedDesc(domain: string, column: string): boolean {
+  return !COLUMN_GLOSSARY[domain]?.[column] && !!uploadGlossaries.get(domain)?.[column];
 }
 
 // Some descriptions bake in a "N=Label" enum hint (e.g. "성별 (0=남성,

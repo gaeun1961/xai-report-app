@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { ShapReport } from "@/lib/types";
-import { columnDesc, columnValueLabel } from "@/lib/columnGlossary";
+import { columnDesc, columnValueLabel, isSuggestedDesc } from "@/lib/columnGlossary";
 import GlossaryTerm from "./GlossaryTerm";
 import styles from "./report.module.css";
 
@@ -247,7 +247,11 @@ export default function CaseReportCard({
             const valueLabel = columnValueLabel(domain, col, value ?? "");
             return (
               <span key={col} className={`${styles.badge} ${styles.badgeActualOk}`}>
-                <GlossaryTerm term={col} desc={columnDesc(domain, col)} />:{" "}
+                <GlossaryTerm
+                  term={col}
+                  desc={columnDesc(domain, col)}
+                  suggested={isSuggestedDesc(domain, col)}
+                />:{" "}
                 {value ?? "-"}
                 {valueLabel ? `, ${valueLabel}` : ""}
               </span>
@@ -333,6 +337,7 @@ export default function CaseReportCard({
                         <GlossaryTerm
                           term={f.feature}
                           desc={columnDesc(domain, f.feature)}
+                          suggested={isSuggestedDesc(domain, f.feature)}
                           className={styles.contribName}
                         />{" "}
                         = {valueText}
@@ -349,6 +354,7 @@ export default function CaseReportCard({
                       <GlossaryTerm
                         term={f.feature}
                         desc={columnDesc(domain, f.feature)}
+                        suggested={isSuggestedDesc(domain, f.feature)}
                         className={styles.contribName}
                       />{" "}
                       <span className={styles.nowrap}>({valueText})</span>{" "}

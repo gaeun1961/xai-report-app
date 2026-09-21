@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import type { ShapReport } from "@/lib/types";
-import { columnDesc } from "@/lib/columnGlossary";
+import { columnDesc, isSuggestedDesc } from "@/lib/columnGlossary";
 import GlossaryTerm from "./GlossaryTerm";
 import styles from "./report.module.css";
 
@@ -63,7 +63,11 @@ export default function OutlierBoxPlot({
           return (
             <li key={it.column} className={styles.chartRow}>
               <span className={styles.chartLabel}>
-                <GlossaryTerm term={it.column} desc={columnDesc(domain, it.column)} />
+                <GlossaryTerm
+                  term={it.column}
+                  desc={columnDesc(domain, it.column)}
+                  suggested={isSuggestedDesc(domain, it.column)}
+                />
               </span>
               <span
                 className={styles.boxPlotTrack}

@@ -141,6 +141,16 @@ async def analyze(
             target_column, positive_raw, negative_raw, list(original_df.columns)
         )
 
+        # real example values (not the imputed/encoded display_df) give the
+        # glossary guess more to go on than a bare column name — e.g. seeing
+        # "ATA, NAP, ASY" hints that ChestPainType is a coded category
+        column_samples = {
+            col: original_df[col].dropna().unique()[:3].tolist() for col in X.columns
+        }
+        column_glossary = label_suggest.suggest_column_glossary(
+            list(X.columns), column_samples
+        )
+
         missingness = common.compute_missingness(df, list(X.columns))
         outliers, outliers_excluded = common.compute_outliers(
             df, display_df.select_dtypes(include="number").columns.tolist()
@@ -201,6 +211,8 @@ async def analyze(
         # guess (still just a pre-filled default the user can overwrite),
         # so it can flag it as unverified instead of showing it as settled
         report["labelSuggested"] = label_suggestion is not None
+        report["columnGlossary"] = column_glossary or {}
+        report["columnGlossarySuggested"] = column_glossary is not None
 
         # case "id" is the row's position in the CSV as originally uploaded
         # (load_and_preprocess/sample_for_shap only ever drop columns or

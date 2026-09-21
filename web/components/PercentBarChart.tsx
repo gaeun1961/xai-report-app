@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { columnDesc } from "@/lib/columnGlossary";
+import { columnDesc, isSuggestedDesc } from "@/lib/columnGlossary";
 import GlossaryTerm from "./GlossaryTerm";
 import InfoTip from "./InfoTip";
 import styles from "./report.module.css";
@@ -62,7 +62,11 @@ export default function PercentBarChart({
         {visible.map(({ label, value }) => (
           <li key={label} className={styles.chartRow}>
             <span className={styles.chartLabel}>
-              <GlossaryTerm term={label} desc={columnDesc(domain, label)} />
+              <GlossaryTerm
+                term={label}
+                desc={columnDesc(domain, label)}
+                suggested={isSuggestedDesc(domain, label)}
+              />
               {tooltips?.[label] && (
                 <>
                   {" "}

@@ -2,7 +2,7 @@
 
 import { Fragment, useRef, useState } from "react";
 import type { ShapReport } from "@/lib/types";
-import { columnDesc } from "@/lib/columnGlossary";
+import { columnDesc, isSuggestedDesc } from "@/lib/columnGlossary";
 import MissingnessDonutGrid from "./MissingnessDonutGrid";
 import OutlierBoxPlot from "./OutlierBoxPlot";
 import InfoTip from "./InfoTip";
@@ -142,14 +142,22 @@ export default function CorrelationMatrix({
             <div className={styles.corrCorner} />
             {columns.map((c) => (
               <div key={`h-${c}`} className={styles.corrColHead}>
-                <GlossaryTerm term={c} desc={columnDesc(domain, c)} />
+                <GlossaryTerm
+                  term={c}
+                  desc={columnDesc(domain, c)}
+                  suggested={isSuggestedDesc(domain, c)}
+                />
               </div>
             ))}
 
             {matrix.map((row, i) => (
               <Fragment key={`row-${i}`}>
                 <div className={styles.corrRowHead}>
-                  <GlossaryTerm term={columns[i]} desc={columnDesc(domain, columns[i])} />
+                  <GlossaryTerm
+                    term={columns[i]}
+                    desc={columnDesc(domain, columns[i])}
+                    suggested={isSuggestedDesc(domain, columns[i])}
+                  />
                 </div>
                 {row.map((v, j) => {
                   const mag = Math.min(1, Math.abs(v));
