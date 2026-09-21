@@ -23,12 +23,17 @@ task actually is (guess two short labels from a column name).
 """
 import logging
 import os
+import time
 
 from google import genai
+from google.genai import errors
 
 log = logging.getLogger(__name__)
 
 MODEL = "gemini-flash-latest"
+# last-resort model for the final attempt if the main one keeps failing
+FALLBACK_MODEL = "gemini-3.1-flash-lite"
+RETRYABLE_CODES = {429, 500, 503, 504}
 MAX_CONTEXT_COLUMNS = 30
 
 _cache: dict = {}
@@ -43,6 +48,25 @@ def _client_or_none():
     if _client is None:
         _client = genai.Client()
     return _client
+
+
+_sleep = time.sleep
+
+
+def _generate(client, prompt):
+    """generate_content with a couple of retries. Gemini answers 503 "high
+    demand" in short spikes (seen in prod logs) — retrying a moment later
+    usually gets through, and the last attempt tries a lighter fallback model.
+    Non-retryable errors (bad key, bad request) raise straight away."""
+    attempts = (MODEL, MODEL, FALLBACK_MODEL)
+    for i, model in enumerate(attempts):
+        try:
+            return client.models.generate_content(model=model, contents=prompt)
+        except errors.APIError as e:
+            if e.code not in RETRYABLE_CODES or i == len(attempts) - 1:
+                raise
+            log.warning("Gemini %s on %s, retrying (%d/%d)", e.code, model, i + 1, len(attempts) - 1)
+            _sleep(1.5 * (i + 1))
 
 
 def _looks_numeric(raw) -> bool:
@@ -80,7 +104,7 @@ def suggest_value_labels(target_column, positive_raw, negative_raw, other_column
     )
 
     try:
-        response = client.models.generate_content(model=MODEL, contents=prompt)
+        response = _generate(client, prompt)
         text = response.text or ""
         pos_label = neg_label = None
         for line in text.splitlines():
@@ -139,7 +163,7 @@ def suggest_column_glossary(columns, samples):
     )
 
     try:
-        response = client.models.generate_content(model=MODEL, contents=prompt)
+        response = _generate(client, prompt)
         text = response.text or ""
         col_set = set(cols)
         result = {}
