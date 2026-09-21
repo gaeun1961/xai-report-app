@@ -239,6 +239,15 @@ function SummaryBody({
           됩니다.
           <br />“결과 복사하기”를 누르면 이 리포트 내용을 요약해서 복사할 수 있어요.
           ChatGPT 같은 AI 챗봇에 붙여넣으면 이어서 질문할 수 있어요.
+          {report.totalRows !== undefined && (
+            <>
+              <br />
+              {report.sampledRows !== undefined &&
+              report.sampledRows < report.totalRows
+                ? `전체 데이터 ${report.totalRows.toLocaleString()}개 행 중 ${report.sampledRows.toLocaleString()}개를 샘플로 살펴봐요.`
+                : `전체 데이터 ${report.totalRows.toLocaleString()}개 행을 모두 살펴봤어요.`}
+            </>
+          )}
         </p>
         <CopySummaryButton report={report} domain={domain} selectedCase={selectedCase} />
       </div>

@@ -85,7 +85,8 @@ async def get_columns(file: UploadFile = File(...)):
         "columns": [
             {"name": col, "uniqueCount": int(df[col].nunique(dropna=True))}
             for col in df.columns
-        ]
+        ],
+        "rowCount": len(df),
     }
 
 
@@ -213,6 +214,12 @@ async def analyze(
         report["labelSuggested"] = label_suggestion is not None
         report["columnGlossary"] = column_glossary or {}
         report["columnGlossarySuggested"] = column_glossary is not None
+        # totalRows is the upload as-is (before any dropping/sampling);
+        # sampledRows is how many of those rows SHAP actually ran on
+        # (common.sample_for_shap caps it — see SHAP_MAX_ROWS) so the two
+        # only differ on a large file, where the frontend should say so.
+        report["totalRows"] = len(original_df)
+        report["sampledRows"] = len(X)
 
         # case "id" is the row's position in the CSV as originally uploaded
         # (load_and_preprocess/sample_for_shap only ever drop columns or

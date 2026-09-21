@@ -15,6 +15,7 @@ export default function UploadFlow() {
   const [step, setStep] = useState<Step>("upload");
   const [file, setFile] = useState<File | null>(null);
   const [columns, setColumns] = useState<ColumnInfo[]>([]);
+  const [rowCount, setRowCount] = useState<number | null>(null);
   const [target, setTarget] = useState<string | null>(null);
   const [nCases, setNCases] = useState(30);
   const [caseFocus, setCaseFocus] = useState<CaseFocus>("balanced");
@@ -28,8 +29,9 @@ export default function UploadFlow() {
     setStep("upload");
     setLoadingColumns(true);
     try {
-      const cols = await fetchColumns(f);
+      const { columns: cols, rowCount: rows } = await fetchColumns(f);
       setColumns(cols);
+      setRowCount(rows);
       setStep("target");
     } catch (e) {
       setError(e instanceof Error ? e.message : "컬럼을 읽는 중 문제가 발생했어요.");
@@ -71,6 +73,7 @@ export default function UploadFlow() {
           <p className={styles.sectionNote}>
             예측하려는 결과가 담긴 컬럼을 선택하세요. 고유값이 2개인 컬럼을
             추천해요.
+            {rowCount !== null && ` 총 ${rowCount.toLocaleString()}개 행이에요.`}
           </p>
           <TargetColumnSelector
             columns={columns}

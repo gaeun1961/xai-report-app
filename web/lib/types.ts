@@ -18,6 +18,13 @@ export type ShapReport = {
   // was available (no API key, call failed, ...), never missing.
   columnGlossary?: Record<string, string>;
   columnGlossarySuggested?: boolean;
+  // Upload row counts (presets don't set these — their JSON predates this
+  // field and there's no upload CSV to count). totalRows is the file as
+  // uploaded; sampledRows is how many of those rows SHAP actually explained
+  // (common.sample_for_shap caps it on a large file) — equal to totalRows
+  // on anything under that cap, which is the common case.
+  totalRows?: number;
+  sampledRows?: number;
   // The target column name and its two raw CSV values, regardless of
   // override — lets the UI build a persistent value->meaning mapping (e.g.
   // "Survived"+"1" -> a user-typed "생존") and reuse it across uploads.
