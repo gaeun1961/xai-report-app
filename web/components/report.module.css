@@ -45,6 +45,21 @@
   letter-spacing: -0.02em;
 }
 
+/* landing-only: a bigger, heavier headline than a report page's title needs —
+   scoped to its own class rather than resizing .h1 everywhere it's used */
+.h1Hero {
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+@media (max-width: 640px) {
+  .h1Hero {
+    font-size: 30px;
+  }
+}
+
 .h2 {
   font-size: 18px;
   font-weight: 700;
@@ -195,6 +210,41 @@
    already spaces things out, so the heading needs none of its own */
 .cardSection > h2 {
   margin-top: 0;
+}
+
+.previewRow {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.previewBlock {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.previewBlock p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.previewArrow {
+  font-size: 20px;
+  color: var(--text-muted);
+}
+
+@media (max-width: 640px) {
+  .previewRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .previewArrow {
+    align-self: center;
+    transform: rotate(90deg);
+  }
 }
 
 /* correlation heatmap */

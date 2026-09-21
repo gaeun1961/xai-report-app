@@ -18,6 +18,8 @@ import styles from "./sidebar.module.css";
 // without ever colliding, and so /my/compare can tell the two apart.
 const presetCompareId = (slug: string) => `preset:${slug}`;
 
+const SIDEBAR_COLLAPSED_KEY = "xai-sidebar-collapsed";
+
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
@@ -29,6 +31,9 @@ export default function Sidebar() {
   const [history, setHistory] = useState<UploadHistoryEntry[]>([]);
   const [compareMode, setCompareMode] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
+  // starts expanded on both server and first client render (avoids a
+  // hydration mismatch), then reads the saved choice right after mount.
+  const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
     const refresh = () => setHistory(listUploadHistory());
@@ -36,6 +41,26 @@ export default function Sidebar() {
     window.addEventListener(HISTORY_CHANGED_EVENT, refresh);
     return () => window.removeEventListener(HISTORY_CHANGED_EVENT, refresh);
   }, [pathname]);
+
+  useEffect(() => {
+    try {
+      setCollapsed(localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === "1");
+    } catch {
+      // localStorage unavailable (private mode etc.) — stays expanded
+    }
+  }, []);
+
+  function toggleCollapsed() {
+    setCollapsed((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem(SIDEBAR_COLLAPSED_KEY, next ? "1" : "0");
+      } catch {
+        // localStorage unavailable — toggle still works for this session
+      }
+      return next;
+    });
+  }
 
   function exitCompareMode() {
     setCompareMode(false);
@@ -63,11 +88,39 @@ export default function Sidebar() {
     if (pathname === `/my/${id}`) router.push("/");
   }
 
+  // the landing page's own drop zone is the main action — a persistent
+  // sidebar next to it competes for attention, so it's never shown there
+  // (not even collapsed-to-a-rail; there's nothing on "/" to navigate back to)
+  if (pathname === "/") return null;
+
+  if (collapsed) {
+    return (
+      <button
+        type="button"
+        className={styles.expandBtn}
+        aria-label="사이드바 펼치기"
+        onClick={toggleCollapsed}
+      >
+        ☰
+      </button>
+    );
+  }
+
   return (
     <aside className={styles.sidebar}>
-      <Link href="/" className={styles.brand}>
-        모델 설명 리포트
-      </Link>
+      <div className={styles.brandRow}>
+        <Link href="/" className={styles.brand}>
+          모델 설명 리포트
+        </Link>
+        <button
+          type="button"
+          className={styles.collapseBtn}
+          aria-label="사이드바 접기"
+          onClick={toggleCollapsed}
+        >
+          ☰
+        </button>
+      </div>
 
       <nav className={styles.nav}>
         <span className={styles.navHeading}>

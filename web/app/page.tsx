@@ -8,7 +8,7 @@ import styles from "@/components/report.module.css";
 export default function Home() {
   return (
     <main className={styles.landing}>
-      <h1 className={styles.h1}>모델 설명 리포트</h1>
+      <h1 className={`${styles.h1} ${styles.h1Hero}`}>모델 설명 리포트</h1>
       <p className={styles.lead}>
         내 데이터로, AI가 왜 그렇게 판단했는지 알려드려요.
       </p>
@@ -38,6 +38,28 @@ export default function Home() {
             이 리포트는 그 값을 사람이 읽을 수 있는 문장으로 풀어, 모델의 판단
             과정을 그대로 보여줍니다.
           </p>
+        </div>
+      </section>
+
+      <section className={styles.cardSection}>
+        <h2 className={styles.h2}>실제로 이렇게 보여드려요</h2>
+        <div className={styles.previewRow}>
+          <div className={styles.previewBlock}>
+            <span className={styles.sectionNote}>예시 데이터 한 줄</span>
+            <p>나이 38세 · 여성 · 1등석 · 요금 £113</p>
+          </div>
+          <span className={styles.previewArrow} aria-hidden>
+            →
+          </span>
+          <div className={styles.previewBlock}>
+            <span className={styles.sectionNote}>이 리포트가 보여주는 것</span>
+            <p>
+              모델은 이 케이스를 <strong>&apos;생존&apos;</strong>(으)로 예측했습니다
+              (확신도 79%).
+              <br />
+              주요 근거: 성별(여성), 요금, 좌석 등급
+            </p>
+          </div>
         </div>
       </section>
 
