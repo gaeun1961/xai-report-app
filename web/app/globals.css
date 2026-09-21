@@ -48,6 +48,11 @@ a {
   display: flex;
   align-items: flex-start;
   min-height: 100vh;
+  /* .landing's full-bleed background pseudo-element is 100vw wide, which on
+     some browsers counts the scrollbar's own width and overflows by a few
+     px — clip it here instead of letting the whole page gain a horizontal
+     scrollbar over a background layer */
+  overflow-x: clip;
 }
 
 .content {

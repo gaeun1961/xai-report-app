@@ -9,8 +9,24 @@
 
 .landing {
   max-width: 960px;
+  position: relative;
+  z-index: 0;
+}
+
+/* full-bleed ivory backdrop: .landing itself stays centered/max-width for
+   content alignment, but the tint should reach both viewport edges rather
+   than stop at the content column — a plain background on .landing would
+   leave visible white gutters on any screen wider than 960/1160px */
+.landing::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 100vw;
+  height: 100%;
+  transform: translateX(-50%);
   background: var(--surface);
-  border-radius: 20px;
+  z-index: -1;
 }
 
 .report {
