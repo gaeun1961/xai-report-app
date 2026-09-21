@@ -1671,3 +1671,18 @@
   font-size: 12px;
   font-weight: 700;
 }
+
+/* stacks "결과 복사하기" and "이미지로 저장" in the guide row's button slot */
+.saveBtnCol {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .saveBtnCol {
+    align-items: flex-start;
+  }
+}

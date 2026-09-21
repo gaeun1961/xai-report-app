@@ -11,6 +11,7 @@ import CaseSelector from "./CaseSelector";
 import CaseReportCard from "./CaseReportCard";
 import CorrelationMatrix from "./CorrelationMatrix";
 import CopySummaryButton from "./CopySummaryButton";
+import SaveImageButton from "./SaveImageButton";
 import InfoTip from "./InfoTip";
 import styles from "./report.module.css";
 
@@ -253,8 +254,8 @@ function SummaryBody({
   const tendencies = useMemo(() => featureTendencies(report, domain), [report, domain]);
 
   return (
-    <div className={styles.reportCol}>
-      <div className={styles.guideRow}>
+    <div className={styles.reportCol} id="report-summary">
+      <div className={styles.guideRow} data-no-capture>
         <p className={styles.guide}>
           이 리포트는 AI가 왜 이렇게 예측했는지 보여줍니다.
           <br />각 요인이 예측을 어느 쪽으로, 얼마나 강하게 밀었는지 문장으로 풀어서
@@ -273,7 +274,10 @@ function SummaryBody({
             </>
           )}
         </p>
-        <CopySummaryButton report={report} domain={domain} selectedCase={selectedCase} />
+        <div className={styles.saveBtnCol}>
+          <CopySummaryButton report={report} domain={domain} selectedCase={selectedCase} />
+          <SaveImageButton targetId="report-summary" fileName={`${domain}-리포트`} />
+        </div>
       </div>
 
       {valueEditor && (
