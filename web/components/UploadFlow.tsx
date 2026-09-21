@@ -92,7 +92,9 @@ export default function UploadFlow() {
               }
               className={styles.rangeInput}
               aria-label="살펴볼 케이스 개수"
-            />
+            />{" "}
+            (최대 100개까지 괜찮아요. 개수를 늘리는 것보다 아래 &lsquo;케이스 선정
+            기준&rsquo;을 바꾸는 게 알짜 케이스를 보기엔 더 좋아요.)
           </label>
           <label className={styles.sectionNote}>
             어떤 케이스를 위주로 볼까요{" "}
