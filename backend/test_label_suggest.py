@@ -134,6 +134,53 @@ def test_glossary_no_columns_yields_no_suggestion():
     assert label_suggest.suggest_column_glossary([], {}) is None
 
 
+class _FlakyModels:
+    def __init__(self, fail_times, code=503):
+        self.calls = []
+        self._left = fail_times
+        self._code = code
+
+    def generate_content(self, model, contents):
+        from google.genai import errors
+
+        self.calls.append(model)
+        if self._left > 0:
+            self._left -= 1
+            raise errors.ServerError(self._code, {"error": {"code": self._code, "message": "busy"}})
+        return type("R", (), {"text": "양성: 있음" + chr(10) + "음성: 없음"})()
+
+
+def _run_with_flaky(fail_times, code=503):
+    orig_client, orig_sleep = label_suggest._client_or_none, label_suggest._sleep
+    flaky = _FlakyModels(fail_times, code)
+    client = type("C", (), {"models": flaky})()
+    label_suggest._client_or_none = lambda: client
+    label_suggest._sleep = lambda s: None
+    label_suggest._cache.clear()
+    try:
+        result = label_suggest.suggest_value_labels("F", "1", "0", [])
+    finally:
+        label_suggest._client_or_none, label_suggest._sleep = orig_client, orig_sleep
+    return result, flaky.calls
+
+
+def test_retries_on_503_then_succeeds():
+    result, calls = _run_with_flaky(2)
+    assert result == ("있음", "없음"), result
+    # two 503s on the main model, third (final) attempt goes to the fallback
+    assert calls == [label_suggest.MODEL, label_suggest.MODEL, label_suggest.FALLBACK_MODEL], calls
+
+
+def test_gives_up_after_all_attempts_fail():
+    result, calls = _run_with_flaky(99)
+    assert result is None and len(calls) == 3, (result, calls)
+
+
+def test_does_not_retry_non_retryable_errors():
+    result, calls = _run_with_flaky(99, code=400)
+    assert result is None and len(calls) == 1, (result, calls)
+
+
 if __name__ == "__main__":
     test_skips_non_numeric_raw_values_without_calling_client()
     test_parses_two_line_response()
@@ -144,4 +191,7 @@ if __name__ == "__main__":
     test_glossary_drops_hallucinated_column_names()
     test_glossary_caches_by_column_set_regardless_of_order()
     test_glossary_no_columns_yields_no_suggestion()
+    test_retries_on_503_then_succeeds()
+    test_gives_up_after_all_attempts_fail()
+    test_does_not_retry_non_retryable_errors()
     print("ok")
