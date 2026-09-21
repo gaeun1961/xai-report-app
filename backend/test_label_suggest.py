@@ -84,10 +84,64 @@ def test_no_api_key_yields_no_suggestion_without_raising():
     assert result is None
 
 
+def test_glossary_parses_one_line_per_column():
+    orig = label_suggest._client_or_none
+    label_suggest._client_or_none = lambda: _FakeClient(
+        "Age: 나이\nChestPainType: 흉통 유형"
+    )
+    label_suggest._glossary_cache.clear()
+    try:
+        result = label_suggest.suggest_column_glossary(
+            ["Age", "ChestPainType"], {"Age": [40, 49], "ChestPainType": ["ATA", "NAP"]}
+        )
+    finally:
+        label_suggest._client_or_none = orig
+    assert result == {"Age": "나이", "ChestPainType": "흉통 유형"}, result
+
+
+def test_glossary_drops_hallucinated_column_names():
+    orig = label_suggest._client_or_none
+    label_suggest._client_or_none = lambda: _FakeClient(
+        "Age: 나이\nNotAColumn: 이건 없는 컬럼이에요"
+    )
+    label_suggest._glossary_cache.clear()
+    try:
+        result = label_suggest.suggest_column_glossary(["Age"], {})
+    finally:
+        label_suggest._client_or_none = orig
+    assert result == {"Age": "나이"}, result
+
+
+def test_glossary_caches_by_column_set_regardless_of_order():
+    calls = []
+    orig = label_suggest._client_or_none
+
+    def fake_client():
+        calls.append(1)
+        return _FakeClient("Age: 나이\nSex: 성별")
+
+    label_suggest._client_or_none = fake_client
+    label_suggest._glossary_cache.clear()
+    try:
+        label_suggest.suggest_column_glossary(["Age", "Sex"], {})
+        label_suggest.suggest_column_glossary(["Sex", "Age"], {})
+    finally:
+        label_suggest._client_or_none = orig
+    assert len(calls) == 1, "same column set in a different order should hit the cache"
+
+
+def test_glossary_no_columns_yields_no_suggestion():
+    assert label_suggest.suggest_column_glossary([], {}) is None
+
+
 if __name__ == "__main__":
     test_skips_non_numeric_raw_values_without_calling_client()
     test_parses_two_line_response()
     test_caches_by_target_column_and_raw_values()
     test_malformed_response_yields_no_suggestion()
     test_no_api_key_yields_no_suggestion_without_raising()
+    test_glossary_parses_one_line_per_column()
+    test_glossary_drops_hallucinated_column_names()
+    test_glossary_caches_by_column_set_regardless_of_order()
+    test_glossary_no_columns_yields_no_suggestion()
     print("ok")

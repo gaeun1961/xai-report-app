@@ -85,7 +85,8 @@ async def get_columns(file: UploadFile = File(...)):
         "columns": [
             {"name": col, "uniqueCount": int(df[col].nunique(dropna=True))}
             for col in df.columns
-        ]
+        ],
+        "rowCount": len(df),
     }
 
 
@@ -139,6 +140,16 @@ async def analyze(
         negative_raw, positive_raw = target_labels
         label_suggestion = label_suggest.suggest_value_labels(
             target_column, positive_raw, negative_raw, list(original_df.columns)
+        )
+
+        # real example values (not the imputed/encoded display_df) give the
+        # glossary guess more to go on than a bare column name — e.g. seeing
+        # "ATA, NAP, ASY" hints that ChestPainType is a coded category
+        column_samples = {
+            col: original_df[col].dropna().unique()[:3].tolist() for col in X.columns
+        }
+        column_glossary = label_suggest.suggest_column_glossary(
+            list(X.columns), column_samples
         )
 
         missingness = common.compute_missingness(df, list(X.columns))
@@ -201,6 +212,14 @@ async def analyze(
         # guess (still just a pre-filled default the user can overwrite),
         # so it can flag it as unverified instead of showing it as settled
         report["labelSuggested"] = label_suggestion is not None
+        report["columnGlossary"] = column_glossary or {}
+        report["columnGlossarySuggested"] = column_glossary is not None
+        # totalRows is the upload as-is (before any dropping/sampling);
+        # sampledRows is how many of those rows SHAP actually ran on
+        # (common.sample_for_shap caps it — see SHAP_MAX_ROWS) so the two
+        # only differ on a large file, where the frontend should say so.
+        report["totalRows"] = len(original_df)
+        report["sampledRows"] = len(X)
 
         # case "id" is the row's position in the CSV as originally uploaded
         # (load_and_preprocess/sample_for_shap only ever drop columns or

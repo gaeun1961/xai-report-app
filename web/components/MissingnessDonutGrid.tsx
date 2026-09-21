@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { columnDesc } from "@/lib/columnGlossary";
+import { columnDesc, isSuggestedDesc } from "@/lib/columnGlossary";
 import GlossaryTerm from "./GlossaryTerm";
 import styles from "./report.module.css";
 
@@ -66,6 +66,7 @@ export default function MissingnessDonutGrid({
               <GlossaryTerm
                 term={it.label}
                 desc={columnDesc(domain, it.label)}
+                suggested={isSuggestedDesc(domain, it.label)}
                 className={styles.donutLabel}
               />
             </div>

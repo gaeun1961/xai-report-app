@@ -10,10 +10,29 @@
 // topFeatures, e.g. "male" — no natural order to correlate against, so
 // those are skipped rather than guessed at).
 import type { ShapReport } from "./types";
-import { columnValueLabel } from "./columnGlossary";
+import { columnDesc, columnValueLabel } from "./columnGlossary";
 
 const MIN_CASES_FOR_TENDENCY = 3;
 const STRONG_R = 0.5;
+
+// Korean subject particle (이/가), chosen by whether the noun's last
+// syllable has a trailing consonant (batchim) - e.g. "나이" -> "가", "혈압"
+// -> "이". Plain Hangul-unicode math, not a grammar engine; non-Hangul input
+// (numbers, English column names) just falls back to "가".
+function subjectParticle(noun: string): "이" | "가" {
+  const last = noun.trim().slice(-1);
+  const code = last.charCodeAt(0) - 0xac00;
+  if (code < 0 || code > 11171) return "가";
+  return code % 28 === 0 ? "가" : "이";
+}
+
+// "환자의 나이" -> "나이" (strips one leading "X의 " possessive); a
+// description with no such prefix (e.g. "혈중 콜레스테롤 수치") is used as-is.
+// Deliberately this simple - not a phrase parser, just enough to keep the
+// glossary's own wording from reading like "환자의 나이가 클수록".
+function coreNoun(desc: string): string {
+  return desc.trim().replace(/^\S+의\s+/, "");
+}
 
 // InfoTip splits a line before " -" as an aside-dash marker, which would
 // otherwise chop a negative coefficient like "(상관계수 -0.97)" into two
@@ -85,12 +104,16 @@ export function featureTendencies(
     if (decodedLabel) {
       result[feature] =
         `${decodedLabel}인 경우 '${pos}' 확률이 높아요.\n(상관계수 ${formatR(r)})`;
-    } else if (r >= STRONG_R) {
-      result[feature] =
-        `값이 클수록 대체로 '${pos}' 쪽으로 작용하는 경향이 있어요.\n(상관계수 ${formatR(r)})`;
     } else {
+      // an ordered numeric column (Age, MonthlyIncome, ...) reads better as
+      // "나이가 클수록" than the generic "값이 클수록" once we know what the
+      // column actually is; subjectParticle("값") happens to already return
+      // "이", so the no-description case reproduces today's wording exactly.
+      const desc = columnDesc(domain, feature);
+      const subject = desc ? coreNoun(desc) : "값";
+      const target = r >= STRONG_R ? pos : neg;
       result[feature] =
-        `값이 클수록 대체로 '${neg}' 쪽으로 작용하는 경향이 있어요.\n(상관계수 ${formatR(r)})`;
+        `${subject}${subjectParticle(subject)} 클수록 대체로 '${target}' 쪽으로 작용하는 경향이 있어요.\n(상관계수 ${formatR(r)})`;
     }
   }
   return result;

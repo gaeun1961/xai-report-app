@@ -48,6 +48,16 @@ def test_analyze_returns_report():
     assert body["targetColumn"] == "Survived"
     assert body["positiveRaw"] == "1"
     assert body["negativeRaw"] == "0"
+    # 10 data rows in CSV, well under SHAP_MAX_ROWS - no sampling needed
+    assert body["totalRows"] == 10
+    assert body["sampledRows"] == 10
+
+
+def test_columns_returns_row_count():
+    client = TestClient(app)
+    res = client.post("/columns", files={"file": ("t.csv", CSV, "text/csv")})
+    assert res.status_code == 200, res.text
+    assert res.json()["rowCount"] == 10
 
 
 CSV_WITH_CONSTANT_COL = b"""Survived,Pclass,Sex,Age,Fare,zero
@@ -108,6 +118,7 @@ def test_case_focus_rejects_unknown_value():
 
 if __name__ == "__main__":
     test_analyze_returns_report()
+    test_columns_returns_row_count()
     test_analyze_drops_constant_column_from_raw()
     test_pick_case_indices_focus()
     test_case_focus_rejects_unknown_value()

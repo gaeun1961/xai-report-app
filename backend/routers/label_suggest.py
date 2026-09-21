@@ -94,6 +94,65 @@ def suggest_value_labels(target_column, positive_raw, negative_raw, other_column
     return result
 
 
+MAX_GLOSSARY_COLUMNS = 40
+MAX_SAMPLES_PER_COLUMN = 3
+
+_glossary_cache: dict = {}
+
+
+def suggest_column_glossary(columns, samples):
+    """{column: one-line Korean description}, or None if no suggestion is
+    available. One batched call for every column at once (not one call per
+    column) to keep this to a single request per report; cached in-process
+    per column-name combination, so re-uploading a same-shaped CSV doesn't
+    re-spend. `samples` is {column: [example raw values]} — a few real
+    values per column give the model far better odds than the bare name
+    alone (e.g. ChestPainType's "ATA, NAP, ASY" hints at a coded category)."""
+    cols = list(columns)[:MAX_GLOSSARY_COLUMNS]
+    if not cols:
+        return None
+
+    key = tuple(sorted(cols))
+    if key in _glossary_cache:
+        return _glossary_cache[key]
+
+    client = _client_or_none()
+    if client is None:
+        return None
+
+    lines = []
+    for col in cols:
+        vals = ", ".join(str(v) for v in list(samples.get(col, []))[:MAX_SAMPLES_PER_COLUMN])
+        lines.append(f"- {col} (예시값: {vals or '없음'})")
+    prompt = (
+        "아래는 어떤 데이터셋의 컬럼명과 실제 값 예시야. "
+        "각 컬럼이 무엇을 의미하는지 아주 짧은 한국어 한 줄로 추측해줘.\n"
+        + "\n".join(lines)
+        + "\n\n다른 설명 없이, 컬럼마다 정확히 아래 형식으로 한 줄씩만 출력해:\n"
+        "<컬럼명>: <설명>"
+    )
+
+    try:
+        response = client.models.generate_content(model=MODEL, contents=prompt)
+        text = response.text or ""
+        col_set = set(cols)
+        result = {}
+        for line in text.splitlines():
+            if ":" not in line:
+                continue
+            name, desc = line.split(":", 1)
+            name = name.strip().lstrip("-").strip()
+            if name in col_set and desc.strip():
+                result[name] = desc.strip()
+        if not result:
+            return None
+    except Exception:
+        return None
+
+    _glossary_cache[key] = result
+    return result
+
+
 def _demo():
     # word-like raw values never touch the network - nothing to guess
     assert suggest_value_labels("Churn", "Yes", "No", ["gender"]) is None

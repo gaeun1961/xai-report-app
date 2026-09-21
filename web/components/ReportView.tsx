@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { ShapReport } from "@/lib/types";
 import { buildOverallSummary, explainAccuracy } from "@/lib/reportSummary";
 import { getValueLabel, setValueLabel } from "@/lib/valueLabels";
+import { registerUploadGlossary } from "@/lib/columnGlossary";
 import { featureTendencies } from "@/lib/featureTendency";
 import FeatureImportanceChart from "./FeatureImportanceChart";
 import CaseSelector from "./CaseSelector";
@@ -36,6 +37,12 @@ export default function ReportView({ report, domain }: Props) {
   const { targetColumn, positiveRaw, negativeRaw } = report;
   const isUpload = targetColumn !== undefined;
   const [overrides, setOverrides] = useState<{ pos?: string; neg?: string }>({});
+
+  // registered synchronously (not in an effect) so it's in place before any
+  // child below reads columnDesc() during this same render — no flash of a
+  // missing tooltip. Map.set is idempotent, so re-running this every render
+  // (including React's dev double-invoke) is harmless.
+  registerUploadGlossary(domain, report.columnGlossary);
 
   useEffect(() => {
     if (!isUpload || !targetColumn) return;
@@ -232,6 +239,15 @@ function SummaryBody({
           됩니다.
           <br />“결과 복사하기”를 누르면 이 리포트 내용을 요약해서 복사할 수 있어요.
           ChatGPT 같은 AI 챗봇에 붙여넣으면 이어서 질문할 수 있어요.
+          {report.totalRows !== undefined && (
+            <>
+              <br />
+              {report.sampledRows !== undefined &&
+              report.sampledRows < report.totalRows
+                ? `전체 데이터 ${report.totalRows.toLocaleString()}개 행 중 ${report.sampledRows.toLocaleString()}개를 샘플로 살펴봐요.`
+                : `전체 데이터 ${report.totalRows.toLocaleString()}개 행을 모두 살펴봤어요.`}
+            </>
+          )}
         </p>
         <CopySummaryButton report={report} domain={domain} selectedCase={selectedCase} />
       </div>
