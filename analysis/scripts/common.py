@@ -285,6 +285,55 @@ def compute_outliers(raw_df: pd.DataFrame, numeric_cols) -> tuple:
     return rows, excluded
 
 
+SUSPECT_ZERO_MIN_NONZERO = 10
+SUSPECT_ZERO_MIN_MEDIAN = 10
+
+
+def compute_suspect_zeros(raw_df: pd.DataFrame, numeric_cols) -> list:
+    """Numeric columns where 0 looks like a "not measured" placeholder rather
+    than a real value — e.g. heart.csv's Cholesterol=0 / RestingBP=0, which
+    isn't NaN so compute_missingness can't see it.
+
+    The test is domain-agnostic: drop the zeros, then ask whether 0 sits
+    below the IQR lower fence (Q1 - 1.5*IQR) of what's left. Cholesterol's
+    other values run ~130-600, so a 0 is far outside; but a column where 0 is
+    a plain real value (Oldpeak, Titanic Fare, years-at-company) has a fence
+    at or below 0, so it isn't flagged. Binary columns are skipped (0/1 flags
+    are legitimately zero). Only a hint — nothing is imputed or excluded."""
+    n = len(raw_df)
+    rows = []
+    for col in numeric_cols:
+        series = pd.to_numeric(raw_df[col], errors="coerce").dropna()
+        if series.nunique() <= 2:
+            continue
+        zeros = int((series == 0).sum())
+        nonzero = series[series != 0]
+        if zeros == 0 or len(nonzero) < SUSPECT_ZERO_MIN_NONZERO:
+            continue
+        q1, q3 = nonzero.quantile([0.25, 0.75])
+        iqr = q3 - q1
+        fence = q1 - IQR_MULTIPLIER * iqr
+        # two extra guards against small-integer columns where 0 is just the
+        # bottom of a scale (category codes, "times trained last year"): the
+        # smallest non-zero value must sit more than one IQR away from 0
+        # (a real gap, not the next step up), and typical values must be big
+        # enough (median >= 10) for a 0 to be implausible rather than ordinary
+        if (
+            fence > 0
+            and nonzero.min() > iqr
+            and nonzero.median() >= SUSPECT_ZERO_MIN_MEDIAN
+        ):
+            rows.append(
+                {
+                    "column": col,
+                    "zeroCount": zeros,
+                    "zeroPct": round(zeros / n, 4) if n else 0.0,
+                    "lowerFence": round(float(fence), 4),
+                }
+            )
+    return rows
+
+
 SHAP_MAX_ROWS = 2000
 
 
@@ -599,6 +648,16 @@ def _demo():
     df2 = pd.DataFrame({"c": [str(i) + ".5" for i in range(20)] + [""]})
     counts2 = {r["column"]: r["missingCount"] for r in compute_missingness(df2, ["c"])}
     assert counts2 == {"c": 1}, counts2
+    # hidden missing: 0 far below the non-zero values (Cholesterol-style) is
+    # flagged, but a column where 0 is an ordinary value (Oldpeak/Fare-style)
+    # and a 0/1 flag are not
+    chol = [0] * 6 + [200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300, 310]
+    fare = [0, 0, 5, 7, 8, 9, 10, 12, 15, 20, 30, 50, 80, 120, 60, 25, 18, 40]
+    flag = [0, 1] * 9
+    dfz = pd.DataFrame({"chol": chol, "fare": fare, "flag": flag})
+    sz = {r["column"]: r for r in compute_suspect_zeros(dfz, ["chol", "fare", "flag"])}
+    assert set(sz) == {"chol"}, sz
+    assert sz["chol"]["zeroCount"] == 6
     print("common._demo: ok")
 
 

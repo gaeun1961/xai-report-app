@@ -18,6 +18,16 @@ export type ShapReport = {
   // was available (no API key, call failed, ...), never missing.
   columnGlossary?: Record<string, string>;
   columnGlossarySuggested?: boolean;
+  // Numeric columns where 0 looks like a "not measured" placeholder (far
+  // below the column's other values) rather than a real value — invisible to
+  // `missingness` since 0 isn't NaN. A hint only: nothing was imputed or
+  // excluded. lowerFence is the cutoff the non-zero values put 0 below.
+  suspectZeros?: {
+    column: string;
+    zeroCount: number;
+    zeroPct: number;
+    lowerFence: number;
+  }[];
   // Upload row counts (presets don't set these — their JSON predates this
   // field and there's no upload CSV to count). totalRows is the file as
   // uploaded; sampledRows is how many of those rows SHAP actually explained

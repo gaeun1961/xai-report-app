@@ -13,6 +13,7 @@ type Props = {
   data: NonNullable<ShapReport["correlations"]>;
   domain: string;
   missingness?: ShapReport["missingness"];
+  suspectZeros?: ShapReport["suspectZeros"];
   outliers?: ShapReport["outliers"];
   outliersExcludedColumns?: ShapReport["outliersExcludedColumns"];
 };
@@ -35,6 +36,7 @@ export default function CorrelationMatrix({
   data,
   domain,
   missingness,
+  suspectZeros,
   outliers,
   outliersExcludedColumns,
 }: Props) {
@@ -219,7 +221,11 @@ export default function CorrelationMatrix({
             <InfoTip text="**데이터에서 빈칸으로 남아있는 부분**이에요. 예를 들어 설문지에서 어떤 사람이 나이를 안 적고 냈다면, 그 사람의 나이 칸은 '결측치'가 돼요. AI는 이런 빈칸을 그냥 두지 않고, **숫자 칸이면 다른 사람들의 중간값으로, 글자 칸이면 &quot;결측&quot;이라는 단어로 채워** 넣은 다음 학습했어요." />
           </h2>
           {missingness.every((m) => m.missingCount === 0) ? (
-            <p className={styles.sectionNote}>이 데이터셋엔 결측치가 없어요 ✓</p>
+            <p className={styles.sectionNote}>
+              {suspectZeros?.length
+                ? "빈칸으로 남은 결측치는 없어요. 다만 아래처럼 0으로 적힌 숨은 결측이 의심되는 컬럼이 있어요."
+                : "이 데이터셋엔 결측치가 없어요 ✓"}
+            </p>
           ) : (
             <MissingnessDonutGrid
               items={missingness.map((m) => ({
@@ -228,6 +234,26 @@ export default function CorrelationMatrix({
               }))}
               domain={domain}
             />
+          )}
+          {!!suspectZeros?.length && (
+            <>
+              <h3 className={styles.h2}>
+                숨은 결측 의심{" "}
+                <InfoTip text="**빈칸은 아닌데, 0으로 적혀 있는 값**이에요. 예를 들어 콜레스테롤이 0인 사람은 없으니, 측정을 안 해서 0으로 적어둔 걸 수 있어요. 이런 0은 빈칸이 아니라서 위 결측치에는 안 잡혀요. 그 컬럼의 나머지 값들보다 0이 유난히 낮을 때만 표시하고, **AI는 이 0을 진짜 값으로 보고 학습했어요.** (확정이 아니라 의심이에요. 0이 실제로 맞는 값일 수도 있어요.)" />
+              </h3>
+              {suspectZeros.map((z) => (
+                <p key={z.column} className={styles.corrExplain}>
+                  <GlossaryTerm
+                    term={z.column}
+                    desc={columnDesc(domain, z.column)}
+                    suggested={isSuggestedDesc(domain, z.column)}
+                  />
+                  : 다른 값은 대부분 {Math.round(z.lowerFence).toLocaleString()} 이상인데 0이{" "}
+                  <b>{z.zeroCount.toLocaleString()}개</b> ({(z.zeroPct * 100).toFixed(1)}%)
+                  있어요.
+                </p>
+              ))}
+            </>
           )}
         </section>
       )}
