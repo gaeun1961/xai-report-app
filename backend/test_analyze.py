@@ -116,10 +116,30 @@ def test_case_focus_rejects_unknown_value():
     assert res.status_code == 400, res.text
 
 
+def test_analyze_flags_suspect_zeros():
+    # Chol=0 on 12 rows while every other value is 180-300: a "not measured"
+    # placeholder, not NaN. Age has a genuine 0-free spread, so only Chol flags.
+    rows = ["y,Age,Chol"]
+    for i in range(60):
+        chol = 0 if i % 5 == 0 else 180 + (i * 7) % 120
+        rows.append(f"{i % 2},{30 + i % 40},{chol}")
+    CHOL_CSV = chr(10).join(rows).encode()
+    res = TestClient(app).post(
+        "/analyze",
+        files={"file": ("z.csv", CHOL_CSV, "text/csv")},
+        data={"target_column": "y", "n_cases": "3"},
+    )
+    assert res.status_code == 200, res.text
+    flagged = {r["column"]: r for r in res.json()["suspectZeros"]}
+    assert set(flagged) == {"Chol"}, flagged
+    assert flagged["Chol"]["zeroCount"] == 12
+
+
 if __name__ == "__main__":
     test_analyze_returns_report()
     test_columns_returns_row_count()
     test_analyze_drops_constant_column_from_raw()
     test_pick_case_indices_focus()
     test_case_focus_rejects_unknown_value()
+    test_analyze_flags_suspect_zeros()
     print("ok")

@@ -155,6 +155,7 @@ export default function ReportView({ report, domain }: Props) {
           data={report.correlations}
           domain={domain}
           missingness={report.missingness}
+          suspectZeros={report.suspectZeros}
           outliers={report.outliers}
           outliersExcludedColumns={report.outliersExcludedColumns}
         />

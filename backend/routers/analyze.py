@@ -157,6 +157,12 @@ async def analyze(
             df, display_df.select_dtypes(include="number").columns.tolist()
         )
 
+        # 0 recorded where a real value is implausible (heart.csv's
+        # Cholesterol=0) — not NaN, so compute_missingness can't see it
+        suspect_zeros = common.compute_suspect_zeros(
+            df, display_df.select_dtypes(include="number").columns.tolist()
+        )
+
         # bounded depth, same tuning as the preset train_*.py scripts — an
         # unbounded default RF makes SHAP's TreeExplainer minutes-slow even on
         # a ~1000-row CSV, which breaks the "real-time" promise of this endpoint.
@@ -218,6 +224,7 @@ async def analyze(
         # sampledRows is how many of those rows SHAP actually ran on
         # (common.sample_for_shap caps it — see SHAP_MAX_ROWS) so the two
         # only differ on a large file, where the frontend should say so.
+        report["suspectZeros"] = suspect_zeros
         report["totalRows"] = len(original_df)
         report["sampledRows"] = len(X)
 
