@@ -3,6 +3,7 @@ import { DOMAINS } from "@/lib/domains";
 import DomainCard from "@/components/DomainCard";
 import UploadFlow from "@/components/UploadFlow";
 import InfoTip from "@/components/InfoTip";
+import HowItWorks from "@/components/HowItWorks";
 import styles from "@/components/report.module.css";
 
 export default function Home() {
@@ -40,6 +41,8 @@ export default function Home() {
           </p>
         </div>
       </section>
+
+      <HowItWorks />
 
       <section className={styles.cardSection}>
         <h2 className={styles.h2}>실제로 이렇게 보여드려요</h2>

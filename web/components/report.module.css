@@ -1684,5 +1684,74 @@
 @media (max-width: 640px) {
   .saveBtnCol {
     align-items: flex-start;
+
+/* landing "how it works" — 3 numbered steps with code-drawn icons */
+.stepsRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stepItem {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.stepIcon {
+  width: 72px;
+  height: 72px;
+  color: var(--accent-strong);
+}
+
+.stepFill {
+  fill: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.stepNum {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.stepTitle {
+  font-size: 15px;
+}
+
+.stepItem .sectionNote {
+  margin-top: 0;
+}
+
+.stepArrow {
+  position: absolute;
+  top: 26px;
+  right: -16px;
+  font-size: 20px;
+  color: var(--text-muted);
+}
+
+@media (max-width: 640px) {
+  .stepsRow {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .stepArrow {
+    top: auto;
+    bottom: -24px;
+    right: 50%;
+    transform: translateX(50%) rotate(90deg);
   }
 }
