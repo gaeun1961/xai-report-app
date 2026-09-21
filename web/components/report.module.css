@@ -1684,6 +1684,8 @@
 @media (max-width: 640px) {
   .saveBtnCol {
     align-items: flex-start;
+  }
+}
 
 /* landing "how it works" — 3 numbered steps with code-drawn icons */
 .stepsRow {
