@@ -80,22 +80,40 @@
 }
 
 .finePrint {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.more {
   font-size: 13px;
   line-height: 1.7;
   color: var(--text-muted);
   text-align: center;
 }
 
-.finePrint summary {
+.more summary {
+  display: inline-block;
   cursor: pointer;
   list-style: none;
+  color: var(--accent-strong);
+  font-weight: 600;
 }
 
-.finePrint summary:hover {
-  color: var(--foreground);
+.more summary::-webkit-details-marker {
+  display: none;
 }
 
-.finePrint p {
+.more summary::after {
+  content: " ›";
+}
+
+.more[open] summary::after {
+  content: " ˄";
+}
+
+.more p {
   margin: 8px 0 0;
 }
 
@@ -116,10 +134,17 @@
 .steps {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 32px;
+  gap: 16px;
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+.steps li {
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--background);
 }
 
 .stepNum {
@@ -258,6 +283,7 @@
 .examples {
   display: flex;
   flex-direction: column;
+  gap: 12px;
 }
 
 .exampleRow {
@@ -265,12 +291,15 @@
   grid-template-columns: 1fr auto auto;
   align-items: center;
   gap: 20px;
-  padding: 20px 4px;
-  border-bottom: 1px solid var(--border);
+  padding: 20px 24px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--background);
+  transition: border-color 0.15s;
 }
 
-.exampleRow:first-child {
-  border-top: 1px solid var(--border);
+.exampleRow:hover {
+  border-color: var(--accent);
 }
 
 .exampleRow:hover .exampleArrow {
@@ -318,7 +347,6 @@
 
   .steps {
     grid-template-columns: 1fr;
-    gap: 28px;
   }
 
   .windowBody {
