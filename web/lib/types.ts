@@ -6,6 +6,11 @@ export type ShapReport = {
   // back to the target column's own values. Optional so old JSON still loads.
   positiveLabel?: string;
   negativeLabel?: string;
+  // True when positiveLabel/negativeLabel came from a Claude guess at what
+  // the target column's raw values mean (backend/routers/label_suggest.py),
+  // rather than a plain "Column=raw" fallback — still just a pre-filled
+  // default the user can overwrite via the inline editor, never settled.
+  labelSuggested?: boolean;
   // The target column name and its two raw CSV values, regardless of
   // override — lets the UI build a persistent value->meaning mapping (e.g.
   // "Survived"+"1" -> a user-typed "생존") and reuse it across uploads.

@@ -18,6 +18,8 @@ from sklearn.ensemble import RandomForestClassifier
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "analysis" / "scripts"))
 import common  # noqa: E402
 
+from . import label_suggest
+
 router = APIRouter()
 
 MAX_FILE_BYTES = 5 * 1024 * 1024
@@ -134,6 +136,11 @@ async def analyze(
         if X.shape[1] == 0:
             raise HTTPException(400, "분석에 쓸 수 있는 컬럼이 남지 않았어요.")
 
+        negative_raw, positive_raw = target_labels
+        label_suggestion = label_suggest.suggest_value_labels(
+            target_column, positive_raw, negative_raw, list(original_df.columns)
+        )
+
         missingness = common.compute_missingness(df, list(X.columns))
         outliers, outliers_excluded = common.compute_outliers(
             df, display_df.select_dtypes(include="number").columns.tolist()
@@ -178,6 +185,8 @@ async def analyze(
             output_path=output_path,
             n_cases=n_cases,
             case_focus=case_focus,
+            positive_label=label_suggestion[0] if label_suggestion else None,
+            negative_label=label_suggestion[1] if label_suggestion else None,
         )
         # read back the file export_report_json already wrote instead of
         # returning its in-memory dict: display_df keeps raw NaN for missing
@@ -188,6 +197,10 @@ async def analyze(
         # token into None on the way back in, same as a clean value would get.
         with open(output_path, encoding="utf-8") as f:
             report = json.load(f, parse_constant=lambda _: None)
+        # tells the frontend positiveLabel/negativeLabel came from a Claude
+        # guess (still just a pre-filled default the user can overwrite),
+        # so it can flag it as unverified instead of showing it as settled
+        report["labelSuggested"] = label_suggestion is not None
 
         # case "id" is the row's position in the CSV as originally uploaded
         # (load_and_preprocess/sample_for_shap only ever drop columns or

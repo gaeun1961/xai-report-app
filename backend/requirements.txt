@@ -1,5 +1,6 @@
 fastapi==0.141.1
 uvicorn[standard]==0.52.4
+anthropic==1.7.0
 pandas==2.3.3
 scikit-learn==1.8.0
 shap==0.52.0
