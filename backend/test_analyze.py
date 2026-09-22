@@ -327,6 +327,105 @@ def test_retrain_unknown_analysis_id_404():
     assert res.status_code == 404, res.text
 
 
+def test_columns_flags_numeric():
+    res = TestClient(app).post("/columns", files={"file": ("t.csv", CSV, "text/csv")})
+    cols = {c["name"]: c["isNumeric"] for c in res.json()["columns"]}
+    assert cols == {
+        "Survived": True,
+        "Pclass": True,
+        "Sex": False,
+        "Age": True,
+        "Fare": True,
+    }
+
+
+# a numeric target with a clear near-linear signal (price ~ size + a bit of
+# noise) and 60 distinct values - well above MIN_REGRESSION_UNIQUE
+def _regression_csv() -> bytes:
+    rows = ["Size,Rooms,Price"]
+    for i in range(60):
+        size = 20 + i * 3
+        rooms = 1 + i % 5
+        price = size * 1000 + rooms * 5000 + (i % 7) * 300
+        rows.append(f"{size},{rooms},{price}")
+    return chr(10).join(rows).encode()
+
+
+def test_analyze_regression_target():
+    client = TestClient(app)
+    res = client.post(
+        "/analyze",
+        files={"file": ("house.csv", _regression_csv(), "text/csv")},
+        data={"target_column": "Price", "n_cases": "5", "task_type": "regression"},
+    )
+    assert res.status_code == 200, res.text
+    body = res.json()
+    assert body["taskType"] == "regression"
+    assert "positiveLabel" not in body
+    assert 0.0 <= body["modelAccuracy"] <= 1.0  # R² on this near-linear signal
+    assert body["modelQuality"]["verdict"] in {"good", "fair", "weak"}
+    assert len(body["cases"]) == 5
+    case = body["cases"][0]
+    assert {"predictedValue", "actualValue", "residual"} <= set(case)
+    assert "analysisId" in body
+    assert "partialDependence" in body
+
+
+def test_analyze_regression_rejects_low_cardinality_target():
+    # Rooms only has 5 distinct values - too few to be a sane regression target
+    res = TestClient(app).post(
+        "/analyze",
+        files={"file": ("house.csv", _regression_csv(), "text/csv")},
+        data={"target_column": "Rooms", "task_type": "regression"},
+    )
+    assert res.status_code == 400, res.text
+
+
+def test_analyze_regression_rejects_non_numeric_target():
+    res = TestClient(app).post(
+        "/analyze",
+        files={"file": ("t.csv", CSV, "text/csv")},
+        data={"target_column": "Sex", "task_type": "regression"},
+    )
+    assert res.status_code == 400, res.text
+
+
+def test_analyze_rejects_unknown_task_type():
+    res = TestClient(app).post(
+        "/analyze",
+        files={"file": ("t.csv", CSV, "text/csv")},
+        data={"target_column": "Survived", "task_type": "nonsense"},
+    )
+    assert res.status_code == 400, res.text
+
+
+def test_whatif_rejects_regression_analysis():
+    client = TestClient(app)
+    res = client.post(
+        "/analyze",
+        files={"file": ("house.csv", _regression_csv(), "text/csv")},
+        data={"target_column": "Price", "task_type": "regression"},
+    )
+    analysis_id = res.json()["analysisId"]
+    bad = client.post("/whatif", json={"analysis_id": analysis_id, "row": {}})
+    assert bad.status_code == 400, bad.text
+
+
+def test_retrain_rejects_regression_analysis():
+    client = TestClient(app)
+    res = client.post(
+        "/analyze",
+        files={"file": ("house.csv", _regression_csv(), "text/csv")},
+        data={"target_column": "Price", "task_type": "regression"},
+    )
+    analysis_id = res.json()["analysisId"]
+    bad = client.post(
+        "/retrain",
+        json={"analysis_id": analysis_id, "model_type": "random_forest", "params": {}},
+    )
+    assert bad.status_code == 400, bad.text
+
+
 if __name__ == "__main__":
     test_analyze_returns_report()
     test_columns_returns_row_count()
@@ -343,4 +442,11 @@ if __name__ == "__main__":
     test_retrain_rejects_unknown_model_type()
     test_retrain_rejects_out_of_range_param()
     test_retrain_unknown_analysis_id_404()
+    test_columns_flags_numeric()
+    test_analyze_regression_target()
+    test_analyze_regression_rejects_low_cardinality_target()
+    test_analyze_regression_rejects_non_numeric_target()
+    test_analyze_rejects_unknown_task_type()
+    test_whatif_rejects_regression_analysis()
+    test_retrain_rejects_regression_analysis()
     print("ok")

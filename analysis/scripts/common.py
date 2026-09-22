@@ -10,10 +10,11 @@ import numpy as np
 import pandas as pd
 import shap
 from sklearn.base import clone
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.inspection import partial_dependence
-from sklearn.metrics import accuracy_score, recall_score
+from sklearn.metrics import accuracy_score, r2_score, recall_score
 from sklearn.model_selection import (
+    KFold,
     StratifiedKFold,
     cross_val_predict,
     train_test_split,
@@ -23,6 +24,18 @@ RANDOM_STATE = 42
 
 
 def _is_id_like(series: pd.Series, n_rows: int) -> bool:
+    """Every row has a distinct value - the hallmark of an identifier column
+    (PassengerId, CustomerID, ...) that carries no learnable signal itself.
+
+    Only meaningful for non-numeric columns: a numeric column that happens to
+    be all-unique (Fare with cents, a precise measurement, ...) is still a
+    perfectly informative continuous feature - dropping it here would silently
+    cripple exactly the columns regression targets tend to correlate with
+    most, and already quietly did the same to classification on small
+    datasets where a numeric feature coincidentally had no duplicate values.
+    """
+    if pd.api.types.is_numeric_dtype(series):
+        return False
     return series.nunique(dropna=True) == n_rows
 
 
@@ -72,16 +85,19 @@ def _raw_class_labels(y_raw: pd.Series, y_encoded: pd.Series) -> tuple:
     return pick(0, "0"), pick(1, "1")
 
 
-def load_and_preprocess(csv_path: str, target_column: str):
+def load_and_preprocess(csv_path: str, target_column: str, task_type: str = "classification"):
     """Load a CSV and split it into a model-ready feature matrix and target.
 
     Returns:
         X: numeric-encoded feature DataFrame ready for RandomForest/SHAP.
-        y: 0/1 target Series.
+        y: 0/1 target Series for classification, plain numeric Series for
+            regression (task_type="regression" - target_column's own values,
+            coerced to numeric, no binary encoding).
         display_df: same rows/columns as X, but with human-readable values
             (pre-encoding) for use when rendering individual case reports.
         target_labels: (negative_label, positive_label) as they appeared in
             the CSV, for showing the dataset's own wording in the report.
+            None for regression (there's no fixed pair of classes).
         raw_df: the unmodified CSV as loaded (columns stripped only), for
             callers that need missingness/outlier stats on the original
             data — avoids re-reading the same CSV a second time.
@@ -95,8 +111,17 @@ def load_and_preprocess(csv_path: str, target_column: str):
             f"Available columns: {list(df.columns)}"
         )
 
-    y = _encode_binary_target(df[target_column])
-    target_labels = _raw_class_labels(df[target_column], y)
+    if task_type == "regression":
+        y = pd.to_numeric(df[target_column], errors="coerce")
+        if y.isna().any():
+            raise ValueError(
+                f"target_column '{target_column}' has non-numeric values, "
+                "can't use it as a regression target."
+            )
+        target_labels = None
+    else:
+        y = _encode_binary_target(df[target_column])
+        target_labels = _raw_class_labels(df[target_column], y)
     X = df.drop(columns=[target_column])
     n_rows = len(X)
 
@@ -122,16 +147,39 @@ def load_and_preprocess(csv_path: str, target_column: str):
     return X, y, display_df, target_labels, df
 
 
-def train_model(X: pd.DataFrame, y: pd.Series, model=None):
+def train_model(X: pd.DataFrame, y: pd.Series, model=None, task_type: str = "classification"):
     """Fit `model` (default: a 300-tree RandomForest) and score it.
 
-    Accuracy and minority-class recall are estimated with 5-fold cross-
-    validation (a single 80/20 split is too noisy at this dataset size to
-    trust the reported number). The returned model itself is fit on an 80%
-    train split — that's the one SHAP explains and cases are drawn from.
+    Classification: accuracy and minority-class recall via 5-fold stratified
+    CV (a single 80/20 split is too noisy at this dataset size to trust the
+    reported number). Regression: R² and RMSE via plain 5-fold CV - R²'s own
+    baseline is exactly 0 (the score a model that always predicts the mean
+    gets, by construction), so no separate baseline model is needed the way
+    classification needs the majority-class baseline.
 
-    Returns (model, cv_accuracy, eval_stats).
+    The returned model itself is fit on an 80% train split in both cases -
+    that's the one SHAP explains and cases are drawn from.
+
+    Returns (model, cv_score, eval_stats). cv_score is accuracy for
+    classification, R² for regression.
     """
+    if task_type == "regression":
+        if model is None:
+            model = RandomForestRegressor(n_estimators=300, random_state=RANDOM_STATE)
+
+        cv = KFold(n_splits=5, shuffle=True, random_state=RANDOM_STATE)
+        oof = cross_val_predict(clone(model), X, y, cv=cv)
+        r2 = float(r2_score(y, oof))
+        rmse = float(np.sqrt(np.mean((y.to_numpy() - oof) ** 2)))
+
+        X_train, _, y_train, _ = train_test_split(
+            X, y, test_size=0.2, random_state=RANDOM_STATE
+        )
+        model.fit(X_train, y_train)
+
+        eval_stats = {"r2": r2, "rmse": rmse}
+        return model, r2, eval_stats
+
     if model is None:
         model = RandomForestClassifier(n_estimators=300, random_state=RANDOM_STATE)
 
@@ -187,6 +235,37 @@ def _judge_model_quality(accuracy, baseline_accuracy, minority_recall, minority_
     return {
         "verdict": "weak",
         "message": "이 모델은 그냥 다수 클래스로 찍는 것보다 나을 게 거의 없어요.",
+        **common,
+    }
+
+
+def _judge_model_quality_regression(r2: float, rmse: float):
+    """Regression counterpart of _judge_model_quality. R²'s own baseline is
+    exactly 0 (a model that always predicts the mean scores R²=0 by
+    construction) so, unlike classification, no separate baseline model needs
+    computing.
+
+    ponytail: the 0.7/0.3 cutoffs are a common rule-of-thumb, not yet
+    calibrated against a real dataset the way classification's
+    "baseline + 2%p" threshold was checked against this project's actual
+    presets - worth revisiting once a real regression dataset is in hand.
+    """
+    common = {"rmse": rmse}
+    if r2 >= 0.7:
+        return {
+            "verdict": "good",
+            "message": f"이 모델은 평균으로만 예측하는 것보다 훨씬 정확해요 (R²={r2:.2f}).",
+            **common,
+        }
+    if r2 >= 0.3:
+        return {
+            "verdict": "fair",
+            "message": f"이 모델은 평균으로만 예측하는 것보다는 낫지만, 오차가 꽤 있어요 (R²={r2:.2f}).",
+            **common,
+        }
+    return {
+        "verdict": "weak",
+        "message": f"이 모델은 평균으로 찍는 것과 큰 차이가 없어요 (R²={r2:.2f}).",
         **common,
     }
 
@@ -354,21 +433,27 @@ def sample_for_shap(X, y, display_df, max_rows=SHAP_MAX_ROWS):
 
 
 def compute_shap(model, X: pd.DataFrame):
-    """Compute SHAP values for the positive class, a ranked feature-importance
-    table, and the model's base value (E[P(positive)] before any feature is
+    """Compute SHAP values (for the positive class on a classifier, or the
+    predicted value itself on a regressor), a ranked feature-importance
+    table, and the model's base value (E[prediction] before any feature is
     considered — the report uses it to explain why the top-5 factors alone
     don't always match the final prediction)."""
+    is_classifier = hasattr(model, "predict_proba")
     explainer = shap.TreeExplainer(model)
     raw = explainer.shap_values(X, check_additivity=False)
 
-    if isinstance(raw, list):
+    if not is_classifier:
+        # regressor: shap_values(X) is already a plain (n_samples, n_features)
+        # array - no per-class dimension to pick out
+        shap_values = np.asarray(raw)
+    elif isinstance(raw, list):
         shap_values = raw[1] if len(raw) > 1 else raw[0]
     else:
         arr = np.asarray(raw)
         shap_values = arr[:, :, 1] if arr.ndim == 3 and arr.shape[2] > 1 else arr
 
     ev = np.atleast_1d(explainer.expected_value)
-    base_value = float(ev[1] if len(ev) > 1 else ev[0])
+    base_value = float(ev[1] if is_classifier and len(ev) > 1 else ev[0])
 
     feature_importance_df = (
         pd.DataFrame({"feature": X.columns, "importance": np.abs(shap_values).mean(axis=0)})
@@ -503,6 +588,31 @@ def _pick_case_indices(
     return sorted(set(chosen))[:n_cases]
 
 
+def _pick_case_indices_regression(
+    predictions: np.ndarray, actual: np.ndarray, n_cases: int, focus: str = "balanced"
+) -> list:
+    """Regression counterpart of _pick_case_indices.
+
+    focus="wrong": worst-residual (|predicted - actual| largest) first - the
+    biggest misses, most worth auditing.
+    focus="balanced"/"borderline": borderline has no real regression analogue
+    (there's no probability to sit near 50%) so both fall back to the same
+    thing - rows spread evenly across the actual value's range, so the case
+    list represents the whole target range rather than clustering at one end.
+    """
+    if focus == "wrong":
+        order = np.argsort(-np.abs(predictions - actual))
+        return sorted(int(i) for i in order[:n_cases])
+
+    order = np.argsort(actual)
+    n = len(order)
+    if n <= n_cases:
+        return sorted(int(i) for i in order)
+    step = n / n_cases
+    picks = [order[int(i * step)] for i in range(n_cases)]
+    return sorted(int(i) for i in picks)
+
+
 def export_report_json(
     domain: str,
     model,
@@ -525,6 +635,7 @@ def export_report_json(
     missingness: list = None,
     outliers: list = None,
     outliers_excluded_columns: list = None,
+    task_type: str = "classification",
 ):
     """Assemble a ShapReport-shaped dict (see web/lib/types.ts) and write it
     to output_path as JSON.
@@ -534,8 +645,33 @@ def export_report_json(
     are optional human-friendly overrides (e.g. '생존'/'사망' for a known
     preset); when omitted, a bare raw value like '1' means nothing to a
     reader, so it's prefixed with the target column name ('Survived=1')
-    instead — target_column is only used for that fallback.
+    instead — target_column is only used for that fallback. None of this
+    (target_labels/positive_label/negative_label) applies when
+    task_type="regression" - there's no fixed pair of classes, so those
+    report fields are simply omitted.
     """
+    if task_type == "regression":
+        return _export_regression_report(
+            domain=domain,
+            model=model,
+            X=X,
+            y=y,
+            shap_values=shap_values,
+            feature_importance_df=feature_importance_df,
+            display_df=display_df,
+            model_r2=model_accuracy,
+            output_path=output_path,
+            target_column=target_column,
+            eval_stats=eval_stats,
+            base_value=base_value,
+            n_cases=n_cases,
+            case_focus=case_focus,
+            corr_max_cols=corr_max_cols,
+            missingness=missingness,
+            outliers=outliers,
+            outliers_excluded_columns=outliers_excluded_columns,
+        )
+
     predictions = model.predict(X)
     proba_pos = model.predict_proba(X)[:, 1]
     feature_names = list(X.columns)
@@ -602,6 +738,7 @@ def export_report_json(
 
     report = {
         "domain": domain,
+        "taskType": "classification",
         "modelAccuracy": float(model_accuracy),
         "positiveLabel": pos_display,
         "negativeLabel": neg_display,
@@ -623,22 +760,9 @@ def export_report_json(
     if base_value is not None:
         report["baseValue"] = round(float(base_value), 4)
 
-    # correlations between the genuinely-numeric columns (categoricals are
-    # strings in display_df, so select_dtypes cleanly excludes them — same
-    # spirit as the constant/ID drop in load_and_preprocess). Ordered by
-    # feature importance and capped so a 30-column domain stays legible.
-    numeric_cols = display_df.select_dtypes(include="number").columns.tolist()
-    fi_order = list(feature_importance_df["feature"])
-    corr_cols = [c for c in fi_order if c in numeric_cols][:corr_max_cols]
-    corr_cols += [c for c in numeric_cols if c not in corr_cols][
-        : max(0, corr_max_cols - len(corr_cols))
-    ]
-    if len(corr_cols) >= 2:
-        corr = X[corr_cols].corr().round(3)
-        report["correlations"] = {
-            "columns": corr_cols,
-            "matrix": [[float(v) for v in row] for row in corr.to_numpy()],
-        }
+    report.update(
+        _correlations_block(X, display_df, feature_importance_df, corr_max_cols)
+    )
 
     if eval_stats is not None:
         minority_label = pos_display if eval_stats["minority_is_positive"] else neg_display
@@ -675,11 +799,167 @@ def export_report_json(
             {"feature": f, "importance": round(float(v), 5)} for f, v in wrong_fi
         ]
 
+    _write_report_json(report, output_path)
+    return report
+
+
+def _correlations_block(X, display_df, feature_importance_df, corr_max_cols):
+    """Shared by both the classification and regression report paths —
+    correlations are model-independent (just how the raw numeric columns
+    move together), so nothing here depends on task_type."""
+    numeric_cols = display_df.select_dtypes(include="number").columns.tolist()
+    fi_order = list(feature_importance_df["feature"])
+    corr_cols = [c for c in fi_order if c in numeric_cols][:corr_max_cols]
+    corr_cols += [c for c in numeric_cols if c not in corr_cols][
+        : max(0, corr_max_cols - len(corr_cols))
+    ]
+    if len(corr_cols) < 2:
+        return {}
+    corr = X[corr_cols].corr().round(3)
+    return {
+        "correlations": {
+            "columns": corr_cols,
+            "matrix": [[float(v) for v in row] for row in corr.to_numpy()],
+        }
+    }
+
+
+def _write_report_json(report: dict, output_path: str):
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(report, f, ensure_ascii=False, indent=2, default=_json_default)
 
+
+def _export_regression_report(
+    domain,
+    model,
+    X,
+    y,
+    shap_values,
+    feature_importance_df,
+    display_df,
+    model_r2,
+    output_path,
+    target_column,
+    eval_stats,
+    base_value,
+    n_cases,
+    case_focus,
+    corr_max_cols,
+    missingness,
+    outliers,
+    outliers_excluded_columns,
+):
+    """Regression counterpart of export_report_json's classification path.
+    No positive/negative classes, no probability - cases carry a predicted
+    value, the actual value, and their residual instead.
+
+    ponytail: "large error" (case_stats.wrong / wrongFeatureImportance) uses
+    the same IQR-outlier rule as compute_outliers, applied to |residual|
+    across the whole pool - reused rather than inventing a second threshold
+    rule, but not yet validated against a real regression dataset the way
+    the classification thresholds were checked against this project's
+    presets. "borderline" has no regression analogue (there's no probability
+    to sit near 50%), so it's always 0 for now.
+    """
+    predictions = np.asarray(model.predict(X), dtype=float)
+    feature_names = list(X.columns)
+    actual_arr = y.to_numpy(dtype=float)
+    residual = predictions - actual_arr
+    abs_residual = np.abs(residual)
+
+    q1, q3 = np.percentile(abs_residual, [25, 75])
+    iqr = q3 - q1
+    large_error_threshold = q3 + IQR_MULTIPLIER * iqr
+    wrong_mask = abs_residual > large_error_threshold if iqr > 0 else np.zeros_like(abs_residual, dtype=bool)
+
+    case_stats = {
+        "total": int(len(predictions)),
+        "wrong": int(wrong_mask.sum()),
+        "borderline": 0,
+    }
+
+    case_indices = _pick_case_indices_regression(
+        predictions, actual_arr, n_cases, focus=case_focus if case_focus != "borderline" else "balanced"
+    )
+
+    cases = []
+    for idx in case_indices:
+        row_shap = shap_values[idx]
+        ranked = np.argsort(-np.abs(row_shap))
+        top_features = [
+            {
+                "feature": feature_names[j],
+                "value": display_df.iloc[idx][feature_names[j]],
+                "contribution": round(float(row_shap[j]), 4),
+            }
+            for j in ranked
+        ]
+        pred_v, actual_v = float(predictions[idx]), float(actual_arr[idx])
+        explanation = (
+            f"모델은 이 케이스의 값을 {pred_v:.3g}(으)로 예측했습니다 "
+            f"(실제값 {actual_v:.3g})."
+        )
+        cases.append(
+            {
+                "id": str(display_df.index[idx]),
+                "predictedValue": round(pred_v, 4),
+                "actualValue": round(actual_v, 4),
+                "residual": round(pred_v - actual_v, 4),
+                "isCorrect": not bool(wrong_mask[idx]),
+                "explanation": explanation,
+                "topFeatures": top_features,
+            }
+        )
+
+    report = {
+        "domain": domain,
+        "taskType": "regression",
+        "modelAccuracy": float(model_r2),
+        "targetColumn": target_column,
+        "featureImportance": [
+            {"feature": row.feature, "importance": round(float(row.importance), 5)}
+            for row in feature_importance_df.itertuples()
+        ],
+        "cases": cases,
+    }
+
+    if base_value is not None:
+        report["baseValue"] = round(float(base_value), 4)
+
+    report.update(
+        _correlations_block(X, display_df, feature_importance_df, corr_max_cols)
+    )
+
+    if eval_stats is not None:
+        report["modelQuality"] = _judge_model_quality_regression(
+            float(model_r2), eval_stats["rmse"]
+        )
+
+    if missingness is not None:
+        report["missingness"] = missingness
+
+    if outliers is not None:
+        report["outliers"] = outliers
+
+    if outliers_excluded_columns:
+        report["outliersExcludedColumns"] = outliers_excluded_columns
+
+    report["caseStats"] = case_stats
+
+    report["partialDependence"] = compute_partial_dependence(
+        model, X, display_df, feature_importance_df
+    )
+
+    if wrong_mask.any():
+        wrong_importance = np.abs(shap_values[wrong_mask]).mean(axis=0)
+        wrong_fi = sorted(zip(feature_names, wrong_importance), key=lambda t: -t[1])
+        report["wrongFeatureImportance"] = [
+            {"feature": f, "importance": round(float(v), 5)} for f, v in wrong_fi
+        ]
+
+    _write_report_json(report, output_path)
     return report
 
 
@@ -696,6 +976,12 @@ def _json_default(value):
 
 
 def _demo():
+    # a numeric column that's all-unique (a real, informative continuous
+    # feature) must survive; a non-numeric all-unique column (a genuine ID)
+    # should still be dropped
+    assert _is_id_like(pd.Series([1.1, 2.2, 3.3, 4.4]), 4) is False
+    assert _is_id_like(pd.Series(["a", "b", "c", "d"]), 4) is True
+
     df = pd.DataFrame(
         {
             "a": [1, 2, None, 4, 100],  # 1 missing, 100 is an IQR outlier
@@ -762,6 +1048,52 @@ def _demo():
     assert len(pdp["cat"]) == 3, pdp["cat"]
     assert set(p["value"] for p in pdp["cat"]) == set(cat_uniques), pdp["cat"]
     assert all(0.0 <= p["proba"] <= 1.0 for p in pdp["num"] + pdp["cat"])
+
+    # regression: end-to-end train_model -> compute_shap -> export_report_json
+    # on a synthetic dataset with a clear linear-ish signal, so R² should
+    # come back high and the report shape should be regression's, not
+    # classification's (no positiveLabel, cases carry predictedValue instead)
+    import tempfile as _tempfile
+
+    rng_r = np.random.RandomState(1)
+    n_r = 200
+    a = rng_r.rand(n_r) * 10
+    b = rng_r.rand(n_r) * 5
+    target = 3 * a - 2 * b + rng_r.normal(0, 0.5, n_r)
+    X_r = pd.DataFrame({"a": a, "b": b})
+    y_r = pd.Series(target, name="target")
+    display_r = X_r.copy()
+
+    model_r, r2, eval_stats_r = train_model(X_r, y_r, task_type="regression")
+    assert r2 > 0.8, r2  # near-linear synthetic signal - should fit easily
+    assert "rmse" in eval_stats_r
+
+    shap_r, fi_r, base_r = compute_shap(model_r, X_r)
+    assert shap_r.shape == (n_r, 2), shap_r.shape
+
+    with _tempfile.TemporaryDirectory() as tmp_r:
+        out_r = Path(tmp_r) / "r.json"
+        report_r = export_report_json(
+            domain="reg-demo",
+            model=model_r,
+            X=X_r,
+            y=y_r,
+            shap_values=shap_r,
+            feature_importance_df=fi_r,
+            display_df=display_r,
+            model_accuracy=r2,
+            output_path=out_r,
+            eval_stats=eval_stats_r,
+            base_value=base_r,
+            n_cases=5,
+            task_type="regression",
+        )
+    assert report_r["taskType"] == "regression"
+    assert "positiveLabel" not in report_r
+    assert len(report_r["cases"]) == 5
+    c0 = report_r["cases"][0]
+    assert {"predictedValue", "actualValue", "residual"} <= set(c0)
+    assert report_r["modelQuality"]["verdict"] in {"good", "fair", "weak"}
 
     print("common._demo: ok")
 

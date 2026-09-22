@@ -20,6 +20,7 @@ from sklearn.ensemble import (
     ExtraTreesClassifier,
     GradientBoostingClassifier,
     RandomForestClassifier,
+    RandomForestRegressor,
 )
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "analysis" / "scripts"))
@@ -169,12 +170,23 @@ def _drop_unusable_columns(df: pd.DataFrame, target_column: str) -> pd.DataFrame
     return df.drop(columns=drop)
 
 
+# a numeric column needs at least this many distinct values to be a sane
+# regression target - otherwise it's really a coded category (e.g. a 0-3
+# star rating), which classification handles better. Domain-agnostic, no
+# per-dataset tuning.
+MIN_REGRESSION_UNIQUE = 10
+
+
 @router.post("/columns")
 async def get_columns(file: UploadFile = File(...)):
     df = _read_csv(await file.read())
     return {
         "columns": [
-            {"name": col, "uniqueCount": int(df[col].nunique(dropna=True))}
+            {
+                "name": col,
+                "uniqueCount": int(df[col].nunique(dropna=True)),
+                "isNumeric": bool(pd.api.types.is_numeric_dtype(df[col])),
+            }
             for col in df.columns
         ],
         "rowCount": len(df),
@@ -184,6 +196,7 @@ async def get_columns(file: UploadFile = File(...)):
 MIN_CASES = 1
 MAX_CASES = 100
 CASE_FOCUS_OPTIONS = {"balanced", "wrong", "borderline"}
+TASK_TYPE_OPTIONS = {"classification", "regression"}
 
 
 @router.post("/analyze")
@@ -192,10 +205,15 @@ async def analyze(
     target_column: str = Form(...),
     n_cases: int = Form(30),
     case_focus: str = Form("balanced"),
+    task_type: str = Form("classification"),
 ):
     if case_focus not in CASE_FOCUS_OPTIONS:
         raise HTTPException(
             400, f"case_focus는 {sorted(CASE_FOCUS_OPTIONS)} 중 하나여야 해요."
+        )
+    if task_type not in TASK_TYPE_OPTIONS:
+        raise HTTPException(
+            400, f"task_type은 {sorted(TASK_TYPE_OPTIONS)} 중 하나여야 해요."
         )
     df = _read_csv(await file.read())
 
@@ -203,7 +221,19 @@ async def analyze(
         raise HTTPException(400, f"'{target_column}' 컬럼을 찾을 수 없어요.")
 
     n_unique = int(df[target_column].nunique(dropna=True))
-    if n_unique != 2:
+    if task_type == "regression":
+        if not pd.api.types.is_numeric_dtype(df[target_column]):
+            raise HTTPException(
+                400, f"'{target_column}' 컬럼은 숫자형이 아니라 회귀 타겟으로 쓸 수 없어요."
+            )
+        if n_unique < MIN_REGRESSION_UNIQUE:
+            raise HTTPException(
+                400,
+                f"'{target_column}' 컬럼은 고유값이 {n_unique}개뿐이라 회귀 타겟으로 보기 "
+                f"어려워요 (최소 {MIN_REGRESSION_UNIQUE}개). 분류 타겟이라면 고유값이 "
+                "정확히 2개인 컬럼을 선택해주세요.",
+            )
+    elif n_unique != 2:
         raise HTTPException(
             400,
             f"'{target_column}' 컬럼은 이진분류 타겟이 아니에요 (고유값 {n_unique}개). "
@@ -223,7 +253,7 @@ async def analyze(
         df.to_csv(csv_path, index=False)
 
         X, y, display_df, target_labels, _raw_df = common.load_and_preprocess(
-            csv_path, target_column
+            csv_path, target_column, task_type=task_type
         )
         if X.shape[1] == 0:
             raise HTTPException(400, "분석에 쓸 수 있는 컬럼이 남지 않았어요.")
@@ -241,10 +271,15 @@ async def analyze(
         # .loc[], never mutates these in place), so no extra copying needed.
         X_full, y_full, display_full = X, y, display_df
 
-        negative_raw, positive_raw = target_labels
-        label_suggestion = label_suggest.suggest_value_labels(
-            target_column, positive_raw, negative_raw, list(original_df.columns)
-        )
+        # target_labels (and so a positive/negative value to guess a label
+        # for) only exists for classification - regression's target is a
+        # plain number, nothing to name
+        label_suggestion = None
+        if task_type == "classification":
+            negative_raw, positive_raw = target_labels
+            label_suggestion = label_suggest.suggest_value_labels(
+                target_column, positive_raw, negative_raw, list(original_df.columns)
+            )
 
         # real example values (not the imputed/encoded display_df) give the
         # glossary guess more to go on than a bare column name — e.g. seeing
@@ -270,16 +305,23 @@ async def analyze(
         # bounded depth, same tuning as the preset train_*.py scripts — an
         # unbounded default RF makes SHAP's TreeExplainer minutes-slow even on
         # a ~1000-row CSV, which breaks the "real-time" promise of this endpoint.
-        model, accuracy, eval_stats = common.train_model(
-            X,
-            y,
-            RandomForestClassifier(
+        if task_type == "regression":
+            base_model = RandomForestRegressor(
+                n_estimators=300,
+                max_depth=8,
+                min_samples_leaf=4,
+                random_state=common.RANDOM_STATE,
+            )
+        else:
+            base_model = RandomForestClassifier(
                 n_estimators=300,
                 max_depth=8,
                 min_samples_leaf=4,
                 class_weight="balanced",
                 random_state=common.RANDOM_STATE,
-            ),
+            )
+        model, accuracy, eval_stats = common.train_model(
+            X, y, base_model, task_type=task_type
         )
         X, y, display_df = common.sample_for_shap(X, y, display_df)
         shap_values, feature_importance_df, base_value = common.compute_shap(
@@ -308,6 +350,7 @@ async def analyze(
             case_focus=case_focus,
             positive_label=label_suggestion[0] if label_suggestion else None,
             negative_label=label_suggestion[1] if label_suggestion else None,
+            task_type=task_type,
         )
         # read back the file export_report_json already wrote instead of
         # returning its in-memory dict: display_df keeps raw NaN for missing
@@ -334,13 +377,15 @@ async def analyze(
         report["analysisId"] = _cache_analysis(
             {
                 "model": model,
+                "task_type": task_type,
                 "feature_names": feature_names,
                 "numeric_cols": numeric_cols,
                 "label_to_code": label_to_code,
-                "pos_raw": report["positiveRaw"],
-                "neg_raw": report["negativeRaw"],
-                "pos_display": report["positiveLabel"],
-                "neg_display": report["negativeLabel"],
+                # absent on a regression report - no positive/negative class
+                "pos_raw": report.get("positiveRaw"),
+                "neg_raw": report.get("negativeRaw"),
+                "pos_display": report.get("positiveLabel"),
+                "neg_display": report.get("negativeLabel"),
                 # for /retrain
                 "X_full": X_full,
                 "y_full": y_full,
@@ -398,6 +443,8 @@ async def whatif(payload: WhatIfRequest):
             "CSV를 다시 업로드해주세요.",
         )
     _ANALYSIS_CACHE.move_to_end(payload.analysis_id)  # LRU touch
+    if entry.get("task_type") == "regression":
+        raise HTTPException(400, "회귀 분석은 아직 값 바꿔보기를 지원하지 않아요.")
 
     model = entry["model"]
     feature_names = entry["feature_names"]
@@ -480,6 +527,8 @@ async def retrain(payload: RetrainRequest):
             "CSV를 다시 업로드해주세요.",
         )
     _ANALYSIS_CACHE.move_to_end(payload.analysis_id)
+    if entry.get("task_type") == "regression":
+        raise HTTPException(400, "회귀 분석은 아직 다른 모델로 비교해보기를 지원하지 않아요.")
 
     spec, validated_params = _validate_model_params(payload.model_type, payload.params)
     new_model = spec["cls"](
