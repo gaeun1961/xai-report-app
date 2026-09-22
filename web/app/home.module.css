@@ -136,6 +136,25 @@
   }
 }
 
+.useCases {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.useCases li {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--background);
+}
+
 .steps {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -404,7 +423,8 @@
     padding-top: 40px;
   }
 
-  .steps {
+  .steps,
+  .useCases {
     grid-template-columns: 1fr;
   }
 

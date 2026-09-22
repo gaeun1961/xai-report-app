@@ -5,6 +5,25 @@ import UploadFlow from "@/components/UploadFlow";
 import InfoTip from "@/components/InfoTip";
 import styles from "./home.module.css";
 
+const USE_CASES = [
+  {
+    title: "모델 배포 전 점검",
+    desc: "특정 컬럼에 과도하게 의존하거나, 말이 안 되는 근거로 예측하고 있진 않은지 배포 전에 확인해요.",
+  },
+  {
+    title: "판단 근거를 설명해야 할 때",
+    desc: "“왜 이 고객을 이탈로 예측했나요?” 같은 질문에 숫자가 아니라 문장으로 바로 답할 수 있어요.",
+  },
+  {
+    title: "데이터 품질을 빠르게 훑어볼 때",
+    desc: "결측치·이상치는 물론, 0으로 기록된 숨은 결측까지 업로드 한 번으로 확인해요.",
+  },
+  {
+    title: "이미 만든 모델과 비교할 때",
+    desc: "같은 학습 데이터를 올려서, 직접 만든 모델의 판단이 baseline과 얼마나 다른지 견줘볼 수 있어요.",
+  },
+];
+
 const STEPS = [
   { title: "CSV 올리기", desc: "예측하고 싶은 결과가 담긴 표를 올려요." },
   { title: "맞힐 컬럼 고르기", desc: "결과가 담긴 컬럼을 하나 골라요." },
@@ -90,6 +109,18 @@ export default function Home() {
               </p>
             </div>
           </div>
+        </section>
+
+        <section className={styles.section}>
+          <p className={styles.eyebrow}>이럴 때 써보세요</p>
+          <ul className={styles.useCases}>
+            {USE_CASES.map((u) => (
+              <li key={u.title}>
+                <strong className={styles.stepTitle}>{u.title}</strong>
+                <span className={styles.stepDesc}>{u.desc}</span>
+              </li>
+            ))}
+          </ul>
         </section>
 
         <section className={styles.section}>
