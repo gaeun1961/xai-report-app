@@ -35,6 +35,11 @@ export type ShapReport = {
   // on anything under that cap, which is the common case.
   totalRows?: number;
   sampledRows?: number;
+  // Counts over the whole pool cases are drawn from (common.sample_for_shap's
+  // output — up to SHAP_MAX_ROWS rows) — NOT just the cases actually loaded
+  // as cards. "borderline" is 40-60% predicted probability, the same
+  // threshold the case_focus="borderline" option already uses elsewhere.
+  caseStats?: { total: number; wrong: number; borderline: number };
   // The target column name and its two raw CSV values, regardless of
   // override — lets the UI build a persistent value->meaning mapping (e.g.
   // "Survived"+"1" -> a user-typed "생존") and reuse it across uploads.

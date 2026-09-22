@@ -51,6 +51,11 @@ def test_analyze_returns_report():
     # 10 data rows in CSV, well under SHAP_MAX_ROWS - no sampling needed
     assert body["totalRows"] == 10
     assert body["sampledRows"] == 10
+    # caseStats is over the full analyzed pool, not just the 5 loaded cards
+    stats = body["caseStats"]
+    assert stats["total"] == 10
+    assert 0 <= stats["wrong"] <= 10
+    assert 0 <= stats["borderline"] <= 10
 
 
 def test_columns_returns_row_count():

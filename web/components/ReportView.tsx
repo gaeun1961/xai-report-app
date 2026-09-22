@@ -451,6 +451,7 @@ function CasesBody({ report, domain, selectedId, onSelect }: CasesBodyProps) {
           onSelect={onSelect}
           positiveLabel={positiveLabel}
           negativeLabel={negativeLabel}
+          caseStats={report.caseStats}
         />
       </section>
 
