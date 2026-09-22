@@ -160,6 +160,62 @@ def test_wrong_feature_importance_matches_wrong_count():
         assert values == sorted(values, reverse=True)
 
 
+# bigger + a clean Sex->Survived split (with a little noise) than the 10-row
+# CSV fixture above, whose model turns out too data-starved under production
+# hyperparameters (max_depth=8, min_samples_leaf=4) to learn anything real -
+# every SHAP value comes back 0 there, which would make this test meaningless
+def _whatif_csv() -> bytes:
+    rows = ["Survived,Pclass,Sex,Age,Fare"]
+    for i in range(60):
+        female = i % 2 == 0
+        noise = i % 11 == 0  # occasional counter-example so it's not trivially separable
+        survived = int(female != noise)
+        sex = "female" if female else "male"
+        rows.append(f"{survived},{1 + i % 3},{sex},{20 + i % 40},{10 + (i * 3) % 90}")
+    return chr(10).join(rows).encode()
+
+
+def test_whatif_updates_prediction_for_edited_row():
+    client = TestClient(app)
+    res = client.post(
+        "/analyze",
+        files={"file": ("w.csv", _whatif_csv(), "text/csv")},
+        data={"target_column": "Survived", "n_cases": "5"},
+    )
+    body = res.json()
+    assert "analysisId" in body
+    case = body["cases"][0]
+
+    # unmodified row: same features the model was trained on -> a real
+    # prediction back, not an error
+    same = client.post(
+        "/whatif", json={"analysis_id": body["analysisId"], "row": case["raw"]}
+    )
+    assert same.status_code == 200, same.text
+    same_body = same.json()
+    assert 0.0 <= same_body["probaPositive"] <= 1.0
+    assert {f["feature"] for f in same_body["topFeatures"]} == {
+        f["feature"] for f in body["featureImportance"]
+    }
+
+    # Sex is the whole signal here by construction - flipping it should move
+    # the probability by a large amount
+    flipped_row = dict(case["raw"])
+    flipped_row["Sex"] = "female" if flipped_row.get("Sex") == "male" else "male"
+    flipped = client.post(
+        "/whatif", json={"analysis_id": body["analysisId"], "row": flipped_row}
+    )
+    assert flipped.status_code == 200, flipped.text
+    assert abs(flipped.json()["probaPositive"] - same_body["probaPositive"]) > 0.2
+
+
+def test_whatif_unknown_analysis_id_404():
+    res = TestClient(app).post(
+        "/whatif", json={"analysis_id": "does-not-exist", "row": {}}
+    )
+    assert res.status_code == 404, res.text
+
+
 if __name__ == "__main__":
     test_analyze_returns_report()
     test_columns_returns_row_count()
@@ -168,4 +224,6 @@ if __name__ == "__main__":
     test_case_focus_rejects_unknown_value()
     test_analyze_flags_suspect_zeros()
     test_wrong_feature_importance_matches_wrong_count()
+    test_whatif_updates_prediction_for_edited_row()
+    test_whatif_unknown_analysis_id_404()
     print("ok")

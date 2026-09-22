@@ -35,6 +35,11 @@ export type ShapReport = {
   // on anything under that cap, which is the common case.
   totalRows?: number;
   sampledRows?: number;
+  // Present only for a live upload analysis (not the static presets): id of
+  // the trained model kept briefly in the backend's memory, for /whatif.
+  // Expires if the server restarts (free-tier idle spindown) - a /whatif
+  // call against a stale id just 404s, no crash.
+  analysisId?: string;
   // Counts over the whole pool cases are drawn from (common.sample_for_shap's
   // output — up to SHAP_MAX_ROWS rows) — NOT just the cases actually loaded
   // as cards. "borderline" is 40-60% predicted probability, the same

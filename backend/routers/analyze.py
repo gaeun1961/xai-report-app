@@ -9,10 +9,13 @@ import io
 import json
 import sys
 import tempfile
+import uuid
+from collections import OrderedDict
 from pathlib import Path
 
 import pandas as pd
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
+from pydantic import BaseModel
 from sklearn.ensemble import RandomForestClassifier
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "analysis" / "scripts"))
@@ -26,6 +29,23 @@ MAX_FILE_BYTES = 5 * 1024 * 1024
 MAX_ROWS = 50_000
 HIGH_CARDINALITY_THRESHOLD = 50
 LONG_TEXT_CHARS = 30
+
+# What-if: /analyze keeps the trained model around (briefly, in memory) so a
+# follow-up /whatif call can re-predict a tweaked row without re-training.
+# ponytail: single-process in-memory OrderedDict as an LRU, no TTL - good
+# enough for a demo app on a single Render instance; a restart (free-tier
+# idle spindown) just empties it, and /whatif reports that as a plain error
+# rather than crashing. Not shared across multiple server instances.
+ANALYSIS_CACHE_MAX = 30
+_ANALYSIS_CACHE: "OrderedDict[str, dict]" = OrderedDict()
+
+
+def _cache_analysis(entry: dict) -> str:
+    analysis_id = uuid.uuid4().hex
+    _ANALYSIS_CACHE[analysis_id] = entry
+    if len(_ANALYSIS_CACHE) > ANALYSIS_CACHE_MAX:
+        _ANALYSIS_CACHE.popitem(last=False)
+    return analysis_id
 
 
 def _read_csv(content: bytes) -> pd.DataFrame:
@@ -137,6 +157,14 @@ async def analyze(
         if X.shape[1] == 0:
             raise HTTPException(400, "분석에 쓸 수 있는 컬럼이 남지 않았어요.")
 
+        # for /whatif: captured before sample_for_shap subsets rows, so every
+        # category a factorized column ever took is covered, not just the ones
+        # in the (possibly smaller) SHAP sample
+        feature_names = list(X.columns)
+        numeric_cols = set(display_df.select_dtypes(include="number").columns)
+        categorical_cols = [c for c in X.columns if c not in numeric_cols]
+        label_to_code = {col: dict(zip(display_df[col], X[col])) for col in categorical_cols}
+
         negative_raw, positive_raw = target_labels
         label_suggestion = label_suggest.suggest_value_labels(
             target_column, positive_raw, negative_raw, list(original_df.columns)
@@ -227,6 +255,18 @@ async def analyze(
         report["suspectZeros"] = suspect_zeros
         report["totalRows"] = len(original_df)
         report["sampledRows"] = len(X)
+        report["analysisId"] = _cache_analysis(
+            {
+                "model": model,
+                "feature_names": feature_names,
+                "numeric_cols": numeric_cols,
+                "label_to_code": label_to_code,
+                "pos_raw": report["positiveRaw"],
+                "neg_raw": report["negativeRaw"],
+                "pos_display": report["positiveLabel"],
+                "neg_display": report["negativeLabel"],
+            }
+        )
 
         # case "id" is the row's position in the CSV as originally uploaded
         # (load_and_preprocess/sample_for_shap only ever drop columns or
@@ -249,3 +289,71 @@ async def analyze(
             }
 
         return report
+
+
+class WhatIfRequest(BaseModel):
+    analysis_id: str
+    # column -> value, as ShapReport['cases'][n]['raw'] shapes it (whatever
+    # the CSV had, with any edited numeric fields already merged in by the
+    # caller). Only keys matching the model's own feature names are used.
+    row: dict
+
+
+@router.post("/whatif")
+async def whatif(payload: WhatIfRequest):
+    entry = _ANALYSIS_CACHE.get(payload.analysis_id)
+    if entry is None:
+        raise HTTPException(
+            404,
+            "분석 기록을 찾을 수 없어요 (서버가 쉬었다 깨어났거나, 오래돼서 지워졌을 수 있어요). "
+            "CSV를 다시 업로드해주세요.",
+        )
+    _ANALYSIS_CACHE.move_to_end(payload.analysis_id)  # LRU touch
+
+    model = entry["model"]
+    feature_names = entry["feature_names"]
+    numeric_cols = entry["numeric_cols"]
+    label_to_code = entry["label_to_code"]
+
+    display_row = {}
+    encoded_row = {}
+    for col in feature_names:
+        raw_v = payload.row.get(col)
+        display_row[col] = raw_v
+        if col in numeric_cols:
+            # ponytail: a missing/unset numeric value falls back to 0 rather
+            # than the training-time median (not tracked in the cache) — a
+            # real gap only if the caller sends an edited row with a field
+            # left out entirely, which the frontend never does today
+            encoded_row[col] = float(raw_v) if raw_v is not None else 0.0
+        else:
+            encoded_row[col] = label_to_code.get(col, {}).get(raw_v, -1)
+
+    row_df = pd.DataFrame([encoded_row])[feature_names]
+    proba_pos = float(model.predict_proba(row_df)[0, 1])
+    predicted_positive = proba_pos >= 0.5
+
+    shap_values, _, _ = common.compute_shap(model, row_df)
+    row_shap = shap_values[0]
+    ranked = sorted(range(len(feature_names)), key=lambda j: -abs(row_shap[j]))
+    top_features = [
+        {
+            "feature": feature_names[j],
+            "value": display_row[feature_names[j]],
+            "contribution": round(float(row_shap[j]), 4),
+        }
+        for j in ranked
+    ]
+
+    prediction_raw = entry["pos_raw"] if predicted_positive else entry["neg_raw"]
+    prediction_display = (
+        entry["pos_display"] if predicted_positive else entry["neg_display"]
+    ) or prediction_raw
+
+    return {
+        "predictedPositive": predicted_positive,
+        "probaPositive": round(proba_pos, 4),
+        "prediction": prediction_raw,
+        "predictionDisplay": prediction_display,
+        "topFeatures": top_features,
+    }
