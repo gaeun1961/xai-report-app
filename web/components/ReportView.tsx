@@ -458,6 +458,16 @@ function CasesBody({ report, domain, selectedId, onSelect }: CasesBodyProps) {
         />
       </section>
 
+      {report.wrongFeatureImportance && report.wrongFeatureImportance.length > 0 && (
+        <section className={styles.cardSection}>
+          <h2 className={styles.h2}>
+            오답 케이스 기준 특성 중요도{" "}
+            <InfoTip text="전체 특성 중요도와 다르게, **예측이 틀린 케이스들만 모아서** 다시 계산한 순위예요. 전체 기준으로는 안 중요했던 항목이 여기서 상위권이라면, 그 항목이 모델을 헷갈리게 하고 있을 가능성이 있어요." />
+          </h2>
+          <FeatureImportanceChart items={report.wrongFeatureImportance} domain={domain} />
+        </section>
+      )}
+
       {selected ? (
         <CaseReportCard
           case={selected}
