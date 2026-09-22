@@ -160,6 +160,29 @@ def test_wrong_feature_importance_matches_wrong_count():
         assert values == sorted(values, reverse=True)
 
 
+def test_partial_dependence_covers_top_features():
+    client = TestClient(app)
+    res = client.post(
+        "/analyze",
+        files={"file": ("t.csv", CSV, "text/csv")},
+        data={"target_column": "Survived", "n_cases": "5"},
+    )
+    body = res.json()
+    pdp = body["partialDependence"]
+    top_features = [f["feature"] for f in body["featureImportance"][: len(pdp)]]
+    assert [p["feature"] for p in pdp] == top_features
+    for entry in pdp:
+        assert len(entry["points"]) >= 2, entry
+        for point in entry["points"]:
+            assert 0.0 <= point["proba"] <= 1.0, point
+    # Sex is categorical (male/female) - values should be the original
+    # strings, not factorized codes
+    sex_entry = next((p for p in pdp if p["feature"] == "Sex"), None)
+    if sex_entry:
+        values = {p["value"] for p in sex_entry["points"]}
+        assert values <= {"male", "female"}, values
+
+
 if __name__ == "__main__":
     test_analyze_returns_report()
     test_columns_returns_row_count()
@@ -168,4 +191,5 @@ if __name__ == "__main__":
     test_case_focus_rejects_unknown_value()
     test_analyze_flags_suspect_zeros()
     test_wrong_feature_importance_matches_wrong_count()
+    test_partial_dependence_covers_top_features()
     print("ok")
