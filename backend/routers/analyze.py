@@ -16,7 +16,11 @@ from pathlib import Path
 import pandas as pd
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from pydantic import BaseModel
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import (
+    ExtraTreesClassifier,
+    GradientBoostingClassifier,
+    RandomForestClassifier,
+)
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "analysis" / "scripts"))
 import common  # noqa: E402
@@ -46,6 +50,73 @@ def _cache_analysis(entry: dict) -> str:
     if len(_ANALYSIS_CACHE) > ANALYSIS_CACHE_MAX:
         _ANALYSIS_CACHE.popitem(last=False)
     return analysis_id
+
+
+# /retrain: a fixed menu of tree-based scikit-learn classifiers, each with a
+# fixed menu of numeric hyperparameters (type, min, max). This is never
+# "run user code" — it's "call one of these known constructors with numbers
+# we've range-checked ourselves" — so it needs no sandboxing beyond that
+# validation. Kept tree-based only because SHAP explanation reuses
+# shap.TreeExplainer (compute_shap); a linear/kernel model would need a
+# different (and for KernelExplainer, much slower) explainer path - out of
+# scope for now.
+MODEL_WHITELIST = {
+    "random_forest": {
+        "cls": RandomForestClassifier,
+        "label": "Random Forest",
+        "fixed": {"class_weight": "balanced"},
+        "params": {
+            "n_estimators": (int, 10, 500),
+            "max_depth": (int, 1, 20),
+            "min_samples_leaf": (int, 1, 20),
+        },
+    },
+    "gradient_boosting": {
+        "cls": GradientBoostingClassifier,
+        "label": "Gradient Boosting",
+        "fixed": {},
+        "params": {
+            "n_estimators": (int, 10, 500),
+            "max_depth": (int, 1, 10),
+            "learning_rate": (float, 0.01, 1.0),
+        },
+    },
+    "extra_trees": {
+        "cls": ExtraTreesClassifier,
+        "label": "Extra Trees",
+        "fixed": {"class_weight": "balanced"},
+        "params": {
+            "n_estimators": (int, 10, 500),
+            "max_depth": (int, 1, 20),
+            "min_samples_leaf": (int, 1, 20),
+        },
+    },
+}
+
+
+def _validate_model_params(model_type: str, params: dict):
+    spec = MODEL_WHITELIST.get(model_type)
+    if spec is None:
+        raise HTTPException(
+            400, f"model_type은 {sorted(MODEL_WHITELIST)} 중 하나여야 해요."
+        )
+    allowed = spec["params"]
+    unknown = set(params) - set(allowed)
+    if unknown:
+        raise HTTPException(400, f"허용되지 않는 파라미터예요: {sorted(unknown)}")
+
+    validated = {}
+    for key, (typ, lo, hi) in allowed.items():
+        if key not in params:
+            continue
+        v = params[key]
+        if not isinstance(v, (int, float)) or isinstance(v, bool):
+            raise HTTPException(400, f"'{key}'는 숫자여야 해요.")
+        if not (lo <= v <= hi):
+            raise HTTPException(400, f"'{key}'는 {lo}~{hi} 범위여야 해요.")
+        validated[key] = typ(v)
+
+    return spec, validated
 
 
 def _read_csv(content: bytes) -> pd.DataFrame:
@@ -164,6 +235,11 @@ async def analyze(
         numeric_cols = set(display_df.select_dtypes(include="number").columns)
         categorical_cols = [c for c in X.columns if c not in numeric_cols]
         label_to_code = {col: dict(zip(display_df[col], X[col])) for col in categorical_cols}
+        # for /retrain: the full pre-sample data, so a different model can be
+        # trained on the exact same rows without re-uploading the CSV. Kept as
+        # plain references (sample_for_shap below returns new objects via
+        # .loc[], never mutates these in place), so no extra copying needed.
+        X_full, y_full, display_full = X, y, display_df
 
         negative_raw, positive_raw = target_labels
         label_suggestion = label_suggest.suggest_value_labels(
@@ -265,6 +341,19 @@ async def analyze(
                 "neg_raw": report["negativeRaw"],
                 "pos_display": report["positiveLabel"],
                 "neg_display": report["negativeLabel"],
+                # for /retrain
+                "X_full": X_full,
+                "y_full": y_full,
+                "display_full": display_full,
+                "domain": domain,
+                "target_column": target_column,
+                "target_labels": target_labels,
+                "missingness": missingness,
+                "outliers": outliers,
+                "outliers_excluded": outliers_excluded,
+                "column_glossary": column_glossary,
+                "n_cases": n_cases,
+                "case_focus": case_focus,
             }
         )
 
@@ -357,3 +446,89 @@ async def whatif(payload: WhatIfRequest):
         "predictionDisplay": prediction_display,
         "topFeatures": top_features,
     }
+
+
+@router.get("/model-types")
+async def model_types():
+    """The whitelist itself, so the frontend renders the right inputs
+    (and their min/max) without duplicating this list by hand."""
+    return {
+        key: {
+            "label": spec["label"],
+            "params": {
+                k: {"type": t.__name__, "min": lo, "max": hi}
+                for k, (t, lo, hi) in spec["params"].items()
+            },
+        }
+        for key, spec in MODEL_WHITELIST.items()
+    }
+
+
+class RetrainRequest(BaseModel):
+    analysis_id: str
+    model_type: str
+    params: dict = {}
+
+
+@router.post("/retrain")
+async def retrain(payload: RetrainRequest):
+    entry = _ANALYSIS_CACHE.get(payload.analysis_id)
+    if entry is None or "X_full" not in entry:
+        raise HTTPException(
+            404,
+            "분석 기록을 찾을 수 없어요 (서버가 쉬었다 깨어났거나, 오래돼서 지워졌을 수 있어요). "
+            "CSV를 다시 업로드해주세요.",
+        )
+    _ANALYSIS_CACHE.move_to_end(payload.analysis_id)
+
+    spec, validated_params = _validate_model_params(payload.model_type, payload.params)
+    new_model = spec["cls"](
+        random_state=common.RANDOM_STATE, **spec["fixed"], **validated_params
+    )
+
+    X_full, y_full, display_full = entry["X_full"], entry["y_full"], entry["display_full"]
+    new_model, accuracy, eval_stats = common.train_model(X_full, y_full, new_model)
+    # same seeded sample_for_shap call as /analyze used - deterministic, so
+    # this reproduces the identical row subset without re-caching it
+    X_s, y_s, display_s = common.sample_for_shap(X_full, y_full, display_full)
+    shap_values, feature_importance_df, base_value = common.compute_shap(new_model, X_s)
+
+    with tempfile.TemporaryDirectory() as tmp:
+        output_path = Path(tmp) / "report.json"
+        common.export_report_json(
+            domain=entry["domain"],
+            target_labels=entry["target_labels"],
+            target_column=entry["target_column"],
+            model=new_model,
+            X=X_s,
+            y=y_s,
+            shap_values=shap_values,
+            feature_importance_df=feature_importance_df,
+            display_df=display_s,
+            model_accuracy=accuracy,
+            eval_stats=eval_stats,
+            base_value=base_value,
+            missingness=entry["missingness"],
+            outliers=entry["outliers"],
+            outliers_excluded_columns=entry["outliers_excluded"],
+            output_path=output_path,
+            n_cases=entry["n_cases"],
+            case_focus=entry["case_focus"],
+            positive_label=entry["pos_display"],
+            negative_label=entry["neg_display"],
+        )
+        with open(output_path, encoding="utf-8") as f:
+            report = json.load(f, parse_constant=lambda _: None)
+
+    report["columnGlossary"] = entry["column_glossary"] or {}
+    report["columnGlossarySuggested"] = bool(entry["column_glossary"])
+    report["modelType"] = payload.model_type
+    report["modelLabel"] = spec["label"]
+
+    # same underlying data, just a different trained model - the rest of the
+    # cached entry (X_full, encoders, ...) is still valid for this one
+    new_entry = dict(entry)
+    new_entry["model"] = new_model
+    report["analysisId"] = _cache_analysis(new_entry)
+
+    return report

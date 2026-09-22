@@ -11,6 +11,7 @@ import PartialDependenceChart from "./PartialDependenceChart";
 import CaseSelector from "./CaseSelector";
 import CaseReportCard from "./CaseReportCard";
 import WhatIfPanel from "./WhatIfPanel";
+import ModelComparePanel from "./ModelComparePanel";
 import CorrelationMatrix from "./CorrelationMatrix";
 import CopySummaryButton from "./CopySummaryButton";
 import SaveImageButton from "./SaveImageButton";
@@ -22,9 +23,15 @@ type Tab = "summary" | "cases" | "data";
 type Props = {
   report: ShapReport;
   domain: string;
+  // this report's own id in upload history + a display name - only present
+  // when ReportView is rendered from /my/[id] (an uploaded CSV, not a
+  // preset), which is also the only case report.analysisId is ever set.
+  // Needed so ModelComparePanel can build a /my/compare?a=...&b=... link.
+  reportId?: string;
+  reportLabel?: string;
 };
 
-export default function ReportView({ report, domain }: Props) {
+export default function ReportView({ report, domain, reportId, reportLabel }: Props) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [tab, setTab] = useState<Tab>("summary");
   const hasCorr = !!report.correlations;
@@ -118,6 +125,8 @@ export default function ReportView({ report, domain }: Props) {
           report={effectiveReport}
           domain={domain}
           selectedId={selectedId}
+          reportId={reportId}
+          reportLabel={reportLabel}
           valueEditor={
             isUpload && targetColumn && positiveRaw !== undefined && negativeRaw !== undefined
               ? {
@@ -244,11 +253,15 @@ function SummaryBody({
   report,
   domain,
   selectedId,
+  reportId,
+  reportLabel,
   valueEditor,
 }: {
   report: ShapReport;
   domain: string;
   selectedId: string | null;
+  reportId?: string;
+  reportLabel?: string;
   valueEditor?: ValueEditorProps;
 }) {
   const { positiveLabel, negativeLabel } = report;
@@ -418,6 +431,14 @@ function SummaryBody({
             ))}
           </div>
         </section>
+      )}
+
+      {report.analysisId && reportId && (
+        <ModelComparePanel
+          analysisId={report.analysisId}
+          reportId={reportId}
+          reportLabel={reportLabel ?? domain}
+        />
       )}
     </div>
   );

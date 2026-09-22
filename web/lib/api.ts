@@ -62,3 +62,28 @@ export async function whatIf(
   if (!res.ok) throw new Error(await errorMessage(res));
   return res.json();
 }
+
+export type ModelTypeSpec = {
+  label: string;
+  params: Record<string, { type: "int" | "float"; min: number; max: number }>;
+};
+
+export async function fetchModelTypes(): Promise<Record<string, ModelTypeSpec>> {
+  const res = await fetch(`${API_BASE}/model-types`);
+  if (!res.ok) throw new Error(await errorMessage(res));
+  return res.json();
+}
+
+export async function retrain(
+  analysisId: string,
+  modelType: string,
+  params: Record<string, number>,
+): Promise<ShapReport> {
+  const res = await fetch(`${API_BASE}/retrain`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ analysis_id: analysisId, model_type: modelType, params }),
+  });
+  if (!res.ok) throw new Error(await errorMessage(res));
+  return res.json();
+}
