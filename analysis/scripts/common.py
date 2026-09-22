@@ -492,6 +492,18 @@ def export_report_json(
     pos_display = positive_label or fallback(pos_raw)
     neg_display = negative_label or fallback(neg_raw)
 
+    # counts over the whole pool cases are drawn from (not just the n_cases
+    # actually returned as cards) - lets the frontend say "틀린 예측 12개"
+    # even though only e.g. 30 case cards were loaded. 40-60% matches the
+    # case_focus="borderline" wording ("확신도 애매한(40~60%) 케이스 위주")
+    # elsewhere in the app, so "borderline" means the same threshold everywhere.
+    actual_arr = y.to_numpy()
+    case_stats = {
+        "total": int(len(predictions)),
+        "wrong": int((predictions != actual_arr).sum()),
+        "borderline": int(((proba_pos >= 0.4) & (proba_pos <= 0.6)).sum()),
+    }
+
     case_indices = _pick_case_indices(
         predictions, proba_pos, n_cases, actual=y.to_numpy(), focus=case_focus
     )
@@ -592,6 +604,8 @@ def export_report_json(
 
     if outliers_excluded_columns:
         report["outliersExcludedColumns"] = outliers_excluded_columns
+
+    report["caseStats"] = case_stats
 
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
