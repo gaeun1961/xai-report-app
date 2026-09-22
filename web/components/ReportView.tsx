@@ -355,6 +355,13 @@ function SummaryBody({
             </span>
           )}
         </div>
+        {report.caseStats && (
+          <p className={styles.sectionNote}>
+            분석한 전체 {report.caseStats.total.toLocaleString()}개 중 · 예측이 틀린 케이스{" "}
+            <b>{report.caseStats.wrong.toLocaleString()}개</b> · 확신도 애매한(40~60%) 케이스{" "}
+            <b>{report.caseStats.borderline.toLocaleString()}개</b>
+          </p>
+        )}
         {report.modelQuality && (
           <div className={styles.qualityMessage}>
             {explainAccuracy(
