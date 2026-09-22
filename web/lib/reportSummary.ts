@@ -6,7 +6,6 @@ import { columnDesc } from "./columnGlossary";
 const STRONG_CORR = 0.6;
 const CORR_SENTENCE_LIMIT = 2;
 const CORR_LIST_LIMIT = 5;
-const FEATURE_LIST_LIMIT = 10;
 
 function label(domain: string, column: string): string {
   return columnDesc(domain, column) ?? column;
@@ -215,13 +214,19 @@ export function buildOverallSummary(report: ShapReport, domain: string): string[
 // copying isn't just re-copying what's already visible on screen.
 
 function featureImportanceLines(report: ShapReport, domain: string): string[] {
-  const items = report.featureImportance.slice(0, FEATURE_LIST_LIMIT);
-  const lines = items.map(
+  // full list, not the top-N the on-screen chart caps at — this text is meant
+  // to be pasted elsewhere (e.g. to an LLM) where completeness beats brevity
+  return report.featureImportance.map(
     (f, i) => `${i + 1}. ${label(domain, f.feature)} — ${f.importance.toFixed(3)}`,
   );
-  const hidden = report.featureImportance.length - FEATURE_LIST_LIMIT;
-  if (hidden > 0) lines.push(`(외 ${hidden}개 생략)`);
-  return lines;
+}
+
+function suspectZerosLines(report: ShapReport, domain: string): string[] {
+  const items = report.suspectZeros ?? [];
+  return items.map(
+    (z) =>
+      `- ${label(domain, z.column)}: 0이 ${z.zeroCount}건 (${pct(z.zeroPct)}), 다른 값은 대부분 ${Math.round(z.lowerFence).toLocaleString()} 이상`,
+  );
 }
 
 function missingnessLines(report: ShapReport, domain: string): string[] {
@@ -269,6 +274,12 @@ export function buildCopyText(
   }
 
   lines.push("", "## 정확도", `전체 정확도: ${pct(report.modelAccuracy)}`);
+  if (report.caseStats) {
+    const { total, wrong, borderline } = report.caseStats;
+    lines.push(
+      `분석한 전체 케이스: ${total}개 (예측이 틀린 케이스 ${wrong}개, 확신도 애매한(40~60%) 케이스 ${borderline}개)`,
+    );
+  }
   if (report.modelQuality) {
     lines.push(
       ...explainAccuracy(
@@ -296,6 +307,10 @@ export function buildCopyText(
 
   if (report.outliers?.length) {
     lines.push("", "## 이상치", ...outlierLines(report, domain));
+  }
+
+  if (report.suspectZeros?.length) {
+    lines.push("", "## 숨은 결측 의심 (0으로 기록됨)", ...suspectZerosLines(report, domain));
   }
 
   if (selectedCase) {

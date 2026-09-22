@@ -231,6 +231,7 @@ export default function CorrelationMatrix({
               items={missingness.map((m) => ({
                 label: m.column,
                 value: m.missingPct,
+                count: m.missingCount,
               }))}
               domain={domain}
             />

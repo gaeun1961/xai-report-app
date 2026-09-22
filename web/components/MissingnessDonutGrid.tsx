@@ -5,7 +5,7 @@ import { columnDesc, isSuggestedDesc } from "@/lib/columnGlossary";
 import GlossaryTerm from "./GlossaryTerm";
 import styles from "./report.module.css";
 
-export type DonutItem = { label: string; value: number }; // value: 0–1 share
+export type DonutItem = { label: string; value: number; count?: number }; // value: 0–1 share
 
 type Props = {
   items: DonutItem[];
@@ -69,6 +69,9 @@ export default function MissingnessDonutGrid({
                 suggested={isSuggestedDesc(domain, it.label)}
                 className={styles.donutLabel}
               />
+              {it.count !== undefined && (
+                <span className={styles.donutCount}>{it.count.toLocaleString()}개</span>
+              )}
             </div>
           );
         })}
