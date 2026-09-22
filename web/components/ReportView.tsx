@@ -10,6 +10,7 @@ import FeatureImportanceChart from "./FeatureImportanceChart";
 import PartialDependenceChart from "./PartialDependenceChart";
 import CaseSelector from "./CaseSelector";
 import CaseReportCard from "./CaseReportCard";
+import WhatIfPanel from "./WhatIfPanel";
 import CorrelationMatrix from "./CorrelationMatrix";
 import CopySummaryButton from "./CopySummaryButton";
 import SaveImageButton from "./SaveImageButton";
@@ -493,17 +494,29 @@ function CasesBody({ report, domain, selectedId, onSelect }: CasesBodyProps) {
       )}
 
       {selected ? (
-        <CaseReportCard
-          case={selected}
-          domain={domain}
-          positiveLabel={positiveLabel}
-          negativeLabel={negativeLabel}
-          baseValue={report.baseValue}
-          importanceOrder={importanceOrder}
-          chartLimit={CHART_LIMIT}
-          caseNo={selectedIndex + 1}
-          fallbackName={fallbackName}
-        />
+        <>
+          <CaseReportCard
+            case={selected}
+            domain={domain}
+            positiveLabel={positiveLabel}
+            negativeLabel={negativeLabel}
+            baseValue={report.baseValue}
+            importanceOrder={importanceOrder}
+            chartLimit={CHART_LIMIT}
+            caseNo={selectedIndex + 1}
+            fallbackName={fallbackName}
+          />
+          {report.analysisId && selected.raw && (
+            <WhatIfPanel
+              analysisId={report.analysisId}
+              domain={domain}
+              rawRow={selected.raw}
+              topFeatures={selected.topFeatures}
+              positiveLabel={positiveLabel}
+              negativeLabel={negativeLabel}
+            />
+          )}
+        </>
       ) : (
         <p className={styles.selectorEmpty}>
           위 산점도에서 점을 클릭하면 케이스 상세를 볼 수 있어요.

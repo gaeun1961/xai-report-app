@@ -41,3 +41,24 @@ export async function analyzeCsv(
   if (!res.ok) throw new Error(await errorMessage(res));
   return res.json();
 }
+
+export type WhatIfResult = {
+  predictedPositive: boolean;
+  probaPositive: number;
+  prediction: string;
+  predictionDisplay: string;
+  topFeatures: { feature: string; value: string | number | null; contribution: number }[];
+};
+
+export async function whatIf(
+  analysisId: string,
+  row: Record<string, unknown>,
+): Promise<WhatIfResult> {
+  const res = await fetch(`${API_BASE}/whatif`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ analysis_id: analysisId, row }),
+  });
+  if (!res.ok) throw new Error(await errorMessage(res));
+  return res.json();
+}
