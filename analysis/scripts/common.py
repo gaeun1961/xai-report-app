@@ -11,6 +11,7 @@ import pandas as pd
 import shap
 from sklearn.base import clone
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.inspection import partial_dependence
 from sklearn.metrics import accuracy_score, recall_score
 from sklearn.model_selection import (
     StratifiedKFold,
@@ -377,6 +378,58 @@ def compute_shap(model, X: pd.DataFrame):
     return shap_values, feature_importance_df, base_value
 
 
+PDP_TOP_N = 6
+PDP_GRID_POINTS = 8
+
+
+def compute_partial_dependence(
+    model, X: pd.DataFrame, display_df: pd.DataFrame, feature_importance_df: pd.DataFrame
+) -> list:
+    """For each of the top PDP_TOP_N features (by SHAP importance), compute
+    how the average predicted P(positive) moves as that feature's value
+    changes, holding every other feature at its observed value (a standard
+    partial dependence plot, via sklearn - no new dependency).
+
+    Categorical columns are label-encoded (factorized) in X but shown to the
+    reader via display_df's original strings, so the encoded grid points are
+    mapped back through a code->label dict built by zipping the two - no
+    encoder object needs to be threaded through from load_and_preprocess.
+    """
+    numeric_cols = set(display_df.select_dtypes(include="number").columns)
+    top_features = list(feature_importance_df["feature"].head(PDP_TOP_N))
+    # float dtype avoids a scikit-learn FutureWarning (and future ValueError)
+    # about integer-dtype columns in partial_dependence
+    X_float = X.astype(float)
+
+    results = []
+    for feat in top_features:
+        idx = list(X.columns).index(feat)
+        is_categorical = feat not in numeric_cols
+        # categorical: cap resolution at the category count so sklearn
+        # returns the exact codes instead of interpolating between them
+        resolution = (
+            min(PDP_GRID_POINTS, X[feat].nunique()) if is_categorical else PDP_GRID_POINTS
+        )
+        pdp = partial_dependence(model, X_float, [idx], grid_resolution=resolution, kind="average")
+        grid = pdp["grid_values"][0]
+        avg = pdp["average"][0]
+
+        if is_categorical:
+            code_to_label = dict(zip(X[feat], display_df[feat]))
+            points = [
+                {"value": code_to_label.get(int(round(g)), str(g)), "proba": round(float(a), 4)}
+                for g, a in zip(grid, avg)
+            ]
+        else:
+            points = [
+                {"value": round(float(g), 4), "proba": round(float(a), 4)}
+                for g, a in zip(grid, avg)
+            ]
+        results.append({"feature": feat, "points": points})
+
+    return results
+
+
 TYPICAL_SHARE = 0.8  # per class: 80% confident/typical rows, 20% borderline
 
 
@@ -607,6 +660,10 @@ def export_report_json(
 
     report["caseStats"] = case_stats
 
+    report["partialDependence"] = compute_partial_dependence(
+        model, X, display_df, feature_importance_df
+    )
+
     # feature importance recomputed over only the wrong predictions - lets a
     # reader see "what SHAP leaned on when the model got it wrong" (may differ
     # from the overall ranking). Omitted for a perfect model (nothing wrong).
@@ -683,6 +740,29 @@ def _demo():
     sz = {r["column"]: r for r in compute_suspect_zeros(dfz, ["chol", "fare", "flag"])}
     assert set(sz) == {"chol"}, sz
     assert sz["chol"]["zeroCount"] == 6
+
+    # partial dependence: "num" is numeric (should get PDP_GRID_POINTS grid
+    # points), "cat" is a 3-category factorized column (should get exactly
+    # its 3 codes back, mapped to their original string labels via display_df)
+    from sklearn.ensemble import RandomForestClassifier as _RFC
+
+    rng = np.random.RandomState(0)
+    n = 120
+    num = rng.rand(n) * 10
+    cat_labels = rng.choice(["red", "green", "blue"], size=n)
+    cat_codes, cat_uniques = pd.factorize(cat_labels)
+    Xd = pd.DataFrame({"num": num, "cat": cat_codes})
+    y_pdp = pd.Series((num > 5).astype(int))
+    m = _RFC(n_estimators=20, random_state=0).fit(Xd, y_pdp)
+    display_pdp = pd.DataFrame({"num": num, "cat": cat_labels})
+    fi_pdp = pd.DataFrame({"feature": ["num", "cat"], "importance": [1.0, 0.5]})
+    pdp = {r["feature"]: r["points"] for r in compute_partial_dependence(m, Xd, display_pdp, fi_pdp)}
+    assert set(pdp) == {"num", "cat"}, pdp
+    assert len(pdp["num"]) == PDP_GRID_POINTS, pdp["num"]
+    assert len(pdp["cat"]) == 3, pdp["cat"]
+    assert set(p["value"] for p in pdp["cat"]) == set(cat_uniques), pdp["cat"]
+    assert all(0.0 <= p["proba"] <= 1.0 for p in pdp["num"] + pdp["cat"])
+
     print("common._demo: ok")
 
 

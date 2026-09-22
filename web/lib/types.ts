@@ -98,6 +98,15 @@ export type ShapReport = {
   // Same shape as featureImportance, recomputed over only the wrong
   // predictions. Absent when the model got everything right (caseStats.wrong === 0).
   wrongFeatureImportance?: { feature: string; importance: number }[];
+  // Partial dependence: for the top few features by importance, how the
+  // average P(positive) moves as that feature's value changes (others held
+  // at their observed values). `value` is a number for a numeric feature or
+  // the original category string for a categorical one. Optional so old
+  // JSON still loads.
+  partialDependence?: {
+    feature: string;
+    points: { value: number | string; proba: number }[];
+  }[];
   cases: {
     id: string;
     // Raw target value from the CSV (e.g. "1", "Yes").

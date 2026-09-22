@@ -7,6 +7,7 @@ import { getValueLabel, setValueLabel } from "@/lib/valueLabels";
 import { registerUploadGlossary } from "@/lib/columnGlossary";
 import { featureTendencies } from "@/lib/featureTendency";
 import FeatureImportanceChart from "./FeatureImportanceChart";
+import PartialDependenceChart from "./PartialDependenceChart";
 import CaseSelector from "./CaseSelector";
 import CaseReportCard from "./CaseReportCard";
 import WhatIfPanel from "./WhatIfPanel";
@@ -397,6 +398,16 @@ function SummaryBody({
           tooltips={tendencies}
         />
       </section>
+
+      {report.partialDependence && report.partialDependence.length > 0 && (
+        <section className={styles.cardSection}>
+          <h2 className={styles.h2}>
+            특성값에 따른 예측 확률 변화{" "}
+            <InfoTip text="위 특성 중요도 상위 항목들을 대상으로, **그 값이 바뀌면 다른 조건은 그대로 두고 평균적으로 예측 확률이 어떻게 움직이는지** 계산한 거예요. 선이 우상향하면 값이 클수록, 우하향하면 값이 작을수록 예측을 밀어준다는 뜻이에요." />
+          </h2>
+          <PartialDependenceChart items={report.partialDependence} domain={domain} />
+        </section>
+      )}
 
       {overallSummary.length > 0 && (
         <section className={styles.cardSection}>
