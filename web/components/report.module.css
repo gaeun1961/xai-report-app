@@ -1,4 +1,3 @@
-.landing,
 .report {
   margin: 0 auto;
   padding: 48px 24px 80px;
@@ -7,37 +6,12 @@
   gap: 16px;
 }
 
-.landing {
-  max-width: 960px;
-  position: relative;
-  z-index: 0;
-}
-
-/* full-bleed ivory backdrop: .landing itself stays centered/max-width for
-   content alignment, but the tint should reach both viewport edges rather
-   than stop at the content column — a plain background on .landing would
-   leave visible white gutters on any screen wider than 960/1160px */
-.landing::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 100vw;
-  height: 100%;
-  transform: translateX(-50%);
-  background: var(--surface);
-  z-index: -1;
-}
-
 .report {
   max-width: 1000px;
 }
 
 /* larger screens: use more of the width instead of leaving big side margins */
 @media (min-width: 1440px) {
-  .landing {
-    max-width: 1160px;
-  }
 
   .report {
     max-width: 1280px;
@@ -63,22 +37,6 @@
   letter-spacing: -0.02em;
 }
 
-/* landing-only: a bigger, heavier headline than a report page's title needs —
-   scoped to its own class rather than resizing .h1 everywhere it's used */
-.h1Hero {
-  font-size: 40px;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 1.15;
-  color: var(--accent-strong);
-}
-
-@media (max-width: 640px) {
-  .h1Hero {
-    font-size: 30px;
-  }
-}
-
 .h2 {
   font-size: 18px;
   font-weight: 700;
@@ -88,42 +46,6 @@
 /* kept for callers that still pass it; same as .h2 now */
 .h2Accent {
   color: var(--accent-strong);
-}
-
-.lead {
-  color: color-mix(in srgb, currentColor 65%, transparent);
-  line-height: 1.6;
-}
-
-.about {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  padding: 16px 20px;
-  border: 1px solid var(--border);
-  border-left: 4px solid var(--accent);
-  border-radius: 12px;
-  /* the landing page's own background is ivory (.landing) — white here is
-     what makes this box read as a distinct card instead of blending in */
-  background: var(--background);
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--text-muted);
-}
-
-.aboutBlock {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.about p {
-  margin: 0;
-}
-
-.about strong {
-  color: var(--accent-strong);
-  font-weight: 700;
 }
 
 .note {
@@ -231,41 +153,6 @@
    already spaces things out, so the heading needs none of its own */
 .cardSection > h2 {
   margin-top: 0;
-}
-
-.previewRow {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.previewBlock {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.previewBlock p {
-  margin: 0;
-  line-height: 1.6;
-}
-
-.previewArrow {
-  font-size: 20px;
-  color: var(--text-muted);
-}
-
-@media (max-width: 640px) {
-  .previewRow {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .previewArrow {
-    align-self: center;
-    transform: rotate(90deg);
-  }
 }
 
 /* correlation heatmap */
@@ -422,94 +309,6 @@
   margin-top: -4px;
   font-size: 13px;
   line-height: 1.6;
-  color: var(--text-muted);
-}
-
-/* visually separates the example cards from the sections above — a plain
-   divider, not another card/box, so it doesn't compete with the CTA above it */
-.examplesSection {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-top: 8px;
-  padding-top: 28px;
-  border-top: 1px solid var(--border);
-}
-
-/* domain card grid (landing) */
-.cardGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin-top: 4px;
-}
-
-@media (max-width: 800px) {
-  .cardGrid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.domainCard {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  height: 100%;
-  padding: 20px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  /* pops off the landing page's ivory background instead of blending in */
-  background: var(--background);
-  transition: border-color 0.15s;
-}
-
-.domainCard:hover {
-  border-color: var(--accent);
-}
-
-.domainCardTop {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.domainTitle {
-  font-size: 17px;
-  font-weight: 600;
-}
-
-.domainDesc {
-  flex: 1;
-  margin: 0;
-  font-size: 14px;
-  color: var(--text-muted);
-  line-height: 1.6;
-}
-
-.domainAccBlock {
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
-  margin-top: 4px;
-  padding-top: 12px;
-  border-top: 1px solid var(--border);
-}
-
-.domainAccNum {
-  font-size: 28px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--accent-strong);
-}
-
-.domainAccLabel {
-  font-size: 13px;
-  color: var(--text-muted);
-}
-
-.domainAccPending {
-  font-size: 14px;
   color: var(--text-muted);
 }
 
@@ -1575,11 +1374,11 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  padding: 40px 20px;
-  border: 2px dashed var(--accent);
-  border-radius: 12px;
-  background: var(--surface);
+  gap: 6px;
+  padding: 56px 24px;
+  border: 1.5px dashed color-mix(in srgb, var(--foreground) 28%, transparent);
+  border-radius: 16px;
+  background: var(--background);
   text-align: center;
   cursor: pointer;
   transition: border-color 0.15s, background 0.15s;
@@ -1588,12 +1387,12 @@
 .dropzone:hover,
 .dropzoneActive {
   border-color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+  background: color-mix(in srgb, var(--accent) 5%, var(--background));
 }
 
 .dropzoneIcon {
-  color: var(--accent);
-  margin-bottom: 2px;
+  color: var(--foreground);
+  margin-bottom: 4px;
 }
 
 .dropzoneTitle {
@@ -1684,76 +1483,5 @@
 @media (max-width: 640px) {
   .saveBtnCol {
     align-items: flex-start;
-  }
-}
-
-/* landing "how it works" — 3 numbered steps with code-drawn icons */
-.stepsRow {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.stepItem {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  text-align: center;
-}
-
-.stepIcon {
-  width: 72px;
-  height: 72px;
-  color: var(--accent-strong);
-}
-
-.stepFill {
-  fill: color-mix(in srgb, var(--accent) 22%, transparent);
-}
-
-.stepNum {
-  display: grid;
-  place-items: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 999px;
-  background: var(--accent);
-  color: #fff;
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.stepTitle {
-  font-size: 15px;
-}
-
-.stepItem .sectionNote {
-  margin-top: 0;
-}
-
-.stepArrow {
-  position: absolute;
-  top: 26px;
-  right: -16px;
-  font-size: 20px;
-  color: var(--text-muted);
-}
-
-@media (max-width: 640px) {
-  .stepsRow {
-    grid-template-columns: 1fr;
-    gap: 28px;
-  }
-
-  .stepArrow {
-    top: auto;
-    bottom: -24px;
-    right: 50%;
-    transform: translateX(50%) rotate(90deg);
   }
 }

@@ -66,6 +66,23 @@
   background: var(--surface);
 }
 
+.newAnalysis {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.newAnalysis:hover {
+  background: var(--accent-strong);
+}
+
 .nav {
   display: flex;
   flex-direction: column;
