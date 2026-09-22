@@ -79,7 +79,12 @@ export default function MyReportPage() {
           이 기기에 저장되지 않아요.
         </p>
       ) : (
-        <ReportView report={report} domain={report.domain} />
+        <ReportView
+          report={report}
+          domain={report.domain}
+          reportId={id}
+          reportLabel={name ?? report.domain}
+        />
       )}
     </main>
   );

@@ -40,6 +40,11 @@ export type ShapReport = {
   // Expires if the server restarts (free-tier idle spindown) - a /whatif
   // call against a stale id just 404s, no crash.
   analysisId?: string;
+  // Present only on a report produced by POST /retrain (picking a different
+  // whitelisted tree model to compare against baseline) - which model type/
+  // label was used. Absent on a normal /analyze report.
+  modelType?: string;
+  modelLabel?: string;
   // Counts over the whole pool cases are drawn from (common.sample_for_shap's
   // output — up to SHAP_MAX_ROWS rows) — NOT just the cases actually loaded
   // as cards. "borderline" is 40-60% predicted probability, the same

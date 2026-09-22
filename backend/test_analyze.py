@@ -239,6 +239,94 @@ def test_whatif_unknown_analysis_id_404():
     assert res.status_code == 404, res.text
 
 
+def test_model_types_lists_whitelist():
+    res = TestClient(app).get("/model-types")
+    assert res.status_code == 200, res.text
+    body = res.json()
+    assert set(body) == {"random_forest", "gradient_boosting", "extra_trees"}
+    for spec in body.values():
+        assert "label" in spec
+        assert "n_estimators" in spec["params"]
+        assert spec["params"]["n_estimators"]["min"] < spec["params"]["n_estimators"]["max"]
+
+
+def test_retrain_with_different_model():
+    client = TestClient(app)
+    res = client.post(
+        "/analyze",
+        files={"file": ("w.csv", _whatif_csv(), "text/csv")},
+        data={"target_column": "Survived", "n_cases": "5"},
+    )
+    body = res.json()
+
+    retrained = client.post(
+        "/retrain",
+        json={
+            "analysis_id": body["analysisId"],
+            "model_type": "gradient_boosting",
+            "params": {"n_estimators": 50, "max_depth": 3},
+        },
+    )
+    assert retrained.status_code == 200, retrained.text
+    new_body = retrained.json()
+    assert new_body["modelType"] == "gradient_boosting"
+    assert new_body["modelLabel"] == "Gradient Boosting"
+    assert 0.0 <= new_body["modelAccuracy"] <= 1.0
+    assert len(new_body["featureImportance"]) > 0
+    assert "caseStats" in new_body
+    # a fresh analysis id for the retrained model too, distinct from the original
+    assert new_body["analysisId"] != body["analysisId"]
+
+    # the new model is itself usable for /whatif (chaining)
+    case = new_body["cases"][0]
+    whatif_res = client.post(
+        "/whatif", json={"analysis_id": new_body["analysisId"], "row": case.get("raw") or {}}
+    )
+    assert whatif_res.status_code == 200, whatif_res.text
+
+
+def test_retrain_rejects_unknown_model_type():
+    client = TestClient(app)
+    res = client.post(
+        "/analyze",
+        files={"file": ("w.csv", _whatif_csv(), "text/csv")},
+        data={"target_column": "Survived", "n_cases": "3"},
+    )
+    analysis_id = res.json()["analysisId"]
+    bad = client.post(
+        "/retrain",
+        json={"analysis_id": analysis_id, "model_type": "linear_regression", "params": {}},
+    )
+    assert bad.status_code == 400, bad.text
+
+
+def test_retrain_rejects_out_of_range_param():
+    client = TestClient(app)
+    res = client.post(
+        "/analyze",
+        files={"file": ("w.csv", _whatif_csv(), "text/csv")},
+        data={"target_column": "Survived", "n_cases": "3"},
+    )
+    analysis_id = res.json()["analysisId"]
+    bad = client.post(
+        "/retrain",
+        json={
+            "analysis_id": analysis_id,
+            "model_type": "random_forest",
+            "params": {"n_estimators": 100000},
+        },
+    )
+    assert bad.status_code == 400, bad.text
+
+
+def test_retrain_unknown_analysis_id_404():
+    res = TestClient(app).post(
+        "/retrain",
+        json={"analysis_id": "does-not-exist", "model_type": "random_forest", "params": {}},
+    )
+    assert res.status_code == 404, res.text
+
+
 if __name__ == "__main__":
     test_analyze_returns_report()
     test_columns_returns_row_count()
@@ -250,4 +338,9 @@ if __name__ == "__main__":
     test_partial_dependence_covers_top_features()
     test_whatif_updates_prediction_for_edited_row()
     test_whatif_unknown_analysis_id_404()
+    test_model_types_lists_whitelist()
+    test_retrain_with_different_model()
+    test_retrain_rejects_unknown_model_type()
+    test_retrain_rejects_out_of_range_param()
+    test_retrain_unknown_analysis_id_404()
     print("ok")
