@@ -610,6 +610,18 @@
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
+.selectorStats {
+  padding-bottom: 10px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.selectorStats b {
+  color: var(--foreground);
+}
+
 .selectorFilter {
   display: flex;
   flex-wrap: wrap;
