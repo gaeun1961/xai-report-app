@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { columnDesc, isSuggestedDesc } from "@/lib/columnGlossary";
 import { getFeatureDesc, setFeatureDesc } from "@/lib/featureDescs";
-import GlossaryTerm from "./GlossaryTerm";
 import InfoTip from "./InfoTip";
 import styles from "./report.module.css";
 
@@ -24,11 +23,13 @@ type Props = {
 // same thing across rows and across domains, not just "biggest here"
 const AXIS_TICKS = [0, 0.25, 0.5, 0.75, 1];
 
-// One row's column name + its hover description. The pencil edits the
-// DESCRIPTION (the tooltip text), not the column name — per-browser override
-// via lib/featureDescs.ts; an edited description is the user's own, so it
-// drops the "AI 추정" marker. Starts un-overridden on server and first client
-// render (avoids a hydration mismatch), then loads from localStorage.
+// One row's column name, doubling as the click target for editing its hover
+// description (no separate pencil — clicking the dotted-underlined name
+// itself opens the editor). Edits the DESCRIPTION (the tooltip text), not
+// the column name — per-browser override via lib/featureDescs.ts; an edited
+// description is the user's own, so it drops the "AI 추정" marker. Starts
+// un-overridden on server and first client render (avoids a hydration
+// mismatch), then loads from localStorage.
 function EditableFeatureLabel({
   domain,
   column,
@@ -89,21 +90,25 @@ function EditableFeatureLabel({
     );
   }
 
+  const stillSuggested = suggested && !override;
+
   return (
-    <span className={styles.caseId}>
-      <GlossaryTerm term={column} desc={shownDesc} suggested={override ? false : suggested} />
-      <button
-        type="button"
-        className={styles.caseNameEditBtn}
-        aria-label={`${column} 설명 수정`}
-        onClick={() => {
-          setDraft(shownDesc ?? "");
-          setEditing(true);
-        }}
-      >
-        ✎
-      </button>
-    </span>
+    <button
+      type="button"
+      className={`${styles.glossary} ${styles.tooltipHost} ${styles.editableTerm}`}
+      aria-label={`${column} 설명 수정`}
+      onClick={() => {
+        setDraft(shownDesc ?? "");
+        setEditing(true);
+      }}
+    >
+      {column}
+      {shownDesc && (
+        <span className={styles.glossaryBubble} role="tooltip">
+          {stillSuggested && <em className={styles.soon}>AI 추정</em>} {shownDesc}
+        </span>
+      )}
+    </button>
   );
 }
 
