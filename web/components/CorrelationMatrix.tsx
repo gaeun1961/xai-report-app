@@ -75,7 +75,7 @@ export default function CorrelationMatrix({
 
   return (
     <>
-      <nav className={styles.dataRelToc}>
+      <nav className={styles.dataRelToc} data-no-capture>
         <button
           type="button"
           className={styles.dataRelTocLink}

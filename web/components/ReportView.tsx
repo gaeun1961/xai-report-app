@@ -152,14 +152,17 @@ export default function ReportView({ report, domain }: Props) {
         />
       )}
       {tab === "data" && report.correlations && (
-        <CorrelationMatrix
-          data={report.correlations}
-          domain={domain}
-          missingness={report.missingness}
-          suspectZeros={report.suspectZeros}
-          outliers={report.outliers}
-          outliersExcludedColumns={report.outliersExcludedColumns}
-        />
+        <div className={styles.reportCol} id="report-data">
+          <SaveImageButton targetId="report-data" fileName={`${domain}-데이터분석`} />
+          <CorrelationMatrix
+            data={report.correlations}
+            domain={domain}
+            missingness={report.missingness}
+            suspectZeros={report.suspectZeros}
+            outliers={report.outliers}
+            outliersExcludedColumns={report.outliersExcludedColumns}
+          />
+        </div>
       )}
     </>
   );
