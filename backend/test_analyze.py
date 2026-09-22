@@ -140,6 +140,26 @@ def test_analyze_flags_suspect_zeros():
     assert flagged["Chol"]["zeroCount"] == 12
 
 
+def test_wrong_feature_importance_matches_wrong_count():
+    client = TestClient(app)
+    res = client.post(
+        "/analyze",
+        files={"file": ("t.csv", CSV, "text/csv")},
+        data={"target_column": "Survived", "n_cases": "5"},
+    )
+    body = res.json()
+    same_features = {f["feature"] for f in body["featureImportance"]}
+    if body["caseStats"]["wrong"] == 0:
+        # a perfect model has no wrong predictions to rank features over
+        assert "wrongFeatureImportance" not in body
+    else:
+        wrong_fi = body["wrongFeatureImportance"]
+        assert {f["feature"] for f in wrong_fi} == same_features
+        # descending order, same as featureImportance
+        values = [f["importance"] for f in wrong_fi]
+        assert values == sorted(values, reverse=True)
+
+
 if __name__ == "__main__":
     test_analyze_returns_report()
     test_columns_returns_row_count()
@@ -147,4 +167,5 @@ if __name__ == "__main__":
     test_pick_case_indices_focus()
     test_case_focus_rejects_unknown_value()
     test_analyze_flags_suspect_zeros()
+    test_wrong_feature_importance_matches_wrong_count()
     print("ok")

@@ -581,6 +581,11 @@
   overflow-wrap: anywhere;
 }
 
+.donutCount {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
 /* case selector */
 .selectorWrap {
   display: flex;

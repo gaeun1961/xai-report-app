@@ -59,7 +59,7 @@ export default function CaseSelector({
         <p className={styles.selectorStats}>
           분석한 전체 {caseStats.total.toLocaleString()}개 중 · 예측이 틀린 케이스{" "}
           <b>{caseStats.wrong.toLocaleString()}개</b> · 확신도 애매한(40~60%) 케이스{" "}
-          <b>{caseStats.borderline.toLocaleString()}개</b>
+          <b>{caseStats.borderline.toLocaleString()}개</b>{" "}
           <InfoTip text="여기 뜨는 개수는 지금 화면에 불러온 케이스 카드 수가 아니라, 이 리포트가 분석한 전체 데이터를 기준으로 셌어요. 카드로 직접 확인하려면 아래 필터와 확률 범위를 활용하세요." />
         </p>
       )}

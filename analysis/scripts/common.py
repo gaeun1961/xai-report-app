@@ -607,6 +607,17 @@ def export_report_json(
 
     report["caseStats"] = case_stats
 
+    # feature importance recomputed over only the wrong predictions - lets a
+    # reader see "what SHAP leaned on when the model got it wrong" (may differ
+    # from the overall ranking). Omitted for a perfect model (nothing wrong).
+    wrong_mask = predictions != actual_arr
+    if wrong_mask.any():
+        wrong_importance = np.abs(shap_values[wrong_mask]).mean(axis=0)
+        wrong_fi = sorted(zip(feature_names, wrong_importance), key=lambda t: -t[1])
+        report["wrongFeatureImportance"] = [
+            {"feature": f, "importance": round(float(v), 5)} for f, v in wrong_fi
+        ]
+
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, "w", encoding="utf-8") as f:

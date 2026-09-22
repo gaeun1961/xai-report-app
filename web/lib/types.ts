@@ -90,6 +90,9 @@ export type ShapReport = {
   // Optional so old JSON still loads.
   outliersExcludedColumns?: string[];
   featureImportance: { feature: string; importance: number }[];
+  // Same shape as featureImportance, recomputed over only the wrong
+  // predictions. Absent when the model got everything right (caseStats.wrong === 0).
+  wrongFeatureImportance?: { feature: string; importance: number }[];
   cases: {
     id: string;
     // Raw target value from the CSV (e.g. "1", "Yes").
