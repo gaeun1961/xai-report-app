@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import type { ShapReport } from "@/lib/types";
-import { buildOverallSummary, explainAccuracy } from "@/lib/reportSummary";
+import { isRegression, type ShapReport } from "@/lib/types";
+import { buildOverallSummary, explainAccuracy, explainR2 } from "@/lib/reportSummary";
 import { getValueLabel, setValueLabel } from "@/lib/valueLabels";
 import { registerUploadGlossary } from "@/lib/columnGlossary";
 import { featureTendencies } from "@/lib/featureTendency";
@@ -268,6 +268,7 @@ function SummaryBody({
   const selectedCase = selectedId
     ? report.cases.find((c) => c.id === selectedId)
     : undefined;
+  const regression = isRegression(report);
   const overallSummary = buildOverallSummary(report, domain);
   const tendencies = useMemo(() => featureTendencies(report, domain), [report, domain]);
 
@@ -347,10 +348,20 @@ function SummaryBody({
       )}
 
       <section className={styles.cardSection}>
-        <h2 className={styles.h2}>전체 정확도</h2>
+        <h2 className={styles.h2}>
+          {regression ? "모델 설명력 (R²)" : "전체 정확도"}
+          {regression && (
+            <>
+              {" "}
+              <InfoTip text="R²는 모델이 값의 변동을 얼마나 설명하는지를 나타내는 점수예요. **1에 가까울수록 정확**하고, **0이면 늘 평균값으로만 찍는 것과 같아요**. 평균보다 못한 모델은 음수가 나올 수도 있어요. 아래 RMSE는 예측이 실제값과 평균적으로 어긋나는 크기예요." />
+            </>
+          )}
+        </h2>
         <div className={styles.accuracyRow}>
           <p className={styles.accuracy}>
-            {(report.modelAccuracy * 100).toFixed(1)}%
+            {regression
+              ? report.modelAccuracy.toFixed(2)
+              : `${(report.modelAccuracy * 100).toFixed(1)}%`}
           </p>
           {report.modelQuality && (
             <span
@@ -372,16 +383,35 @@ function SummaryBody({
         </div>
         {report.caseStats && (
           <p className={styles.sectionNote}>
-            분석한 전체 {report.caseStats.total.toLocaleString()}개 중 · 예측이 틀린 케이스{" "}
-            <b>{report.caseStats.wrong.toLocaleString()}개</b> · 확신도 애매한(40~60%) 케이스{" "}
-            <b>{report.caseStats.borderline.toLocaleString()}개</b>
+            분석한 전체 {report.caseStats.total.toLocaleString()}개 중 ·{" "}
+            {regression ? (
+              <>
+                오차가 큰 케이스 <b>{report.caseStats.wrong.toLocaleString()}개</b>
+              </>
+            ) : (
+              <>
+                예측이 틀린 케이스 <b>{report.caseStats.wrong.toLocaleString()}개</b> · 확신도
+                애매한(40~60%) 케이스 <b>{report.caseStats.borderline.toLocaleString()}개</b>
+              </>
+            )}
           </p>
         )}
-        {report.modelQuality && (
+        {report.modelQuality && regression && (
+          <div className={styles.qualityMessage}>
+            {explainR2(
+              report.modelAccuracy,
+              report.modelQuality.rmse,
+              report.modelQuality.verdict,
+            ).map((s, i) => (
+              <p key={i}>{s}</p>
+            ))}
+          </div>
+        )}
+        {report.modelQuality && !regression && (
           <div className={styles.qualityMessage}>
             {explainAccuracy(
               report.modelAccuracy,
-              report.modelQuality.baselineAccuracy,
+              report.modelQuality.baselineAccuracy ?? 0,
               report.modelQuality.verdict,
               positiveLabel ?? "양성",
               negativeLabel ?? "음성",
@@ -415,10 +445,20 @@ function SummaryBody({
       {report.partialDependence && report.partialDependence.length > 0 && (
         <section className={styles.cardSection}>
           <h2 className={styles.h2}>
-            특성값에 따른 예측 확률 변화{" "}
-            <InfoTip text="위 특성 중요도 상위 항목들을 대상으로, **그 값이 바뀌면 다른 조건은 그대로 두고 평균적으로 예측 확률이 어떻게 움직이는지** 계산한 거예요. 선이 우상향하면 값이 클수록, 우하향하면 값이 작을수록 예측을 밀어준다는 뜻이에요." />
+            {regression ? "특성값에 따른 예측값 변화" : "특성값에 따른 예측 확률 변화"}{" "}
+            <InfoTip
+              text={
+                regression
+                  ? "위 특성 중요도 상위 항목들을 대상으로, **그 값이 바뀌면 다른 조건은 그대로 두고 평균적으로 예측값이 어떻게 움직이는지** 계산한 거예요. 선이 우상향하면 값이 클수록, 우하향하면 값이 작을수록 예측값이 커진다는 뜻이에요."
+                  : "위 특성 중요도 상위 항목들을 대상으로, **그 값이 바뀌면 다른 조건은 그대로 두고 평균적으로 예측 확률이 어떻게 움직이는지** 계산한 거예요. 선이 우상향하면 값이 클수록, 우하향하면 값이 작을수록 예측을 밀어준다는 뜻이에요."
+              }
+            />
           </h2>
-          <PartialDependenceChart items={report.partialDependence} domain={domain} />
+          <PartialDependenceChart
+            items={report.partialDependence}
+            domain={domain}
+            regression={regression}
+          />
         </section>
       )}
 
@@ -433,7 +473,8 @@ function SummaryBody({
         </section>
       )}
 
-      {report.analysisId && reportId && (
+      {/* the backend's /retrain is classification-only for now */}
+      {report.analysisId && reportId && !regression && (
         <ModelComparePanel
           analysisId={report.analysisId}
           reportId={reportId}
@@ -455,6 +496,7 @@ function CasesBody({ report, domain, selectedId, onSelect }: CasesBodyProps) {
   const selectedIndex = report.cases.findIndex((c) => c.id === selectedId);
   const selected = selectedIndex >= 0 ? report.cases[selectedIndex] : null;
   const { positiveLabel, negativeLabel } = report;
+  const regression = isRegression(report);
   const [labelColumn, setLabelColumn] = useState("");
 
   const CHART_LIMIT = 15;
@@ -501,13 +543,19 @@ function CasesBody({ report, domain, selectedId, onSelect }: CasesBodyProps) {
       {report.wrongFeatureImportance && report.wrongFeatureImportance.length > 0 && (
         <section className={styles.cardSection}>
           <h2 className={styles.h2}>
-            오답 케이스 기준 특성 중요도{" "}
-            <InfoTip text="전체 특성 중요도와 다르게, **예측이 틀린 케이스들만 모아서** 다시 계산한 순위예요. 전체 기준으로는 안 중요했던 항목이 여기서 상위권이라면, 그 항목이 모델을 헷갈리게 하고 있을 가능성이 있어요." />
+            {regression ? "오차가 큰 케이스 기준 특성 중요도" : "오답 케이스 기준 특성 중요도"}{" "}
+            <InfoTip
+              text={
+                regression
+                  ? "전체 특성 중요도와 다르게, **오차가 유독 큰 케이스들만 모아서** 다시 계산한 순위예요. 전체 기준으로는 안 중요했던 항목이 여기서 상위권이라면, 그 항목이 모델을 헷갈리게 하고 있을 가능성이 있어요."
+                  : "전체 특성 중요도와 다르게, **예측이 틀린 케이스들만 모아서** 다시 계산한 순위예요. 전체 기준으로는 안 중요했던 항목이 여기서 상위권이라면, 그 항목이 모델을 헷갈리게 하고 있을 가능성이 있어요."
+              }
+            />
           </h2>
           {report.caseStats && (
             <p className={styles.sectionNote}>
-              예측이 틀린 케이스 <b>{report.caseStats.wrong.toLocaleString()}개</b> 기준으로
-              계산했어요.
+              {regression ? "오차가 큰" : "예측이 틀린"} 케이스{" "}
+              <b>{report.caseStats.wrong.toLocaleString()}개</b> 기준으로 계산했어요.
             </p>
           )}
           <FeatureImportanceChart items={report.wrongFeatureImportance} domain={domain} />
@@ -527,7 +575,7 @@ function CasesBody({ report, domain, selectedId, onSelect }: CasesBodyProps) {
             caseNo={selectedIndex + 1}
             fallbackName={fallbackName}
           />
-          {report.analysisId && selected.raw && (
+          {report.analysisId && selected.raw && !regression && (
             <WhatIfPanel
               analysisId={report.analysisId}
               domain={domain}
@@ -540,7 +588,9 @@ function CasesBody({ report, domain, selectedId, onSelect }: CasesBodyProps) {
         </>
       ) : (
         <p className={styles.selectorEmpty}>
-          위 산점도에서 점을 클릭하면 케이스 상세를 볼 수 있어요.
+          {regression
+            ? "위 목록에서 케이스를 클릭하면 케이스 상세를 볼 수 있어요."
+            : "위 산점도에서 점을 클릭하면 케이스 상세를 볼 수 있어요."}
         </p>
       )}
     </div>

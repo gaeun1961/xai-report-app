@@ -2,7 +2,33 @@ import type { ShapReport } from "./types";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
-export type ColumnInfo = { name: string; uniqueCount: number };
+export type ColumnInfo = { name: string; uniqueCount: number; isNumeric?: boolean };
+export type TaskType = "classification" | "regression";
+
+// Mirrors the backend's gate (routers/analyze.py MIN_REGRESSION_UNIQUE): a
+// numeric column needs this many distinct values to be a sane regression
+// target, otherwise it's really a coded category.
+export const MIN_REGRESSION_UNIQUE = 10;
+
+// What a column can be analyzed as. Classification wants exactly 2 values;
+// regression wants a numeric column with enough distinct values.
+export function suggestedTask(col: ColumnInfo): TaskType | null {
+  if (col.uniqueCount === 2) return "classification";
+  if (col.isNumeric && col.uniqueCount >= MIN_REGRESSION_UNIQUE) return "regression";
+  return null;
+}
+
+export function taskProblem(col: ColumnInfo, task: TaskType): string | null {
+  if (task === "classification") {
+    return col.uniqueCount === 2
+      ? null
+      : `고유값이 ${col.uniqueCount}개라 분류 타겟으로 쓸 수 없어요 (정확히 2개여야 해요).`;
+  }
+  if (!col.isNumeric) return "숫자형 컬럼이 아니라 회귀 타겟으로 쓸 수 없어요.";
+  return col.uniqueCount >= MIN_REGRESSION_UNIQUE
+    ? null
+    : `고유값이 ${col.uniqueCount}개뿐이라 회귀 타겟으로 보기 어려워요 (최소 ${MIN_REGRESSION_UNIQUE}개).`;
+}
 export type CaseFocus = "balanced" | "wrong" | "borderline";
 
 async function errorMessage(res: Response): Promise<string> {
@@ -31,12 +57,14 @@ export async function analyzeCsv(
   targetColumn: string,
   nCases: number = 30,
   caseFocus: CaseFocus = "balanced",
+  taskType: TaskType = "classification",
 ): Promise<ShapReport> {
   const form = new FormData();
   form.append("file", file);
   form.append("target_column", targetColumn);
   form.append("n_cases", String(nCases));
   form.append("case_focus", caseFocus);
+  form.append("task_type", taskType);
   const res = await fetch(`${API_BASE}/analyze`, { method: "POST", body: form });
   if (!res.ok) throw new Error(await errorMessage(res));
   return res.json();

@@ -1,5 +1,14 @@
 export type ShapReport = {
   domain: string;
+  // Absent on old JSON (all presets + anything analyzed before this field
+  // existed) - absent means "classification", the only kind there used to
+  // be. Regression reports have no positive/negative class at all: no
+  // positiveLabel/negativeLabel/positiveRaw/negativeRaw, and cases carry
+  // predictedValue/actualValue/residual instead of predictedPositive/
+  // probaPositive/actualPositive/isCorrect.
+  taskType?: "classification" | "regression";
+  // Classification: accuracy (0-1). Regression: R² (can be negative for a
+  // model worse than predicting the mean - not clamped to 0-1).
   modelAccuracy: number;
   // Human-friendly names for the two outcomes. Presets fill these with nice
   // Korean labels ("생존"/"사망"); for an arbitrary uploaded CSV they fall
@@ -69,7 +78,10 @@ export type ShapReport = {
     // weak = no better than guessing the majority class
     verdict: "good" | "fair" | "weak";
     message: string;
-    baselineAccuracy: number;
+    // classification only - regression's baseline is R²=0 by construction
+    baselineAccuracy?: number;
+    // regression only: root-mean-square error, in the target's own units
+    rmse?: number;
     minorityRecall?: number;
     minorityLabel?: string;
   };
@@ -108,15 +120,23 @@ export type ShapReport = {
   // at their observed values). `value` is a number for a numeric feature or
   // the original category string for a categorical one. Optional so old
   // JSON still loads.
+  // On a regression report `proba` holds the average predicted value (the
+  // name is kept so classification JSON stays untouched).
   partialDependence?: {
     feature: string;
     points: { value: number | string; proba: number }[];
   }[];
   cases: {
     id: string;
-    // Raw target value from the CSV (e.g. "1", "Yes").
-    prediction: string;
-    predictedPositive: boolean;
+    // Raw target value from the CSV (e.g. "1", "Yes"). Classification only.
+    prediction?: string;
+    predictedPositive?: boolean;
+    // Regression only: what the model predicted, the true value, and
+    // predictedValue - actualValue (positive = over-predicted). isCorrect is
+    // false for a "large error" case (|residual| IQR-outlier across the pool).
+    predictedValue?: number;
+    actualValue?: number;
+    residual?: number;
     // Model's P(positive) for this case (0–1). Optional so old JSON still loads.
     probaPositive?: number;
     // The row's true label from the CSV, and whether the prediction matched it.
@@ -133,3 +153,7 @@ export type ShapReport = {
     raw?: Record<string, string | number | null>;
   }[];
 };
+
+export function isRegression(report: Pick<ShapReport, "taskType">): boolean {
+  return report.taskType === "regression";
+}

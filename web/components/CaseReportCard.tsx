@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import type { ShapReport } from "@/lib/types";
 import { columnDesc, columnValueLabel, isSuggestedDesc } from "@/lib/columnGlossary";
+import { fmtNum, fmtSigned } from "@/lib/reportSummary";
 import GlossaryTerm from "./GlossaryTerm";
 import styles from "./report.module.css";
 
@@ -70,6 +71,15 @@ function strengthWord(contribution: number): string {
   return "약간";
 }
 
+// regression: contributions are in the target's own units, so "strong" is
+// judged against the biggest push within this same case, not fixed cutoffs
+function relativeStrengthWord(contribution: number, maxAbs: number): string {
+  const r = maxAbs > 0 ? Math.abs(contribution) / maxAbs : 0;
+  if (r >= 0.5) return "강하게";
+  if (r >= 0.2) return "어느 정도";
+  return "약간";
+}
+
 function whyWrongText(predConfidencePct: number, distFrom50: number): string {
   if (distFrom50 <= 0.05) {
     return `이 예측은 확률이 50%에 아주 가까워서(${predConfidencePct}%), 경계선에서 반대로 뒤집힌 경우예요.`;
@@ -100,22 +110,32 @@ export default function CaseReportCard({
   const [editingName, setEditingName] = useState(false);
   const [nameDraft, setNameDraft] = useState(caseName);
 
-  const positive = c.predictedPositive;
-  const posText = positiveLabel ?? c.prediction;
-  const negText = negativeLabel ?? c.prediction;
+  // a regression case carries a predicted number instead of a class
+  const regression = c.predictedValue !== undefined;
+  const predValue = c.predictedValue ?? 0;
+  const actualValue = c.actualValue ?? 0;
+  const residual = c.residual ?? 0;
+
+  const positive = !!c.predictedPositive;
+  const posText = positiveLabel ?? c.prediction ?? "";
+  const negText = negativeLabel ?? c.prediction ?? "";
   const outcome = positive ? posText : negText;
 
   const pct = (n: number) => `${Math.round(n * 100)}%`;
-  const showBaseline = baseValue !== undefined && c.probaPositive !== undefined;
+  const showBaseline =
+    baseValue !== undefined && (regression || c.probaPositive !== undefined);
 
-  const showActual = c.actualLabel !== undefined && c.isCorrect !== undefined;
+  const showActual =
+    regression || (c.actualLabel !== undefined && c.isCorrect !== undefined);
   const actualText = c.actualPositive
     ? (positiveLabel ?? c.actualLabel)
     : (negativeLabel ?? c.actualLabel);
 
   const showWhyWrong =
-    showActual && c.isCorrect === false && c.probaPositive !== undefined;
-  const predConfidence = positive ? c.probaPositive! : 1 - c.probaPositive!;
+    showActual &&
+    c.isCorrect === false &&
+    (regression || c.probaPositive !== undefined);
+  const predConfidence = positive ? (c.probaPositive ?? 0) : 1 - (c.probaPositive ?? 0);
 
   const factors = c.topFeatures;
   const rankOf = (name: string) => importanceOrder.indexOf(name) + 1; // 0 → unknown
@@ -137,6 +157,7 @@ export default function CaseReportCard({
   const restRatio =
     Math.abs(sumTop) > 1e-9 ? Math.abs(sumRest) / Math.abs(sumTop) : 0;
   const restPp = Math.round(Math.abs(sumRest) * 100);
+  const maxAbsContribution = Math.max(0, ...factors.map((f) => Math.abs(f.contribution)));
   const finalPct = Math.round((c.probaPositive ?? 0) * 100);
   const top5OnlyPct = Math.round(
     Math.max(0, Math.min(1, (baseValue ?? 0.5) + sumTop)) * 100,
@@ -145,7 +166,12 @@ export default function CaseReportCard({
   // sentence 3 of the baseline box: how the "rest" moved the top-5-only value
   // to the final one
   let restStageNote: string;
-  if (factors.length <= TOP_N || restRatio < 0.25) {
+  if (regression) {
+    restStageNote =
+      restRatio < 0.25
+        ? `나머지 요인들은 다 합쳐도 ${fmtNum(Math.abs(sumRest))}뿐이라, 최종 예측값도 ${fmtNum(predValue)}로 이 ${TOP_N}개가 거의 다 정한 셈이에요.`
+        : `여기에 나머지 요인들이 예측값을 ${fmtNum(Math.abs(sumRest))}만큼 ${sumRest >= 0 ? "더 높여서" : "더 낮춰서"} 최종 ${fmtNum(predValue)}가 됩니다.`;
+  } else if (factors.length <= TOP_N || restRatio < 0.25) {
     restStageNote = `나머지 요인들은 다 합쳐도 ${restPp}%p뿐이라, 최종값도 ${finalPct}%로 이 ${TOP_N}개가 거의 다 정한 셈이에요.`;
   } else if (sumTop >= 0 === sumRest >= 0) {
     restStageNote = `여기에 나머지 요인들이 ${dirOf(sumRest)} 쪽으로 ${restPp}%p를 더 보태서 최종 ${finalPct}%가 됩니다.`;
@@ -225,9 +251,11 @@ export default function CaseReportCard({
             </button>
           )}
           <span
-            className={`${styles.badge} ${positive ? styles.badgeYes : styles.badgeNo}`}
+            className={`${styles.badge} ${
+              regression ? styles.badgeActualOk : positive ? styles.badgeYes : styles.badgeNo
+            }`}
           >
-            예측: {outcome}
+            예측: {regression ? fmtNum(predValue) : outcome}
           </span>
           {showActual && (
             <span
@@ -235,7 +263,9 @@ export default function CaseReportCard({
                 c.isCorrect ? styles.badgeActualOk : styles.badgeActualBad
               }`}
             >
-              {c.isCorrect ? "✓ 적중" : "✗ 빗나감"} · 실제: {actualText}
+              {regression
+                ? `${c.isCorrect ? "✓ 오차 작음" : "✗ 오차 큼"} · 실제: ${fmtNum(actualValue)} (오차 ${fmtSigned(residual)})`
+                : `${c.isCorrect ? "✓ 적중" : "✗ 빗나감"} · 실제: ${actualText}`}
             </span>
           )}
         </div>
@@ -261,22 +291,57 @@ export default function CaseReportCard({
       )}
 
       <div className={styles.explanation}>
-        {toSentences(c.explanation).map((s, i) => (
-          <p key={i}>{s}</p>
-        ))}
+        {regression ? (
+          <p>
+            이 케이스는 {fmtNum(predValue)}(으)로 예측했는데 실제값은{" "}
+            {fmtNum(actualValue)}, 오차는 {fmtNum(Math.abs(residual))}
+            {residual === 0
+              ? "."
+              : residual > 0
+                ? " (실제보다 높게 예측했어요)."
+                : " (실제보다 낮게 예측했어요)."}
+          </p>
+        ) : (
+          toSentences(c.explanation).map((s, i) => <p key={i}>{s}</p>)
+        )}
       </div>
 
       {showWhyWrong && (
         <p className={styles.whyWrong}>
-          {whyWrongText(
-            Math.round(predConfidence * 100),
-            Math.abs(c.probaPositive! - 0.5),
-          )}
+          {regression
+            ? `오차가 ${fmtNum(Math.abs(residual))}로, 분석한 케이스 전체의 오차 분포에서 유독 큰 편이에요 — 이 케이스는 모델이 잘 다루지 못하는 패턴일 수 있어요.`
+            : whyWrongText(
+                Math.round(predConfidence * 100),
+                Math.abs(c.probaPositive! - 0.5),
+              )}
         </p>
       )}
 
       {showBaseline && (
         <div className={styles.baseline}>
+          {regression ? (
+            <>
+              <p>다른 정보 없이 평균적으로 보면 예측값은 {fmtNum(baseValue!)}예요.</p>
+              {factors.length <= TOP_N ? (
+                <p>
+                  이 케이스의 실제 특성값({ex1}, {ex2} 등)을 모두 반영하면 최종 예측값은{" "}
+                  <b>{fmtNum(predValue)}</b>예요.
+                </p>
+              ) : (
+                <>
+                  <p>
+                    이 케이스의 실제 특성값({ex1}, {ex2} 등) 중 영향이 큰 {TOP_N}개만
+                    반영하면 {fmtNum(baseValue! + sumTop)}예요.
+                  </p>
+                  <p>{restStageNote}</p>
+                  <p>
+                    최종 예측값은 <b>{fmtNum(predValue)}</b>예요.
+                  </p>
+                </>
+              )}
+            </>
+          ) : (
+            <>
           <p>
             다른 정보 없이 평균적으로 보면 &lsquo;{posText}&rsquo; 확률은{" "}
             {pct(baseValue!)}예요.
@@ -291,6 +356,8 @@ export default function CaseReportCard({
             {c.probaPositive! >= 0.5 ? "50% 이상이라" : "50%에 못 미쳐서"} &lsquo;
             {outcome}&rsquo;(으)로 예측했어요.
           </p>
+            </>
+          )}
         </div>
       )}
 
@@ -323,7 +390,7 @@ export default function CaseReportCard({
         ) : (
           visible.map((f) => {
             const up = f.contribution >= 0;
-            const dir = up ? posText : negText;
+            const dir = regression ? (up ? "높이는" : "낮추는") : up ? posText : negText;
             const rank = rankOf(f.feature);
             const low = rank > 0 && rank > chartLimit;
             const valueLabel = columnValueLabel(domain, f.feature, f.value);
@@ -345,8 +412,9 @@ export default function CaseReportCard({
                       <span
                         className={`${styles.contribValue} ${up ? styles.up : styles.down}`}
                       >
-                        {up ? "+" : ""}
-                        {f.contribution.toFixed(3)}
+                        {regression
+                          ? fmtSigned(f.contribution)
+                          : `${up ? "+" : ""}${f.contribution.toFixed(3)}`}
                       </span>
                     </>
                   ) : (
@@ -360,11 +428,23 @@ export default function CaseReportCard({
                       <span className={styles.nowrap}>({valueText})</span>{" "}
                       <span className={styles.nowrap}>
                         &mdash;{" "}
-                        <b className={up ? styles.up : styles.down}>{dir}</b>
-                        &nbsp;예측&nbsp;쪽으로
+                        {regression ? (
+                          <>
+                            예측값을&nbsp;
+                            <b className={up ? styles.up : styles.down}>{dir}</b>
+                            &nbsp;쪽으로
+                          </>
+                        ) : (
+                          <>
+                            <b className={up ? styles.up : styles.down}>{dir}</b>
+                            &nbsp;예측&nbsp;쪽으로
+                          </>
+                        )}
                       </span>{" "}
                       <span className={styles.nowrap}>
-                        {strengthWord(f.contribution)}&nbsp;작용했어요
+                        {regression
+                          ? relativeStrengthWord(f.contribution, maxAbsContribution)
+                          : strengthWord(f.contribution)}&nbsp;작용했어요
                       </span>
                     </span>
                   )}

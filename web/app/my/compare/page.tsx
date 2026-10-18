@@ -10,7 +10,7 @@ import {
   getUploadHistoryEntry,
   loadUploadReport,
 } from "@/lib/uploadHistory";
-import type { ShapReport } from "@/lib/types";
+import { isRegression, type ShapReport } from "@/lib/types";
 import styles from "@/components/report.module.css";
 
 const TOP_N = 5;
@@ -134,6 +134,11 @@ function ComparePageInner() {
   const onlyA = topA.filter((f) => !setB.has(f));
   const onlyB = topB.filter((f) => !setA.has(f));
 
+  const regA = isRegression(a);
+  const regB = isRegression(b);
+  const mixedTasks = regA !== regB; // accuracy (%) and R² aren't comparable
+  const score = (r: typeof a) =>
+    isRegression(r) ? r.modelAccuracy.toFixed(2) : `${(r.modelAccuracy * 100).toFixed(1)}%`;
   const accDiff = b.modelAccuracy - a.modelAccuracy;
   const accDiffClass = accDiff > 0 ? styles.up : accDiff < 0 ? styles.down : "";
 
@@ -163,15 +168,21 @@ function ComparePageInner() {
       </section>
 
       <section className={styles.cardSection}>
-        <h2 className={styles.h2}>정확도</h2>
+        <h2 className={styles.h2}>{regA && regB ? "모델 설명력 (R²)" : "정확도"}</h2>
         <div className={styles.compareHeadRow}>
-          <p className={styles.accuracy}>{(a.modelAccuracy * 100).toFixed(1)}%</p>
-          <p className={styles.accuracy}>{(b.modelAccuracy * 100).toFixed(1)}%</p>
+          <p className={styles.accuracy}>{score(a)}</p>
+          <p className={styles.accuracy}>{score(b)}</p>
         </div>
-        <p className={`${styles.sectionNote} ${accDiffClass}`}>
-          차이: {accDiff >= 0 ? "+" : ""}
-          {(accDiff * 100).toFixed(1)}%p
-        </p>
+        {mixedTasks ? (
+          <p className={styles.sectionNote}>
+            한쪽은 분류(정확도), 다른 쪽은 회귀(R²)라 점수를 직접 비교할 수 없어요.
+          </p>
+        ) : (
+          <p className={`${styles.sectionNote} ${accDiffClass}`}>
+            차이: {accDiff >= 0 ? "+" : ""}
+            {regA ? accDiff.toFixed(2) : `${(accDiff * 100).toFixed(1)}%p`}
+          </p>
+        )}
 
         {(a.modelQuality || b.modelQuality) && (
           <>
