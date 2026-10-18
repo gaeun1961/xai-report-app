@@ -9,7 +9,7 @@
 // for numeric values (categorical columns keep their original string in
 // topFeatures, e.g. "male" — no natural order to correlate against, so
 // those are skipped rather than guessed at).
-import type { ShapReport } from "./types";
+import { isRegression, type ShapReport } from "./types";
 import { columnDesc, columnValueLabel } from "./columnGlossary";
 
 const MIN_CASES_FOR_TENDENCY = 3;
@@ -65,6 +65,7 @@ export function featureTendencies(
   report: ShapReport,
   domain: string,
 ): Record<string, string> {
+  const regression = isRegression(report);
   const pos = report.positiveLabel ?? "양성";
   const neg = report.negativeLabel ?? "음성";
   const pairsByFeature = new Map<string, { value: number; contribution: number }[]>();
@@ -102,8 +103,9 @@ export function featureTendencies(
     }
 
     if (decodedLabel) {
-      result[feature] =
-        `${decodedLabel}인 경우 '${pos}' 확률이 높아요.\n(상관계수 ${formatR(r)})`;
+      result[feature] = regression
+        ? `${decodedLabel}인 경우 예측값이 높아요.\n(상관계수 ${formatR(r)})`
+        : `${decodedLabel}인 경우 '${pos}' 확률이 높아요.\n(상관계수 ${formatR(r)})`;
     } else {
       // an ordered numeric column (Age, MonthlyIncome, ...) reads better as
       // "나이가 클수록" than the generic "값이 클수록" once we know what the
@@ -112,8 +114,9 @@ export function featureTendencies(
       const desc = columnDesc(domain, feature);
       const subject = desc ? coreNoun(desc) : "값";
       const target = r >= STRONG_R ? pos : neg;
-      result[feature] =
-        `${subject}${subjectParticle(subject)} 클수록\n대체로 '${target}' 쪽으로 작용하는 경향이 있어요.\n(상관계수 ${formatR(r)})`;
+      result[feature] = regression
+        ? `${subject}${subjectParticle(subject)} 클수록\n대체로 예측값이 ${r > 0 ? "높아지는" : "낮아지는"} 경향이 있어요.\n(상관계수 ${formatR(r)})`
+        : `${subject}${subjectParticle(subject)} 클수록\n대체로 '${target}' 쪽으로 작용하는 경향이 있어요.\n(상관계수 ${formatR(r)})`;
     }
   }
   return result;

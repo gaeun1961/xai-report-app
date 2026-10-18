@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { ShapReport } from "@/lib/types";
+import { fmtNum, fmtSigned } from "@/lib/reportSummary";
 import CaseScatterPlot from "./CaseScatterPlot";
 import InfoTip from "./InfoTip";
 import styles from "./report.module.css";
@@ -19,7 +20,81 @@ type Filter = "all" | "pos" | "neg";
 
 const clampPct = (v: number) => Math.max(0, Math.min(100, Math.round(v)));
 
-export default function CaseSelector({
+// ponytail: regression gets a plain list for now (the confidence-vs-correct
+// scatter has no meaning without class probabilities) - a predicted-vs-actual
+// scatter is the next step and would replace this.
+function RegressionCaseList({
+  cases,
+  selectedId,
+  onSelect,
+  caseStats,
+}: Pick<Props, "cases" | "selectedId" | "onSelect" | "caseStats">) {
+  const [onlyLarge, setOnlyLarge] = useState(false);
+  const shown = cases
+    .map((c, i) => ({ c, no: i + 1 }))
+    .filter(({ c }) => !onlyLarge || c.isCorrect === false);
+
+  return (
+    <div className={styles.selectorWrap}>
+      {caseStats && (
+        <p className={styles.selectorStats}>
+          분석한 전체 {caseStats.total.toLocaleString()}개 중 · 오차가 큰 케이스{" "}
+          <b>{caseStats.wrong.toLocaleString()}개</b>{" "}
+          <InfoTip text="여기 뜨는 개수는 지금 화면에 불러온 케이스 수가 아니라, 이 리포트가 분석한 전체 데이터를 기준으로 셌어요. '오차가 큰' 케이스는 예측값과 실제값의 차이(절댓값)가 다른 케이스들에 비해 유독 큰 경우예요." />
+        </p>
+      )}
+      <div className={styles.selectorFilter}>
+        {(
+          [
+            [false, `전체 (${cases.length})`],
+            [true, "오차가 큰 케이스만"],
+          ] as [boolean, string][]
+        ).map(([key, label]) => (
+          <button
+            key={label}
+            type="button"
+            onClick={() => setOnlyLarge(key)}
+            className={`${styles.filterBtn} ${
+              onlyLarge === key ? styles.filterBtnActive : ""
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+      <div className={styles.selectorCount}>{shown.length}개 표시</div>
+      <div className={styles.targetList}>
+        {shown.map(({ c, no }) => (
+          <button
+            key={c.id}
+            type="button"
+            onClick={() => onSelect(c.id)}
+            className={`${styles.targetItem} ${
+              c.id === selectedId ? styles.targetItemActive : ""
+            }`}
+          >
+            <span className={styles.targetName}>케이스 {no}</span>
+            <span className={styles.targetMeta}>
+              예측 {fmtNum(c.predictedValue ?? 0)} · 실제 {fmtNum(c.actualValue ?? 0)} · 오차{" "}
+              {fmtSigned(c.residual ?? 0)}
+              {c.isCorrect === false && <span className={styles.targetBadge}>오차 큼</span>}
+            </span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default function CaseSelector(props: Props) {
+  return props.cases.some((c) => c.predictedValue !== undefined) ? (
+    <RegressionCaseList {...props} />
+  ) : (
+    <ClassificationCaseSelector {...props} />
+  );
+}
+
+function ClassificationCaseSelector({
   cases,
   selectedId,
   onSelect,

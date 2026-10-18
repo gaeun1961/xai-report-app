@@ -4,7 +4,15 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import FileDropzone from "@/components/FileDropzone";
 import TargetColumnSelector from "@/components/TargetColumnSelector";
-import { fetchColumns, analyzeCsv, type CaseFocus, type ColumnInfo } from "@/lib/api";
+import {
+  fetchColumns,
+  analyzeCsv,
+  suggestedTask,
+  taskProblem,
+  type CaseFocus,
+  type ColumnInfo,
+  type TaskType,
+} from "@/lib/api";
 import { saveUploadReport } from "@/lib/uploadHistory";
 import styles from "@/components/report.module.css";
 
@@ -17,6 +25,7 @@ export default function UploadFlow() {
   const [columns, setColumns] = useState<ColumnInfo[]>([]);
   const [rowCount, setRowCount] = useState<number | null>(null);
   const [target, setTarget] = useState<string | null>(null);
+  const [taskType, setTaskType] = useState<TaskType>("classification");
   const [nCases, setNCases] = useState(30);
   const [caseFocus, setCaseFocus] = useState<CaseFocus>("balanced");
   const [error, setError] = useState<string | null>(null);
@@ -40,12 +49,27 @@ export default function UploadFlow() {
     }
   }
 
+  // picking a column pre-selects the task type it fits (binary -> 분류,
+  // many-valued numeric -> 회귀); the user can still flip it afterwards
+  function handleTarget(name: string) {
+    setTarget(name);
+    const col = columns.find((c) => c.name === name);
+    const suggested = col && suggestedTask(col);
+    if (suggested) setTaskType(suggested);
+  }
+
+  // "borderline" (40-60% confidence) has no regression meaning
+  const effectiveFocus: CaseFocus =
+    taskType === "regression" && caseFocus === "borderline" ? "balanced" : caseFocus;
+  const targetCol = columns.find((c) => c.name === target);
+  const problem = targetCol ? taskProblem(targetCol, taskType) : null;
+
   async function handleAnalyze() {
     if (!file || !target) return;
     setError(null);
     setStep("analyzing");
     try {
-      const result = await analyzeCsv(file, target, nCases, caseFocus);
+      const result = await analyzeCsv(file, target, nCases, effectiveFocus, taskType);
       const id = saveUploadReport(result, file.name);
       router.push(`/my/${id}`);
     } catch (e) {
@@ -71,15 +95,41 @@ export default function UploadFlow() {
         <div className={styles.section}>
           <h3 className={styles.h2}>타겟 컬럼 선택</h3>
           <p className={styles.sectionNote}>
-            예측하려는 결과가 담긴 컬럼을 선택하세요. 고유값이 2개인 컬럼을
-            추천해요.
+            예측하려는 결과가 담긴 컬럼을 선택하세요. 고유값이 2개인 컬럼은
+            분류(예: 합격/불합격)로, 고유값이 많은 숫자 컬럼은 회귀(예: 가격,
+            점수)로 추천해요.
             {rowCount !== null && ` 총 ${rowCount.toLocaleString()}개 행이에요.`}
           </p>
           <TargetColumnSelector
             columns={columns}
             value={target}
-            onChange={setTarget}
+            onChange={handleTarget}
           />
+          {target && (
+            <div className={styles.section}>
+              <p className={styles.sectionNote}>어떤 분석을 할까요</p>
+              <div className={styles.selectorFilter}>
+                {(
+                  [
+                    ["classification", "분류 (두 가지 중 어느 쪽일지)"],
+                    ["regression", "회귀 (숫자 값이 얼마일지)"],
+                  ] as [TaskType, string][]
+                ).map(([key, label]) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => setTaskType(key)}
+                    className={`${styles.filterBtn} ${
+                      taskType === key ? styles.filterBtnActive : ""
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+              {problem && <p className={styles.errorBox}>{problem}</p>}
+            </div>
+          )}
           <label className={styles.sectionNote}>
             살펴볼 케이스 개수{" "}
             <input
@@ -102,19 +152,23 @@ export default function UploadFlow() {
             어떤 케이스를 위주로 볼까요{" "}
             <select
               className={styles.select}
-              value={caseFocus}
+              value={effectiveFocus}
               onChange={(e) => setCaseFocus(e.target.value as CaseFocus)}
               aria-label="케이스 선정 기준"
             >
               <option value="balanced">균형있게 (기본)</option>
-              <option value="wrong">예측이 틀린 케이스 위주</option>
-              <option value="borderline">확신도 애매한(40~60%) 케이스 위주</option>
+              <option value="wrong">
+                {taskType === "regression" ? "오차가 큰 케이스 위주" : "예측이 틀린 케이스 위주"}
+              </option>
+              {taskType === "classification" && (
+                <option value="borderline">확신도 애매한(40~60%) 케이스 위주</option>
+              )}
             </select>
           </label>
           <button
             type="button"
             className={styles.toggleBtn}
-            disabled={!target || step === "analyzing"}
+            disabled={!target || !!problem || step === "analyzing"}
             onClick={handleAnalyze}
           >
             {step === "analyzing" ? "분석 중..." : "분석 시작"}

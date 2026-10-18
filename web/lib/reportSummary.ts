@@ -1,6 +1,6 @@
 // Builds the on-screen "총평" paragraph and the fuller clipboard report text,
 // purely from data already present in a loaded ShapReport — no new LLM calls.
-import type { ShapReport } from "./types";
+import { isRegression, type ShapReport } from "./types";
 import { columnDesc } from "./columnGlossary";
 
 const STRONG_CORR = 0.6;
@@ -13,6 +13,46 @@ function label(domain: string, column: string): string {
 
 function pct(v: number): string {
   return `${(v * 100).toFixed(1)}%`;
+}
+
+// A regression target can be in any unit/scale (3.2 or 450,000), so digits
+// shrink as the magnitude grows instead of a fixed toFixed(n).
+export function fmtNum(n: number): string {
+  const a = Math.abs(n);
+  const digits = a >= 100 ? 0 : a >= 10 ? 1 : 2;
+  return Number(n.toFixed(digits)).toLocaleString();
+}
+
+// signed version for residuals/contributions: "+4.2" / "−3.1"
+export function fmtSigned(n: number): string {
+  return `${n >= 0 ? "+" : "−"}${fmtNum(Math.abs(n))}`;
+}
+
+// Regression counterpart of explainAccuracy. R²=0 means "as good as always
+// guessing the average", so that's the baseline the sentences refer to.
+export function explainR2(
+  r2: number,
+  rmse: number | undefined,
+  verdict: "good" | "fair" | "weak",
+): string[] {
+  const r = r2.toFixed(2);
+  const line1 =
+    "R²는 모델이 값의 변동을 얼마나 설명하는지를 나타내요. 0이면 늘 평균값으로만 찍는 것과 같고, 1에 가까울수록 정확해요.";
+  const line2 =
+    rmse !== undefined
+      ? `예측이 실제값과 평균적으로 약 ${fmtNum(rmse)} 정도 어긋나요 (RMSE).`
+      : null;
+  let line3: string;
+  if (verdict === "good") {
+    line3 = `이 모델의 R² ${r}은 평균으로만 찍는 것보다 훨씬 정확하다는 뜻이에요.`;
+  } else if (verdict === "fair") {
+    line3 = `이 모델의 R² ${r}은 평균으로 찍는 것보다는 낫지만, 오차가 꽤 남아 있어요.`;
+  } else {
+    line3 = `이 모델의 R² ${r}은 평균으로 찍는 것과 큰 차이가 없어요.${
+      r2 < 0 ? " 오히려 평균으로 찍는 것보다 못해요." : ""
+    }`;
+  }
+  return line2 ? [line1, line2, line3] : [line1, line3];
 }
 
 // 라고 / 이라고 by whether the word's last Hangul char has a final consonant
@@ -65,8 +105,19 @@ export function explainAccuracy(
 function verdictSentence(report: ShapReport): string | null {
   const q = report.modelQuality;
   if (!q) return null;
+  if (isRegression(report)) {
+    const r2 = report.modelAccuracy.toFixed(2);
+    const rmse = q.rmse !== undefined ? `, 평균 오차 약 ${fmtNum(q.rmse)}` : "";
+    if (q.verdict === "good") {
+      return `모델 품질은 양호해요 — R² ${r2}${rmse}로, 평균으로만 찍는 것보다 훨씬 정확해요.`;
+    }
+    if (q.verdict === "fair") {
+      return `모델 품질은 참고할 만해요 — R² ${r2}${rmse}로 평균보다는 낫지만 오차가 꽤 있어요.`;
+    }
+    return `모델 품질은 주의가 필요해요 — R² ${r2}${rmse}로 평균으로 찍는 것과 큰 차이가 없어요.`;
+  }
   const acc = Math.round(report.modelAccuracy * 100);
-  const base = Math.round(q.baselineAccuracy * 100);
+  const base = Math.round((q.baselineAccuracy ?? 0) * 100);
   const pos = report.positiveLabel ?? "양성";
   const neg = report.negativeLabel ?? "음성";
   const minority = q.minorityLabel ?? neg;
@@ -152,7 +203,42 @@ const HIGH_CONF_THRESHOLD = 0.8;
 // factor that dominates the #1 spot across those mistakes. Needs at least
 // MIN_WRONG_FOR_PATTERN wrong cases — with fewer, "대부분" would overclaim
 // from a sample too small to call a pattern.
+// Regression: among the large-error cases, did the model lean one way
+// (consistently too high / too low) and is one factor behind most of them?
+function largeErrorSentence(report: ShapReport, domain: string): string | null {
+  const wrong = report.cases.filter(
+    (c) => c.isCorrect === false && c.residual !== undefined,
+  );
+  if (wrong.length < MIN_WRONG_FOR_PATTERN) return null;
+
+  const over = wrong.filter((c) => c.residual! > 0).length;
+  const sentences: string[] = [];
+  if (over / wrong.length >= 0.7) {
+    sentences.push(
+      `오차가 큰 케이스(${wrong.length}개) 대부분은 실제보다 높게 예측했어요 — 큰 값을 과대평가하는 경향이 있는지 살펴보세요.`,
+    );
+  } else if (over / wrong.length <= 0.3) {
+    sentences.push(
+      `오차가 큰 케이스(${wrong.length}개) 대부분은 실제보다 낮게 예측했어요 — 큰 값을 과소평가하는 경향이 있는지 살펴보세요.`,
+    );
+  }
+
+  const counts = new Map<string, number>();
+  for (const c of wrong) {
+    const top = c.topFeatures[0]?.feature;
+    if (top) counts.set(top, (counts.get(top) ?? 0) + 1);
+  }
+  const [topFeature, topCount] = [...counts.entries()].sort((a, b) => b[1] - a[1])[0] ?? [];
+  if (topFeature && topCount / wrong.length >= 0.5) {
+    sentences.push(
+      `오차가 큰 케이스는 대부분 '${label(domain, topFeature)}' 요인이 가장 크게 작용했어요.`,
+    );
+  }
+  return sentences.length > 0 ? sentences.join(" ") : null;
+}
+
 function wrongCasesSentence(report: ShapReport, domain: string): string | null {
+  if (isRegression(report)) return largeErrorSentence(report, domain);
   const wrong = report.cases.filter(
     (c) => c.isCorrect === false && c.probaPositive !== undefined,
   );
@@ -262,6 +348,7 @@ export function buildCopyText(
   selectedCase?: ShapReport["cases"][number],
 ): string {
   const { positiveLabel, negativeLabel } = report;
+  const regression = isRegression(report);
   const lines: string[] = [
     "# XAI 리포트 요약",
     "",
@@ -273,18 +360,29 @@ export function buildCopyText(
     lines.push("", "## 총평", ...summary);
   }
 
-  lines.push("", "## 정확도", `전체 정확도: ${pct(report.modelAccuracy)}`);
+  if (regression) {
+    lines.push("", "## 모델 설명력", `R²: ${report.modelAccuracy.toFixed(2)}`);
+    if (report.modelQuality?.rmse !== undefined) {
+      lines.push(`RMSE(평균적인 예측 오차): ${fmtNum(report.modelQuality.rmse)}`);
+    }
+  } else {
+    lines.push("", "## 정확도", `전체 정확도: ${pct(report.modelAccuracy)}`);
+  }
   if (report.caseStats) {
     const { total, wrong, borderline } = report.caseStats;
     lines.push(
-      `분석한 전체 케이스: ${total}개 (예측이 틀린 케이스 ${wrong}개, 확신도 애매한(40~60%) 케이스 ${borderline}개)`,
+      regression
+        ? `분석한 전체 케이스: ${total}개 (오차가 큰 케이스 ${wrong}개)`
+        : `분석한 전체 케이스: ${total}개 (예측이 틀린 케이스 ${wrong}개, 확신도 애매한(40~60%) 케이스 ${borderline}개)`,
     );
   }
-  if (report.modelQuality) {
+  if (report.modelQuality && regression) {
+    lines.push(...explainR2(report.modelAccuracy, report.modelQuality.rmse, report.modelQuality.verdict));
+  } else if (report.modelQuality) {
     lines.push(
       ...explainAccuracy(
         report.modelAccuracy,
-        report.modelQuality.baselineAccuracy,
+        report.modelQuality.baselineAccuracy ?? 0,
         report.modelQuality.verdict,
         positiveLabel ?? "양성",
         negativeLabel ?? "음성",

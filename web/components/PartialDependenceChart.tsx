@@ -1,4 +1,5 @@
 import type { ShapReport } from "@/lib/types";
+import { fmtNum } from "@/lib/reportSummary";
 import { columnDesc, isSuggestedDesc } from "@/lib/columnGlossary";
 import GlossaryTerm from "./GlossaryTerm";
 import styles from "./report.module.css";
@@ -6,6 +7,8 @@ import styles from "./report.module.css";
 type Props = {
   items: NonNullable<ShapReport["partialDependence"]>;
   domain: string;
+  // regression: the y value is a predicted number, not a probability
+  regression?: boolean;
 };
 
 const WIDTH = 280;
@@ -16,7 +19,7 @@ function formatValue(v: number | string): string {
   return typeof v === "number" ? (Number.isInteger(v) ? String(v) : v.toFixed(1)) : v;
 }
 
-export default function PartialDependenceChart({ items, domain }: Props) {
+export default function PartialDependenceChart({ items, domain, regression }: Props) {
   return (
     <div className={styles.pdpGrid}>
       {items.map((entry) => {
@@ -53,7 +56,7 @@ export default function PartialDependenceChart({ items, domain }: Props) {
               <div className={styles.pdpCatLegend}>
                 {entry.points.map((p, i) => (
                   <span key={i}>
-                    {p.value} {(p.proba * 100).toFixed(0)}%
+                    {p.value} {regression ? fmtNum(p.proba) : `${(p.proba * 100).toFixed(0)}%`}
                   </span>
                 ))}
               </div>
@@ -64,7 +67,9 @@ export default function PartialDependenceChart({ items, domain }: Props) {
               </div>
             )}
             <p className={styles.sectionNote}>
-              예측 확률 {(min * 100).toFixed(0)}%~{(max * 100).toFixed(0)}% 사이에서 움직여요
+              {regression
+                ? `예측값 ${fmtNum(min)}~${fmtNum(max)} 사이에서 움직여요`
+                : `예측 확률 ${(min * 100).toFixed(0)}%~${(max * 100).toFixed(0)}% 사이에서 움직여요`}
             </p>
           </div>
         );
