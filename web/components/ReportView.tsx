@@ -588,9 +588,7 @@ function CasesBody({ report, domain, selectedId, onSelect }: CasesBodyProps) {
         </>
       ) : (
         <p className={styles.selectorEmpty}>
-          {regression
-            ? "위 목록에서 케이스를 클릭하면 케이스 상세를 볼 수 있어요."
-            : "위 산점도에서 점을 클릭하면 케이스 상세를 볼 수 있어요."}
+          위 산점도에서 점을 클릭하면 케이스 상세를 볼 수 있어요.
         </p>
       )}
     </div>

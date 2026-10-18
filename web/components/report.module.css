@@ -1475,6 +1475,15 @@
   font-style: normal;
 }
 
+/* the dot classes only set SVG `fill`; the HTML legend icon needs a background */
+.scatterDotIcon.scatterDotOk {
+  background: var(--accent);
+}
+
+.scatterDotIcon.scatterDotWrong {
+  background: var(--warn);
+}
+
 /* CSV upload flow */
 .dropzone {
   display: flex;
