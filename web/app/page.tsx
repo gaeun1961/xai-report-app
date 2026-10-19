@@ -54,9 +54,11 @@ export default function Home() {
       <main className={styles.page}>
         <nav className={styles.nav}>
           <span className={styles.brand}>모델 설명 리포트</span>
-          <a href="#examples" className={styles.navLink}>
-            예시 보기
-          </a>
+          {/* straight to the first preset's report (the cards further down the
+              page stay as they are) - the sidebar there marks it as selected */}
+          <Link href={`/report/${DOMAINS[0].slug}`} className={styles.navLink}>
+            예시 리포트 보기
+          </Link>
         </nav>
 
         <section id="upload" className={styles.hero}>
