@@ -116,6 +116,20 @@ export type ShapReport = {
     whiskerHigh: number;
     outlierSample: number[];
   }[];
+  // Per-feature value distribution over every row (data tab). numeric:
+  // `edges` (bins+1) + `counts`; category: `labels` + `counts` (a numeric
+  // column with few distinct values also comes as category). byClass
+  // (classification only) = [negative counts, positive counts] per bar.
+  // `missing` rows aren't in counts. Absent on older reports.
+  distributions?: {
+    feature: string;
+    kind: "numeric" | "category";
+    edges?: number[];
+    labels?: (string | number)[];
+    counts: number[];
+    byClass?: number[][];
+    missing: number;
+  }[];
   // Numeric columns left out of `outliers` because they have at most 2
   // distinct values (a box plot can't show anything meaningful for those).
   // Optional so old JSON still loads.

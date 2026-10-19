@@ -480,6 +480,63 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* data tab distributions (DistributionChart) - positive class stacked on
+   the negative one for classification */
+.distBarPos {
+  background: var(--accent);
+}
+
+.distBarNeg {
+  background: color-mix(in srgb, var(--text-muted) 45%, transparent);
+}
+
+/* split category bars reuse .pdpBarFill (declared later), so the colour
+   and square joins need the extra class to win */
+.pdpBarFill.distBarNeg,
+.pdpBarFill.distBarPos {
+  border-radius: 0;
+}
+
+.pdpBarFill.distBarNeg {
+  background: color-mix(in srgb, var(--text-muted) 45%, transparent);
+}
+
+.distLegend {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.distLegend span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.distSwatchPos,
+.distSwatchNeg {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.distSwatchPos {
+  background: var(--accent);
+}
+
+.distSwatchNeg {
+  background: color-mix(in srgb, var(--text-muted) 45%, transparent);
+}
+
+.dataRelIntro {
+  margin: 0 0 4px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
 /* categorical PDP: one row per category - name | bar (or marker) | value */
 .pdpBars {
   display: flex;

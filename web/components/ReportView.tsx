@@ -19,6 +19,7 @@ import CaseReportCard from "./CaseReportCard";
 import WhatIfPanel, { WhatIfUnavailable } from "./WhatIfPanel";
 import ModelComparePanel from "./ModelComparePanel";
 import CorrelationMatrix from "./CorrelationMatrix";
+import DistributionGrid from "./DistributionChart";
 import CopySummaryButton from "./CopySummaryButton";
 import SaveImageButton from "./SaveImageButton";
 import InfoTip from "./InfoTip";
@@ -170,6 +171,10 @@ export default function ReportView({ report, domain, reportId, reportLabel }: Pr
       )}
       {tab === "data" && report.correlations && (
         <div className={styles.reportCol} id="report-data">
+          <p className={styles.dataRelIntro}>
+            이 탭은 모델이 아니라 데이터 자체를 보여줘요. 강하게 연관된 컬럼끼리는 SHAP이
+            영향을 나눠 가져서, 요약 탭의 특성 중요도 순위를 읽을 때 함께 봐야 해요.
+          </p>
           <CorrelationMatrix
             data={report.correlations}
             domain={domain}
@@ -179,6 +184,11 @@ export default function ReportView({ report, domain, reportId, reportLabel }: Pr
             outliersExcludedColumns={report.outliersExcludedColumns}
             toolbarEnd={
               <SaveImageButton targetId="report-data" fileName={`${domain}-데이터분석`} />
+            }
+            distributions={
+              report.distributions?.length ? (
+                <DistributionGrid report={effectiveReport} domain={domain} />
+              ) : undefined
             }
           />
         </div>
