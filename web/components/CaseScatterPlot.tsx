@@ -7,7 +7,7 @@ import styles from "./report.module.css";
 // narrower viewport = fewer real pixels per SVG unit, so a touch target needs
 // more units there to stay reachable — not a pixel-exact 44px target (the
 // chart is too dense for that everywhere), but meaningfully bigger
-function useIsMobile() {
+export function useIsMobile() {
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 640px)");

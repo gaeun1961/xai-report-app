@@ -2,8 +2,8 @@
 
 import { useMemo, useState } from "react";
 import type { ShapReport } from "@/lib/types";
-import { fmtNum, fmtSigned } from "@/lib/reportSummary";
 import CaseScatterPlot from "./CaseScatterPlot";
+import RegressionScatterPlot from "./RegressionScatterPlot";
 import InfoTip from "./InfoTip";
 import styles from "./report.module.css";
 
@@ -20,9 +20,6 @@ type Filter = "all" | "pos" | "neg";
 
 const clampPct = (v: number) => Math.max(0, Math.min(100, Math.round(v)));
 
-// ponytail: regression gets a plain list for now (the confidence-vs-correct
-// scatter has no meaning without class probabilities) - a predicted-vs-actual
-// scatter is the next step and would replace this.
 function RegressionCaseList({
   cases,
   selectedId,
@@ -63,25 +60,12 @@ function RegressionCaseList({
         ))}
       </div>
       <div className={styles.selectorCount}>{shown.length}개 표시</div>
-      <div className={styles.targetList}>
-        {shown.map(({ c, no }) => (
-          <button
-            key={c.id}
-            type="button"
-            onClick={() => onSelect(c.id)}
-            className={`${styles.targetItem} ${
-              c.id === selectedId ? styles.targetItemActive : ""
-            }`}
-          >
-            <span className={styles.targetName}>케이스 {no}</span>
-            <span className={styles.targetMeta}>
-              예측 {fmtNum(c.predictedValue ?? 0)} · 실제 {fmtNum(c.actualValue ?? 0)} · 오차{" "}
-              {fmtSigned(c.residual ?? 0)}
-              {c.isCorrect === false && <span className={styles.targetBadge}>오차 큼</span>}
-            </span>
-          </button>
-        ))}
-      </div>
+      <RegressionScatterPlot
+        cases={shown.map(({ c }) => c)}
+        noById={new Map(shown.map(({ c, no }) => [c.id, no]))}
+        selectedId={selectedId}
+        onSelect={onSelect}
+      />
     </div>
   );
 }
