@@ -33,6 +33,20 @@ export function caseScopeText(stats: NonNullable<ShapReport["caseStats"]>): stri
 export const HELD_OUT_NOTE =
   "케이스와 개수는 모델이 학습에 쓰지 않은 행만 기준으로 해요. 학습에 쓴 행은 모델이 정답을 이미 본 셈이라, 실제보다 잘 맞는 것처럼 보이기 때문이에요.";
 
+// Regression importance (mean|SHAP|) is in the target's own units, so it's
+// shown as each feature's share of the total. The importance bars and the
+// 총평/복사 text both go through these two, so their numbers always match.
+export function importanceShares(
+  items: { feature: string; importance: number }[],
+): Map<string, number> {
+  const total = items.reduce((s, f) => s + f.importance, 0) || 1;
+  return new Map(items.map((f) => [f.feature, f.importance / total]));
+}
+
+export function fmtShare(share: number): string {
+  return `${(share * 100).toFixed(1)}%`;
+}
+
 // signed version for residuals/contributions: "+4.2" / "−3.1"
 export function fmtSigned(n: number): string {
   return `${n >= 0 ? "+" : "−"}${fmtNum(Math.abs(n))}`;
@@ -144,6 +158,14 @@ function verdictSentence(report: ShapReport): string | null {
 function topFeaturesSentence(report: ShapReport, domain: string): string | null {
   const top = report.featureImportance.slice(0, 3);
   if (top.length === 0) return null;
+  if (isRegression(report)) {
+    const shares = importanceShares(report.featureImportance);
+    const parts = top.map(
+      (f) =>
+        `${label(domain, f.feature)}(전체 영향의 ${fmtShare(shares.get(f.feature) ?? 0)}, 예측값을 평균 ±${fmtNum(f.importance)} 움직임)`,
+    );
+    return `예측에 가장 큰 영향을 준 요인은 ${parts.join(", ")} 순이에요.`;
+  }
   const parts = top.map((f) => `${label(domain, f.feature)}(${f.importance.toFixed(3)})`);
   return `예측에 가장 큰 영향을 준 요인은 ${parts.join(", ")} 순이에요.`;
 }
@@ -312,6 +334,13 @@ export function buildOverallSummary(report: ShapReport, domain: string): string[
 function featureImportanceLines(report: ShapReport, domain: string): string[] {
   // full list, not the top-N the on-screen chart caps at — this text is meant
   // to be pasted elsewhere (e.g. to an LLM) where completeness beats brevity
+  if (isRegression(report)) {
+    const shares = importanceShares(report.featureImportance);
+    return report.featureImportance.map(
+      (f, i) =>
+        `${i + 1}. ${label(domain, f.feature)} — 전체 영향의 ${fmtShare(shares.get(f.feature) ?? 0)} (예측값을 평균 ±${fmtNum(f.importance)} 움직임)`,
+    );
+  }
   return report.featureImportance.map(
     (f, i) => `${i + 1}. ${label(domain, f.feature)} — ${f.importance.toFixed(3)}`,
   );
