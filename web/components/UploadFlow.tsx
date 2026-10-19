@@ -90,8 +90,8 @@ export default function UploadFlow() {
 
       {loadingColumns && (
         <p className={styles.sectionNote}>
-          컬럼을 불러오는 중이에요. 서버를 깨우는 중일 수 있어서 처음 요청은
-          최대 1분 정도 걸릴 수 있어요.
+          컬럼을 불러오는 중이에요. 서버가 잠들어 있으면 깨우는 데 1분 정도 걸릴 수
+          있어요.
         </p>
       )}
 
@@ -180,7 +180,8 @@ export default function UploadFlow() {
           </button>
           {step === "analyzing" && (
             <p className={styles.sectionNote}>
-              서버를 깨우는 중이에요. 처음 요청은 최대 1분 정도 걸릴 수 있어요.
+              서버가 잠들어 있으면 깨우는 데 1분 정도, 분석에 1~3분이 더 걸릴 수
+              있어요.
             </p>
           )}
         </div>

@@ -457,6 +457,33 @@ def test_cases_come_only_from_held_out_rows():
         assert report["caseStats"]["heldOut"] is True
 
 
+def test_training_rows_capped_and_stratified():
+    # uploads train on at most TRAIN_MAX_ROWS rows (class ratio kept for
+    # classification); every row outside the cap counts as held out
+    import pandas as pd
+    from routers import analyze as A
+
+    n = A.TRAIN_MAX_ROWS + 1000
+    X = pd.DataFrame({"a": np.arange(n) % 97})
+    y = pd.Series((np.arange(n) % 10 == 0).astype(int))  # 10% positive
+    X_fit, y_fit = A._cap_training_rows(X, y, "classification")
+    assert len(X_fit) == A.TRAIN_MAX_ROWS
+    assert abs(y_fit.mean() - 0.1) < 0.002
+    held = A._held_out_index(X, X_fit, {"holdout_index": X_fit.index[:10]})
+    assert len(held) == 1000 + 10
+
+    X_r, y_r = A._cap_training_rows(X, X["a"].astype(float), "regression")
+    assert len(X_r) == A.TRAIN_MAX_ROWS and (y_r.index == X_r.index).all()
+    small = X.iloc[:100]
+    assert A._cap_training_rows(small, y.iloc[:100], "classification")[0] is small
+
+    # the SHAP pool is filled with held-out rows first (not left to two
+    # same-seed samples overlapping)
+    Xp, _, _ = A._shap_pool(X, y, X, held)
+    assert len(Xp) == A.SHAP_MAX_ROWS
+    assert Xp.index.isin(held).sum() == min(len(held), A.SHAP_MAX_ROWS)
+
+
 if __name__ == "__main__":
     test_analyze_returns_report()
     test_columns_returns_row_count()
@@ -481,4 +508,5 @@ if __name__ == "__main__":
     test_whatif_rejects_regression_analysis()
     test_retrain_rejects_regression_analysis()
     test_cases_come_only_from_held_out_rows()
+    test_training_rows_capped_and_stratified()
     print("ok")

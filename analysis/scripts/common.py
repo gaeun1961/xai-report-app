@@ -4,6 +4,7 @@ Every function takes the target column name as an argument so no dataset's
 column names are ever hardcoded here.
 """
 import json
+import time
 from pathlib import Path
 
 import numpy as np
@@ -184,16 +185,25 @@ def train_model(X: pd.DataFrame, y: pd.Series, model=None, task_type: str = "cla
             model = RandomForestRegressor(n_estimators=300, random_state=RANDOM_STATE)
 
         cv = KFold(n_splits=5, shuffle=True, random_state=RANDOM_STATE)
+        t0 = time.perf_counter()
         oof = cross_val_predict(clone(model), X, y, cv=cv)
+        t_cv = time.perf_counter() - t0
         r2 = float(r2_score(y, oof))
         rmse = float(np.sqrt(np.mean((y.to_numpy() - oof) ** 2)))
 
         X_train, X_test, y_train, _ = train_test_split(
             X, y, test_size=0.2, random_state=RANDOM_STATE
         )
+        t0 = time.perf_counter()
         model.fit(X_train, y_train)
 
-        eval_stats = {"r2": r2, "rmse": rmse, "holdout_index": X_test.index}
+        eval_stats = {
+            "r2": r2,
+            "rmse": rmse,
+            "holdout_index": X_test.index,
+            # seconds per step - the backend logs these (see routers/analyze.py)
+            "timing": {"cv": t_cv, "fit": time.perf_counter() - t0},
+        }
         return model, r2, eval_stats
 
     if model is None:
@@ -203,7 +213,9 @@ def train_model(X: pd.DataFrame, y: pd.Series, model=None, task_type: str = "cla
     minority_cls = 1 if pos_rate < 0.5 else 0
 
     cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=RANDOM_STATE)
+    t0 = time.perf_counter()
     oof = cross_val_predict(clone(model), X, y, cv=cv)
+    t_cv = time.perf_counter() - t0
     accuracy = accuracy_score(y, oof)
     minority_recall = float(
         recall_score(y, oof, pos_label=minority_cls, zero_division=0)
@@ -212,9 +224,11 @@ def train_model(X: pd.DataFrame, y: pd.Series, model=None, task_type: str = "cla
     X_train, X_test, y_train, _ = train_test_split(
         X, y, test_size=0.2, random_state=RANDOM_STATE, stratify=y
     )
+    t0 = time.perf_counter()
     model.fit(X_train, y_train)
 
     eval_stats = {
+        "timing": {"cv": t_cv, "fit": time.perf_counter() - t0},
         "holdout_index": X_test.index,
         "baseline_accuracy": max(pos_rate, 1.0 - pos_rate),
         "minority_recall": minority_recall,
@@ -829,9 +843,12 @@ def export_report_json(
 
     report["caseStats"] = case_stats
 
+    t0 = time.perf_counter()
     report["partialDependence"] = compute_partial_dependence(
         model, X, display_df, feature_importance_df
     )
+    if eval_stats is not None and "timing" in eval_stats:
+        eval_stats["timing"]["pdp"] = time.perf_counter() - t0
 
     # feature importance recomputed over only the wrong predictions - lets a
     # reader see "what SHAP leaned on when the model got it wrong" (may differ
@@ -1001,9 +1018,12 @@ def _export_regression_report(
 
     report["caseStats"] = case_stats
 
+    t0 = time.perf_counter()
     report["partialDependence"] = compute_partial_dependence(
         model, X, display_df, feature_importance_df
     )
+    if eval_stats is not None and "timing" in eval_stats:
+        eval_stats["timing"]["pdp"] = time.perf_counter() - t0
 
     if wrong_mask.any():
         wrong_importance = np.abs(shap_values[wrong_mask]).mean(axis=0)

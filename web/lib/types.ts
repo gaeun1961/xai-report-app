@@ -44,6 +44,11 @@ export type ShapReport = {
   // on anything under that cap, which is the common case.
   totalRows?: number;
   sampledRows?: number;
+  // Uploads analyzed after the training-row cap (backend TRAIN_MAX_ROWS):
+  // rows CV + the explained model used, and rows SHAP explained (the case
+  // pool). Absent on older uploads and presets.
+  trainedRows?: number;
+  explainedRows?: number;
   // Present only for a live upload analysis (not the static presets): id of
   // the trained model kept briefly in the backend's memory, for /whatif.
   // Expires if the server restarts (free-tier idle spindown) - a /whatif
