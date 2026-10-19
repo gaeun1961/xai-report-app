@@ -72,10 +72,11 @@ export default function Home() {
           <div className={styles.action}>
             <UploadFlow />
             <p className={styles.finePrint}>
-            정답(타겟) 컬럼이 있는 학습용 CSV · 5MB · 5만 행 이하
+            정답(타겟) 컬럼이 있는 학습용 CSV · 5MB · 5만 행 이하 (5천 행이 넘으면
+            일부만 샘플로 학습해요)
             <br />
-            결과가 두 가지(예: 생존/사망)인 데이터만 가능해요 · 서버가 쉬고 있으면
-            첫 응답에 최대 1분 걸려요
+            결과가 두 가지(예: 생존/사망)이거나 숫자(예: 가격)인 데이터 · 서버가
+            잠들어 있으면 깨우는 데 1분 정도 걸려요
           </p>
           </div>
         </section>

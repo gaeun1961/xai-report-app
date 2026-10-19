@@ -1,9 +1,14 @@
+import logging
 import os
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from routers.analyze import router as analyze_router
+
+# uvicorn only configures its own loggers; without this the per-request
+# timing line (routers/analyze.py, INFO) never reaches Render's logs
+logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
 
 app = FastAPI(title="XAI Report Backend")
 

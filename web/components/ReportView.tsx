@@ -255,6 +255,23 @@ function ValueLabelChip({
   );
 }
 
+// "전체 X행 중 Y행으로 학습했고, Z행으로 결과를 설명해요" - older uploads
+// (no trainedRows) keep the single sampled-rows sentence
+function rowsSentence(report: ShapReport): string {
+  const total = report.totalRows!;
+  const n = (v: number) => v.toLocaleString();
+  if (report.trainedRows !== undefined && report.explainedRows !== undefined) {
+    const trained =
+      report.trainedRows < total
+        ? `전체 ${n(total)}행 중 ${n(report.trainedRows)}행으로 학습했고`
+        : `전체 ${n(total)}행으로 학습했고`;
+    return `${trained}, ${n(report.explainedRows)}행으로 결과를 설명해요.`;
+  }
+  return report.sampledRows !== undefined && report.sampledRows < total
+    ? `전체 데이터 ${n(total)}개 행 중 ${n(report.sampledRows)}개를 샘플로 살펴봐요.`
+    : `전체 데이터 ${n(total)}개 행을 모두 살펴봤어요.`;
+}
+
 function SummaryBody({
   report,
   domain,
@@ -292,10 +309,7 @@ function SummaryBody({
           {report.totalRows !== undefined && (
             <>
               <br />
-              {report.sampledRows !== undefined &&
-              report.sampledRows < report.totalRows
-                ? `전체 데이터 ${report.totalRows.toLocaleString()}개 행 중 ${report.sampledRows.toLocaleString()}개를 샘플로 살펴봐요.`
-                : `전체 데이터 ${report.totalRows.toLocaleString()}개 행을 모두 살펴봤어요.`}
+              {rowsSentence(report)}
             </>
           )}
         </p>
@@ -369,6 +383,11 @@ function SummaryBody({
               ? report.modelAccuracy.toFixed(2)
               : `${(report.modelAccuracy * 100).toFixed(1)}%`}
           </p>
+          {report.trainedRows !== undefined && (
+            <span className={styles.sectionNote}>
+              ({report.trainedRows.toLocaleString()}행 교차검증)
+            </span>
+          )}
           {report.modelQuality && (
             <span
               className={`${styles.qualityBadge} ${

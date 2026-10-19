@@ -7,7 +7,9 @@ export_report_json pipeline the preset domains use.
 """
 import io
 import json
+import logging
 import sys
+import time
 import tempfile
 import uuid
 from collections import OrderedDict
@@ -16,6 +18,7 @@ from pathlib import Path
 import pandas as pd
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from pydantic import BaseModel
+from sklearn.model_selection import train_test_split
 from sklearn.ensemble import (
     ExtraTreesClassifier,
     GradientBoostingClassifier,
@@ -28,10 +31,26 @@ import common  # noqa: E402
 
 from . import label_suggest
 
+log = logging.getLogger(__name__)
+
 router = APIRouter()
 
 MAX_FILE_BYTES = 5 * 1024 * 1024
 MAX_ROWS = 50_000
+
+# Upload-only caps, so a 20k-row file finishes on a free Render instance
+# (~5-8x slower than a laptop). Presets (analysis/scripts/train_*.py) don't go
+# through here and keep their own settings.
+# - TRAIN_MAX_ROWS: CV + the explained model use at most this many rows
+#   (stratified for classification). Measured on California housing (20,640
+#   rows): CV+fit 188s -> 23s, R² 0.753 -> 0.738 / accuracy 0.871 -> 0.859.
+#   Rows left out are still explained/judged as held-out cases.
+# - SHAP_MAX_ROWS: rows SHAP explains (the case pool); SHAP cost is ~linear.
+# - N_TREES: same for CV and the explained model, so the quality score
+#   describes the model being explained.
+TRAIN_MAX_ROWS = 5_000
+SHAP_MAX_ROWS = 1_000
+N_TREES = 100
 HIGH_CARDINALITY_THRESHOLD = 50
 LONG_TEXT_CHARS = 30
 
@@ -118,6 +137,46 @@ def _validate_model_params(model_type: str, params: dict):
         validated[key] = typ(v)
 
     return spec, validated
+
+
+def _cap_training_rows(X: pd.DataFrame, y: pd.Series, task_type: str):
+    """At most TRAIN_MAX_ROWS rows for CV + fitting, seeded so /retrain picks
+    the exact same rows. Classification keeps the class ratio (stratified)."""
+    if len(X) <= TRAIN_MAX_ROWS:
+        return X, y
+    if task_type == "classification":
+        X_fit, _, y_fit, _ = train_test_split(
+            X, y, train_size=TRAIN_MAX_ROWS, stratify=y, random_state=common.RANDOM_STATE
+        )
+        return X_fit, y_fit
+    X_fit = X.sample(n=TRAIN_MAX_ROWS, random_state=common.RANDOM_STATE)
+    return X_fit, y.loc[X_fit.index]
+
+
+def _held_out_index(X: pd.DataFrame, X_fit: pd.DataFrame, eval_stats: dict):
+    """Rows the explained model never trained on: train_model's own 20%
+    holdout plus every row the cap left out entirely."""
+    return X.index.difference(X_fit.index).union(eval_stats["holdout_index"])
+
+
+def _shap_pool(X, y, display_df, held_index):
+    """Rows SHAP explains (the case pool), at most SHAP_MAX_ROWS. A file under
+    the cap is explained whole; a bigger one fills the pool with held-out
+    rows first, so cases aren't starved. Picked explicitly rather than
+    trusting two same-seed samples to land apart - X.sample(1000) and
+    X.sample(5000) share a seed's permutation, so the pool sat inside the
+    training cap and only ~20% of it was held out."""
+    if len(X) <= SHAP_MAX_ROWS:
+        return X, y, display_df
+    held = X.index.intersection(held_index)
+    if len(held) >= SHAP_MAX_ROWS:
+        idx = X.loc[held].sample(n=SHAP_MAX_ROWS, random_state=common.RANDOM_STATE).index
+    else:
+        rest = X.index.difference(held)
+        fill = X.loc[rest].sample(n=SHAP_MAX_ROWS - len(held), random_state=common.RANDOM_STATE)
+        idx = held.append(fill.index)
+    idx = idx.sort_values()
+    return X.loc[idx], y.loc[idx], display_df.loc[idx]
 
 
 def _read_csv(content: bytes) -> pd.DataFrame:
@@ -244,6 +303,7 @@ async def analyze(
     # kept before column-dropping so case labels can use ID/name columns the
     # model itself excludes (high-cardinality columns aren't useful features,
     # but they're exactly what a human would want to label a case by).
+    t_start = time.perf_counter()
     original_df = df.copy()
     df = _drop_unusable_columns(df, target_column)
     domain = Path(file.filename or "upload").stem
@@ -270,7 +330,9 @@ async def analyze(
         # plain references (sample_for_shap below returns new objects via
         # .loc[], never mutates these in place), so no extra copying needed.
         X_full, y_full, display_full = X, y, display_df
+        t_pre = time.perf_counter() - t_start
 
+        t0 = time.perf_counter()
         # target_labels (and so a positive/negative value to guess a label
         # for) only exists for classification - regression's target is a
         # plain number, nothing to name
@@ -290,6 +352,7 @@ async def analyze(
         column_glossary = label_suggest.suggest_column_glossary(
             list(X.columns), column_samples
         )
+        t_gemini = time.perf_counter() - t0
 
         missingness = common.compute_missingness(df, list(X.columns))
         outliers, outliers_excluded = common.compute_outliers(
@@ -307,26 +370,30 @@ async def analyze(
         # a ~1000-row CSV, which breaks the "real-time" promise of this endpoint.
         if task_type == "regression":
             base_model = RandomForestRegressor(
-                n_estimators=300,
+                n_estimators=N_TREES,
                 max_depth=8,
                 min_samples_leaf=4,
                 random_state=common.RANDOM_STATE,
             )
         else:
             base_model = RandomForestClassifier(
-                n_estimators=300,
+                n_estimators=N_TREES,
                 max_depth=8,
                 min_samples_leaf=4,
                 class_weight="balanced",
                 random_state=common.RANDOM_STATE,
             )
+        X_fit, y_fit = _cap_training_rows(X, y, task_type)
         model, accuracy, eval_stats = common.train_model(
-            X, y, base_model, task_type=task_type
+            X_fit, y_fit, base_model, task_type=task_type
         )
-        X, y, display_df = common.sample_for_shap(X, y, display_df)
+        eval_stats["holdout_index"] = _held_out_index(X, X_fit, eval_stats)
+        X, y, display_df = _shap_pool(X, y, display_df, eval_stats["holdout_index"])
+        t0 = time.perf_counter()
         shap_values, feature_importance_df, base_value = common.compute_shap(
             model, X
         )
+        t_shap = time.perf_counter() - t0
 
         output_path = Path(tmp) / "report.json"
         common.export_report_json(
@@ -369,11 +436,22 @@ async def analyze(
         report["columnGlossarySuggested"] = column_glossary is not None
         # totalRows is the upload as-is (before any dropping/sampling);
         # sampledRows is how many of those rows SHAP actually ran on
-        # (common.sample_for_shap caps it — see SHAP_MAX_ROWS) so the two
+        # (_shap_pool caps it — see SHAP_MAX_ROWS) so the two
         # only differ on a large file, where the frontend should say so.
         report["suspectZeros"] = suspect_zeros
         report["totalRows"] = len(original_df)
         report["sampledRows"] = len(X)
+        # rows CV + the explained model used (capped) / rows SHAP explained
+        report["trainedRows"] = len(X_fit)
+        report["explainedRows"] = len(X)
+        timing = eval_stats["timing"]
+        log.info(
+            "analyze timing rows=%d trained=%d explained=%d task=%s | "
+            "preprocess=%.1fs gemini=%.1fs cv=%.1fs fit=%.1fs shap=%.1fs pdp=%.1fs total=%.1fs",
+            len(original_df), len(X_fit), len(X), task_type,
+            t_pre, t_gemini, timing["cv"], timing["fit"], t_shap,
+            timing.get("pdp", 0.0), time.perf_counter() - t_start,
+        )
         report["analysisId"] = _cache_analysis(
             {
                 "model": model,
@@ -536,10 +614,12 @@ async def retrain(payload: RetrainRequest):
     )
 
     X_full, y_full, display_full = entry["X_full"], entry["y_full"], entry["display_full"]
-    new_model, accuracy, eval_stats = common.train_model(X_full, y_full, new_model)
-    # same seeded sample_for_shap call as /analyze used - deterministic, so
-    # this reproduces the identical row subset without re-caching it
-    X_s, y_s, display_s = common.sample_for_shap(X_full, y_full, display_full)
+    # same seeded cap + _shap_pool calls as /analyze used - deterministic,
+    # so this reproduces the identical row subsets without re-caching them
+    X_fit, y_fit = _cap_training_rows(X_full, y_full, "classification")
+    new_model, accuracy, eval_stats = common.train_model(X_fit, y_fit, new_model)
+    eval_stats["holdout_index"] = _held_out_index(X_full, X_fit, eval_stats)
+    X_s, y_s, display_s = _shap_pool(X_full, y_full, display_full, eval_stats["holdout_index"])
     shap_values, feature_importance_df, base_value = common.compute_shap(new_model, X_s)
 
     with tempfile.TemporaryDirectory() as tmp:
@@ -573,6 +653,10 @@ async def retrain(payload: RetrainRequest):
     report["columnGlossarySuggested"] = bool(entry["column_glossary"])
     report["modelType"] = payload.model_type
     report["modelLabel"] = spec["label"]
+    report["totalRows"] = len(X_full)
+    report["sampledRows"] = len(X_s)
+    report["trainedRows"] = len(X_fit)
+    report["explainedRows"] = len(X_s)
 
     # same underlying data, just a different trained model - the rest of the
     # cached entry (X_full, encoders, ...) is still valid for this one
