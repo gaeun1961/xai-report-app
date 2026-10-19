@@ -3479,6 +3479,660 @@
   "outliersExcludedColumns": [
     "SeniorCitizen"
   ],
+  "distributions": [
+    {
+      "feature": "gender",
+      "missing": 0,
+      "kind": "category",
+      "labels": [
+        "Male",
+        "Female"
+      ],
+      "counts": [
+        3555,
+        3488
+      ],
+      "byClass": [
+        [
+          2625,
+          2549
+        ],
+        [
+          930,
+          939
+        ]
+      ]
+    },
+    {
+      "feature": "SeniorCitizen",
+      "missing": 0,
+      "kind": "category",
+      "labels": [
+        0.0,
+        1.0
+      ],
+      "counts": [
+        5901,
+        1142
+      ],
+      "byClass": [
+        [
+          4508,
+          666
+        ],
+        [
+          1393,
+          476
+        ]
+      ]
+    },
+    {
+      "feature": "Partner",
+      "missing": 0,
+      "kind": "category",
+      "labels": [
+        "No",
+        "Yes"
+      ],
+      "counts": [
+        3641,
+        3402
+      ],
+      "byClass": [
+        [
+          2441,
+          2733
+        ],
+        [
+          1200,
+          669
+        ]
+      ]
+    },
+    {
+      "feature": "Dependents",
+      "missing": 0,
+      "kind": "category",
+      "labels": [
+        "No",
+        "Yes"
+      ],
+      "counts": [
+        4933,
+        2110
+      ],
+      "byClass": [
+        [
+          3390,
+          1784
+        ],
+        [
+          1543,
+          326
+        ]
+      ]
+    },
+    {
+      "feature": "tenure",
+      "missing": 0,
+      "kind": "numeric",
+      "edges": [
+        0.0,
+        4.5,
+        9.0,
+        13.5,
+        18.0,
+        22.5,
+        27.0,
+        31.5,
+        36.0,
+        40.5,
+        45.0,
+        49.5,
+        54.0,
+        58.5,
+        63.0,
+        67.5,
+        72.0
+      ],
+      "counts": [
+        1238,
+        497,
+        560,
+        342,
+        394,
+        337,
+        338,
+        286,
+        294,
+        251,
+        333,
+        286,
+        344,
+        282,
+        415,
+        846
+      ],
+      "byClass": [
+        [
+          558,
+          300,
+          362,
+          227,
+          289,
+          263,
+          266,
+          226,
+          229,
+          202,
+          277,
+          246,
+          293,
+          255,
+          375,
+          806
+        ],
+        [
+          680,
+          197,
+          198,
+          115,
+          105,
+          74,
+          72,
+          60,
+          65,
+          49,
+          56,
+          40,
+          51,
+          27,
+          40,
+          40
+        ]
+      ]
+    },
+    {
+      "feature": "PhoneService",
+      "missing": 0,
+      "kind": "category",
+      "labels": [
+        "Yes",
+        "No"
+      ],
+      "counts": [
+        6361,
+        682
+      ],
+      "byClass": [
+        [
+          4662,
+          512
+        ],
+        [
+          1699,
+          170
+        ]
+      ]
+    },
+    {
+      "feature": "MultipleLines",
+      "missing": 0,
+      "kind": "category",
+      "labels": [
+        "No",
+        "Yes",
+        "No phone service"
+      ],
+      "counts": [
+        3390,
+        2971,
+        682
+      ],
+      "byClass": [
+        [
+          2541,
+          2121,
+          512
+        ],
+        [
+          849,
+          850,
+          170
+        ]
+      ]
+    },
+    {
+      "feature": "InternetService",
+      "missing": 0,
+      "kind": "category",
+      "labels": [
+        "Fiber optic",
+        "DSL",
+        "No"
+      ],
+      "counts": [
+        3096,
+        2421,
+        1526
+      ],
+      "byClass": [
+        [
+          1799,
+          1962,
+          1413
+        ],
+        [
+          1297,
+          459,
+          113
+        ]
+      ]
+    },
+    {
+      "feature": "OnlineSecurity",
+      "missing": 0,
+      "kind": "category",
+      "labels": [
+        "No",
+        "Yes",
+        "No internet service"
+      ],
+      "counts": [
+        3498,
+        2019,
+        1526
+      ],
+      "byClass": [
+        [
+          2037,
+          1724,
+          1413
+        ],
+        [
+          1461,
+          295,
+          113
+        ]
+      ]
+    },
+    {
+      "feature": "OnlineBackup",
+      "missing": 0,
+      "kind": "category",
+      "labels": [
+        "No",
+        "Yes",
+        "No internet service"
+      ],
+      "counts": [
+        3088,
+        2429,
+        1526
+      ],
+      "byClass": [
+        [
+          1855,
+          1906,
+          1413
+        ],
+        [
+          1233,
+          523,
+          113
+        ]
+      ]
+    },
+    {
+      "feature": "DeviceProtection",
+      "missing": 0,
+      "kind": "category",
+      "labels": [
+        "No",
+        "Yes",
+        "No internet service"
+      ],
+      "counts": [
+        3095,
+        2422,
+        1526
+      ],
+      "byClass": [
+        [
+          1884,
+          1877,
+          1413
+        ],
+        [
+          1211,
+          545,
+          113
+        ]
+      ]
+    },
+    {
+      "feature": "TechSupport",
+      "missing": 0,
+      "kind": "category",
+      "labels": [
+        "No",
+        "Yes",
+        "No internet service"
+      ],
+      "counts": [
+        3473,
+        2044,
+        1526
+      ],
+      "byClass": [
+        [
+          2027,
+          1734,
+          1413
+        ],
+        [
+          1446,
+          310,
+          113
+        ]
+      ]
+    },
+    {
+      "feature": "StreamingTV",
+      "missing": 0,
+      "kind": "category",
+      "labels": [
+        "No",
+        "Yes",
+        "No internet service"
+      ],
+      "counts": [
+        2810,
+        2707,
+        1526
+      ],
+      "byClass": [
+        [
+          1868,
+          1893,
+          1413
+        ],
+        [
+          942,
+          814,
+          113
+        ]
+      ]
+    },
+    {
+      "feature": "StreamingMovies",
+      "missing": 0,
+      "kind": "category",
+      "labels": [
+        "No",
+        "Yes",
+        "No internet service"
+      ],
+      "counts": [
+        2785,
+        2732,
+        1526
+      ],
+      "byClass": [
+        [
+          1847,
+          1914,
+          1413
+        ],
+        [
+          938,
+          818,
+          113
+        ]
+      ]
+    },
+    {
+      "feature": "Contract",
+      "missing": 0,
+      "kind": "category",
+      "labels": [
+        "Month-to-month",
+        "Two year",
+        "One year"
+      ],
+      "counts": [
+        3875,
+        1695,
+        1473
+      ],
+      "byClass": [
+        [
+          2220,
+          1647,
+          1307
+        ],
+        [
+          1655,
+          48,
+          166
+        ]
+      ]
+    },
+    {
+      "feature": "PaperlessBilling",
+      "missing": 0,
+      "kind": "category",
+      "labels": [
+        "Yes",
+        "No"
+      ],
+      "counts": [
+        4171,
+        2872
+      ],
+      "byClass": [
+        [
+          2771,
+          2403
+        ],
+        [
+          1400,
+          469
+        ]
+      ]
+    },
+    {
+      "feature": "PaymentMethod",
+      "missing": 0,
+      "kind": "category",
+      "labels": [
+        "Electronic check",
+        "Mailed check",
+        "Bank transfer (automatic)",
+        "Credit card (automatic)"
+      ],
+      "counts": [
+        2365,
+        1612,
+        1544,
+        1522
+      ],
+      "byClass": [
+        [
+          1294,
+          1304,
+          1286,
+          1290
+        ],
+        [
+          1071,
+          308,
+          258,
+          232
+        ]
+      ]
+    },
+    {
+      "feature": "MonthlyCharges",
+      "missing": 0,
+      "kind": "numeric",
+      "edges": [
+        18.25,
+        24.53,
+        30.81,
+        37.09,
+        43.38,
+        49.66,
+        55.94,
+        62.22,
+        68.5,
+        74.78,
+        81.06,
+        87.34,
+        93.62,
+        99.91,
+        106.2,
+        112.5,
+        118.8
+      ],
+      "counts": [
+        1296,
+        385,
+        113,
+        105,
+        358,
+        466,
+        308,
+        243,
+        604,
+        672,
+        525,
+        491,
+        563,
+        509,
+        282,
+        123
+      ],
+      "byClass": [
+        [
+          1178,
+          331,
+          80,
+          76,
+          237,
+          357,
+          267,
+          219,
+          368,
+          410,
+          335,
+          335,
+          328,
+          320,
+          223,
+          110
+        ],
+        [
+          118,
+          54,
+          33,
+          29,
+          121,
+          109,
+          41,
+          24,
+          236,
+          262,
+          190,
+          156,
+          235,
+          189,
+          59,
+          13
+        ]
+      ]
+    },
+    {
+      "feature": "TotalCharges",
+      "missing": 11,
+      "kind": "numeric",
+      "edges": [
+        18.8,
+        560.4,
+        1102.0,
+        1644.0,
+        2185.0,
+        2727.0,
+        3269.0,
+        3810.0,
+        4352.0,
+        4893.0,
+        5435.0,
+        5977.0,
+        6518.0,
+        7060.0,
+        7602.0,
+        8143.0,
+        8685.0
+      ],
+      "counts": [
+        2125,
+        934,
+        760,
+        486,
+        375,
+        321,
+        280,
+        289,
+        268,
+        231,
+        259,
+        212,
+        183,
+        142,
+        114,
+        53
+      ],
+      "byClass": [
+        [
+          1260,
+          688,
+          593,
+          392,
+          267,
+          235,
+          231,
+          245,
+          218,
+          198,
+          220,
+          181,
+          157,
+          124,
+          102,
+          52
+        ],
+        [
+          865,
+          246,
+          167,
+          94,
+          108,
+          86,
+          49,
+          44,
+          50,
+          33,
+          39,
+          31,
+          26,
+          18,
+          12,
+          1
+        ]
+      ]
+    }
+  ],
   "caseStats": {
     "total": 388,
     "wrong": 72,

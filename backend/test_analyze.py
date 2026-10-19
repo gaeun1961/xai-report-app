@@ -600,6 +600,21 @@ def test_analysis_cache_evicts_oldest_over_memory_budget():
     finally:
         A._ANALYSIS_CACHE.clear()
         A._ANALYSIS_CACHE.update(saved)
+def test_distributions_cover_every_row():
+    # data tab distributions: per feature, counts + missing = all rows, and
+    # (classification) the per-class split adds back up to the counts
+    body = TestClient(app).post(
+        "/analyze",
+        files={"file": ("t.csv", CSV, "text/csv")},
+        data={"target_column": "Survived", "n_cases": "5"},
+    ).json()
+    dists = {d["feature"]: d for d in body["distributions"]}
+    assert set(dists) == {f["feature"] for f in body["featureImportance"]}
+    for d in dists.values():
+        assert sum(d["counts"]) + d["missing"] == 10, d
+        assert [a + b for a, b in zip(*d["byClass"])] == d["counts"], d
+        assert d["kind"] in {"numeric", "category"}
+    assert dists["Sex"]["kind"] == "category"
 
 
 if __name__ == "__main__":
@@ -631,4 +646,5 @@ if __name__ == "__main__":
     test_health_answers_while_two_analyses_run()
     test_heavy_request_gets_busy_message_when_slot_stays_taken()
     test_analysis_cache_evicts_oldest_over_memory_budget()
+    test_distributions_cover_every_row()
     print("ok")

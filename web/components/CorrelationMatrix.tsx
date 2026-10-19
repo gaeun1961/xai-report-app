@@ -19,6 +19,8 @@ type Props = {
   // rendered at the right end of the sticky section-nav row (the tab's
   // "이미지로 저장" button), so both sit on one line
   toolbarEnd?: ReactNode;
+  // per-column distribution cards (its own section, first in the nav)
+  distributions?: ReactNode;
 };
 
 // ".52" / "-.31" — drop the leading zero, it's always |v| <= 1
@@ -43,6 +45,7 @@ export default function CorrelationMatrix({
   outliers,
   outliersExcludedColumns,
   toolbarEnd,
+  distributions,
 }: Props) {
   const { columns, matrix } = data;
   const n = columns.length;
@@ -92,6 +95,15 @@ export default function CorrelationMatrix({
   return (
     <>
       <nav className={styles.dataRelToc} data-no-capture>
+        {distributions && (
+          <button
+            type="button"
+            className={styles.dataRelTocLink}
+            onClick={() => scrollToSection("dataRelDist")}
+          >
+            분포
+          </button>
+        )}
         <button
           type="button"
           className={styles.dataRelTocLink}
@@ -119,6 +131,16 @@ export default function CorrelationMatrix({
         )}
         {toolbarEnd && <div className={styles.dataRelTocEnd}>{toolbarEnd}</div>}
       </nav>
+
+      {distributions && (
+        <section id="dataRelDist" className={styles.cardSection}>
+          <h2 className={styles.h2}>
+            컬럼별 분포{" "}
+            <InfoTip text="각 컬럼의 값이 어떻게 퍼져 있는지 보여줘요. **숫자형은 구간별 개수(히스토그램), 글자형은 값별 개수**예요. 분류 데이터면 막대를 결과별 색으로 나눠 쌓아서, 어떤 구간에 어떤 결과가 몰려 있는지도 볼 수 있어요. (모델이 아니라 업로드한 데이터 전체를 그대로 센 거예요.)" />
+          </h2>
+          {distributions}
+        </section>
+      )}
 
       <section id="dataRelCorrelation" className={styles.cardSection}>
         <h2 className={styles.h2}>

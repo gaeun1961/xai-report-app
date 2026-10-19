@@ -301,6 +301,63 @@ def _judge_model_quality_regression(r2: float, rmse: float):
     }
 
 
+DIST_BINS = 16
+DIST_TOP_CATEGORIES = 8
+DIST_DISCRETE_MAX = 10
+
+
+def _sig(v: float) -> float:
+    return float(f"{v:.4g}")
+
+
+def compute_distributions(display_df: pd.DataFrame, y: pd.Series, columns, task_type: str = "classification") -> list:
+    """Per-column value distribution for the data tab, from the full data
+    (not the SHAP sample). Numeric -> DIST_BINS-bin histogram; a numeric
+    column with at most DIST_DISCRETE_MAX distinct values (0/1 flags, small
+    codes) -> one bar per value instead, since a histogram would smear those
+    into mostly-empty bins; categorical -> the DIST_TOP_CATEGORIES most common
+    values plus "기타". For classification each bar also carries the count per
+    target class (byClass[0] = negative, byClass[1] = positive), so the UI
+    can split bars by outcome. Missing values are counted, not plotted.
+    """
+    out = []
+    y_arr = y.to_numpy() if task_type == "classification" else None
+    for col in columns:
+        s = display_df[col]
+        mask = s.notna().to_numpy()
+        vals = s[mask]
+        entry = {"feature": col, "missing": int((~mask).sum())}
+        numeric = pd.api.types.is_numeric_dtype(s)
+        if numeric and vals.nunique() > DIST_DISCRETE_MAX:
+            edges = np.histogram_bin_edges(vals.astype(float), bins=DIST_BINS)
+            idx = np.clip(np.searchsorted(edges, vals.astype(float), side="right") - 1, 0, DIST_BINS - 1)
+            entry.update(kind="numeric", edges=[_sig(e) for e in edges])
+            groups = idx
+            n_groups = DIST_BINS
+        else:
+            if numeric:
+                labels = sorted(vals.unique().tolist())
+            else:
+                counts = vals.astype(str).value_counts()
+                labels = counts.index[:DIST_TOP_CATEGORIES].tolist()
+            keyed = vals if numeric else vals.astype(str)
+            pos = {v: i for i, v in enumerate(labels)}
+            other = len(labels)
+            groups = np.array([pos.get(v, other) for v in keyed])
+            has_other = bool((groups == other).any())
+            shown = [(_sig(v) if numeric else str(v)) for v in labels] + (["기타"] if has_other else [])
+            entry.update(kind="category", labels=shown)
+            n_groups = len(shown)
+        entry["counts"] = np.bincount(groups, minlength=n_groups).astype(int).tolist()
+        if y_arr is not None:
+            yv = y_arr[mask]
+            entry["byClass"] = [
+                np.bincount(groups[yv == c], minlength=n_groups).astype(int).tolist() for c in (0, 1)
+            ]
+        out.append(entry)
+    return out
+
+
 def compute_missingness(raw_df: pd.DataFrame, feature_cols) -> list:
     """Per-feature missing count/share, computed from the raw (pre-imputation)
     data so it reflects what load_and_preprocess actually had to fill in —
@@ -677,6 +734,7 @@ def export_report_json(
     outliers: list = None,
     outliers_excluded_columns: list = None,
     task_type: str = "classification",
+    distributions: list = None,
 ):
     """Assemble a ShapReport-shaped dict (see web/lib/types.ts) and write it
     to output_path as JSON.
@@ -711,6 +769,7 @@ def export_report_json(
             missingness=missingness,
             outliers=outliers,
             outliers_excluded_columns=outliers_excluded_columns,
+            distributions=distributions,
         )
 
     predictions = model.predict(X)
@@ -841,6 +900,9 @@ def export_report_json(
     if outliers_excluded_columns:
         report["outliersExcludedColumns"] = outliers_excluded_columns
 
+    if distributions is not None:
+        report["distributions"] = distributions
+
     report["caseStats"] = case_stats
 
     t0 = time.perf_counter()
@@ -912,6 +974,7 @@ def _export_regression_report(
     missingness,
     outliers,
     outliers_excluded_columns,
+    distributions=None,
 ):
     """Regression counterpart of export_report_json's classification path.
     No positive/negative classes, no probability - cases carry a predicted
@@ -1015,6 +1078,9 @@ def _export_regression_report(
 
     if outliers_excluded_columns:
         report["outliersExcludedColumns"] = outliers_excluded_columns
+
+    if distributions is not None:
+        report["distributions"] = distributions
 
     report["caseStats"] = case_stats
 

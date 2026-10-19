@@ -435,6 +435,10 @@ def _analyze_sync(
         # plain references (sample_for_shap below returns new objects via
         # .loc[], never mutates these in place), so no extra copying needed.
         X_full, y_full, display_full = X, y, display_df
+        # data tab: per-column histograms / category counts over every row
+        distributions = common.compute_distributions(
+            display_full, y_full, list(X_full.columns), task_type
+        )
         t_pre = time.perf_counter() - t_start
 
         t0 = time.perf_counter()
@@ -523,6 +527,7 @@ def _analyze_sync(
             positive_label=label_suggestion[0] if label_suggestion else None,
             negative_label=label_suggestion[1] if label_suggestion else None,
             task_type=task_type,
+            distributions=distributions,
         )
         # read back the file export_report_json already wrote instead of
         # returning its in-memory dict: display_df keeps raw NaN for missing
@@ -580,6 +585,7 @@ def _analyze_sync(
                 "outliers": outliers,
                 "outliers_excluded": outliers_excluded,
                 "column_glossary": column_glossary,
+                "distributions": distributions,
                 "n_cases": n_cases,
                 "case_focus": case_focus,
             }
@@ -762,6 +768,7 @@ def _retrain_sync(payload: RetrainRequest):
             case_focus=entry["case_focus"],
             positive_label=entry["pos_display"],
             negative_label=entry["neg_display"],
+            distributions=entry.get("distributions"),
         )
         with open(output_path, encoding="utf-8") as f:
             report = json.load(f, parse_constant=lambda _: None)

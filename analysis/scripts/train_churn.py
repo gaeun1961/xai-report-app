@@ -4,6 +4,7 @@ from sklearn.ensemble import RandomForestClassifier
 
 from common import (
     RANDOM_STATE,
+    compute_distributions,
     compute_missingness,
     compute_outliers,
     compute_shap,
@@ -41,6 +42,7 @@ def main():
             random_state=RANDOM_STATE,
         ),
     )
+    distributions = compute_distributions(display_df, y, list(X.columns))
     X, y, display_df = sample_for_shap(X, y, display_df)
     shap_values, feature_importance_df, base_value = compute_shap(model, X)
     report = export_report_json(
@@ -61,6 +63,7 @@ def main():
         outliers=outliers,
         outliers_excluded_columns=outliers_excluded,
         output_path=OUTPUT_PATH,
+        distributions=distributions,
     )
     print(f"telco_churn accuracy={accuracy:.4f} -> {OUTPUT_PATH}")
     return report
