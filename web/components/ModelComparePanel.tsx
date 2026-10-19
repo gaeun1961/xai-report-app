@@ -13,13 +13,14 @@ type Props = {
   reportLabel: string;
 };
 
-// midpoint of a whitelisted param's [min, max] as a reasonable starting
-// value - generic (no per-model hardcoding), the user can still change it
-function midpoint(spec: ModelTypeSpec): Record<string, number> {
+// starting values: the backend's own defaults (the same tree shape as the
+// base analysis for bagging models), so an untouched "비교하기" compares like
+// with like. Falls back to the range midpoint for an older backend.
+function initialParams(spec: ModelTypeSpec): Record<string, number> {
   const values: Record<string, number> = {};
-  for (const [key, { type, min, max }] of Object.entries(spec.params)) {
+  for (const [key, { type, min, max, default: d }] of Object.entries(spec.params)) {
     const mid = (min + max) / 2;
-    values[key] = type === "int" ? Math.round(mid) : Math.round(mid * 100) / 100;
+    values[key] = d ?? (type === "int" ? Math.round(mid) : Math.round(mid * 100) / 100);
   }
   return values;
 }
@@ -39,7 +40,7 @@ export default function ModelComparePanel({ analysisId, reportId, reportLabel }:
         const first = Object.keys(t)[0];
         if (first) {
           setSelected(first);
-          setParams(midpoint(t[first]));
+          setParams(initialParams(t[first]));
         }
       })
       .catch(() => setError("사용 가능한 모델 목록을 불러오지 못했어요."));
@@ -85,7 +86,7 @@ export default function ModelComparePanel({ analysisId, reportId, reportLabel }:
                 value={selected}
                 onChange={(e) => {
                   setSelected(e.target.value);
-                  setParams(midpoint(types[e.target.value]));
+                  setParams(initialParams(types[e.target.value]));
                 }}
               >
                 {Object.entries(types).map(([key, t]) => (
@@ -110,9 +111,15 @@ export default function ModelComparePanel({ analysisId, reportId, reportLabel }:
                       setParams((prev) => ({ ...prev, [key]: Number(e.target.value) }))
                     }
                   />
+                  {key === "max_depth" && (
+                    <span className={styles.sectionNote}>
+                      깊이를 크게 주면 분석이 꽤 느려질 수 있어요.
+                    </span>
+                  )}
                 </label>
               ))}
           </div>
+          {spec?.note && <p className={styles.sectionNote}>{spec.note}</p>}
 
           <button type="button" className={styles.toggleBtn} onClick={run} disabled={loading}>
             {loading ? "재학습하는 중... (최대 1분 정도 걸릴 수 있어요)" : "비교하기"}

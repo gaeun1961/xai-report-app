@@ -251,6 +251,8 @@ def test_model_types_lists_whitelist():
         assert "label" in spec
         assert "n_estimators" in spec["params"]
         assert spec["params"]["n_estimators"]["min"] < spec["params"]["n_estimators"]["max"]
+        # every param carries the default the UI pre-fills / retrain falls back to
+        assert all("default" in p for p in spec["params"].values())
 
 
 def test_retrain_with_different_model():
@@ -484,6 +486,29 @@ def test_training_rows_capped_and_stratified():
     assert Xp.index.isin(held).sum() == min(len(held), A.SHAP_MAX_ROWS)
 
 
+def test_retrain_defaults_match_base_model_unless_sent():
+    # a param left out uses the whitelist default (depth 8 like the base
+    # analysis, not sklearn's unbounded depth); a sent value is kept as-is
+    from routers import analyze as A
+
+    client = TestClient(app)
+    body = client.post(
+        "/analyze",
+        files={"file": ("w.csv", _whatif_csv(), "text/csv")},
+        data={"target_column": "Survived", "n_cases": "5"},
+    ).json()
+
+    def retrained_model(model_type, params):
+        res = client.post("/retrain", json={"analysis_id": body["analysisId"], "model_type": model_type, "params": params})
+        assert res.status_code == 200, res.text
+        return A._ANALYSIS_CACHE[res.json()["analysisId"]]["model"]
+
+    et = retrained_model("extra_trees", {"n_estimators": 20})
+    assert (et.max_depth, et.min_samples_leaf) == (A.BASE_MAX_DEPTH, A.BASE_MIN_SAMPLES_LEAF)
+    assert retrained_model("extra_trees", {"n_estimators": 20, "max_depth": 15}).max_depth == 15
+    assert retrained_model("gradient_boosting", {"n_estimators": 20}).max_depth == 3
+
+
 if __name__ == "__main__":
     test_analyze_returns_report()
     test_columns_returns_row_count()
@@ -509,4 +534,5 @@ if __name__ == "__main__":
     test_retrain_rejects_regression_analysis()
     test_cases_come_only_from_held_out_rows()
     test_training_rows_capped_and_stratified()
+    test_retrain_defaults_match_base_model_unless_sent()
     print("ok")
