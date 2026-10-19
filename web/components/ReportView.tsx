@@ -443,7 +443,7 @@ function SummaryBody({
         </div>
         {report.caseStats && (
           <p className={styles.sectionNote}>
-            {caseScopeText(report.caseStats)}
+            {caseScopeText(report.caseStats, report.totalRows)}
             {report.caseStats.heldOut && (
               <>
                 {" "}
@@ -693,6 +693,7 @@ function CasesBody({ report, domain, selectedId, onSelect, picks, onPicks }: Cas
           positiveLabel={positiveLabel}
           negativeLabel={negativeLabel}
           caseStats={report.caseStats}
+          totalRows={report.totalRows}
         />
       </section>
 

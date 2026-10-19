@@ -15,6 +15,8 @@ type Props = {
   positiveLabel?: string;
   negativeLabel?: string;
   caseStats?: ShapReport["caseStats"];
+  // the upload's total row count (absent on presets) - for "전체 N행 중 …"
+  totalRows?: number;
 };
 
 type Filter = "all" | "pos" | "neg";
@@ -26,7 +28,8 @@ function RegressionCaseList({
   selectedId,
   onSelect,
   caseStats,
-}: Pick<Props, "cases" | "selectedId" | "onSelect" | "caseStats">) {
+  totalRows,
+}: Pick<Props, "cases" | "selectedId" | "onSelect" | "caseStats" | "totalRows">) {
   const [onlyLarge, setOnlyLarge] = useState(false);
   const shown = cases
     .map((c, i) => ({ c, no: i + 1 }))
@@ -36,7 +39,7 @@ function RegressionCaseList({
     <div className={styles.selectorWrap}>
       {caseStats && (
         <p className={styles.selectorStats}>
-          {caseScopeText(caseStats)} · 오차가 큰 케이스{" "}
+          {caseScopeText(caseStats, totalRows)} · 오차가 큰 케이스{" "}
           <b>{caseStats.wrong.toLocaleString()}개</b>{" "}
           <InfoTip
             text={`여기 뜨는 개수는 지금 화면에 불러온 케이스 수가 아니라, 이 리포트가 분석한 데이터 전체를 기준으로 셌어요.${
@@ -90,6 +93,7 @@ function ClassificationCaseSelector({
   positiveLabel,
   negativeLabel,
   caseStats,
+  totalRows,
 }: Props) {
   const [filter, setFilter] = useState<Filter>("all");
   const [minC, setMinC] = useState(0);
@@ -121,7 +125,7 @@ function ClassificationCaseSelector({
     <div className={styles.selectorWrap}>
       {caseStats && (
         <p className={styles.selectorStats}>
-          {caseScopeText(caseStats)} · 예측이 틀린 케이스{" "}
+          {caseScopeText(caseStats, totalRows)} · 예측이 틀린 케이스{" "}
           <b>{caseStats.wrong.toLocaleString()}개</b> · 확신도 애매한(40~60%) 케이스{" "}
           <b>{caseStats.borderline.toLocaleString()}개</b>{" "}
           <InfoTip

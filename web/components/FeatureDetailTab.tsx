@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { isRegression, type ShapReport } from "@/lib/types";
 import { fmtNum } from "@/lib/reportSummary";
-import { columnDesc } from "@/lib/columnGlossary";
+import { columnDesc, columnValueLabel } from "@/lib/columnGlossary";
+import { summarizeDependence } from "@/lib/dependenceSummary";
 import { WIDE, wideX } from "@/lib/chartFrame";
 import { DistributionCard } from "./DistributionChart";
 import { PdpCell, pdpAxis, pdpAxisNote } from "./PartialDependenceChart";
@@ -153,6 +154,20 @@ export default function FeatureDetailTab({ report, domain }: { report: ShapRepor
       ? { posLabel: report.positiveLabel ?? "양성", negLabel: report.negativeLabel ?? "음성" }
       : undefined;
   const label = columnDesc(domain, feature);
+  const conclusion = dep
+    ? summarizeDependence({
+        values: dep.values,
+        shap: dep.shap,
+        regression,
+        categories,
+        // a coded column ("0=남성, 1=여성") reads better decoded
+        labelOf: (c) => {
+          const decoded = columnValueLabel(domain, feature, c);
+          return decoded ? `${c}(${decoded})` : c;
+        },
+        fmt: fmtNum,
+      })
+    : null;
 
   return (
     <div className={styles.reportCol} id="report-feature">
@@ -227,21 +242,27 @@ export default function FeatureDetailTab({ report, domain }: { report: ShapRepor
 
       <section className={styles.cardSection}>
         <h2 className={styles.h2}>
-          3. 케이스별 영향 (SHAP 의존도){" "}
+          3. {feature}의 케이스별 영향{" "}
           <InfoTip
-            text={`**점 하나가 케이스 하나**예요. 가로는 그 케이스의 이 특성 값, 세로는 이 특성이 그 케이스의 예측을 ${
+            text={`**점 하나가 케이스 하나**예요(SHAP 의존도). 가로는 그 케이스의 이 특성 값, 세로는 이 특성이 그 케이스의 예측을 ${
               regression ? "얼마나 올리거나(위) 내렸는지(아래)" : "몇 %p 올리거나(위) 내렸는지(아래)"
-            }예요. 위의 부분의존도가 **평균**이라면, 이건 **케이스마다** 따로 본 거라서 같은 값이어도 점이 위아래로 퍼질 수 있어요 — 다른 특성과 함께 작용한다는 신호예요. 다만 상관이 강한 특성끼리는 기여도를 나눠 가지고, 이 그래프는 인과관계를 뜻하지 않아요.`}
+            }예요. ${
+              categories
+                ? "가로로 흩어진 건 점이 겹치지 않게 한 것이고, 세로 위치만 의미 있어요. "
+                : ""
+            }위의 부분의존도가 **평균**이라면, 이건 **케이스마다** 따로 본 거라서 같은 값이어도 점이 위아래로 퍼질 수 있어요 — 다른 특성과 함께 작용한다는 신호예요. 다만 상관이 강한 특성끼리는 기여도를 나눠 가지고, 이 그래프는 인과관계를 뜻하지 않아요.`}
           />
         </h2>
         {dep ? (
           <>
+            {conclusion && <p className={styles.dataRelIntro}><b>{conclusion}</b></p>}
             <div className={styles.pdpCell}>
               <DependencePlot dep={dep} regression={regression} xRange={xRange} categories={categories} />
             </div>
             <p className={styles.sectionNote}>
               {dep.values.length.toLocaleString()}개 케이스 (학습에 쓰지 않은 행부터) · 점선 위는{" "}
-              {regression ? "예측값을 올린" : "예측 확률을 올린"} 경우, 아래는 내린 경우예요.
+              {regression ? "예측값을 올린" : "예측 확률을 올린"} 경우, 아래는 내린 경우예요. 위 문장의
+              평균도 이 점들 기준이에요.
             </p>
           </>
         ) : (
