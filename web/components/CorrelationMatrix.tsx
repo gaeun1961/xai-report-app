@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useRef, useState } from "react";
+import { Fragment, useRef, useState, type ReactNode } from "react";
 import type { ShapReport } from "@/lib/types";
 import { columnDesc, isSuggestedDesc } from "@/lib/columnGlossary";
 import MissingnessDonutGrid from "./MissingnessDonutGrid";
@@ -16,6 +16,9 @@ type Props = {
   suspectZeros?: ShapReport["suspectZeros"];
   outliers?: ShapReport["outliers"];
   outliersExcludedColumns?: ShapReport["outliersExcludedColumns"];
+  // rendered at the right end of the sticky section-nav row (the tab's
+  // "이미지로 저장" button), so both sit on one line
+  toolbarEnd?: ReactNode;
 };
 
 // ".52" / "-.31" — drop the leading zero, it's always |v| <= 1
@@ -39,6 +42,7 @@ export default function CorrelationMatrix({
   suspectZeros,
   outliers,
   outliersExcludedColumns,
+  toolbarEnd,
 }: Props) {
   const { columns, matrix } = data;
   const n = columns.length;
@@ -113,6 +117,7 @@ export default function CorrelationMatrix({
             결측치
           </button>
         )}
+        {toolbarEnd && <div className={styles.dataRelTocEnd}>{toolbarEnd}</div>}
       </nav>
 
       <section id="dataRelCorrelation" className={styles.cardSection}>

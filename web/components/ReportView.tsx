@@ -170,7 +170,6 @@ export default function ReportView({ report, domain, reportId, reportLabel }: Pr
       )}
       {tab === "data" && report.correlations && (
         <div className={styles.reportCol} id="report-data">
-          <SaveImageButton targetId="report-data" fileName={`${domain}-데이터분석`} />
           <CorrelationMatrix
             data={report.correlations}
             domain={domain}
@@ -178,6 +177,9 @@ export default function ReportView({ report, domain, reportId, reportLabel }: Pr
             suspectZeros={report.suspectZeros}
             outliers={report.outliers}
             outliersExcludedColumns={report.outliersExcludedColumns}
+            toolbarEnd={
+              <SaveImageButton targetId="report-data" fileName={`${domain}-데이터분석`} />
+            }
           />
         </div>
       )}
