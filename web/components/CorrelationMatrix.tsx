@@ -43,10 +43,18 @@ export default function CorrelationMatrix({
   const { columns, matrix } = data;
   const n = columns.length;
   const label = (c: string) => columnDesc(domain, c) ?? c;
-  const [focused, setFocused] = useState<string | null>(null);
-  const [explainedPair, setExplainedPair] = useState<{ i: number; j: number; v: number } | null>(
-    null,
-  );
+  // chips read by description, the table by raw column name - showing both
+  // ("s1 총 콜레스테롤 수치") lets a reader match one to the other
+  const chipName = (c: string) => {
+    const desc = columnDesc(domain, c);
+    return desc && desc !== c ? `${c} ${desc}` : c;
+  };
+  // the chip pair currently highlighted in the table (null = none)
+  const [selected, setSelected] = useState<{ i: number; j: number; v: number } | null>(null);
+  const inPair = (i: number, j: number) =>
+    !!selected &&
+    ((i === selected.i && j === selected.j) || (i === selected.j && j === selected.i));
+  const isPairAxis = (k: number) => !!selected && (k === selected.i || k === selected.j);
   const cellRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
   // strong pairs (upper triangle), strongest first, capped
@@ -60,10 +68,14 @@ export default function CorrelationMatrix({
     .sort((a, b) => Math.abs(b.v) - Math.abs(a.v))
     .slice(0, 5);
 
+  // clicking the selected chip again clears the highlight
   function focusPair(i: number, j: number, v: number) {
+    if (selected?.i === i && selected?.j === j) {
+      setSelected(null);
+      return;
+    }
     const key = `${i}-${j}`;
-    setFocused(key);
-    setExplainedPair({ i, j, v });
+    setSelected({ i, j, v });
     cellRefs.current
       .get(key)
       ?.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
@@ -115,22 +127,25 @@ export default function CorrelationMatrix({
               <button
                 key={`chip-${i}-${j}`}
                 type="button"
-                className={styles.corrChip}
+                className={`${styles.corrChip} ${
+                  selected?.i === i && selected?.j === j ? styles.corrChipActive : ""
+                }`}
+                aria-pressed={selected?.i === i && selected?.j === j}
                 onClick={() => focusPair(i, j, v)}
               >
-                {label(columns[i])} ↔ {label(columns[j])} · {v.toFixed(2)}
+                {chipName(columns[i])} ↔ {chipName(columns[j])} · {v.toFixed(2)}
               </button>
             ))}
           </div>
         )}
 
-        {explainedPair && (
+        {selected && (
           <p className={styles.corrExplain}>
             <b>
-              {label(columns[explainedPair.i])} ↔ {label(columns[explainedPair.j])} (r=
-              {explainedPair.v.toFixed(2)})
+              {chipName(columns[selected.i])} ↔ {chipName(columns[selected.j])} (r=
+              {selected.v.toFixed(2)})
             </b>{" "}
-            — {explainCorr(explainedPair.v)}
+            — {explainCorr(selected.v)}
           </p>
         )}
 
@@ -142,8 +157,11 @@ export default function CorrelationMatrix({
             }}
           >
             <div className={styles.corrCorner} />
-            {columns.map((c) => (
-              <div key={`h-${c}`} className={styles.corrColHead}>
+            {columns.map((c, k) => (
+              <div
+                key={`h-${c}`}
+                className={`${styles.corrColHead} ${isPairAxis(k) ? styles.corrHeadActive : ""}`}
+              >
                 <GlossaryTerm
                   term={c}
                   desc={columnDesc(domain, c)}
@@ -154,7 +172,9 @@ export default function CorrelationMatrix({
 
             {matrix.map((row, i) => (
               <Fragment key={`row-${i}`}>
-                <div className={styles.corrRowHead}>
+                <div
+                  className={`${styles.corrRowHead} ${isPairAxis(i) ? styles.corrHeadActive : ""}`}
+                >
                   <GlossaryTerm
                     term={columns[i]}
                     desc={columnDesc(domain, columns[i])}
@@ -184,7 +204,13 @@ export default function CorrelationMatrix({
                             ? styles.corrCellStrongPos
                             : styles.corrCellStrongNeg
                           : ""
-                      } ${focused === key ? styles.corrCellFocused : ""}`}
+                      } ${
+                        selected
+                          ? inPair(i, j)
+                            ? styles.corrCellFocused
+                            : styles.corrCellDim
+                          : ""
+                      }`}
                       style={{ background: bg, color: mag > 0.5 ? "#fff" : undefined }}
                       title={`${columns[i]} ↔ ${columns[j]}: ${v.toFixed(2)}`}
                     >
