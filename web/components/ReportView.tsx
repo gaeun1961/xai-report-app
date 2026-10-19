@@ -2,7 +2,13 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { isRegression, type ShapReport } from "@/lib/types";
-import { buildOverallSummary, explainAccuracy, explainR2 } from "@/lib/reportSummary";
+import {
+  buildOverallSummary,
+  caseScopeText,
+  explainAccuracy,
+  explainR2,
+  HELD_OUT_NOTE,
+} from "@/lib/reportSummary";
 import { getValueLabel, setValueLabel } from "@/lib/valueLabels";
 import { registerUploadGlossary } from "@/lib/columnGlossary";
 import { featureTendencies } from "@/lib/featureTendency";
@@ -383,7 +389,14 @@ function SummaryBody({
         </div>
         {report.caseStats && (
           <p className={styles.sectionNote}>
-            분석한 전체 {report.caseStats.total.toLocaleString()}개 중 ·{" "}
+            {caseScopeText(report.caseStats)}
+            {report.caseStats.heldOut && (
+              <>
+                {" "}
+                <InfoTip text={HELD_OUT_NOTE} />
+              </>
+            )}{" "}
+            ·{" "}
             {regression ? (
               <>
                 오차가 큰 케이스 <b>{report.caseStats.wrong.toLocaleString()}개</b>

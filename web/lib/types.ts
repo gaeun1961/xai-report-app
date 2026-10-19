@@ -58,7 +58,11 @@ export type ShapReport = {
   // output — up to SHAP_MAX_ROWS rows) — NOT just the cases actually loaded
   // as cards. "borderline" is 40-60% predicted probability, the same
   // threshold the case_focus="borderline" option already uses elsewhere.
-  caseStats?: { total: number; wrong: number; borderline: number };
+  //
+  // heldOut: true when total/wrong/borderline (and the cases themselves)
+  // count only rows the explained model never trained on - absent on reports
+  // made before that change, where they counted the whole pool.
+  caseStats?: { total: number; wrong: number; borderline: number; heldOut?: boolean };
   // The target column name and its two raw CSV values, regardless of
   // override — lets the UI build a persistent value->meaning mapping (e.g.
   // "Survived"+"1" -> a user-typed "생존") and reuse it across uploads.
