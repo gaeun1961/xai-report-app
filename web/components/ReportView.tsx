@@ -16,7 +16,7 @@ import FeatureImportanceChart from "./FeatureImportanceChart";
 import PartialDependenceChart from "./PartialDependenceChart";
 import CaseSelector from "./CaseSelector";
 import CaseReportCard from "./CaseReportCard";
-import WhatIfPanel from "./WhatIfPanel";
+import WhatIfPanel, { WhatIfUnavailable } from "./WhatIfPanel";
 import ModelComparePanel from "./ModelComparePanel";
 import CorrelationMatrix from "./CorrelationMatrix";
 import CopySummaryButton from "./CopySummaryButton";
@@ -537,6 +537,22 @@ function CasesBody({ report, domain, selectedId, onSelect }: CasesBodyProps) {
   const { positiveLabel, negativeLabel } = report;
   const regression = isRegression(report);
   const [labelColumn, setLabelColumn] = useState("");
+  // why What-if can't run here (null = it can) - shown in the panel's place
+  // instead of the panel silently disappearing. Presets never carry
+  // targetColumn/analysisId; an upload without analysisId predates What-if.
+  const isUpload = report.targetColumn !== undefined;
+  const OLD_UPLOAD =
+    "이 분석은 값 바꿔보기 기능이 생기기 전에 저장돼서 지원하지 않아요. 같은 CSV를 다시 올리면 쓸 수 있어요.";
+  // report-level reason (drives the "클릭하면…" hint before any case is picked)
+  const reportBlocker: string | null = !isUpload
+    ? "CSV를 업로드하면 값을 바꿔 다시 예측해볼 수 있어요."
+    : regression
+      ? "회귀 분석에서는 아직 값 바꿔 다시 예측하기를 지원하지 않아요."
+      : !report.analysisId
+        ? OLD_UPLOAD
+        : null;
+  // the selected case's own row is needed too (absent on old JSON)
+  const whatIfBlocker = reportBlocker ?? (selected && !selected.raw ? OLD_UPLOAD : null);
 
   const CHART_LIMIT = 15;
   const importanceOrder = report.featureImportance.map((f) => f.feature);
@@ -618,11 +634,13 @@ function CasesBody({ report, domain, selectedId, onSelect }: CasesBodyProps) {
             caseNo={selectedIndex + 1}
             fallbackName={fallbackName}
           />
-          {report.analysisId && selected.raw && !regression && (
+          {whatIfBlocker ? (
+            <WhatIfUnavailable reason={whatIfBlocker} />
+          ) : (
             <WhatIfPanel
-              analysisId={report.analysisId}
+              analysisId={report.analysisId!}
               domain={domain}
-              rawRow={selected.raw}
+              rawRow={selected.raw!}
               topFeatures={selected.topFeatures}
               positiveLabel={positiveLabel}
               negativeLabel={negativeLabel}
@@ -632,6 +650,14 @@ function CasesBody({ report, domain, selectedId, onSelect }: CasesBodyProps) {
       ) : (
         <p className={styles.selectorEmpty}>
           위 산점도에서 점을 클릭하면 케이스 상세를 볼 수 있어요.
+          {(reportBlocker === null || !isUpload) && (
+            <>
+              <br />
+              {reportBlocker === null
+                ? "케이스를 클릭하면 값을 바꿔 다시 예측해볼 수도 있어요."
+                : "업로드한 분류 분석에서는 케이스를 클릭하면 값을 바꿔 다시 예측해볼 수도 있어요."}
+            </>
+          )}
         </p>
       )}
     </div>
