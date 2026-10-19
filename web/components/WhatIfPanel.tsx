@@ -19,6 +19,19 @@ type Props = {
   negativeLabel?: string;
 };
 
+const TITLE = "값 바꿔서 다시 예측해보기";
+
+// Shown in the panel's place when What-if can't run for this report/case, so
+// the feature doesn't silently vanish (it used to render nothing at all)
+export function WhatIfUnavailable({ reason }: { reason: string }) {
+  return (
+    <section className={styles.cardSection}>
+      <h2 className={styles.h2}>{TITLE}</h2>
+      <p className={styles.sectionNote}>{reason}</p>
+    </section>
+  );
+}
+
 // keeps the form to a manageable size - the same cap the case card's chart
 // uses for "top" vs "the rest"
 const EDIT_LIMIT = 10;
@@ -40,7 +53,11 @@ export default function WhatIfPanel({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  if (numericFeatures.length === 0) return null;
+  if (numericFeatures.length === 0) {
+    return (
+      <WhatIfUnavailable reason="이 케이스의 주요 요인이 모두 범주형이라 바꿔볼 숫자 값이 없어요." />
+    );
+  }
 
   async function run() {
     setLoading(true);
@@ -66,7 +83,7 @@ export default function WhatIfPanel({
   return (
     <section className={styles.cardSection}>
       <h2 className={styles.h2}>
-        값 바꿔서 다시 예측해보기{" "}
+        {TITLE}{" "}
         <InfoTip text="이 케이스의 숫자형 특성값을 직접 바꿔보면, 그 값 기준으로 모델이 다시 예측하고 어떤 요인이 얼마나 영향을 줬는지 새로 계산해줘요. 원래 케이스 설명은 그대로 남아있고, 이 결과만 따로 보여줘요." />
       </h2>
 
