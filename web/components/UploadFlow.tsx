@@ -135,7 +135,7 @@ export default function UploadFlow() {
             </div>
           )}
           <label className={styles.sectionNote}>
-            살펴볼 케이스 개수{" "}
+            처음 보여줄 케이스 개수{" "}
             <input
               type="number"
               min={1}
@@ -145,16 +145,17 @@ export default function UploadFlow() {
                 setNCases(Math.max(1, Math.min(maxCases, Number(e.target.value) || 1)))
               }
               className={styles.rangeInput}
-              aria-label="살펴볼 케이스 개수"
+              aria-label="처음 보여줄 케이스 개수"
             />
           </label>
           <p className={styles.sectionNote}>
             케이스는 모델이 학습에 쓰지 않은 행(약 20%) 중에서 골라서, 이 파일은
-            최대 {maxCases}개까지 볼 수 있어요. 개수를 늘리는 것보다 아래 &lsquo;케이스 선정
-            기준&rsquo;을 바꾸는 게 알짜 케이스를 보기엔 더 좋아요.
+            최대 {maxCases}개까지 볼 수 있어요. 결과 화면의 &lsquo;케이스 탐색&rsquo; 탭에서
+            개수와 기준을 언제든 바꿀 수 있고, &ldquo;내 분석 기록&rdquo;에는 여기서 고른
+            케이스가 저장돼요.
           </p>
           <label className={styles.sectionNote}>
-            어떤 케이스를 위주로 볼까요{" "}
+            처음 보여줄 케이스 기준{" "}
             <select
               className={styles.select}
               value={effectiveFocus}
