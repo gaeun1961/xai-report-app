@@ -701,6 +701,41 @@ def _pick_case_indices_regression(
     return sorted(int(i) for i in picks)
 
 
+DEPENDENCE_MAX_ROWS = 300
+# ~4KB per feature at 300 rows; all 31 HR features would add 133KB, and an
+# upload report lives in localStorage (20 kept, ~5MB per origin) - so only
+# the most important features carry dependence data
+DEPENDENCE_MAX_FEATURES = 10
+
+
+def _dependence_block(X, display_df, shap_values, held: np.ndarray, regression: bool, feature_importance_df) -> dict:
+    """Per-feature (value, SHAP contribution) pairs for the feature detail
+    tab's dependence plot (top DEPENDENCE_MAX_FEATURES features by
+    importance) - straight from the SHAP values this report
+    already computed, no extra model work. At most DEPENDENCE_MAX_ROWS rows,
+    held-out rows first (the rows cases are judged on), then the rest of the
+    SHAP pool. `ids` are the rows' ids (same as case ids) in that order, so
+    other per-row data can be lined up with it. Classification contributions
+    are probability shares (x100 = %p); regression is in target units.
+    """
+    pos = np.concatenate([np.where(held)[0], np.where(~held)[0]])[:DEPENDENCE_MAX_ROWS]
+    def val(v):
+        if isinstance(v, (int, float, np.integer, np.floating)):
+            return None if pd.isna(v) else _sig(float(v))
+        return str(v)
+    top = list(feature_importance_df["feature"].head(DEPENDENCE_MAX_FEATURES))
+    cols = list(X.columns)
+    features = []
+    for col in top:
+        j = cols.index(col)
+        features.append({
+            "feature": col,
+            "values": [val(display_df.iloc[i][col]) for i in pos],
+            "shap": [round(float(shap_values[i, j]), 4) if not regression else _sig(float(shap_values[i, j])) for i in pos],
+        })
+    return {"ids": [str(display_df.index[i]) for i in pos], "features": features}
+
+
 def _held_out_mask(X: pd.DataFrame, eval_stats):
     """Boolean mask over X's rows: True where the explained model never saw
     the row in training. Without eval_stats (old callers) every row counts,
@@ -904,6 +939,11 @@ def export_report_json(
         report["distributions"] = distributions
 
     report["caseStats"] = case_stats
+    report["dependence"] = _dependence_block(
+        X, display_df, shap_values, held,
+        regression=report.get("taskType") == "regression",
+        feature_importance_df=feature_importance_df,
+    )
 
     t0 = time.perf_counter()
     report["partialDependence"] = compute_partial_dependence(
@@ -1083,6 +1123,11 @@ def _export_regression_report(
         report["distributions"] = distributions
 
     report["caseStats"] = case_stats
+    report["dependence"] = _dependence_block(
+        X, display_df, shap_values, held,
+        regression=report.get("taskType") == "regression",
+        feature_importance_df=feature_importance_df,
+    )
 
     t0 = time.perf_counter()
     report["partialDependence"] = compute_partial_dependence(

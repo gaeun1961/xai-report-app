@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import {
+  getSaveNotice,
   getUploadHistoryEntry,
   loadUploadReport,
   renameUploadReport,
@@ -20,10 +21,12 @@ export default function MyReportPage() {
   const [checked, setChecked] = useState(false);
   const [editingName, setEditingName] = useState(false);
   const [nameDraft, setNameDraft] = useState("");
+  const [saveNotice, setSaveNotice] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     setReport(loadUploadReport(id));
     setName(getUploadHistoryEntry(id)?.fileName ?? null);
+    setSaveNotice(getSaveNotice(id));
     setChecked(true);
   }, [id]);
 
@@ -72,6 +75,8 @@ export default function MyReportPage() {
           </span>
         </h1>
       )}
+
+      {saveNotice && <p className={styles.errorBox}>{saveNotice}</p>}
 
       {!checked ? null : !report ? (
         <p className={styles.guide}>

@@ -130,6 +130,15 @@ export type ShapReport = {
     byClass?: number[][];
     missing: number;
   }[];
+  // SHAP dependence for the feature detail tab: per top feature (by
+  // importance, max 10), the value and SHAP contribution of each row in
+  // `ids` order (<=300 rows from the SHAP pool, held-out rows first).
+  // Classification contributions are probability shares (x100 = %p);
+  // regression is in target units. Absent on older reports.
+  dependence?: {
+    ids: string[];
+    features: { feature: string; values: (number | string | null)[]; shap: number[] }[];
+  };
   // Numeric columns left out of `outliers` because they have at most 2
   // distinct values (a box plot can't show anything meaningful for those).
   // Optional so old JSON still loads.

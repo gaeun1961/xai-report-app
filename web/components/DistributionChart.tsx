@@ -1,5 +1,6 @@
 import type { ShapReport } from "@/lib/types";
 import { fmtNum } from "@/lib/reportSummary";
+import { WIDE, wideX } from "@/lib/chartFrame";
 import { columnDesc, isSuggestedDesc } from "@/lib/columnGlossary";
 import GlossaryTerm from "./GlossaryTerm";
 import styles from "./report.module.css";
@@ -48,6 +49,7 @@ export function DistributionCard({
   dist: Distribution;
   domain: string;
   split?: Split;
+  // given = draw on the feature detail tab's shared wide frame (lib/chartFrame)
   xRange?: [number, number];
   showTitle?: boolean;
 }) {
@@ -86,19 +88,21 @@ function Histogram({
 }) {
   const edges = dist.edges ?? [];
   const [lo, hi] = xRange ?? [edges[0], edges[edges.length - 1]];
-  const x = (v: number) => PAD + ((v - lo) / (hi - lo || 1)) * (WIDTH - PAD * 2);
+  const width = xRange ? WIDE.width : WIDTH;
+  const height = xRange ? 110 : HEIGHT;
+  const x = xRange ? wideX(xRange) : (v: number) => PAD + ((v - lo) / (hi - lo || 1)) * (WIDTH - PAD * 2);
   const max = Math.max(1, ...dist.counts);
-  const h = (c: number) => (c / max) * (HEIGHT - PAD * 2);
+  const h = (c: number) => (c / max) * (height - PAD * 2);
   return (
     <>
-      <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} className={styles.pdpSvg} role="img">
+      <svg viewBox={`0 0 ${width} ${height}`} className={styles.pdpSvg} role="img">
         {dist.counts.map((c, i) => {
           const x0 = x(edges[i]);
           const w = Math.max(0.5, x(edges[i + 1]) - x0 - 1);
           // negative class from the baseline up, positive stacked on top
           const neg = byClass ? byClass[0][i] : c;
           const pos = byClass ? byClass[1][i] : 0;
-          const base = HEIGHT - PAD;
+          const base = height - PAD;
           return (
             <g key={i}>
               <title>
@@ -118,11 +122,31 @@ function Histogram({
           );
         })}
       </svg>
-      <div className={styles.pdpAxis}>
-        <span>{fmtNum(lo)}</span>
-        <span>{fmtNum(hi)}</span>
-      </div>
+      {xRange ? (
+        <WideAxisLabels lo={lo} hi={hi} />
+      ) : (
+        <div className={styles.pdpAxis}>
+          <span>{fmtNum(lo)}</span>
+          <span>{fmtNum(hi)}</span>
+        </div>
+      )}
     </>
+  );
+}
+
+// min/max labels placed under the wide frame's plot area (not the card edge)
+export function WideAxisLabels({ lo, hi }: { lo: number; hi: number }) {
+  return (
+    <div
+      className={styles.pdpAxis}
+      style={{
+        marginLeft: `${(WIDE.left / WIDE.width) * 100}%`,
+        marginRight: `${(WIDE.right / WIDE.width) * 100}%`,
+      }}
+    >
+      <span>{fmtNum(lo)}</span>
+      <span>{fmtNum(hi)}</span>
+    </div>
   );
 }
 
