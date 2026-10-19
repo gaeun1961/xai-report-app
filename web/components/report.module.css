@@ -410,6 +410,13 @@
   color: color-mix(in srgb, currentColor 60%, transparent);
 }
 
+.chartSubValue {
+  display: block;
+  font-size: 11px;
+  line-height: 1.2;
+  cursor: help;
+}
+
 /* partial dependence - small per-feature line chart of predicted
    probability vs that feature's value, others held at observed values */
 .pdpGrid {

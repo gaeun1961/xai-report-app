@@ -459,7 +459,11 @@ function SummaryBody({
       <section className={styles.cardSection}>
         <h2 className={styles.h2}>
           특성 중요도{" "}
-          <InfoTip text="요리할 때 어떤 재료가 맛을 가장 많이 좌우하는지 궁금할 때가 있죠? 이 그래프가 딱 그거예요. **막대가 길수록, 그 항목이 AI의 예측 결과를 정하는 데 더 큰 힘을 썼다**는 뜻이에요. 막대가 짧으면 그 항목은 예측에 별로 영향을 못 준 거예요. 옆에 작은 물음표가 있는 항목은 어느 방향으로 작용하는 경향이 있는지도 볼 수 있어요 — 텍스트(범주형) 값을 가진 항목은 순서가 없어서 경향을 계산할 수 없어 물음표가 없어요." />
+          {regression ? (
+            <InfoTip text="요리할 때 어떤 재료가 맛을 가장 많이 좌우하는지 궁금할 때가 있죠? 이 그래프가 딱 그거예요. **막대 길이는 각 항목이 예측에 준 영향이 전체에서 차지하는 비중**이에요 — 모든 막대를 더하면 100%예요. 막대 옆 작은 **±값은 그 항목이 예측값을 평균적으로 얼마나 움직였는지**를 원래 단위로 보여줘요. 옆에 작은 물음표가 있는 항목은 값이 클수록 예측값이 커지는지 작아지는지 경향도 볼 수 있어요 — 텍스트(범주형) 값을 가진 항목은 순서가 없어서 물음표가 없어요." />
+          ) : (
+            <InfoTip text="요리할 때 어떤 재료가 맛을 가장 많이 좌우하는지 궁금할 때가 있죠? 이 그래프가 딱 그거예요. **막대가 길수록, 그 항목이 AI의 예측 결과를 정하는 데 더 큰 힘을 썼다**는 뜻이에요. 막대가 짧으면 그 항목은 예측에 별로 영향을 못 준 거예요. 옆에 작은 물음표가 있는 항목은 어느 방향으로 작용하는 경향이 있는지도 볼 수 있어요 — 텍스트(범주형) 값을 가진 항목은 순서가 없어서 경향을 계산할 수 없어 물음표가 없어요." />
+          )}
         </h2>
         {valueEditor && report.columnGlossarySuggested === false && (
           <p className={styles.sectionNote}>
@@ -471,6 +475,7 @@ function SummaryBody({
           items={report.featureImportance}
           domain={domain}
           tooltips={tendencies}
+          regression={regression}
         />
       </section>
 
@@ -590,7 +595,11 @@ function CasesBody({ report, domain, selectedId, onSelect }: CasesBodyProps) {
               <b>{report.caseStats.wrong.toLocaleString()}개</b> 기준으로 계산했어요.
             </p>
           )}
-          <FeatureImportanceChart items={report.wrongFeatureImportance} domain={domain} />
+          <FeatureImportanceChart
+            items={report.wrongFeatureImportance}
+            domain={domain}
+            regression={regression}
+          />
         </section>
       )}
 

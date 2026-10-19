@@ -17,6 +17,9 @@ type Props = {
   valueFormat?: (v: number) => string;
   // optional per-item hover note (e.g. a feature's tendency), keyed by label
   tooltips?: Record<string, string>;
+  // optional small second line under the number (e.g. the raw value behind
+  // a share), with a hover title explaining it
+  subValue?: (label: string) => { text: string; title: string };
 };
 
 // fixed 0–1 domain (not each report's own max) so a bar's length means the
@@ -118,6 +121,7 @@ export default function PercentBarChart({
   collapsedCount = 8,
   valueFormat = (v) => v.toFixed(3),
   tooltips,
+  subValue,
 }: Props) {
   const [expanded, setExpanded] = useState(false);
 
@@ -170,7 +174,14 @@ export default function PercentBarChart({
                 style={{ width: `${Math.min(value, 1) * 100}%` }}
               />
             </span>
-            <span className={styles.chartValue}>{valueFormat(value)}</span>
+            <span className={styles.chartValue}>
+              {valueFormat(value)}
+              {subValue && (
+                <span className={styles.chartSubValue} title={subValue(label).title}>
+                  {subValue(label).text}
+                </span>
+              )}
+            </span>
           </li>
         ))}
       </ul>
