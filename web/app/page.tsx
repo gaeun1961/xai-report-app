@@ -31,13 +31,13 @@ const STEPS = [
 ];
 
 // real rows from the Titanic preset (Sex decoded from its 0/1 code); the
-// highlighted one is the case the mock explains (row id 215, 79% "survived")
+// highlighted one is the case the mock explains (row id 759, 79% "survived" - a held-out case in titanic.json)
 const SHEET_HEAD = ["Pclass", "Sex", "Age", "sibsp", "Parch", "Fare"];
 const SHEET_ROWS = [
   { hit: false, cells: [3, "male", 39, 1, 5, 31.275] },
   { hit: false, cells: [3, "male", 28, 3, 1, 25.4667] },
   { hit: false, cells: [1, "female", 58, 0, 0, 146.5208] },
-  { hit: true, cells: [1, "female", 31, 1, 0, 113.275] },
+  { hit: true, cells: [1, "female", 33, 0, 0, 86.5] },
 ];
 
 // real Titanic feature importance, drawn on the same fixed 0-100% axis the

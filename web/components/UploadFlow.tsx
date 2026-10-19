@@ -61,6 +61,10 @@ export default function UploadFlow() {
   // "borderline" (40-60% confidence) has no regression meaning
   const effectiveFocus: CaseFocus =
     taskType === "regression" && caseFocus === "borderline" ? "balanced" : caseFocus;
+  // cases only come from the ~20% of rows held out from training (see
+  // common.train_model), so a small file can't fill 100 case cards
+  const maxCases =
+    rowCount !== null ? Math.max(1, Math.min(100, Math.ceil(rowCount * 0.2))) : 100;
   const targetCol = columns.find((c) => c.name === target);
   const problem = targetCol ? taskProblem(targetCol, taskType) : null;
 
@@ -69,7 +73,7 @@ export default function UploadFlow() {
     setError(null);
     setStep("analyzing");
     try {
-      const result = await analyzeCsv(file, target, nCases, effectiveFocus, taskType);
+      const result = await analyzeCsv(file, target, Math.min(nCases, maxCases), effectiveFocus, taskType);
       const id = saveUploadReport(result, file.name);
       router.push(`/my/${id}`);
     } catch (e) {
@@ -135,17 +139,18 @@ export default function UploadFlow() {
             <input
               type="number"
               min={1}
-              max={100}
-              value={nCases}
+              max={maxCases}
+              value={Math.min(nCases, maxCases)}
               onChange={(e) =>
-                setNCases(Math.max(1, Math.min(100, Number(e.target.value) || 1)))
+                setNCases(Math.max(1, Math.min(maxCases, Number(e.target.value) || 1)))
               }
               className={styles.rangeInput}
               aria-label="살펴볼 케이스 개수"
             />
           </label>
           <p className={styles.sectionNote}>
-            최대 100개까지 괜찮아요. 개수를 늘리는 것보다 아래 &lsquo;케이스 선정
+            케이스는 모델이 학습에 쓰지 않은 행(약 20%) 중에서 골라서, 이 파일은
+            최대 {maxCases}개까지 볼 수 있어요. 개수를 늘리는 것보다 아래 &lsquo;케이스 선정
             기준&rsquo;을 바꾸는 게 알짜 케이스를 보기엔 더 좋아요.
           </p>
           <label className={styles.sectionNote}>

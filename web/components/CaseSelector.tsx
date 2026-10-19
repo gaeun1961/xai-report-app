@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { ShapReport } from "@/lib/types";
+import { caseScopeText, HELD_OUT_NOTE } from "@/lib/reportSummary";
 import CaseScatterPlot from "./CaseScatterPlot";
 import RegressionScatterPlot from "./RegressionScatterPlot";
 import InfoTip from "./InfoTip";
@@ -35,9 +36,13 @@ function RegressionCaseList({
     <div className={styles.selectorWrap}>
       {caseStats && (
         <p className={styles.selectorStats}>
-          분석한 전체 {caseStats.total.toLocaleString()}개 중 · 오차가 큰 케이스{" "}
+          {caseScopeText(caseStats)} · 오차가 큰 케이스{" "}
           <b>{caseStats.wrong.toLocaleString()}개</b>{" "}
-          <InfoTip text="여기 뜨는 개수는 지금 화면에 불러온 케이스 수가 아니라, 이 리포트가 분석한 전체 데이터를 기준으로 셌어요. '오차가 큰' 케이스는 예측값과 실제값의 차이(절댓값)가 다른 케이스들에 비해 유독 큰 경우예요." />
+          <InfoTip
+            text={`여기 뜨는 개수는 지금 화면에 불러온 케이스 수가 아니라, 이 리포트가 분석한 데이터 전체를 기준으로 셌어요.${
+              caseStats.heldOut ? ` ${HELD_OUT_NOTE}` : ""
+            } '오차가 큰' 케이스는 예측값과 실제값의 차이(절댓값)가 다른 케이스들에 비해 유독 큰 경우예요.`}
+          />
         </p>
       )}
       <div className={styles.selectorFilter}>
@@ -116,10 +121,14 @@ function ClassificationCaseSelector({
     <div className={styles.selectorWrap}>
       {caseStats && (
         <p className={styles.selectorStats}>
-          분석한 전체 {caseStats.total.toLocaleString()}개 중 · 예측이 틀린 케이스{" "}
+          {caseScopeText(caseStats)} · 예측이 틀린 케이스{" "}
           <b>{caseStats.wrong.toLocaleString()}개</b> · 확신도 애매한(40~60%) 케이스{" "}
           <b>{caseStats.borderline.toLocaleString()}개</b>{" "}
-          <InfoTip text="여기 뜨는 개수는 지금 화면에 불러온 케이스 카드 수가 아니라, 이 리포트가 분석한 전체 데이터를 기준으로 셌어요. 카드로 직접 확인하려면 아래 필터와 확률 범위를 활용하세요." />
+          <InfoTip
+            text={`여기 뜨는 개수는 지금 화면에 불러온 케이스 카드 수가 아니라, 이 리포트가 분석한 데이터 전체를 기준으로 셌어요.${
+              caseStats.heldOut ? ` ${HELD_OUT_NOTE}` : ""
+            } 카드로 직접 확인하려면 아래 필터와 확률 범위를 활용하세요.`}
+          />
         </p>
       )}
       <div className={styles.selectorFilter}>

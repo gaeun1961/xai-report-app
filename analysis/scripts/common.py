@@ -171,7 +171,10 @@ def train_model(X: pd.DataFrame, y: pd.Series, model=None, task_type: str = "cla
     classification needs the majority-class baseline.
 
     The returned model itself is fit on an 80% train split in both cases -
-    that's the one SHAP explains and cases are drawn from.
+    that's the one SHAP explains. eval_stats["holdout_index"] is the other
+    20% (rows that model never saw): export_report_json judges cases
+    (correct/wrong, residuals, case picks, caseStats) only on those, so a
+    case card never shows the model "predicting" a row it memorized.
 
     Returns (model, cv_score, eval_stats). cv_score is accuracy for
     classification, R² for regression.
@@ -185,12 +188,12 @@ def train_model(X: pd.DataFrame, y: pd.Series, model=None, task_type: str = "cla
         r2 = float(r2_score(y, oof))
         rmse = float(np.sqrt(np.mean((y.to_numpy() - oof) ** 2)))
 
-        X_train, _, y_train, _ = train_test_split(
+        X_train, X_test, y_train, _ = train_test_split(
             X, y, test_size=0.2, random_state=RANDOM_STATE
         )
         model.fit(X_train, y_train)
 
-        eval_stats = {"r2": r2, "rmse": rmse}
+        eval_stats = {"r2": r2, "rmse": rmse, "holdout_index": X_test.index}
         return model, r2, eval_stats
 
     if model is None:
@@ -206,12 +209,13 @@ def train_model(X: pd.DataFrame, y: pd.Series, model=None, task_type: str = "cla
         recall_score(y, oof, pos_label=minority_cls, zero_division=0)
     )
 
-    X_train, _, y_train, _ = train_test_split(
+    X_train, X_test, y_train, _ = train_test_split(
         X, y, test_size=0.2, random_state=RANDOM_STATE, stratify=y
     )
     model.fit(X_train, y_train)
 
     eval_stats = {
+        "holdout_index": X_test.index,
         "baseline_accuracy": max(pos_rate, 1.0 - pos_rate),
         "minority_recall": minority_recall,
         "minority_is_positive": minority_cls == 1,
@@ -626,6 +630,16 @@ def _pick_case_indices_regression(
     return sorted(int(i) for i in picks)
 
 
+def _held_out_mask(X: pd.DataFrame, eval_stats):
+    """Boolean mask over X's rows: True where the explained model never saw
+    the row in training. Without eval_stats (old callers) every row counts,
+    i.e. the pre-holdout behaviour."""
+    holdout = (eval_stats or {}).get("holdout_index")
+    if holdout is None:
+        return np.ones(len(X), dtype=bool), False
+    return np.asarray(X.index.isin(holdout)), True
+
+
 def export_report_json(
     domain: str,
     model,
@@ -699,16 +713,28 @@ def export_report_json(
     # even though only e.g. 30 case cards were loaded. 40-60% matches the
     # case_focus="borderline" wording ("확신도 애매한(40~60%) 케이스 위주")
     # elsewhere in the app, so "borderline" means the same threshold everywhere.
+    # Case-level judgements use only held-out rows (see train_model); the
+    # global pieces (featureImportance, PDP, correlations) still use the
+    # whole SHAP pool - they describe the model, not how well it predicts.
+    held, held_out = _held_out_mask(X, eval_stats)
+    held_pos = np.where(held)[0]
     actual_arr = y.to_numpy()
     case_stats = {
-        "total": int(len(predictions)),
-        "wrong": int((predictions != actual_arr).sum()),
-        "borderline": int(((proba_pos >= 0.4) & (proba_pos <= 0.6)).sum()),
+        "total": int(held.sum()),
+        "wrong": int((predictions[held] != actual_arr[held]).sum()),
+        "borderline": int(
+            ((proba_pos[held] >= 0.4) & (proba_pos[held] <= 0.6)).sum()
+        ),
+        "heldOut": held_out,
     }
 
-    case_indices = _pick_case_indices(
-        predictions, proba_pos, n_cases, actual=y.to_numpy(), focus=case_focus
-    )
+    case_indices = [
+        int(held_pos[i])
+        for i in _pick_case_indices(
+            predictions[held], proba_pos[held], n_cases,
+            actual=actual_arr[held], focus=case_focus,
+        )
+    ]
 
     cases = []
     for idx in case_indices:
@@ -770,6 +796,12 @@ def export_report_json(
         "cases": cases,
     }
 
+    # presets don't pass a target column - leave the key out rather than
+    # writing null, since the frontend treats "targetColumn present" as
+    # "this is an upload" (shows the value-label editor)
+    if target_column is None:
+        del report["targetColumn"]
+
     if base_value is not None:
         report["baseValue"] = round(float(base_value), 4)
 
@@ -804,7 +836,7 @@ def export_report_json(
     # feature importance recomputed over only the wrong predictions - lets a
     # reader see "what SHAP leaned on when the model got it wrong" (may differ
     # from the overall ranking). Omitted for a perfect model (nothing wrong).
-    wrong_mask = predictions != actual_arr
+    wrong_mask = (predictions != actual_arr) & held
     if wrong_mask.any():
         wrong_importance = np.abs(shap_values[wrong_mask]).mean(axis=0)
         wrong_fi = sorted(zip(feature_names, wrong_importance), key=lambda t: -t[1])
@@ -881,21 +913,29 @@ def _export_regression_report(
     actual_arr = y.to_numpy(dtype=float)
     residual = predictions - actual_arr
     abs_residual = np.abs(residual)
+    # same held-out-only rule as the classification path
+    held, held_out = _held_out_mask(X, eval_stats)
+    held_pos = np.where(held)[0]
 
-    q1, q3 = np.percentile(abs_residual, [25, 75])
+    q1, q3 = np.percentile(abs_residual[held], [25, 75])
     iqr = q3 - q1
     large_error_threshold = q3 + IQR_MULTIPLIER * iqr
-    wrong_mask = abs_residual > large_error_threshold if iqr > 0 else np.zeros_like(abs_residual, dtype=bool)
+    wrong_mask = (abs_residual > large_error_threshold) & held if iqr > 0 else np.zeros_like(abs_residual, dtype=bool)
 
     case_stats = {
-        "total": int(len(predictions)),
+        "total": int(held.sum()),
         "wrong": int(wrong_mask.sum()),
         "borderline": 0,
+        "heldOut": held_out,
     }
 
-    case_indices = _pick_case_indices_regression(
-        predictions, actual_arr, n_cases, focus=case_focus if case_focus != "borderline" else "balanced"
-    )
+    case_indices = [
+        int(held_pos[i])
+        for i in _pick_case_indices_regression(
+            predictions[held], actual_arr[held], n_cases,
+            focus=case_focus if case_focus != "borderline" else "balanced",
+        )
+    ]
 
     cases = []
     for idx in case_indices:

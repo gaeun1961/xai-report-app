@@ -23,6 +23,16 @@ export function fmtNum(n: number): string {
   return Number(n.toFixed(digits)).toLocaleString();
 }
 
+// "학습에 쓰지 않은 N개 중" / older reports: "분석한 전체 N개 중"
+export function caseScopeText(stats: NonNullable<ShapReport["caseStats"]>): string {
+  const n = stats.total.toLocaleString();
+  return stats.heldOut ? `학습에 쓰지 않은 ${n}개 중` : `분석한 전체 ${n}개 중`;
+}
+
+// why the counts above only use held-out rows - shown as an InfoTip
+export const HELD_OUT_NOTE =
+  "케이스와 개수는 모델이 학습에 쓰지 않은 행만 기준으로 해요. 학습에 쓴 행은 모델이 정답을 이미 본 셈이라, 실제보다 잘 맞는 것처럼 보이기 때문이에요.";
+
 // signed version for residuals/contributions: "+4.2" / "−3.1"
 export function fmtSigned(n: number): string {
   return `${n >= 0 ? "+" : "−"}${fmtNum(Math.abs(n))}`;
@@ -369,11 +379,12 @@ export function buildCopyText(
     lines.push("", "## 정확도", `전체 정확도: ${pct(report.modelAccuracy)}`);
   }
   if (report.caseStats) {
-    const { total, wrong, borderline } = report.caseStats;
+    const { wrong, borderline } = report.caseStats;
+    const scope = caseScopeText(report.caseStats);
     lines.push(
       regression
-        ? `분석한 전체 케이스: ${total}개 (오차가 큰 케이스 ${wrong}개)`
-        : `분석한 전체 케이스: ${total}개 (예측이 틀린 케이스 ${wrong}개, 확신도 애매한(40~60%) 케이스 ${borderline}개)`,
+        ? `케이스: ${scope} 오차가 큰 케이스 ${wrong}개`
+        : `케이스: ${scope} 예측이 틀린 케이스 ${wrong}개, 확신도 애매한(40~60%) 케이스 ${borderline}개`,
     );
   }
   if (report.modelQuality && regression) {

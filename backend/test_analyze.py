@@ -33,7 +33,9 @@ def test_analyze_returns_report():
     assert res.status_code == 200, res.text
     body = res.json()
     assert "featureImportance" in body
-    assert len(body["cases"]) == 5
+    # cases only come from rows the explained model never trained on (the
+    # 20% holdout): 10 rows -> 2 held out, so asking for 5 still yields 2
+    assert len(body["cases"]) == 2
     # raw echoes original CSV columns dropped as unusable for modeling too
     # (so the frontend can label a case by any of them), but not the target
     # column itself (already shown via the 예측/실제 badges) or constant
@@ -51,11 +53,12 @@ def test_analyze_returns_report():
     # 10 data rows in CSV, well under SHAP_MAX_ROWS - no sampling needed
     assert body["totalRows"] == 10
     assert body["sampledRows"] == 10
-    # caseStats is over the full analyzed pool, not just the 5 loaded cards
+    # caseStats counts every held-out row in the pool, not just loaded cards
     stats = body["caseStats"]
-    assert stats["total"] == 10
-    assert 0 <= stats["wrong"] <= 10
-    assert 0 <= stats["borderline"] <= 10
+    assert stats["heldOut"] is True
+    assert stats["total"] == 2
+    assert 0 <= stats["wrong"] <= 2
+    assert 0 <= stats["borderline"] <= 2
 
 
 def test_columns_returns_row_count():
@@ -426,6 +429,34 @@ def test_retrain_rejects_regression_analysis():
     assert bad.status_code == 400, bad.text
 
 
+def test_cases_come_only_from_held_out_rows():
+    # every case card, and caseStats, must be judged on rows the explained
+    # model never trained on - for both task types
+    import pandas as pd
+    from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+
+    rng = np.random.default_rng(0)
+    X = pd.DataFrame({"a": rng.normal(size=300), "b": rng.normal(size=300)})
+    for task, y, model in [
+        ("classification", pd.Series((X["a"] > 0).astype(int)), RandomForestClassifier(n_estimators=20, random_state=0)),
+        ("regression", X["a"] * 3 + rng.normal(size=300), RandomForestRegressor(n_estimators=20, random_state=0)),
+    ]:
+        model, score, stats = common.train_model(X, y, model, task_type=task)
+        shap_values, fi, base = common.compute_shap(model, X)
+        import tempfile, os
+        with tempfile.TemporaryDirectory() as tmp:
+            report = common.export_report_json(
+                domain="t", target_labels=("0", "1"), model=model, X=X, y=y,
+                shap_values=shap_values, feature_importance_df=fi, display_df=X,
+                model_accuracy=score, eval_stats=stats, base_value=base,
+                output_path=os.path.join(tmp, "r.json"), n_cases=30, task_type=task,
+            )
+        held = set(stats["holdout_index"])
+        assert {int(c["id"]) for c in report["cases"]} <= held, task
+        assert report["caseStats"]["total"] == len(held), task
+        assert report["caseStats"]["heldOut"] is True
+
+
 if __name__ == "__main__":
     test_analyze_returns_report()
     test_columns_returns_row_count()
@@ -449,4 +480,5 @@ if __name__ == "__main__":
     test_analyze_rejects_unknown_task_type()
     test_whatif_rejects_regression_analysis()
     test_retrain_rejects_regression_analysis()
+    test_cases_come_only_from_held_out_rows()
     print("ok")
