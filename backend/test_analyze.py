@@ -94,25 +94,40 @@ def test_analyze_drops_constant_column_from_raw():
 
 
 def test_pick_case_indices_focus():
+    # the case ranking: any prefix is the right cases for that focus.
     # idx1 and idx4 are the model's mistakes; distances from 0.5 are all
     # distinct by construction so ordering is unambiguous.
     predictions = np.array([1, 1, 1, 0, 0, 0])
     actual = np.array([1, 0, 1, 0, 1, 0])
     proba_pos = np.array([0.95, 0.6, 0.52, 0.10, 0.47, 0.15])
+    rank = common._rank_case_indices
 
     # "wrong": most-confidently-wrong first (idx1, dist 0.10, before idx4, dist 0.03)
-    assert common._pick_case_indices(
-        predictions, proba_pos, 1, actual=actual, focus="wrong"
-    ) == [1]
-    assert common._pick_case_indices(
-        predictions, proba_pos, 2, actual=actual, focus="wrong"
-    ) == [1, 4]
-
+    assert rank(predictions, proba_pos, actual, "wrong")[:2] == [1, 4]
     # "borderline": closest to 0.5 first, regardless of correctness
-    assert common._pick_case_indices(
-        predictions, proba_pos, 2, focus="borderline"
-    ) == [2, 4]
+    assert rank(predictions, proba_pos, actual, "borderline")[:2] == [2, 4]
+    # "balanced": classes alternate, most confident first
+    assert rank(predictions, proba_pos, actual, "balanced")[:2] == [0, 3]
+    for focus in ("balanced", "wrong", "borderline"):
+        order = rank(predictions, proba_pos, actual, focus)
+        assert sorted(order) == list(range(6)), (focus, order)  # every row exactly once
 
+    # balanced keeps ~1 borderline per TYPICAL_EVERY slots within a class
+    rng = np.random.default_rng(0)
+    p = rng.uniform(size=200)
+    pred = (p >= 0.5).astype(int)
+    order = rank(pred, p, None, "balanced")
+    first20 = order[:20]
+    assert abs(sum(pred[first20]) - 10) <= 1  # classes alternate
+    dist = np.abs(p - 0.5)
+    near = sorted(range(200), key=lambda i: dist[i])[:20]
+    assert 2 <= len(set(first20) & set(near)) <= 6
+
+    # regression "balanced": any prefix spans the whole actual range
+    actual_r = rng.normal(size=100)
+    order_r = common._rank_case_indices_regression(actual_r, actual_r, "balanced")
+    assert sorted(order_r) == list(range(100))
+    assert set(order_r[:2]) == {int(np.argmin(actual_r)), int(np.argmax(actual_r))}
 
 def test_case_focus_rejects_unknown_value():
     client = TestClient(app)
@@ -656,6 +671,31 @@ def test_dependence_reuses_shap_pool_held_out_first():
         assert abs(top["shap"][row[case["id"]]] - card[top["feature"]]) < 1e-3
 
 
+def test_candidates_let_the_frontend_repick_cases():
+    # report.cases must be exactly the prefix of the chosen focus's ranking,
+    # read back through the candidates block (= first rows of dependence)
+    import common as C
+
+    for focus in ("balanced", "wrong", "borderline"):
+        body = TestClient(app).post(
+            "/analyze",
+            files={"file": ("s.csv", _dependence_csv(), "text/csv")},
+            data={"target_column": "y", "n_cases": "12", "case_focus": focus},
+        ).json()
+        cand = body["candidates"]
+        n = cand["count"]
+        assert 0 < n <= C.CANDIDATE_MAX and body["caseFocus"] == focus
+        for order in cand["order"].values():
+            assert sorted(order) == list(range(n))
+        ids = body["dependence"]["ids"][:n]
+        assert [c["id"] for c in body["cases"]] == [ids[i] for i in cand["order"][focus][:12]]
+        assert len(cand["pred"]) == len(cand["proba"]) == len(cand["actual"]) == n
+        dep_feats = {f["feature"] for f in body["dependence"]["features"]}
+        rest_feats = {f["feature"] for f in cand["rest"]}
+        assert dep_feats | rest_feats == {f["feature"] for f in body["featureImportance"]}
+        assert not dep_feats & rest_feats
+
+
 if __name__ == "__main__":
     test_analyze_returns_report()
     test_columns_returns_row_count()
@@ -687,4 +727,5 @@ if __name__ == "__main__":
     test_analysis_cache_evicts_oldest_over_memory_budget()
     test_distributions_cover_every_row()
     test_dependence_reuses_shap_pool_held_out_first()
+    test_candidates_let_the_frontend_repick_cases()
     print("ok")

@@ -5,6 +5,8 @@ column names are ever hardcoded here.
 """
 import json
 import time
+from collections import deque
+from itertools import zip_longest
 from pathlib import Path
 
 import numpy as np
@@ -603,102 +605,126 @@ def compute_partial_dependence(
     return results
 
 
-TYPICAL_SHARE = 0.8  # per class: 80% confident/typical rows, 20% borderline
+# balanced ranking: per predicted class, every TYPICAL_EVERY-th slot is a
+# borderline row (probability nearest 0.5), the rest typical rows the model
+# is most sure about - the same ~80/20 mix the old fixed-N picker used
+TYPICAL_EVERY = 5
+CASE_FOCI = ("balanced", "wrong", "borderline")
+# rows the report carries for re-picking cases on screen (held-out only)
+CANDIDATE_MAX = 200
 
 
-def _pick_case_indices(
+def _rank_case_indices(
     predictions: np.ndarray,
     proba_pos: np.ndarray,
-    n_cases: int,
     actual: np.ndarray = None,
     focus: str = "balanced",
 ) -> list:
-    """Pick which rows become cases in the report.
+    """Every row, ordered so that the first N are the N cases to show for
+    `focus` - for any N. The report's cases are a prefix of this, and the
+    frontend re-slices the same ranking when the reader changes the count
+    or the focus, so the picking rules live only here.
 
-    focus="balanced" (default): an even split across predicted classes, and
-    within each class ~80% of the slots go to 'typical' rows the model is
-    most confident about, ~20% to 'borderline' rows whose probability sits
-    nearest 0.5 (so the default view reads as trustworthy as the accuracy
-    implies; the borderline ones stay reachable via the confidence filter).
-    Deterministic (sorted by confidence, no sampling).
-
-    focus="wrong": the model's mistakes first (most-confidently-wrong first —
-    those are the most worth auditing), topped up with the balanced mix if
-    there aren't n_cases wrong predictions. Requires `actual`; silently falls
-    back to "balanced" if `actual` is omitted or nothing was wrong (e.g. a
-    perfect model).
-
-    focus="borderline": probability nearest 50% first, regardless of
-    predicted class or correctness — the "model couldn't decide" cases.
+    focus="balanced": predicted classes alternate; within a class, typical
+    rows (most confident first) with every TYPICAL_EVERY-th slot going to a
+    borderline row (nearest 0.5 first), so any prefix reads as trustworthy
+    as the accuracy implies while still showing some close calls.
+    focus="wrong": the model's mistakes first, most-confidently-wrong first
+    (the most worth auditing), then everything else nearest-0.5 first. Falls
+    back to "balanced" without `actual` or without any mistake.
+    focus="borderline": probability nearest 50% first, regardless of class
+    or correctness - the "model couldn't decide" cases.
+    Deterministic (stable sorts, no sampling).
     """
+    dist = np.abs(proba_pos - 0.5)
+    by_closeness = [int(i) for i in np.argsort(dist, kind="stable")]
     if focus == "borderline":
-        order = np.argsort(np.abs(proba_pos - 0.5))
-        return sorted(int(i) for i in order[:n_cases])
-
+        return by_closeness
     if focus == "wrong" and actual is not None:
         wrong = np.where(predictions != actual)[0]
         if len(wrong) > 0:
-            order = wrong[np.argsort(-np.abs(proba_pos[wrong] - 0.5))]
-            chosen = [int(i) for i in order[:n_cases]]
-            if len(chosen) < n_cases:
-                for i in np.argsort(np.abs(proba_pos - 0.5)):
-                    if int(i) not in chosen:
-                        chosen.append(int(i))
-                    if len(chosen) >= n_cases:
-                        break
-            return sorted(set(chosen))[:n_cases]
-        # no wrong predictions at all — fall through to "balanced" below
+            first = [int(i) for i in wrong[np.argsort(-dist[wrong], kind="stable")]]
+            taken = set(first)
+            return first + [i for i in by_closeness if i not in taken]
 
-    per_class = max(1, n_cases // 2)
-    chosen: list = []
-
+    per_class = []
     for cls in (1, 0):
         pool = np.where(predictions == cls)[0]
-        if len(pool) == 0:
-            continue
-        # ascending distance from 0.5 -> borderline first, typical last
-        order = pool[np.argsort(np.abs(proba_pos[pool] - 0.5))]
-        take = min(per_class, len(order))
-        n_typical = min(take, max(1, round(take * TYPICAL_SHARE)))
-        n_border = take - n_typical
-        picks = list(order[:n_border])
-        picks += list(order[len(order) - n_typical:])
-        chosen.extend(int(i) for i in picks)
-
-    # top up if a class was empty / too small, keeping n_cases stable
-    if len(set(chosen)) < n_cases:
-        for i in np.argsort(np.abs(proba_pos - 0.5)):
-            if int(i) not in chosen:
-                chosen.append(int(i))
-            if len(set(chosen)) >= n_cases:
-                break
-
-    return sorted(set(chosen))[:n_cases]
+        typical = [int(i) for i in pool[np.argsort(-dist[pool], kind="stable")]]
+        border = [int(i) for i in pool[np.argsort(dist[pool], kind="stable")]]
+        seq, used = [], set()
+        while len(seq) < len(pool):
+            want_border = len(seq) % TYPICAL_EVERY == TYPICAL_EVERY - 1
+            for src in ((border, typical) if want_border else (typical, border)):
+                while src and src[0] in used:
+                    src.pop(0)
+                if src:
+                    i = src.pop(0)
+                    break
+            used.add(i)
+            seq.append(i)
+        per_class.append(seq)
+    out = []
+    for a, b in zip_longest(*per_class):
+        out += [i for i in (a, b) if i is not None]
+    return out
 
 
-def _pick_case_indices_regression(
-    predictions: np.ndarray, actual: np.ndarray, n_cases: int, focus: str = "balanced"
+def _rank_case_indices_regression(
+    predictions: np.ndarray, actual: np.ndarray, focus: str = "balanced"
 ) -> list:
-    """Regression counterpart of _pick_case_indices.
+    """Regression counterpart of _rank_case_indices (same prefix contract).
 
-    focus="wrong": worst-residual (|predicted - actual| largest) first - the
-    biggest misses, most worth auditing.
-    focus="balanced"/"borderline": borderline has no real regression analogue
-    (there's no probability to sit near 50%) so both fall back to the same
-    thing - rows spread evenly across the actual value's range, so the case
-    list represents the whole target range rather than clustering at one end.
+    focus="wrong": biggest |predicted - actual| first.
+    focus="balanced"/"borderline" (borderline has no regression analogue):
+    spread over the actual value's range - lowest, highest, then repeated
+    midpoints - so any prefix covers the whole target range instead of
+    clustering at one end.
     """
     if focus == "wrong":
-        order = np.argsort(-np.abs(predictions - actual))
-        return sorted(int(i) for i in order[:n_cases])
-
-    order = np.argsort(actual)
+        return [int(i) for i in np.argsort(-np.abs(predictions - actual), kind="stable")]
+    order = [int(i) for i in np.argsort(actual, kind="stable")]
     n = len(order)
-    if n <= n_cases:
-        return sorted(int(i) for i in order)
-    step = n / n_cases
-    picks = [order[int(i * step)] for i in range(n_cases)]
-    return sorted(int(i) for i in picks)
+    if n <= 2:
+        return order
+    out = [order[0], order[n - 1]]
+    spans = deque([(0, n - 1)])
+    while spans:
+        lo, hi = spans.popleft()
+        if hi - lo < 2:
+            continue
+        mid = (lo + hi) // 2
+        out.append(order[mid])
+        spans += [(lo, mid), (mid, hi)]
+    return out
+
+
+def _candidates_block(cand: np.ndarray, rankings: dict, X, display_df, shap_values, dependence: dict, per_row: dict) -> dict:
+    """Held-out rows the reader can re-pick cases from on screen, without a
+    server round trip. They are the first `count` rows of `dependence` (which
+    lists held-out rows first), so the top features' values/SHAP are reused
+    from there; `rest` holds only the other features, same row order.
+    `order[focus]` = candidate positions (0..count-1) in ranking order.
+    """
+    have = {f["feature"] for f in dependence["features"]}
+    cols = list(X.columns)
+    rest = []
+    for col in cols:
+        if col in have:
+            continue
+        j = cols.index(col)
+        rest.append({
+            "feature": col,
+            "values": [_display_value(display_df.iloc[i][col]) for i in cand],
+            "shap": [round(float(shap_values[i, j]), 4) for i in cand],
+        })
+    return {"count": int(len(cand)), "order": rankings, **per_row, "rest": rest}
+
+
+def _display_value(v):
+    if isinstance(v, (int, float, np.integer, np.floating)):
+        return None if pd.isna(v) else _sig(float(v))
+    return str(v)
 
 
 DEPENDENCE_MAX_ROWS = 300
@@ -719,10 +745,6 @@ def _dependence_block(X, display_df, shap_values, held: np.ndarray, regression: 
     are probability shares (x100 = %p); regression is in target units.
     """
     pos = np.concatenate([np.where(held)[0], np.where(~held)[0]])[:DEPENDENCE_MAX_ROWS]
-    def val(v):
-        if isinstance(v, (int, float, np.integer, np.floating)):
-            return None if pd.isna(v) else _sig(float(v))
-        return str(v)
     top = list(feature_importance_df["feature"].head(DEPENDENCE_MAX_FEATURES))
     cols = list(X.columns)
     features = []
@@ -730,7 +752,7 @@ def _dependence_block(X, display_df, shap_values, held: np.ndarray, regression: 
         j = cols.index(col)
         features.append({
             "feature": col,
-            "values": [val(display_df.iloc[i][col]) for i in pos],
+            "values": [_display_value(display_df.iloc[i][col]) for i in pos],
             "shap": [round(float(shap_values[i, j]), 4) if not regression else _sig(float(shap_values[i, j])) for i in pos],
         })
     return {"ids": [str(display_df.index[i]) for i in pos], "features": features}
@@ -836,13 +858,19 @@ def export_report_json(
         "heldOut": held_out,
     }
 
-    case_indices = [
-        int(held_pos[i])
-        for i in _pick_case_indices(
-            predictions[held], proba_pos[held], n_cases,
-            actual=actual_arr[held], focus=case_focus,
-        )
-    ]
+    # cases come from the first CANDIDATE_MAX held-out rows; each focus gets
+    # a full ranking of them, the report's cases are the prefix for this one
+    cand = held_pos[:CANDIDATE_MAX]
+    rankings = {
+        f: _rank_case_indices(predictions[cand], proba_pos[cand], actual_arr[cand], f)
+        for f in CASE_FOCI
+    }
+    case_indices = [int(cand[i]) for i in rankings[case_focus][:n_cases]]
+    candidate_rows = {
+        "pred": [int(v) for v in predictions[cand]],
+        "proba": [round(float(v), 4) for v in proba_pos[cand]],
+        "actual": [int(v) for v in actual_arr[cand]],
+    }
 
     cases = []
     for idx in case_indices:
@@ -943,6 +971,10 @@ def export_report_json(
         X, display_df, shap_values, held,
         regression=report.get("taskType") == "regression",
         feature_importance_df=feature_importance_df,
+    )
+    report["caseFocus"] = case_focus
+    report["candidates"] = _candidates_block(
+        cand, rankings, X, display_df, shap_values, report["dependence"], candidate_rows
     )
 
     t0 = time.perf_counter()
@@ -1049,13 +1081,18 @@ def _export_regression_report(
         "heldOut": held_out,
     }
 
-    case_indices = [
-        int(held_pos[i])
-        for i in _pick_case_indices_regression(
-            predictions[held], actual_arr[held], n_cases,
-            focus=case_focus if case_focus != "borderline" else "balanced",
-        )
-    ]
+    cand = held_pos[:CANDIDATE_MAX]
+    rankings = {
+        f: _rank_case_indices_regression(predictions[cand], actual_arr[cand], f)
+        for f in ("balanced", "wrong")
+    }
+    case_focus = case_focus if case_focus != "borderline" else "balanced"
+    case_indices = [int(cand[i]) for i in rankings[case_focus][:n_cases]]
+    candidate_rows = {
+        "predicted": [_sig(float(v)) for v in predictions[cand]],
+        "actual": [_sig(float(v)) for v in actual_arr[cand]],
+        "large": [bool(v) for v in wrong_mask[cand]],
+    }
 
     cases = []
     for idx in case_indices:
@@ -1127,6 +1164,10 @@ def _export_regression_report(
         X, display_df, shap_values, held,
         regression=report.get("taskType") == "regression",
         feature_importance_df=feature_importance_df,
+    )
+    report["caseFocus"] = case_focus
+    report["candidates"] = _candidates_block(
+        cand, rankings, X, display_df, shap_values, report["dependence"], candidate_rows
     )
 
     t0 = time.perf_counter()

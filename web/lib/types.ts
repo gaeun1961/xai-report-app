@@ -139,6 +139,25 @@ export type ShapReport = {
     ids: string[];
     features: { feature: string; values: (number | string | null)[]; shap: number[] }[];
   };
+  // Re-picking cases on screen (no server call): the first `count` rows of
+  // `dependence` are held-out candidates; order[focus] lists candidate
+  // positions in the backend's ranking order (cases = the first N of it).
+  // Classification rows: pred/proba/actual; regression: predicted/actual/
+  // large (= a "오차 큼" case). `rest` = SHAP/values for the features not in
+  // `dependence`. Present on presets and on a fresh upload in memory - never
+  // in a report saved to "내 분석 기록" (stripped to keep localStorage small).
+  candidates?: {
+    count: number;
+    order: Record<string, number[]>;
+    pred?: number[];
+    proba?: number[];
+    actual: number[];
+    predicted?: number[];
+    large?: boolean[];
+    rest: { feature: string; values: (number | string | null)[]; shap: number[] }[];
+  };
+  // the case_focus the report's own cases were picked with
+  caseFocus?: "balanced" | "wrong" | "borderline";
   // Numeric columns left out of `outliers` because they have at most 2
   // distinct values (a box plot can't show anything meaningful for those).
   // Optional so old JSON still loads.

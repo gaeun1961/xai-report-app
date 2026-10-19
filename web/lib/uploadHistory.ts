@@ -120,7 +120,12 @@ export function saveUploadReport(report: ShapReport, fileName: string): string {
     // rather than the old silent failure (which left the just-uploaded
     // report unfindable). The blob goes in before the list, so the list
     // never points at a report that isn't there.
-    const blob = JSON.stringify(report);
+    // the stored copy leaves out the re-pick candidates: they only serve the
+    // screen right after the upload (kept in memory above), and would make
+    // every saved report bigger
+    const { candidates: _omit, ...stored } = report;
+    void _omit;
+    const blob = JSON.stringify(stored);
     if (blob.length > MAX_STORED_REPORT_CHARS) throw new Error("report too large to store");
     // blob + list are written as one step and retried together: either can
     // be the write that tips over the quota (the list grows by an entry too)
