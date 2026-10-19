@@ -33,9 +33,22 @@ def _is_id_like(series: pd.Series, n_rows: int) -> bool:
     cripple exactly the columns regression targets tend to correlate with
     most, and already quietly did the same to classification on small
     datasets where a numeric feature coincidentally had no duplicate values.
+
+    The one numeric exception: integers counting up (or down) by exactly 1
+    per row - a row number like Titanic's PassengerId (1..1309), not a
+    measurement. Keeping it isn't just noise: in a file built by
+    concatenating sources (Titanic's train+test export labels every id past
+    891 as 0) the id alone predicts the target, a silent leak.
+    ponytail: only the strict "consecutive" shape is caught, so a sorted
+    feature with gaps (Size 20, 23, 26, ...) is safely kept - but so is an id
+    with gaps (HR's EmployeeNumber). A name-based check would catch that one
+    but is language-dependent.
     """
     if pd.api.types.is_numeric_dtype(series):
-        return False
+        if not pd.api.types.is_integer_dtype(series) or n_rows < 2:
+            return False
+        steps = series.diff().dropna()
+        return bool((steps == 1).all() or (steps == -1).all())
     return series.nunique(dropna=True) == n_rows
 
 
@@ -981,6 +994,13 @@ def _demo():
     # should still be dropped
     assert _is_id_like(pd.Series([1.1, 2.2, 3.3, 4.4]), 4) is False
     assert _is_id_like(pd.Series(["a", "b", "c", "d"]), 4) is True
+    # consecutive integers are a row number (PassengerId 1..n) - dropped
+    assert _is_id_like(pd.Series([1, 2, 3, 4]), 4) is True
+    assert _is_id_like(pd.Series([892, 891, 890, 889]), 4) is True
+    # sorted with gaps, unsorted, or repeating integers are features - kept
+    assert _is_id_like(pd.Series([20, 23, 26, 29]), 4) is False
+    assert _is_id_like(pd.Series([3, 1, 4, 2]), 4) is False
+    assert _is_id_like(pd.Series([1, 1, 2, 3]), 4) is False
 
     df = pd.DataFrame(
         {
