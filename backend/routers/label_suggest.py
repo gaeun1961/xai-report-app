@@ -26,7 +26,7 @@ import os
 import time
 
 from google import genai
-from google.genai import errors
+from google.genai import errors, types
 
 log = logging.getLogger(__name__)
 
@@ -34,6 +34,8 @@ MODEL = "gemini-flash-latest"
 # last-resort model for the final attempt if the main one keeps failing
 FALLBACK_MODEL = "gemini-3.1-flash-lite"
 RETRYABLE_CODES = {429, 500, 503, 504}
+# per Gemini HTTP call (milliseconds); a normal answer takes a few seconds
+GEMINI_TIMEOUT_MS = 15_000
 MAX_CONTEXT_COLUMNS = 30
 
 _cache: dict = {}
@@ -46,7 +48,12 @@ def _client_or_none():
         log.warning("GEMINI_API_KEY not set - skipping LLM suggestions")
         return None
     if _client is None:
-        _client = genai.Client()
+        # a hung call used to block the whole request with no limit; on
+        # timeout the SDK raises, the callers' `except Exception` logs it and
+        # returns None - same quiet "no AI suggestion" path as any failure.
+        # Not retried (only 429/5xx are, see _generate), so one slow call
+        # costs at most this long.
+        _client = genai.Client(http_options=types.HttpOptions(timeout=GEMINI_TIMEOUT_MS))
     return _client
 
 

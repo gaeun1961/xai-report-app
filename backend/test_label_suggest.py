@@ -181,6 +181,45 @@ def test_does_not_retry_non_retryable_errors():
     assert result is None and len(calls) == 1, (result, calls)
 
 
+def test_hung_gemini_call_times_out_quietly():
+    # a server that accepts the request and never answers in time: the
+    # client's timeout must end the call and the suggestion is just skipped
+    import threading
+    import time as _time
+    from http.server import BaseHTTPRequestHandler, HTTPServer
+    from google import genai
+    from google.genai import types
+
+    class Slow(BaseHTTPRequestHandler):
+        def do_POST(self):
+            _time.sleep(3)
+            self.send_response(200)
+            self.end_headers()
+
+        def log_message(self, *a):
+            pass
+
+    server = HTTPServer(("127.0.0.1", 0), Slow)
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+    slow_client = genai.Client(
+        api_key="test",
+        http_options=types.HttpOptions(
+            base_url=f"http://127.0.0.1:{server.server_port}", timeout=500
+        ),
+    )
+    orig = label_suggest._client_or_none
+    label_suggest._client_or_none = lambda: slow_client
+    try:
+        t0 = _time.perf_counter()
+        result = label_suggest.suggest_column_glossary(["timeout_probe_col"], {"timeout_probe_col": [1, 2]})
+        elapsed = _time.perf_counter() - t0
+    finally:
+        label_suggest._client_or_none = orig
+        server.shutdown()
+    assert result is None
+    assert elapsed < 2.5, elapsed  # gave up at the timeout, didn't wait out the server
+
+
 if __name__ == "__main__":
     test_skips_non_numeric_raw_values_without_calling_client()
     test_parses_two_line_response()
@@ -194,4 +233,5 @@ if __name__ == "__main__":
     test_retries_on_503_then_succeeds()
     test_gives_up_after_all_attempts_fail()
     test_does_not_retry_non_retryable_errors()
+    test_hung_gemini_call_times_out_quietly()
     print("ok")

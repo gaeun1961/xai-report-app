@@ -505,8 +505,101 @@ def test_retrain_defaults_match_base_model_unless_sent():
 
     et = retrained_model("extra_trees", {"n_estimators": 20})
     assert (et.max_depth, et.min_samples_leaf) == (A.BASE_MAX_DEPTH, A.BASE_MIN_SAMPLES_LEAF)
-    assert retrained_model("extra_trees", {"n_estimators": 20, "max_depth": 15}).max_depth == 15
+    assert retrained_model("extra_trees", {"n_estimators": 20, "max_depth": 11}).max_depth == 11
+    # above the memory-safe cap (MAX_FOREST_DEPTH) is refused, not silently clamped
+    over = client.post("/retrain", json={"analysis_id": body["analysisId"], "model_type": "extra_trees",
+                                         "params": {"max_depth": A.MAX_FOREST_DEPTH + 1}})
+    assert over.status_code == 400, over.text
     assert retrained_model("gradient_boosting", {"n_estimators": 20}).max_depth == 3
+
+
+def _slow_csv(n=3000) -> bytes:
+    rng = np.random.default_rng(1)
+    rows = ["a,b,c,d,y"]
+    for _ in range(n):
+        a, b, c, d = rng.normal(size=4)
+        rows.append(f"{a:.4f},{b:.4f},{c:.4f},{d:.4f},{int(a + b > 0)}")
+    return chr(10).join(rows).encode()
+
+
+def test_health_answers_while_two_analyses_run():
+    # heavy work runs off the event loop (one job at a time), so /health
+    # keeps answering instantly even with two /analyze requests in flight
+    import asyncio
+    import time as _time
+    import httpx
+
+    async def main():
+        transport = httpx.ASGITransport(app=app)
+        async with httpx.AsyncClient(transport=transport, base_url="http://t", timeout=300) as c:
+            def analyze():
+                return c.post(
+                    "/analyze",
+                    files={"file": ("s.csv", _slow_csv(), "text/csv")},
+                    data={"target_column": "y", "n_cases": "5"},
+                )
+
+            jobs = [asyncio.create_task(analyze()), asyncio.create_task(analyze())]
+            await asyncio.sleep(0.5)  # both submitted, the first is training
+            latencies = []
+            while not all(j.done() for j in jobs):
+                t0 = _time.perf_counter()
+                r = await c.get("/health")
+                assert r.status_code == 200
+                latencies.append(_time.perf_counter() - t0)
+                await asyncio.sleep(0.2)
+            results = [j.result() for j in jobs]
+            return latencies, results
+
+    latencies, results = asyncio.run(main())
+    assert len(latencies) >= 3, latencies  # we really polled during the work
+    assert max(latencies) < 1.0, max(latencies)
+    # second one waited its turn (well under HEAVY_WAIT_SECONDS) and succeeded
+    assert [r.status_code for r in results] == [200, 200], [r.text[:200] for r in results]
+
+
+def test_heavy_request_gets_busy_message_when_slot_stays_taken():
+    import asyncio
+    from routers import analyze as A
+
+    async def main():
+        orig = A.HEAVY_WAIT_SECONDS
+        A.HEAVY_WAIT_SECONDS = 0.2
+        A._HEAVY_LOCK.acquire()  # someone else's long job
+        try:
+            async with httpx_client() as c:
+                return await c.post("/whatif", json={"analysis_id": "x", "row": {}})
+        finally:
+            A._HEAVY_LOCK.release()
+            A.HEAVY_WAIT_SECONDS = orig
+
+    def httpx_client():
+        import httpx
+        return httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://t")
+
+    res = asyncio.run(main())
+    assert res.status_code == 503, res.text
+    assert res.json()["detail"] == A.BUSY_MESSAGE
+    assert res.headers.get("retry-after")
+
+
+def test_analysis_cache_evicts_oldest_over_memory_budget():
+    # a few big entries must push old ones out by size, not only by count;
+    # the newest one always survives
+    import pandas as pd
+    from routers import analyze as A
+
+    saved = A._ANALYSIS_CACHE.copy()
+    A._ANALYSIS_CACHE.clear()
+    try:
+        big = pd.DataFrame({"a": np.zeros(2_000_000)})  # ~15MB
+        ids = [A._cache_analysis({"model": None, "X_full": big}) for _ in range(12)]
+        total = sum(e["_mb"] for e in A._ANALYSIS_CACHE.values())
+        assert total <= A.ANALYSIS_CACHE_BUDGET_MB, total
+        assert ids[-1] in A._ANALYSIS_CACHE and ids[0] not in A._ANALYSIS_CACHE
+    finally:
+        A._ANALYSIS_CACHE.clear()
+        A._ANALYSIS_CACHE.update(saved)
 
 
 if __name__ == "__main__":
@@ -535,4 +628,7 @@ if __name__ == "__main__":
     test_cases_come_only_from_held_out_rows()
     test_training_rows_capped_and_stratified()
     test_retrain_defaults_match_base_model_unless_sent()
+    test_health_answers_while_two_analyses_run()
+    test_heavy_request_gets_busy_message_when_slot_stays_taken()
+    test_analysis_cache_evicts_oldest_over_memory_budget()
     print("ok")
