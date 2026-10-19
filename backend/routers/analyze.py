@@ -51,6 +51,10 @@ MAX_ROWS = 50_000
 TRAIN_MAX_ROWS = 5_000
 SHAP_MAX_ROWS = 1_000
 N_TREES = 100
+# the base analysis model's tree shape - also /retrain's default for the
+# bagging models, so "baseline vs another model" compares like with like
+BASE_MAX_DEPTH = 8
+BASE_MIN_SAMPLES_LEAF = 4
 HIGH_CARDINALITY_THRESHOLD = 50
 LONG_TEXT_CHARS = 30
 
@@ -73,42 +77,52 @@ def _cache_analysis(entry: dict) -> str:
 
 
 # /retrain: a fixed menu of tree-based scikit-learn classifiers, each with a
-# fixed menu of numeric hyperparameters (type, min, max). This is never
+# fixed menu of numeric hyperparameters (type, min, max, default). This is never
 # "run user code" — it's "call one of these known constructors with numbers
 # we've range-checked ourselves" — so it needs no sandboxing beyond that
 # validation. Kept tree-based only because SHAP explanation reuses
 # shap.TreeExplainer (compute_shap); a linear/kernel model would need a
 # different (and for KernelExplainer, much slower) explainer path - out of
 # scope for now.
+#
+# default = what /retrain uses when a param isn't sent, and what the UI
+# pre-fills. Random Forest / Extra Trees match the base analysis model (an
+# unbounded depth grew Extra Trees to depth 29 on heart.csv: SHAP 1.2s ->
+# 11.2s, accuracy no better). Gradient Boosting keeps sklearn's shallow depth
+# 3 instead - boosting stacks shallow trees, and depth 8 measured both slower
+# (9.3s vs 1.3s) and less accurate (0.836 vs 0.868) on heart.csv.
 MODEL_WHITELIST = {
     "random_forest": {
         "cls": RandomForestClassifier,
         "label": "Random Forest",
+        "note": "기본값은 기본 분석과 같은 조건(깊이 8, 트리 100개)이에요.",
         "fixed": {"class_weight": "balanced"},
         "params": {
-            "n_estimators": (int, 10, 500),
-            "max_depth": (int, 1, 20),
-            "min_samples_leaf": (int, 1, 20),
+            "n_estimators": (int, 10, 500, N_TREES),
+            "max_depth": (int, 1, 20, BASE_MAX_DEPTH),
+            "min_samples_leaf": (int, 1, 20, BASE_MIN_SAMPLES_LEAF),
         },
     },
     "gradient_boosting": {
         "cls": GradientBoostingClassifier,
         "label": "Gradient Boosting",
+        "note": "기본값은 트리 100개, 깊이 3이에요. 부스팅은 얕은 트리를 여러 번 쌓는 방식이라 기본 분석(깊이 8)보다 얕게 둬요 — 깊이 8로 두면 오히려 느리고 덜 정확했어요.",
         "fixed": {},
         "params": {
-            "n_estimators": (int, 10, 500),
-            "max_depth": (int, 1, 10),
-            "learning_rate": (float, 0.01, 1.0),
+            "n_estimators": (int, 10, 500, N_TREES),
+            "max_depth": (int, 1, 10, 3),
+            "learning_rate": (float, 0.01, 1.0, 0.1),
         },
     },
     "extra_trees": {
         "cls": ExtraTreesClassifier,
         "label": "Extra Trees",
+        "note": "기본값은 기본 분석과 같은 조건(깊이 8, 트리 100개)이에요.",
         "fixed": {"class_weight": "balanced"},
         "params": {
-            "n_estimators": (int, 10, 500),
-            "max_depth": (int, 1, 20),
-            "min_samples_leaf": (int, 1, 20),
+            "n_estimators": (int, 10, 500, N_TREES),
+            "max_depth": (int, 1, 20, BASE_MAX_DEPTH),
+            "min_samples_leaf": (int, 1, 20, BASE_MIN_SAMPLES_LEAF),
         },
     },
 }
@@ -126,7 +140,7 @@ def _validate_model_params(model_type: str, params: dict):
         raise HTTPException(400, f"허용되지 않는 파라미터예요: {sorted(unknown)}")
 
     validated = {}
-    for key, (typ, lo, hi) in allowed.items():
+    for key, (typ, lo, hi, _default) in allowed.items():
         if key not in params:
             continue
         v = params[key]
@@ -371,15 +385,15 @@ async def analyze(
         if task_type == "regression":
             base_model = RandomForestRegressor(
                 n_estimators=N_TREES,
-                max_depth=8,
-                min_samples_leaf=4,
+                max_depth=BASE_MAX_DEPTH,
+                min_samples_leaf=BASE_MIN_SAMPLES_LEAF,
                 random_state=common.RANDOM_STATE,
             )
         else:
             base_model = RandomForestClassifier(
                 n_estimators=N_TREES,
-                max_depth=8,
-                min_samples_leaf=4,
+                max_depth=BASE_MAX_DEPTH,
+                min_samples_leaf=BASE_MIN_SAMPLES_LEAF,
                 class_weight="balanced",
                 random_state=common.RANDOM_STATE,
             )
@@ -580,9 +594,10 @@ async def model_types():
     return {
         key: {
             "label": spec["label"],
+            "note": spec["note"],
             "params": {
-                k: {"type": t.__name__, "min": lo, "max": hi}
-                for k, (t, lo, hi) in spec["params"].items()
+                k: {"type": t.__name__, "min": lo, "max": hi, "default": d}
+                for k, (t, lo, hi, d) in spec["params"].items()
             },
         }
         for key, spec in MODEL_WHITELIST.items()
@@ -609,8 +624,11 @@ async def retrain(payload: RetrainRequest):
         raise HTTPException(400, "회귀 분석은 아직 다른 모델로 비교해보기를 지원하지 않아요.")
 
     spec, validated_params = _validate_model_params(payload.model_type, payload.params)
+    # a param left out falls back to the whitelist default (not sklearn's -
+    # e.g. unbounded max_depth); anything the user sent wins
+    defaults = {k: d for k, (_t, _lo, _hi, d) in spec["params"].items()}
     new_model = spec["cls"](
-        random_state=common.RANDOM_STATE, **spec["fixed"], **validated_params
+        random_state=common.RANDOM_STATE, **spec["fixed"], **{**defaults, **validated_params}
     )
 
     X_full, y_full, display_full = entry["X_full"], entry["y_full"], entry["display_full"]

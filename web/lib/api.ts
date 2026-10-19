@@ -93,7 +93,9 @@ export async function whatIf(
 
 export type ModelTypeSpec = {
   label: string;
-  params: Record<string, { type: "int" | "float"; min: number; max: number }>;
+  // one line shown under the model picker (what the defaults are and why)
+  note?: string;
+  params: Record<string, { type: "int" | "float"; min: number; max: number; default?: number }>;
 };
 
 export async function fetchModelTypes(): Promise<Record<string, ModelTypeSpec>> {
