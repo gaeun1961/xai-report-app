@@ -21,6 +21,7 @@ import ModelComparePanel from "./ModelComparePanel";
 import CorrelationMatrix from "./CorrelationMatrix";
 import DistributionGrid from "./DistributionChart";
 import FeatureDetailTab from "./FeatureDetailTab";
+import { focusOptions, pickCases, type CaseFocus } from "@/lib/caseCandidates";
 import CopySummaryButton from "./CopySummaryButton";
 import SaveImageButton from "./SaveImageButton";
 import InfoTip from "./InfoTip";
@@ -42,6 +43,8 @@ type Props = {
 export default function ReportView({ report, domain, reportId, reportLabel }: Props) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [tab, setTab] = useState<Tab>("summary");
+  // the reader's own case count/focus (null = the report's original cases)
+  const [picks, setPicks] = useState<{ focus: CaseFocus; n: number } | null>(null);
   const hasCorr = !!report.correlations;
 
   // Only an uploaded CSV (no curated preset labels) can have a user-typed
@@ -80,6 +83,15 @@ export default function ReportView({ report, domain, reportId, reportLabel }: Pr
           }
         : report,
     [report, overrides],
+  );
+
+  // re-picked cases replace the report's own everywhere they're read
+  const shownReport = useMemo(
+    () =>
+      picks
+        ? { ...effectiveReport, cases: pickCases(effectiveReport, picks.focus, picks.n) }
+        : effectiveReport,
+    [effectiveReport, picks],
   );
 
   function saveLabel(which: "pos" | "neg", label: string) {
@@ -137,7 +149,7 @@ export default function ReportView({ report, domain, reportId, reportLabel }: Pr
 
       {tab === "summary" && (
         <SummaryBody
-          report={effectiveReport}
+          report={shownReport}
           domain={domain}
           selectedId={selectedId}
           reportId={reportId}
@@ -171,10 +183,12 @@ export default function ReportView({ report, domain, reportId, reportLabel }: Pr
       )}
       {tab === "cases" && (
         <CasesBody
-          report={effectiveReport}
+          report={shownReport}
           domain={domain}
           selectedId={selectedId}
           onSelect={setSelectedId}
+          picks={picks}
+          onPicks={setPicks}
         />
       )}
       {tab === "feature" && <FeatureDetailTab report={effectiveReport} domain={domain} />}
@@ -548,9 +562,76 @@ type CasesBodyProps = {
   domain: string;
   selectedId: string | null;
   onSelect: (id: string) => void;
+  picks: { focus: CaseFocus; n: number } | null;
+  onPicks: (p: { focus: CaseFocus; n: number }) => void;
 };
 
-function CasesBody({ report, domain, selectedId, onSelect }: CasesBodyProps) {
+const FOCUS_LABEL: Record<CaseFocus, { cls: string; reg: string }> = {
+  balanced: { cls: "균형있게", reg: "실제값 범위 고르게" },
+  wrong: { cls: "예측이 틀린 케이스 위주", reg: "오차가 큰 케이스 위주" },
+  borderline: { cls: "확신도 애매한(40~60%) 케이스 위주", reg: "" },
+};
+
+// count + focus controls over the report's candidates (no server call); a
+// report reopened from "내 분석 기록" has none, so it just says why
+function CaseControls({
+  report,
+  picks,
+  onPicks,
+}: {
+  report: ShapReport;
+  picks: { focus: CaseFocus; n: number } | null;
+  onPicks: (p: { focus: CaseFocus; n: number }) => void;
+}) {
+  const cand = report.candidates;
+  if (!cand) {
+    return report.targetColumn !== undefined ? (
+      <p className={styles.sectionNote}>
+        케이스 다시 고르기는 업로드 직후 화면과 예시 데이터에서만 돼요.
+      </p>
+    ) : null;
+  }
+  const regression = isRegression(report);
+  const focus = picks?.focus ?? report.caseFocus ?? "balanced";
+  const n = picks?.n ?? report.cases.length;
+  return (
+    <div className={styles.selectorFilter}>
+      <label className={styles.sectionNote}>
+        보여줄 케이스{" "}
+        <input
+          type="number"
+          min={1}
+          max={cand.count}
+          value={n}
+          onChange={(e) =>
+            onPicks({ focus, n: Math.max(1, Math.min(cand.count, Number(e.target.value) || 1)) })
+          }
+          className={styles.rangeInput}
+          aria-label="보여줄 케이스 개수"
+        />
+        개 (최대 {cand.count}개)
+      </label>
+      <label className={styles.sectionNote}>
+        기준{" "}
+        <select
+          className={styles.select}
+          value={focus}
+          onChange={(e) => onPicks({ focus: e.target.value as CaseFocus, n })}
+          aria-label="케이스 선정 기준"
+        >
+          {focusOptions(report).map((f) => (
+            <option key={f} value={f}>
+              {regression ? FOCUS_LABEL[f].reg : FOCUS_LABEL[f].cls}
+            </option>
+          ))}
+        </select>
+      </label>
+      <InfoTip text={`학습에 쓰지 않은 행 중 ${cand.count.toLocaleString()}개를 후보로 두고, 고른 기준의 순서대로 앞에서부터 보여줘요. 서버에 다시 묻지 않고 바로 바뀌어요.`} />
+    </div>
+  );
+}
+
+function CasesBody({ report, domain, selectedId, onSelect, picks, onPicks }: CasesBodyProps) {
   const selectedIndex = report.cases.findIndex((c) => c.id === selectedId);
   const selected = selectedIndex >= 0 ? report.cases[selectedIndex] : null;
   const { positiveLabel, negativeLabel } = report;
@@ -586,6 +667,7 @@ function CasesBody({ report, domain, selectedId, onSelect }: CasesBodyProps) {
   return (
     <div className={styles.reportCol}>
       <section className={styles.cardSection}>
+        <CaseControls report={report} picks={picks} onPicks={onPicks} />
         {rawColumns.length > 0 && (
           <label className={styles.sectionNote}>
             케이스 이름 기준 컬럼{" "}
