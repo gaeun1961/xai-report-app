@@ -8,7 +8,9 @@ export_report_json pipeline the preset domains use.
 import io
 import json
 import logging
+import pickle
 import sys
+import threading
 import time
 import tempfile
 import uuid
@@ -17,6 +19,7 @@ from pathlib import Path
 
 import pandas as pd
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
+from fastapi.concurrency import run_in_threadpool
 from pydantic import BaseModel
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import (
@@ -65,13 +68,36 @@ LONG_TEXT_CHARS = 30
 # idle spindown) just empties it, and /whatif reports that as a plain error
 # rather than crashing. Not shared across multiple server instances.
 ANALYSIS_CACHE_MAX = 30
+# ...and a memory budget on top of the count: one entry holds the full
+# upload (X + display copy) and its model, ~25MB for a 5MB CSV and up to
+# ~70MB more for a max-size retrained forest - 30 of those could exceed the
+# free instance's 512MB by themselves (the process is ~270MB before any
+# work). Oldest entries go first until the total fits; the newest is
+# always kept so the request that just made it can still use it.
+ANALYSIS_CACHE_BUDGET_MB = 120
 _ANALYSIS_CACHE: "OrderedDict[str, dict]" = OrderedDict()
+
+
+def _entry_mb(entry: dict) -> float:
+    """Rough size of a cache entry: its DataFrames (deep, so string columns
+    count) plus the model's pickled size (tree arrays dominate)."""
+    frames = sum(
+        # DataFrame.memory_usage is per column, Series' is already a total
+        float(pd.Series(entry[k].memory_usage(deep=True)).sum())
+        for k in ("X_full", "y_full", "display_full")
+        if hasattr(entry.get(k), "memory_usage")
+    )
+    return (frames + len(pickle.dumps(entry["model"]))) / 2**20
 
 
 def _cache_analysis(entry: dict) -> str:
     analysis_id = uuid.uuid4().hex
+    entry["_mb"] = _entry_mb(entry)
     _ANALYSIS_CACHE[analysis_id] = entry
-    if len(_ANALYSIS_CACHE) > ANALYSIS_CACHE_MAX:
+    while len(_ANALYSIS_CACHE) > 1 and (
+        len(_ANALYSIS_CACHE) > ANALYSIS_CACHE_MAX
+        or sum(e["_mb"] for e in _ANALYSIS_CACHE.values()) > ANALYSIS_CACHE_BUDGET_MB
+    ):
         _ANALYSIS_CACHE.popitem(last=False)
     return analysis_id
 
@@ -84,6 +110,16 @@ def _cache_analysis(entry: dict) -> str:
 # shap.TreeExplainer (compute_shap); a linear/kernel model would need a
 # different (and for KernelExplainer, much slower) explainer path - out of
 # scope for now.
+#
+# Upper bounds keep one retrain inside the free instance's 512MB and a few
+# minutes: measured on 5,000 training rows (the cap), a 500-tree depth-20
+# Extra Trees peaked at 439MB process memory (the process is ~270MB before
+# any work), took 187s locally (~5-8x that on Render) and left a 69MB model
+# in the cache. At 200 trees / depth 12 (boosting: depth 6) the worst of the
+# three peaked at 292MB, took 43s, and kept <=10MB.
+MAX_TREES = 200
+MAX_FOREST_DEPTH = 12
+MAX_BOOSTING_DEPTH = 6
 #
 # default = what /retrain uses when a param isn't sent, and what the UI
 # pre-fills. Random Forest / Extra Trees match the base analysis model (an
@@ -98,8 +134,8 @@ MODEL_WHITELIST = {
         "note": "기본값은 기본 분석과 같은 조건(깊이 8, 트리 100개)이에요.",
         "fixed": {"class_weight": "balanced"},
         "params": {
-            "n_estimators": (int, 10, 500, N_TREES),
-            "max_depth": (int, 1, 20, BASE_MAX_DEPTH),
+            "n_estimators": (int, 10, MAX_TREES, N_TREES),
+            "max_depth": (int, 1, MAX_FOREST_DEPTH, BASE_MAX_DEPTH),
             "min_samples_leaf": (int, 1, 20, BASE_MIN_SAMPLES_LEAF),
         },
     },
@@ -109,8 +145,8 @@ MODEL_WHITELIST = {
         "note": "기본값은 트리 100개, 깊이 3이에요. 부스팅은 얕은 트리를 여러 번 쌓는 방식이라 기본 분석(깊이 8)보다 얕게 둬요 — 깊이 8로 두면 오히려 느리고 덜 정확했어요.",
         "fixed": {},
         "params": {
-            "n_estimators": (int, 10, 500, N_TREES),
-            "max_depth": (int, 1, 10, 3),
+            "n_estimators": (int, 10, MAX_TREES, N_TREES),
+            "max_depth": (int, 1, MAX_BOOSTING_DEPTH, 3),
             "learning_rate": (float, 0.01, 1.0, 0.1),
         },
     },
@@ -120,8 +156,8 @@ MODEL_WHITELIST = {
         "note": "기본값은 기본 분석과 같은 조건(깊이 8, 트리 100개)이에요.",
         "fixed": {"class_weight": "balanced"},
         "params": {
-            "n_estimators": (int, 10, 500, N_TREES),
-            "max_depth": (int, 1, 20, BASE_MAX_DEPTH),
+            "n_estimators": (int, 10, MAX_TREES, N_TREES),
+            "max_depth": (int, 1, MAX_FOREST_DEPTH, BASE_MAX_DEPTH),
             "min_samples_leaf": (int, 1, 20, BASE_MIN_SAMPLES_LEAF),
         },
     },
@@ -250,9 +286,50 @@ def _drop_unusable_columns(df: pd.DataFrame, target_column: str) -> pd.DataFrame
 MIN_REGRESSION_UNIQUE = 10
 
 
+# Heavy work (training, SHAP, Gemini) runs in a worker thread so the event
+# loop - and with it /health and /columns - always answers. These endpoints
+# used to be `async def` doing all of that inline on the loop: one slow
+# request (a deep-tree SHAP, a hung Gemini call) froze the whole server,
+# /health included.
+# At most one heavy job at a time: a free Render instance has 512MB, and two
+# trainings + SHAP side by side could run it out. A request that arrives
+# while one is running waits up to HEAVY_WAIT_SECONDS for its turn (a quick
+# /whatif behind another one just queues briefly), then gets a 503 with a
+# "try again" message instead of hanging for minutes behind a long analysis.
+# One-at-a-time also makes the in-memory _ANALYSIS_CACHE single-writer.
+# A threading.Lock (not asyncio.Semaphore) so it isn't tied to one event
+# loop - the waiting happens inside the worker thread, never on the loop.
+# ponytail: a waiting request holds a threadpool thread (anyio's default 40)
+# for up to HEAVY_WAIT_SECONDS - fine at demo traffic; a real job queue if
+# many users ever pile up at once.
+HEAVY_WAIT_SECONDS = 30
+_HEAVY_LOCK = threading.Lock()
+BUSY_MESSAGE = "다른 분석이 진행 중이에요. 잠시 후 다시 시도해주세요."
+
+
+def _one_at_a_time(fn, *args):
+    if not _HEAVY_LOCK.acquire(timeout=HEAVY_WAIT_SECONDS):
+        log.warning("heavy job rejected: another one still running after %ss", HEAVY_WAIT_SECONDS)
+        raise HTTPException(503, BUSY_MESSAGE, headers={"Retry-After": str(HEAVY_WAIT_SECONDS)})
+    try:
+        return fn(*args)
+    finally:
+        _HEAVY_LOCK.release()
+
+
+async def _run_heavy(fn, *args):
+    return await run_in_threadpool(_one_at_a_time, fn, *args)
+
+
 @router.post("/columns")
 async def get_columns(file: UploadFile = File(...)):
-    df = _read_csv(await file.read())
+    # light (read + count) but still off the loop, and never queued behind
+    # a heavy job - the upload flow's first step must stay instant
+    return await run_in_threadpool(_columns_sync, await file.read())
+
+
+def _columns_sync(content: bytes):
+    df = _read_csv(content)
     return {
         "columns": [
             {
@@ -280,6 +357,20 @@ async def analyze(
     case_focus: str = Form("balanced"),
     task_type: str = Form("classification"),
 ):
+    content = await file.read()
+    return await _run_heavy(
+        _analyze_sync, content, file.filename, target_column, n_cases, case_focus, task_type
+    )
+
+
+def _analyze_sync(
+    content: bytes,
+    filename: str | None,
+    target_column: str,
+    n_cases: int,
+    case_focus: str,
+    task_type: str,
+):
     if case_focus not in CASE_FOCUS_OPTIONS:
         raise HTTPException(
             400, f"case_focus는 {sorted(CASE_FOCUS_OPTIONS)} 중 하나여야 해요."
@@ -288,7 +379,7 @@ async def analyze(
         raise HTTPException(
             400, f"task_type은 {sorted(TASK_TYPE_OPTIONS)} 중 하나여야 해요."
         )
-    df = _read_csv(await file.read())
+    df = _read_csv(content)
 
     if target_column not in df.columns:
         raise HTTPException(400, f"'{target_column}' 컬럼을 찾을 수 없어요.")
@@ -320,7 +411,7 @@ async def analyze(
     t_start = time.perf_counter()
     original_df = df.copy()
     df = _drop_unusable_columns(df, target_column)
-    domain = Path(file.filename or "upload").stem
+    domain = Path(filename or "upload").stem
 
     with tempfile.TemporaryDirectory() as tmp:
         csv_path = Path(tmp) / "upload.csv"
@@ -527,6 +618,10 @@ class WhatIfRequest(BaseModel):
 
 @router.post("/whatif")
 async def whatif(payload: WhatIfRequest):
+    return await _run_heavy(_whatif_sync, payload)
+
+
+def _whatif_sync(payload: WhatIfRequest):
     entry = _ANALYSIS_CACHE.get(payload.analysis_id)
     if entry is None:
         raise HTTPException(
@@ -612,6 +707,10 @@ class RetrainRequest(BaseModel):
 
 @router.post("/retrain")
 async def retrain(payload: RetrainRequest):
+    return await _run_heavy(_retrain_sync, payload)
+
+
+def _retrain_sync(payload: RetrainRequest):
     entry = _ANALYSIS_CACHE.get(payload.analysis_id)
     if entry is None or "X_full" not in entry:
         raise HTTPException(
