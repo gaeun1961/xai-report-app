@@ -112,12 +112,19 @@
 .dataRelToc {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 8px;
   position: sticky;
   top: 0;
   z-index: 5;
   padding: 8px 0;
   background: var(--background);
+}
+
+/* pushes the save button to the far right; on a narrow screen it wraps to
+   its own line and stays right-aligned */
+.dataRelTocEnd {
+  margin-left: auto;
 }
 
 .dataRelTocLink {
@@ -226,6 +233,16 @@
   outline-offset: 1px;
 }
 
+/* every cell outside the selected chip's pair, so the pair stands out */
+.corrCellDim {
+  opacity: 0.35;
+}
+
+.corrHeadActive {
+  font-weight: 700;
+  color: var(--foreground);
+}
+
 .corrChipRow {
   display: flex;
   flex-wrap: wrap;
@@ -245,6 +262,13 @@
 
 .corrChip:hover {
   background: color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.corrChipActive,
+.corrChipActive:hover {
+  background: var(--accent-strong);
+  border-color: var(--accent-strong);
+  color: #fff;
 }
 
 .corrExplain {
@@ -408,6 +432,13 @@
 .chartValue {
   font-variant-numeric: tabular-nums;
   color: color-mix(in srgb, currentColor 60%, transparent);
+}
+
+.chartSubValue {
+  display: block;
+  font-size: 11px;
+  line-height: 1.2;
+  cursor: help;
 }
 
 /* partial dependence - small per-feature line chart of predicted
