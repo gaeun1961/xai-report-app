@@ -20,12 +20,13 @@ import WhatIfPanel, { WhatIfUnavailable } from "./WhatIfPanel";
 import ModelComparePanel from "./ModelComparePanel";
 import CorrelationMatrix from "./CorrelationMatrix";
 import DistributionGrid from "./DistributionChart";
+import FeatureDetailTab from "./FeatureDetailTab";
 import CopySummaryButton from "./CopySummaryButton";
 import SaveImageButton from "./SaveImageButton";
 import InfoTip from "./InfoTip";
 import styles from "./report.module.css";
 
-type Tab = "summary" | "cases" | "data";
+type Tab = "summary" | "cases" | "feature" | "data";
 
 type Props = {
   report: ShapReport;
@@ -116,6 +117,13 @@ export default function ReportView({ report, domain, reportId, reportLabel }: Pr
         </button>
         <button
           type="button"
+          onClick={() => setTab("feature")}
+          className={`${styles.tab} ${tab === "feature" ? styles.tabActive : ""}`}
+        >
+          특성 자세히 보기
+        </button>
+        <button
+          type="button"
           onClick={() => hasCorr && setTab("data")}
           disabled={!hasCorr}
           className={`${styles.tab} ${tab === "data" ? styles.tabActive : ""} ${
@@ -169,6 +177,7 @@ export default function ReportView({ report, domain, reportId, reportLabel }: Pr
           onSelect={setSelectedId}
         />
       )}
+      {tab === "feature" && <FeatureDetailTab report={effectiveReport} domain={domain} />}
       {tab === "data" && report.correlations && (
         <div className={styles.reportCol} id="report-data">
           <p className={styles.dataRelIntro}>

@@ -617,6 +617,45 @@ def test_distributions_cover_every_row():
     assert dists["Sex"]["kind"] == "category"
 
 
+def _dependence_csv(n=600) -> bytes:
+    rng = np.random.default_rng(1)
+    rows = ["a,b,c,y"]
+    for _ in range(n):
+        a, b, c = rng.normal(size=3)
+        rows.append(f"{a:.4f},{b:.4f},{c:.4f},{int(a + b > 0)}")
+    return chr(10).join(rows).encode()
+
+
+def test_dependence_reuses_shap_pool_held_out_first():
+    # feature detail tab data: top features only, one (value, shap) per row,
+    # rows listed held-out first, capped - and taken from the SHAP already
+    # computed (each row's shap matches its case card when it is a case)
+    import common as C
+
+    body = TestClient(app).post(
+        "/analyze",
+        files={"file": ("s.csv", _dependence_csv(), "text/csv")},
+        data={"target_column": "y", "n_cases": "10"},
+    ).json()
+    dep = body["dependence"]
+    assert 0 < len(dep["ids"]) <= C.DEPENDENCE_MAX_ROWS
+    assert len(dep["features"]) <= C.DEPENDENCE_MAX_FEATURES
+    assert [f["feature"] for f in dep["features"]] == [
+        f["feature"] for f in body["featureImportance"][: len(dep["features"])]
+    ]
+    for f in dep["features"]:
+        assert len(f["values"]) == len(f["shap"]) == len(dep["ids"])
+    # held-out rows come first: every case (all held out) sits in the first
+    # caseStats.total positions, and its contribution is the card's
+    first_held = set(dep["ids"][: body["caseStats"]["total"]])
+    row = {rid: i for i, rid in enumerate(dep["ids"])}
+    top = dep["features"][0]
+    for case in body["cases"]:
+        assert case["id"] in first_held
+        card = {t["feature"]: t["contribution"] for t in case["topFeatures"]}
+        assert abs(top["shap"][row[case["id"]]] - card[top["feature"]]) < 1e-3
+
+
 if __name__ == "__main__":
     test_analyze_returns_report()
     test_columns_returns_row_count()
@@ -647,4 +686,5 @@ if __name__ == "__main__":
     test_heavy_request_gets_busy_message_when_slot_stays_taken()
     test_analysis_cache_evicts_oldest_over_memory_budget()
     test_distributions_cover_every_row()
+    test_dependence_reuses_shap_pool_held_out_first()
     print("ok")
