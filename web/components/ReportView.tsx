@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { isRegression, type ShapReport } from "@/lib/types";
 import {
   buildOverallSummary,
@@ -43,6 +43,11 @@ type Props = {
 export default function ReportView({ report, domain, reportId, reportLabel }: Props) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [tab, setTab] = useState<Tab>("summary");
+  // a "자세히 보기 →" link on a PDP/distribution card sets this and switches
+  // to the 특성 자세히 보기 tab (undefined = importance #1, as when the tab is
+  // opened by hand)
+  const [detailFeature, setDetailFeature] = useState<string | undefined>(undefined);
+  const tabsRef = useRef<HTMLDivElement>(null);
   // the reader's own case count/focus (null = the report's original cases)
   const [picks, setPicks] = useState<{ focus: CaseFocus; n: number } | null>(null);
   const hasCorr = !!report.correlations;
@@ -94,6 +99,19 @@ export default function ReportView({ report, domain, reportId, reportLabel }: Pr
     [effectiveReport, picks],
   );
 
+  // the features the 특성 자세히 보기 tab has dependence data for - only their
+  // cards link there (older/stripped reports have none, so no links at all)
+  const detailFeatures = useMemo(
+    () => new Set((report.dependence?.features ?? []).map((f) => f.feature)),
+    [report.dependence],
+  );
+  function openFeatureDetail(feature: string) {
+    setDetailFeature(feature);
+    setTab("feature");
+    // land on the top of the new tab, not wherever the card was
+    requestAnimationFrame(() => tabsRef.current?.scrollIntoView({ block: "start" }));
+  }
+
   function saveLabel(which: "pos" | "neg", label: string) {
     const raw = which === "pos" ? positiveRaw : negativeRaw;
     if (!targetColumn || raw === undefined) return;
@@ -112,7 +130,7 @@ export default function ReportView({ report, domain, reportId, reportLabel }: Pr
 
   return (
     <>
-      <div className={styles.tabs}>
+      <div className={styles.tabs} ref={tabsRef}>
         <button
           type="button"
           onClick={() => setTab("summary")}
@@ -129,7 +147,10 @@ export default function ReportView({ report, domain, reportId, reportLabel }: Pr
         </button>
         <button
           type="button"
-          onClick={() => setTab("feature")}
+          onClick={() => {
+            setDetailFeature(undefined);
+            setTab("feature");
+          }}
           className={`${styles.tab} ${tab === "feature" ? styles.tabActive : ""}`}
         >
           특성 자세히 보기
@@ -154,6 +175,8 @@ export default function ReportView({ report, domain, reportId, reportLabel }: Pr
           selectedId={selectedId}
           reportId={reportId}
           reportLabel={reportLabel}
+          detailFeatures={detailFeatures}
+          onOpenDetail={openFeatureDetail}
           valueEditor={
             isUpload && targetColumn && positiveRaw !== undefined && negativeRaw !== undefined
               ? {
@@ -191,7 +214,14 @@ export default function ReportView({ report, domain, reportId, reportLabel }: Pr
           onPicks={setPicks}
         />
       )}
-      {tab === "feature" && <FeatureDetailTab report={effectiveReport} domain={domain} />}
+      {tab === "feature" && (
+        <FeatureDetailTab
+          key={detailFeature ?? ""}
+          report={effectiveReport}
+          domain={domain}
+          initialFeature={detailFeature}
+        />
+      )}
       {tab === "data" && report.correlations && (
         <div className={styles.reportCol} id="report-data">
           <p className={styles.dataRelIntro}>
@@ -210,7 +240,12 @@ export default function ReportView({ report, domain, reportId, reportLabel }: Pr
             }
             distributions={
               report.distributions?.length ? (
-                <DistributionGrid report={effectiveReport} domain={domain} />
+                <DistributionGrid
+                  report={effectiveReport}
+                  domain={domain}
+                  detailFeatures={detailFeatures}
+                  onOpenDetail={openFeatureDetail}
+                />
               ) : undefined
             }
           />
@@ -314,12 +349,16 @@ function SummaryBody({
   reportId,
   reportLabel,
   valueEditor,
+  detailFeatures,
+  onOpenDetail,
 }: {
   report: ShapReport;
   domain: string;
   selectedId: string | null;
   reportId?: string;
   reportLabel?: string;
+  detailFeatures: Set<string>;
+  onOpenDetail: (feature: string) => void;
   valueEditor?: ValueEditorProps;
 }) {
   const { positiveLabel, negativeLabel } = report;
@@ -530,6 +569,8 @@ function SummaryBody({
             items={report.partialDependence}
             domain={domain}
             regression={regression}
+            detailFeatures={detailFeatures}
+            onOpenDetail={onOpenDetail}
           />
         </section>
       )}

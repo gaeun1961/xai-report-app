@@ -537,6 +537,36 @@
   color: var(--text-muted);
 }
 
+/* a card's title row when it also carries a "자세히 보기 →" link: link on
+   the left, the (right-aligned) title keeps its place */
+.cardHeadRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.detailLink {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent-strong);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.detailLink:hover {
+  text-decoration: underline;
+}
+
+.detailLink:focus-visible {
+  outline: 2px solid var(--accent-strong);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
 /* categorical PDP: one row per category - name | bar (or marker) | value */
 .pdpBars {
   display: flex;
