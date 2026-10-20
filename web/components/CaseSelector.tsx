@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import type { ShapReport } from "@/lib/types";
 import { caseScopeText, HELD_OUT_NOTE } from "@/lib/reportSummary";
-import CaseScatterPlot from "./CaseScatterPlot";
+import CaseScatterPlot, { type ScatterPreview } from "./CaseScatterPlot";
 import RegressionScatterPlot from "./RegressionScatterPlot";
 import InfoTip from "./InfoTip";
 import styles from "./report.module.css";
@@ -17,6 +17,8 @@ type Props = {
   caseStats?: ShapReport["caseStats"];
   // the upload's total row count (absent on presets) - for "전체 N행 중 …"
   totalRows?: number;
+  // What-if result of the selected case, shown on the classification scatter
+  preview?: ScatterPreview | null;
 };
 
 type Filter = "all" | "pos" | "neg";
@@ -94,6 +96,7 @@ function ClassificationCaseSelector({
   negativeLabel,
   caseStats,
   totalRows,
+  preview,
 }: Props) {
   const [filter, setFilter] = useState<Filter>("all");
   const [minC, setMinC] = useState(0);
@@ -205,6 +208,7 @@ function ClassificationCaseSelector({
         onSelect={onSelect}
         positiveLabel={posText}
         negativeLabel={negText}
+        preview={preview}
       />
     </div>
   );

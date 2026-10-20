@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { whatIf, type WhatIfResult } from "@/lib/api";
 import { columnDesc, isSuggestedDesc } from "@/lib/columnGlossary";
 import GlossaryTerm from "./GlossaryTerm";
@@ -17,6 +17,11 @@ type Props = {
   topFeatures: { feature: string; value: unknown }[];
   positiveLabel?: string;
   negativeLabel?: string;
+  // which case this panel is for, and a way to show its re-prediction on the
+  // case scatter: called with the new P(positive) after a run, and with null
+  // on "초기화" and when the panel goes away (case switched, tab left)
+  caseId?: string;
+  onPreview?: (p: { caseId: string; proba: number } | null) => void;
 };
 
 const TITLE = "값 바꿔서 다시 예측해보기";
@@ -43,6 +48,8 @@ export default function WhatIfPanel({
   topFeatures,
   positiveLabel,
   negativeLabel,
+  caseId,
+  onPreview,
 }: Props) {
   const numericFeatures = topFeatures
     .filter((f) => typeof f.value === "number")
@@ -52,6 +59,10 @@ export default function WhatIfPanel({
   const [result, setResult] = useState<WhatIfResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // the marker belongs to this panel's result - take it off the scatter when
+  // the panel unmounts (another case picked, or the tab changed)
+  useEffect(() => () => onPreview?.(null), [onPreview]);
 
   if (numericFeatures.length === 0) {
     return (
@@ -64,7 +75,9 @@ export default function WhatIfPanel({
     setError(null);
     try {
       const row = { ...rawRow, ...overrides };
-      setResult(await whatIf(analysisId, row));
+      const res = await whatIf(analysisId, row);
+      setResult(res);
+      if (caseId !== undefined) onPreview?.({ caseId, proba: res.probaPositive });
     } catch (e) {
       setError(e instanceof Error ? e.message : "다시 예측하는 중 문제가 발생했어요.");
     } finally {
@@ -76,6 +89,7 @@ export default function WhatIfPanel({
     setOverrides({});
     setResult(null);
     setError(null);
+    onPreview?.(null);
   }
 
   const changed = Object.keys(overrides).length > 0;
