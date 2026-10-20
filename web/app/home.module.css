@@ -38,6 +38,13 @@
   color: var(--foreground);
 }
 
+.navLink:focus-visible {
+  outline: 2px solid var(--accent-strong);
+  outline-offset: 3px;
+  border-radius: 4px;
+  color: var(--foreground);
+}
+
 .hero {
   display: flex;
   flex-direction: column;
