@@ -1,6 +1,7 @@
 import type { ShapReport } from "@/lib/types";
 import { fmtNum } from "@/lib/reportSummary";
 import { WIDE, wideX } from "@/lib/chartFrame";
+import DetailLink from "./DetailLink";
 import { columnDesc, isSuggestedDesc } from "@/lib/columnGlossary";
 import GlossaryTerm from "./GlossaryTerm";
 import styles from "./report.module.css";
@@ -45,6 +46,7 @@ export function DistributionCard({
   split,
   xRange,
   showTitle = true,
+  onOpenDetail,
 }: {
   dist: Distribution;
   domain: string;
@@ -52,18 +54,23 @@ export function DistributionCard({
   // given = draw on the feature detail tab's shared wide frame (lib/chartFrame)
   xRange?: [number, number];
   showTitle?: boolean;
+  // given = show "자세히 보기 →" next to the title
+  onOpenDetail?: (feature: string) => void;
 }) {
   const byClass = split ? dist.byClass : undefined;
   return (
     <div className={styles.pdpCell}>
       {showTitle && (
-        <span className={styles.chartLabel}>
-          <GlossaryTerm
-            term={dist.feature}
-            desc={columnDesc(domain, dist.feature)}
-            suggested={isSuggestedDesc(domain, dist.feature)}
-          />
-        </span>
+        <div className={styles.cardHeadRow}>
+          {onOpenDetail ? <DetailLink feature={dist.feature} onOpen={onOpenDetail} /> : <span />}
+          <span className={styles.chartLabel}>
+            <GlossaryTerm
+              term={dist.feature}
+              desc={columnDesc(domain, dist.feature)}
+              suggested={isSuggestedDesc(domain, dist.feature)}
+            />
+          </span>
+        </div>
       )}
       {dist.kind === "numeric" ? (
         <Histogram dist={dist} byClass={byClass} xRange={xRange} />
@@ -189,9 +196,14 @@ function CategoryCounts({ dist, byClass }: { dist: Distribution; byClass?: numbe
 export default function DistributionGrid({
   report,
   domain,
+  detailFeatures,
+  onOpenDetail,
 }: {
   report: ShapReport;
   domain: string;
+  // features with a page in the 특성 자세히 보기 tab get a link to it
+  detailFeatures?: Set<string>;
+  onOpenDetail?: (feature: string) => void;
 }) {
   const dists = report.distributions ?? [];
   const order = new Map(report.featureImportance.map((f, i) => [f.feature, i]));
@@ -210,7 +222,13 @@ export default function DistributionGrid({
       {split && <Legend split={split} />}
       <div className={styles.pdpGrid}>
         {sorted.map((d) => (
-          <DistributionCard key={d.feature} dist={d} domain={domain} split={split} />
+          <DistributionCard
+            key={d.feature}
+            dist={d}
+            domain={domain}
+            split={split}
+            onOpenDetail={detailFeatures?.has(d.feature) ? onOpenDetail : undefined}
+          />
         ))}
       </div>
     </>

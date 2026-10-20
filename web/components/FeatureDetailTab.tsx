@@ -118,10 +118,21 @@ function pdpNumberRange(pdp: NonNullable<ShapReport["partialDependence"]>[number
   return vs.length ? ([Math.min(...vs), Math.max(...vs)] as [number, number]) : undefined;
 }
 
-export default function FeatureDetailTab({ report, domain }: { report: ShapReport; domain: string }) {
+export default function FeatureDetailTab({
+  report,
+  domain,
+  initialFeature,
+}: {
+  report: ShapReport;
+  domain: string;
+  // the feature a "자세히 보기 →" link came from (default: importance #1)
+  initialFeature?: string;
+}) {
   const regression = isRegression(report);
   const features = report.featureImportance.map((f) => f.feature);
-  const [feature, setFeature] = useState(features[0]);
+  const [feature, setFeature] = useState(
+    initialFeature && features.includes(initialFeature) ? initialFeature : features[0],
+  );
 
   const dist = report.distributions?.find((d) => d.feature === feature);
   const pdp = report.partialDependence?.find((e) => e.feature === feature);

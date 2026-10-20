@@ -2,6 +2,7 @@ import type { ShapReport } from "@/lib/types";
 import { fmtNum } from "@/lib/reportSummary";
 import { WIDE, wideX } from "@/lib/chartFrame";
 import { WideAxisLabels } from "./DistributionChart";
+import DetailLink from "./DetailLink";
 import { columnDesc, isSuggestedDesc } from "@/lib/columnGlossary";
 import GlossaryTerm from "./GlossaryTerm";
 import styles from "./report.module.css";
@@ -86,6 +87,7 @@ export function PdpCell({
   xRange,
   categoryOrder,
   showTitle = true,
+  onOpenDetail,
 }: {
   entry: PdpEntry;
   domain: string;
@@ -96,6 +98,8 @@ export function PdpCell({
   // distribution's), unknown categories last
   categoryOrder?: string[];
   showTitle?: boolean;
+  // given = show "자세히 보기 →" next to the title (the feature detail tab)
+  onOpenDetail?: (feature: string) => void;
 }) {
   const probas = entry.points.map((p) => p.proba);
   const min = Math.min(...probas);
@@ -115,13 +119,16 @@ export function PdpCell({
   return (
     <div className={styles.pdpCell}>
       {showTitle && (
-        <span className={styles.chartLabel}>
-          <GlossaryTerm
-            term={entry.feature}
-            desc={columnDesc(domain, entry.feature)}
-            suggested={isSuggestedDesc(domain, entry.feature)}
-          />
-        </span>
+        <div className={styles.cardHeadRow}>
+          {onOpenDetail ? <DetailLink feature={entry.feature} onOpen={onOpenDetail} /> : <span />}
+          <span className={styles.chartLabel}>
+            <GlossaryTerm
+              term={entry.feature}
+              desc={columnDesc(domain, entry.feature)}
+              suggested={isSuggestedDesc(domain, entry.feature)}
+            />
+          </span>
+        </div>
       )}
       {isCategorical ? (
         <CategoryBars
@@ -175,16 +182,27 @@ type Props = {
   domain: string;
   // regression: the y value is a predicted number, not a probability
   regression?: boolean;
+  // features that have a page in the 특성 자세히 보기 tab: only those cards
+  // get a "자세히 보기 →" link, which calls onOpenDetail
+  detailFeatures?: Set<string>;
+  onOpenDetail?: (feature: string) => void;
 };
 
-export default function PartialDependenceChart({ items, domain, regression }: Props) {
+export default function PartialDependenceChart({ items, domain, regression, detailFeatures, onOpenDetail }: Props) {
   const axis = pdpAxis(items);
   return (
     <>
       <p className={styles.sectionNote}>{pdpAxisNote(axis, regression)}</p>
       <div className={styles.pdpGrid}>
         {items.map((entry) => (
-          <PdpCell key={entry.feature} entry={entry} domain={domain} regression={regression} axis={axis} />
+          <PdpCell
+            key={entry.feature}
+            entry={entry}
+            domain={domain}
+            regression={regression}
+            axis={axis}
+            onOpenDetail={detailFeatures?.has(entry.feature) ? onOpenDetail : undefined}
+          />
         ))}
       </div>
     </>
