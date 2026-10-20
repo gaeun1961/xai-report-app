@@ -23,15 +23,8 @@ export function fmtNum(n: number): string {
   return Number(n.toFixed(digits)).toLocaleString();
 }
 
-// "학습에 쓰지 않은 N개 중" / older reports: "분석한 전체 N개 중"
-export function caseScopeText(stats: NonNullable<ShapReport["caseStats"]>): string {
-  const n = stats.total.toLocaleString();
-  return stats.heldOut ? `학습에 쓰지 않은 ${n}개 중` : `분석한 전체 ${n}개 중`;
-}
-
-// why the counts above only use held-out rows - shown as an InfoTip
-export const HELD_OUT_NOTE =
-  "케이스와 개수는 모델이 학습에 쓰지 않은 행만 기준으로 해요. 학습에 쓴 행은 모델이 정답을 이미 본 셈이라, 실제보다 잘 맞는 것처럼 보이기 때문이에요.";
+import { caseScopeText } from "./caseScope";
+export { caseScopeText, HELD_OUT_NOTE } from "./caseScope";
 
 // Regression importance (mean|SHAP|) is in the target's own units, so it's
 // shown as each feature's share of the total. The importance bars and the
@@ -409,7 +402,7 @@ export function buildCopyText(
   }
   if (report.caseStats) {
     const { wrong, borderline } = report.caseStats;
-    const scope = caseScopeText(report.caseStats);
+    const scope = caseScopeText(report.caseStats, report.totalRows);
     lines.push(
       regression
         ? `케이스: ${scope} 오차가 큰 케이스 ${wrong}개`
