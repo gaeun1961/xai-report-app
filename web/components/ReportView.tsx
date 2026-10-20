@@ -736,35 +736,22 @@ function CasesBody({ report, domain, selectedId, onSelect, picks, onPicks }: Cas
           caseStats={report.caseStats}
           totalRows={report.totalRows}
         />
+        {!selected && (
+          <p className={styles.selectorEmpty}>
+            위 산점도에서 점을 클릭하면 케이스 상세를 볼 수 있어요.
+            {(reportBlocker === null || !isUpload) && (
+              <>
+                <br />
+                {reportBlocker === null
+                  ? "케이스를 클릭하면 값을 바꿔 다시 예측해볼 수도 있어요."
+                  : "업로드한 분류 분석에서는 케이스를 클릭하면 값을 바꿔 다시 예측해볼 수도 있어요."}
+              </>
+            )}
+          </p>
+        )}
       </section>
 
-      {report.wrongFeatureImportance && report.wrongFeatureImportance.length > 0 && (
-        <section className={styles.cardSection}>
-          <h2 className={styles.h2}>
-            {regression ? "오차가 큰 케이스 기준 특성 중요도" : "오답 케이스 기준 특성 중요도"}{" "}
-            <InfoTip
-              text={
-                regression
-                  ? "전체 특성 중요도와 다르게, **오차가 유독 큰 케이스들만 모아서** 다시 계산한 순위예요. 전체 기준으로는 안 중요했던 항목이 여기서 상위권이라면, 그 항목이 모델을 헷갈리게 하고 있을 가능성이 있어요."
-                  : "전체 특성 중요도와 다르게, **예측이 틀린 케이스들만 모아서** 다시 계산한 순위예요. 전체 기준으로는 안 중요했던 항목이 여기서 상위권이라면, 그 항목이 모델을 헷갈리게 하고 있을 가능성이 있어요."
-              }
-            />
-          </h2>
-          {report.caseStats && (
-            <p className={styles.sectionNote}>
-              {regression ? "오차가 큰" : "예측이 틀린"} 케이스{" "}
-              <b>{report.caseStats.wrong.toLocaleString()}개</b> 기준으로 계산했어요.
-            </p>
-          )}
-          <FeatureImportanceChart
-            items={report.wrongFeatureImportance}
-            domain={domain}
-            regression={regression}
-          />
-        </section>
-      )}
-
-      {selected ? (
+      {selected && (
         <>
           <CaseReportCard
             case={selected}
@@ -790,18 +777,32 @@ function CasesBody({ report, domain, selectedId, onSelect, picks, onPicks }: Cas
             />
           )}
         </>
-      ) : (
-        <p className={styles.selectorEmpty}>
-          위 산점도에서 점을 클릭하면 케이스 상세를 볼 수 있어요.
-          {(reportBlocker === null || !isUpload) && (
-            <>
-              <br />
-              {reportBlocker === null
-                ? "케이스를 클릭하면 값을 바꿔 다시 예측해볼 수도 있어요."
-                : "업로드한 분류 분석에서는 케이스를 클릭하면 값을 바꿔 다시 예측해볼 수도 있어요."}
-            </>
+      )}
+
+      {report.wrongFeatureImportance && report.wrongFeatureImportance.length > 0 && (
+        <section className={styles.cardSection}>
+          <h2 className={styles.h2}>
+            {regression ? "오차가 큰 케이스 기준 특성 중요도" : "오답 케이스 기준 특성 중요도"}{" "}
+            <InfoTip
+              text={
+                regression
+                  ? "전체 특성 중요도와 다르게, **오차가 유독 큰 케이스들만 모아서** 다시 계산한 순위예요. 전체 기준으로는 안 중요했던 항목이 여기서 상위권이라면, 그 항목이 모델을 헷갈리게 하고 있을 가능성이 있어요."
+                  : "전체 특성 중요도와 다르게, **예측이 틀린 케이스들만 모아서** 다시 계산한 순위예요. 전체 기준으로는 안 중요했던 항목이 여기서 상위권이라면, 그 항목이 모델을 헷갈리게 하고 있을 가능성이 있어요."
+              }
+            />
+          </h2>
+          {report.caseStats && (
+            <p className={styles.sectionNote}>
+              {regression ? "오차가 큰" : "예측이 틀린"} 케이스{" "}
+              <b>{report.caseStats.wrong.toLocaleString()}개</b> 기준으로 계산했어요.
+            </p>
           )}
-        </p>
+          <FeatureImportanceChart
+            items={report.wrongFeatureImportance}
+            domain={domain}
+            regression={regression}
+          />
+        </section>
       )}
     </div>
   );
