@@ -1699,9 +1699,12 @@
   cursor: pointer;
 }
 
+/* the picked row is marked in neutral ink, not green: the 분류/회귀 badges
+   carry colour, so a coloured highlight would blur with them */
 .targetItemActive {
-  border-color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  border-color: var(--foreground);
+  box-shadow: inset 0 0 0 1px var(--foreground);
+  background: color-mix(in srgb, var(--foreground) 6%, transparent);
 }
 
 .targetName {
@@ -1717,13 +1720,22 @@
   white-space: nowrap;
 }
 
+/* white text on both fills is >= 4.5:1: #0f7a58 5.3:1, #284b7a 8.8:1
+   (the plain accent #1d9e75 is only 3.4:1 with white) */
 .targetBadge {
   padding: 1px 7px;
   border-radius: 999px;
-  background: var(--accent);
   color: #fff;
   font-size: 12px;
   font-weight: 700;
+}
+
+.targetBadgeClass {
+  background: var(--accent-strong);
+}
+
+.targetBadgeReg {
+  background: #284b7a;
 }
 
 /* stacks "결과 복사하기" and "이미지로 저장" in the guide row's button slot */

@@ -34,7 +34,13 @@ export default function TargetColumnSelector({
         <span className={styles.targetMeta}>
           고유값 {col.uniqueCount}개
           {suggestedTask(col) && (
-            <span className={styles.targetBadge}>
+            <span
+              className={`${styles.targetBadge} ${
+                suggestedTask(col) === "classification"
+                  ? styles.targetBadgeClass
+                  : styles.targetBadgeReg
+              }`}
+            >
               {suggestedTask(col) === "classification" ? "분류 추천" : "회귀 추천"}
             </span>
           )}
