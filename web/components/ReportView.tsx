@@ -678,6 +678,8 @@ function CasesBody({ report, domain, selectedId, onSelect, picks, onPicks }: Cas
   const { positiveLabel, negativeLabel } = report;
   const regression = isRegression(report);
   const [labelColumn, setLabelColumn] = useState("");
+  // the selected case's What-if result, drawn on the classification scatter
+  const [preview, setPreview] = useState<{ caseId: string; proba: number } | null>(null);
   // why What-if can't run here (null = it can) - shown in the panel's place
   // instead of the panel silently disappearing. Presets never carry
   // targetColumn/analysisId; an upload without analysisId predates What-if.
@@ -735,6 +737,7 @@ function CasesBody({ report, domain, selectedId, onSelect, picks, onPicks }: Cas
           negativeLabel={negativeLabel}
           caseStats={report.caseStats}
           totalRows={report.totalRows}
+          preview={preview?.caseId === selected?.id ? preview : null}
         />
         {!selected && (
           <p className={styles.selectorEmpty}>
@@ -768,6 +771,11 @@ function CasesBody({ report, domain, selectedId, onSelect, picks, onPicks }: Cas
             <WhatIfUnavailable reason={whatIfBlocker} />
           ) : (
             <WhatIfPanel
+              // a fresh panel per case: its inputs/result (and the scatter
+              // marker) don't carry over to the next case
+              key={selected.id}
+              caseId={selected.id}
+              onPreview={setPreview}
               analysisId={report.analysisId!}
               domain={domain}
               rawRow={selected.raw!}

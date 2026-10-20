@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { ShapReport } from "@/lib/types";
+import { previewGeometry } from "@/lib/scatterPreview";
 import styles from "./report.module.css";
 
 // narrower viewport = fewer real pixels per SVG unit, so a touch target needs
@@ -21,6 +22,16 @@ export function useIsMobile() {
 
 type CaseItem = ShapReport["cases"][number];
 
+// a What-if result for one case: where the model now puts it (P(positive))
+export type ScatterPreview = { caseId: string; proba: number };
+
+// literal colours (not CSS classes): the ring/arrow sit on an SVG that
+// "이미지로 저장" isn't involved with, but a literal keeps the contrast
+// numbers below exact. #1e3a5f vs white 11.5:1, vs the green dot 3.4:1,
+// vs the amber dot 3.6:1 - all >= 3:1 (non-text contrast)
+const PREVIEW_COLOR = "#1e3a5f";
+const RING_R = 7.5;
+
 type Props = {
   cases: CaseItem[];
   noById: Map<string, number>;
@@ -28,6 +39,9 @@ type Props = {
   onSelect: (id: string) => void;
   positiveLabel: string;
   negativeLabel: string;
+  // "값 바꿔서 다시 예측해보기" result for the selected case; drawn as a ring
+  // with an arrow from the case's own dot, which stays where it is
+  preview?: ScatterPreview | null;
 };
 
 const WIDTH = 640;
@@ -92,6 +106,58 @@ function packBeeswarm(
   return offsetById;
 }
 
+// ring at the new prediction + an arrow from the original dot to its edge
+function PreviewMarker({
+  geo,
+  onHover,
+}: {
+  geo: NonNullable<ReturnType<typeof previewGeometry>>;
+  onHover: (on: boolean) => void;
+}) {
+  const { from, to } = geo;
+  const dy = to.y - from.y;
+  const far = Math.abs(dy) > RING_R + DOT_R_SELECTED + 2; // room for an arrow
+  // stop the arrow at the ring's edge so the head isn't hidden under it
+  const endY = to.y - Math.sign(dy) * (RING_R + 1);
+  return (
+    <g>
+      {far && (
+        <line
+          x1={from.x}
+          y1={from.y}
+          x2={to.x}
+          y2={endY}
+          stroke={PREVIEW_COLOR}
+          strokeWidth={1.6}
+          markerEnd="url(#whatif-arrow)"
+          pointerEvents="none"
+        />
+      )}
+      {/* white halo under the ring so it stays readable over other dots */}
+      <circle cx={to.x} cy={to.y} r={RING_R} fill="none" stroke="#fff" strokeWidth={5} pointerEvents="none" />
+      <circle
+        cx={to.x}
+        cy={to.y}
+        r={RING_R}
+        fill="none"
+        stroke={PREVIEW_COLOR}
+        strokeWidth={2.4}
+        pointerEvents="none"
+      />
+      <circle
+        cx={to.x}
+        cy={to.y}
+        r={RING_R + 5}
+        fill="transparent"
+        onMouseEnter={() => onHover(true)}
+        onMouseLeave={() => onHover(false)}
+      >
+        <title>값 바꾼 예측</title>
+      </circle>
+    </g>
+  );
+}
+
 export default function CaseScatterPlot({
   cases,
   noById,
@@ -99,6 +165,7 @@ export default function CaseScatterPlot({
   onSelect,
   positiveLabel,
   negativeLabel,
+  preview,
 }: Props) {
   const positions = useMemo(() => {
     const withY = cases.map((c) => ({
@@ -126,6 +193,7 @@ export default function CaseScatterPlot({
   }, [cases]);
 
   const [hoverId, setHoverId] = useState<string | null>(null);
+  const [hoverPreview, setHoverPreview] = useState(false);
   const isMobile = useIsMobile();
   const hitR = isMobile ? 14 : 9;
   const hitRSelected = isMobile ? 16 : 11;
@@ -138,6 +206,11 @@ export default function CaseScatterPlot({
   const ordered = [...cases].sort((a) => (a.id === selectedId ? 1 : -1));
   const hovered = hoverId ? cases.find((c) => c.id === hoverId) : undefined;
   const hoverPos = hoverId ? positions.get(hoverId) : undefined;
+  const previewGeo = previewGeometry({
+    positions,
+    preview,
+    plot: { marginTop: MARGIN.top, plotH: PLOT_H },
+  });
 
   return (
     <div className={styles.scatterWrap}>
@@ -150,6 +223,12 @@ export default function CaseScatterPlot({
           <i className={`${styles.scatterDotIcon} ${styles.scatterDotWrong}`} />
           틀림
         </span>
+        {previewGeo && (
+          <span className={styles.scatterLegendItem}>
+            <i className={styles.scatterRingIcon} />
+            값 바꾼 예측
+          </span>
+        )}
       </div>
 
       <svg
@@ -157,8 +236,24 @@ export default function CaseScatterPlot({
         className={styles.scatter}
         role="img"
         aria-label="케이스별 확신도-정답 산점도"
-        onMouseLeave={() => setHoverId(null)}
+        onMouseLeave={() => {
+          setHoverId(null);
+          setHoverPreview(false);
+        }}
       >
+        <defs>
+          <marker
+            id="whatif-arrow"
+            viewBox="0 0 10 10"
+            refX="9"
+            refY="5"
+            markerWidth="7"
+            markerHeight="7"
+            orient="auto"
+          >
+            <path d="M 0 0 L 10 5 L 0 10 z" fill={PREVIEW_COLOR} />
+          </marker>
+        </defs>
         {Y_TICKS.map((t) => {
           const y = MARGIN.top + (1 - t) * PLOT_H;
           return (
@@ -229,7 +324,25 @@ export default function CaseScatterPlot({
             </g>
           );
         })}
+        {previewGeo && <PreviewMarker geo={previewGeo} onHover={setHoverPreview} />}
       </svg>
+
+      {previewGeo && preview && hoverPreview && (
+        <div
+          className={styles.scatterTooltip}
+          style={{
+            left: `${(previewGeo.to.x / WIDTH) * 100}%`,
+            top: `${(previewGeo.to.y / HEIGHT) * 100}%`,
+          }}
+        >
+          <b>값 바꾼 예측</b>
+          <span>
+            예측: {preview.proba >= 0.5 ? positiveLabel : negativeLabel} (
+            {Math.round(preview.proba * 100)}%)
+          </span>
+          <span>원래 예측에서 이동한 위치예요</span>
+        </div>
+      )}
 
       {hovered && hoverPos && (
         <div
