@@ -1,6 +1,7 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef } from "react";
+import { positionBubble } from "@/lib/tooltipPlacement";
 import styles from "./report.module.css";
 
 type Props = {
@@ -26,52 +27,17 @@ function renderWithBold(line: string) {
     .map((part, i) => (i % 2 === 1 ? <strong key={i}>{part}</strong> : part));
 }
 
-const EDGE_MARGIN = 8;
-const GAP = 10; // matches the CSS gap between icon and bubble
-
 // Small circular "?" next to a section heading — same CSS-only tooltip
 // mechanism as GlossaryTerm (hover, and tap/keyboard focus for mobile).
-// Visibility stays CSS-driven (:hover/:focus-within); JS only decides
-// placement right as the hover/focus starts, so there's no flicker.
+// Visibility stays CSS-driven (:hover/:focus-within); JS only places the
+// bubble (lib/tooltipPlacement: right, else left, else above/below, always
+// on screen) right as the hover/focus starts, so there's no flicker.
 export default function InfoTip({ text }: Props) {
   const ref = useRef<HTMLSpanElement>(null);
   const bubbleRef = useRef<HTMLSpanElement>(null);
-  const [below, setBelow] = useState(false);
-  // horizontal offset of the bubble's left edge from the icon's own left
-  // edge (px) — computed fresh each time so it's clamped to the actual
-  // viewport width instead of just flipping between two fixed alignments,
-  // which can still overflow when the bubble is nearly as wide as a narrow
-  // (mobile) viewport
-  const [offsetX, setOffsetX] = useState(0);
 
   function updatePlacement() {
-    const rect = ref.current?.getBoundingClientRect();
-    const bubble = bubbleRef.current;
-    if (!rect || !bubble) return;
-
-    // the bubble is display:none until hover, and both its height and width
-    // depend on how many lines this particular text wraps into (a short
-    // tooltip can render much narrower than the CSS max-width) — measure
-    // the real box (briefly forced visible off-eye, reset before the
-    // browser ever paints) instead of assuming the theoretical max width,
-    // which used to misalign short bubbles well past the icon's edge
-    const prevDisplay = bubble.style.display;
-    const prevVisibility = bubble.style.visibility;
-    bubble.style.visibility = "hidden";
-    bubble.style.display = "flex";
-    const bubbleHeight = bubble.offsetHeight;
-    const bubbleWidth = bubble.offsetWidth;
-    bubble.style.display = prevDisplay;
-    bubble.style.visibility = prevVisibility;
-
-    const spaceAbove = rect.top;
-    const spaceBelow = window.innerHeight - rect.bottom;
-    setBelow(bubbleHeight + GAP > spaceAbove && spaceBelow > spaceAbove);
-
-    // default: bubble's right edge lines up with the icon's right edge
-    let left = rect.right - bubbleWidth;
-    left = Math.max(EDGE_MARGIN, Math.min(left, window.innerWidth - bubbleWidth - EDGE_MARGIN));
-    setOffsetX(left - rect.left);
+    if (ref.current && bubbleRef.current) positionBubble(ref.current, bubbleRef.current, "flex");
   }
 
   return (
@@ -87,8 +53,7 @@ export default function InfoTip({ text }: Props) {
       ?
       <span
         ref={bubbleRef}
-        className={`${styles.infoTipBubble} ${below ? styles.infoTipBubbleBelow : ""}`}
-        style={{ left: offsetX, right: "auto" }}
+        className={`${styles.bubble} ${styles.infoTipBubble}`}
         role="tooltip"
       >
         {splitLines(text).map((line, i) => (

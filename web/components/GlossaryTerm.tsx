@@ -1,3 +1,6 @@
+"use client";
+
+import { placeChildBubble } from "@/lib/tooltipPlacement";
 import styles from "./report.module.css";
 
 type Props = {
@@ -7,7 +10,7 @@ type Props = {
   className?: string;
 };
 
-// Dotted-underline term with a CSS-only tooltip bubble. Shows on hover and on
+// Dotted-underline term with a CSS-shown tooltip bubble (JS only places it). Shows on hover and on
 // keyboard/tap focus (tabIndex), so it works on touch too. No JS, no deps.
 // When `desc` is missing (uploaded CSV with no AI guess either), renders
 // plain text. `suggested` marks a desc as the backend's AI guess (uploads
@@ -16,9 +19,14 @@ type Props = {
 export default function GlossaryTerm({ term, desc, suggested, className = "" }: Props) {
   if (!desc) return <span className={className}>{term}</span>;
   return (
-    <span className={`${styles.glossary} ${styles.tooltipHost} ${className}`} tabIndex={0}>
+    <span
+      className={`${styles.glossary} ${styles.tooltipHost} ${className}`}
+      tabIndex={0}
+      onMouseEnter={placeChildBubble}
+      onFocus={placeChildBubble}
+    >
       {term}
-      <span className={styles.glossaryBubble} role="tooltip">
+      <span className={`${styles.bubble} ${styles.glossaryBubble}`} role="tooltip">
         {suggested && <em className={styles.soon}>AI 추정</em>} {desc}
       </span>
     </span>

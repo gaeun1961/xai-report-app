@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import type { ShapReport } from "@/lib/types";
 import { fmtNum, fmtSigned } from "@/lib/reportSummary";
 import { useIsMobile } from "./CaseScatterPlot";
+import { placeInParent } from "@/lib/tooltipPlacement";
 import styles from "./report.module.css";
 
 type CaseItem = ShapReport["cases"][number];
@@ -170,11 +171,16 @@ export default function RegressionScatterPlot({ cases, noById, selectedId, onSel
 
       {hovered && (
         <div
-          className={styles.scatterTooltip}
+          className={styles.tooltipAnchor}
           style={{
             left: `${(x(hovered.predictedValue ?? 0) / WIDTH) * 100}%`,
             top: `${(y(hovered.actualValue ?? 0) / HEIGHT) * 100}%`,
           }}
+        >
+        <div
+          key={hovered.id}
+          className={`${styles.bubble} ${styles.scatterTooltip}`}
+          ref={placeInParent}
         >
           <b>케이스 {noById.get(hovered.id)}</b>
           <span>예측: {fmtNum(hovered.predictedValue ?? 0)}</span>
@@ -182,6 +188,7 @@ export default function RegressionScatterPlot({ cases, noById, selectedId, onSel
             실제: {fmtNum(hovered.actualValue ?? 0)} · 오차 {fmtSigned(hovered.residual ?? 0)}
             {hovered.isCorrect === false ? " · 큼" : ""}
           </span>
+        </div>
         </div>
       )}
     </div>
