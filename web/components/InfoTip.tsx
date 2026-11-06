@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { positionBubble } from "@/lib/tooltipPlacement";
+import { trackBubble } from "@/lib/tooltipPlacement";
 import styles from "./report.module.css";
 
 type Props = {
@@ -37,7 +37,7 @@ export default function InfoTip({ text }: Props) {
   const bubbleRef = useRef<HTMLSpanElement>(null);
 
   function updatePlacement() {
-    if (ref.current && bubbleRef.current) positionBubble(ref.current, bubbleRef.current, "flex");
+    if (ref.current && bubbleRef.current) trackBubble(ref.current, bubbleRef.current, "flex");
   }
 
   return (
