@@ -91,6 +91,18 @@ export async function whatIf(
   return res.json();
 }
 
+export async function fetchStability(
+  analysisId: string,
+): Promise<NonNullable<ShapReport["explanationStability"]>> {
+  const res = await fetch(`${API_BASE}/stability`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ analysis_id: analysisId }),
+  });
+  if (!res.ok) throw new Error(await errorMessage(res));
+  return res.json();
+}
+
 export type ModelTypeSpec = {
   label: string;
   // one line shown under the model picker (what the defaults are and why)

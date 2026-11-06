@@ -8,7 +8,13 @@ import {
   explainAccuracy,
   explainR2,
   HELD_OUT_NOTE,
+  stabilitySummary,
 } from "@/lib/reportSummary";
+import {
+  STABILITY_BASIS_NOTE,
+  STABILITY_LABEL,
+  STABILITY_SAMPLE_NOTE,
+} from "@/lib/stability";
 import { getValueLabel, setValueLabel } from "@/lib/valueLabels";
 import { registerUploadGlossary } from "@/lib/columnGlossary";
 import { featureTendencies } from "@/lib/featureTendency";
@@ -368,6 +374,7 @@ function SummaryBody({
   const regression = isRegression(report);
   const overallSummary = buildOverallSummary(report, domain);
   const tendencies = useMemo(() => featureTendencies(report, domain), [report, domain]);
+  const stability = stabilitySummary(report, domain);
 
   return (
     <div className={styles.reportCol} id="report-summary">
@@ -552,6 +559,42 @@ function SummaryBody({
           regression={regression}
         />
       </section>
+
+      {stability ? (
+        <section className={styles.cardSection}>
+          <h2 className={styles.h2}>
+            설명 안정성{" "}
+            <InfoTip text={`같은 데이터에서 **일부(80%)만 뽑고 무작위 시드만 바꿔 모델을 여러 번 다시 학습**한 뒤, 매번 특성 중요도 순위가 얼마나 같게 나오는지 본 거예요. 일치율은 두 번의 학습이 상위 요인을 몇 개나 같이 골랐는지, 순위 상관은 전체 순위가 얼마나 비슷한지(1이면 완전히 같음)예요. 안정성이 높아도 SHAP 기여도는 **모델이 그렇게 계산했다는 뜻이지, 그 요인이 원인이라는 뜻은 아니에요**. ${STABILITY_BASIS_NOTE}`} />
+          </h2>
+          <div className={styles.accuracyRow}>
+            <span
+              className={`${styles.qualityBadge} ${
+                { high: styles.qualityGood, medium: styles.qualityFair, low: styles.qualityWeak }[
+                  stability.level
+                ]
+              }`}
+            >
+              {STABILITY_LABEL[stability.level]}
+            </span>
+            <span className={styles.sectionNote}>{stability.evidence}</span>
+          </div>
+          <div className={styles.qualityMessage}>
+            <p>{stability.sentence}</p>
+          </div>
+          {/* the tooltip never shows in a PNG, so its basis note is printed
+              here for the capture only (SaveImageButton sets data-capturing) */}
+          <p className={`${styles.sectionNote} ${styles.captureOnly}`}>{STABILITY_BASIS_NOTE}</p>
+          <p className={styles.sectionNote}>{STABILITY_SAMPLE_NOTE}</p>
+        </section>
+      ) : (
+        report.analysisId &&
+        report.explanationStability === undefined && (
+          <p className={styles.sectionNote} data-no-capture>
+            설명 안정성(다시 학습해도 중요도 순위가 같은지)을 계산하는 중이에요. 실패하면 이 안내만
+            사라져요.
+          </p>
+        )
+      )}
 
       {report.partialDependence && report.partialDependence.length > 0 && (
         <section className={styles.cardSection}>

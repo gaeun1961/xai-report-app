@@ -553,6 +553,74 @@ def compute_shap(model, X: pd.DataFrame):
     return shap_values, feature_importance_df, base_value
 
 
+# Explanation stability: how much the feature-importance ranking depends on
+# which rows / which seed the model happened to get. Budget (measured on 5,000
+# capped training rows, laptop): SHAP dominates, and 200 explained rows give
+# the same overlap/correlation as 500 at ~1/3 the time - Telco-like
+# classification 7.5s, a 20k-row regression 28s for all 5 runs; peak memory
+# +~10MB over the idle process (models are dropped after each run).
+STABILITY_RUNS = 5
+STABILITY_FRAC = 0.8
+STABILITY_TOP_K = 5
+STABILITY_EXPLAIN_ROWS = 200
+
+
+def stability_explain_rows(X, explain_rows=STABILITY_EXPLAIN_ROWS):
+    """The fixed rows every stability run explains - same rows each time, so
+    the only thing that varies between runs is the model."""
+    return X.sample(n=min(explain_rows, len(X)), random_state=RANDOM_STATE)
+
+
+def stability_run(model, X, y, X_exp, seed, task_type="classification", frac=STABILITY_FRAC):
+    """One run: clone(model) with random_state=seed, fit on a fresh `frac`
+    subsample, mean|SHAP| on X_exp, in X.columns order."""
+    X_sub, _, y_sub, _ = train_test_split(
+        X, y, train_size=frac, random_state=seed,
+        stratify=y if task_type == "classification" else None,
+    )
+    m = clone(model)
+    if "random_state" in m.get_params():
+        m.set_params(random_state=seed)
+    m.fit(X_sub, y_sub)
+    _, fi, _ = compute_shap(m, X_exp)
+    return fi.set_index("feature")["importance"].reindex(X.columns).to_numpy()
+
+
+def summarize_stability(imps, top_k=STABILITY_TOP_K, frac=STABILITY_FRAC, explained_rows=None):
+    """Compare every pair of runs' rankings: top-k overlap (share of the
+    top-k features two runs agree on) and Spearman rank correlation over
+    every feature. Mean and worst pair both - one unlucky run is exactly
+    what this should surface."""
+    from scipy.stats import spearmanr
+
+    k = min(top_k, len(imps[0]))
+    overlaps, corrs = [], []
+    for a in range(len(imps)):
+        for b in range(a + 1, len(imps)):
+            top_a = set(np.argsort(-imps[a], kind="stable")[:k])
+            top_b = set(np.argsort(-imps[b], kind="stable")[:k])
+            overlaps.append(len(top_a & top_b) / k)
+            rho = spearmanr(imps[a], imps[b]).statistic
+            # a constant importance vector (e.g. every SHAP value 0) has no rank
+            corrs.append(1.0 if np.isnan(rho) else float(rho))
+    return {
+        "runs": len(imps),
+        "sampleFrac": frac,
+        "topK": k,
+        "explainedRows": explained_rows,
+        "topKOverlap": round(float(np.mean(overlaps)), 3),
+        "topKOverlapMin": round(float(np.min(overlaps)), 3),
+        "rankCorr": round(float(np.mean(corrs)), 3),
+        "rankCorrMin": round(float(np.min(corrs)), 3),
+    }
+
+
+def compute_explanation_stability(model, X, y, task_type="classification", n_runs=STABILITY_RUNS):
+    X_exp = stability_explain_rows(X)
+    imps = [stability_run(model, X, y, X_exp, seed, task_type) for seed in range(n_runs)]
+    return summarize_stability(imps, explained_rows=len(X_exp))
+
+
 PDP_TOP_N = 6
 PDP_GRID_POINTS = 8
 
@@ -792,6 +860,7 @@ def export_report_json(
     outliers_excluded_columns: list = None,
     task_type: str = "classification",
     distributions: list = None,
+    explanation_stability: dict = None,
 ):
     """Assemble a ShapReport-shaped dict (see web/lib/types.ts) and write it
     to output_path as JSON.
@@ -994,6 +1063,10 @@ def export_report_json(
         report["wrongFeatureImportance"] = [
             {"feature": f, "importance": round(float(v), 5)} for f, v in wrong_fi
         ]
+    # presets only - an upload gets it from the backend's separate
+    # /stability call, so /analyze isn't slowed down by it
+    if explanation_stability:
+        report["explanationStability"] = explanation_stability
 
     _write_report_json(report, output_path)
     return report

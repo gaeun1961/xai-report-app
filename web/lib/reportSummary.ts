@@ -2,6 +2,14 @@
 // purely from data already present in a loaded ShapReport — no new LLM calls.
 import { isRegression, type ShapReport } from "./types";
 import { columnDesc } from "./columnGlossary";
+import {
+  STABILITY_BASIS_NOTE,
+  STABILITY_LABEL,
+  STABILITY_SAMPLE_NOTE,
+  stabilityEvidence,
+  stabilityLevel,
+  stabilitySentence,
+} from "./stability";
 
 const STRONG_CORR = 0.6;
 const CORR_SENTENCE_LIMIT = 2;
@@ -176,6 +184,27 @@ function strongCorrPairs(report: ShapReport): { i: number; j: number; v: number 
     }
   }
   return pairs.sort((a, b) => Math.abs(b.v) - Math.abs(a.v));
+}
+
+// the strongest correlated pair touching the stability card's top-k
+// features - SHAP splits credit between such a pair, so their ranks can trade
+function stabilityCorrPair(report: ShapReport, domain: string): [string, string] | undefined {
+  const k = report.explanationStability?.topK ?? 0;
+  const top = new Set(report.featureImportance.slice(0, k).map((f) => f.feature));
+  const columns = report.correlations?.columns ?? [];
+  const p = strongCorrPairs(report).find((q) => top.has(columns[q.i]) || top.has(columns[q.j]));
+  return p && [label(domain, columns[p.i]), label(domain, columns[p.j])];
+}
+
+// card + copy text share this, so the two always say the same thing
+export function stabilitySummary(report: ShapReport, domain: string) {
+  const s = report.explanationStability;
+  if (!s) return null;
+  return {
+    level: stabilityLevel(s),
+    evidence: stabilityEvidence(s),
+    sentence: stabilitySentence(s, stabilityCorrPair(report, domain)),
+  };
 }
 
 function correlationSentence(report: ShapReport, domain: string): string | null {
@@ -426,6 +455,18 @@ export function buildCopyText(
   }
 
   lines.push("", "## 특성 중요도", ...featureImportanceLines(report, domain));
+
+  const stability = stabilitySummary(report, domain);
+  if (stability) {
+    lines.push(
+      "",
+      "## 설명 안정성",
+      `${STABILITY_LABEL[stability.level]} — ${stability.sentence}`,
+      `근거: ${stability.evidence}`,
+      STABILITY_SAMPLE_NOTE,
+      STABILITY_BASIS_NOTE,
+    );
+  }
 
   const corrLines = correlationLines(report, domain);
   if (corrLines.length > 0) {

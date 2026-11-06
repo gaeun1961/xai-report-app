@@ -24076,5 +24076,15 @@
       "feature": "PerformanceRating",
       "importance": 0.00067
     }
-  ]
+  ],
+  "explanationStability": {
+    "runs": 5,
+    "sampleFrac": 0.8,
+    "topK": 5,
+    "explainedRows": 200,
+    "topKOverlap": 0.72,
+    "topKOverlapMin": 0.4,
+    "rankCorr": 0.941,
+    "rankCorrMin": 0.92
+  }
 }

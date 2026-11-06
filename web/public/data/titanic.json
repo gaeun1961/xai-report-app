@@ -8034,5 +8034,15 @@
       "feature": "sibsp",
       "importance": 0.00851
     }
-  ]
+  ],
+  "explanationStability": {
+    "runs": 5,
+    "sampleFrac": 0.8,
+    "topK": 5,
+    "explainedRows": 200,
+    "topKOverlap": 0.92,
+    "topKOverlapMin": 0.8,
+    "rankCorr": 0.936,
+    "rankCorrMin": 0.857
+  }
 }

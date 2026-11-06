@@ -5,6 +5,7 @@ from sklearn.ensemble import RandomForestClassifier
 from common import (
     RANDOM_STATE,
     compute_distributions,
+    compute_explanation_stability,
     compute_missingness,
     compute_outliers,
     compute_shap,
@@ -41,6 +42,8 @@ def main():
         ),
     )
     distributions = compute_distributions(display_df, y, list(X.columns))
+    # before sample_for_shap: re-fits on the full data, like the model itself
+    stability = compute_explanation_stability(model, X, y)
     X, y, display_df = sample_for_shap(X, y, display_df)
     shap_values, feature_importance_df, base_value = compute_shap(model, X)
     report = export_report_json(
@@ -62,6 +65,7 @@ def main():
         outliers_excluded_columns=outliers_excluded,
         output_path=OUTPUT_PATH,
         distributions=distributions,
+        explanation_stability=stability,
     )
     print(f"hr_attrition accuracy={accuracy:.4f} -> {OUTPUT_PATH}")
     return report
