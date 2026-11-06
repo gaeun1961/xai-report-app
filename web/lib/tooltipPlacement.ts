@@ -57,11 +57,33 @@ export function positionBubble(host: HTMLElement, bubble: HTMLElement, display =
   bubble.style.setProperty("--arrow", `${p.arrow}px`);
 }
 
+// Place a hover/focus bubble now, and keep re-placing it while the page (or
+// any scroll container) scrolls and it's still open - a bubble opened by
+// keyboard focus or a tap stays open during a scroll, and its side was only
+// picked when it opened, so near the top edge it slid off screen. The
+// listener removes itself on the first scroll after the bubble has closed.
+const tracked = new WeakSet<HTMLElement>();
+
+export function trackBubble(host: HTMLElement, bubble: HTMLElement, display = "block") {
+  positionBubble(host, bubble, display);
+  if (tracked.has(host)) return;
+  tracked.add(host);
+  const onScroll = () => {
+    if (host.isConnected && host.matches(":hover, :focus-within")) {
+      positionBubble(host, bubble, display);
+      return;
+    }
+    window.removeEventListener("scroll", onScroll, true);
+    tracked.delete(host);
+  };
+  window.addEventListener("scroll", onScroll, { capture: true, passive: true });
+}
+
 // onMouseEnter/onFocus handler for a host whose bubble is its direct
 // role="tooltip" child (glossary terms)
 export function placeChildBubble(e: { currentTarget: HTMLElement }) {
   const b = e.currentTarget.querySelector<HTMLElement>(':scope > [role="tooltip"]');
-  if (b) positionBubble(e.currentTarget, b);
+  if (b) trackBubble(e.currentTarget, b);
 }
 
 // ref callback for a bubble that's already showing when it mounts (chart
