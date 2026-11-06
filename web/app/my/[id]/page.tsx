@@ -7,7 +7,9 @@ import {
   getUploadHistoryEntry,
   loadUploadReport,
   renameUploadReport,
+  updateUploadReport,
 } from "@/lib/uploadHistory";
+import { fetchStability } from "@/lib/api";
 import ReportView from "@/components/ReportView";
 import type { ShapReport } from "@/lib/types";
 import styles from "@/components/report.module.css";
@@ -29,6 +31,28 @@ export default function MyReportPage() {
     setSaveNotice(getSaveNotice(id));
     setChecked(true);
   }, [id]);
+
+  // 설명 안정성 is a separate, slower backend call made only after the report
+  // is on screen; failure just records null so the card stays hidden and an
+  // old report doesn't wake the server again on every visit
+  const needsStability =
+    !!report?.analysisId && report.explanationStability === undefined;
+  useEffect(() => {
+    if (!needsStability || !report?.analysisId) return;
+    let cancelled = false;
+    fetchStability(report.analysisId)
+      .catch(() => null)
+      .then((s) => {
+        if (cancelled) return;
+        const next = { ...report, explanationStability: s };
+        updateUploadReport(id, next);
+        setReport(next);
+      });
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- once per report load
+  }, [needsStability, id]);
 
   function saveName() {
     const trimmed = nameDraft.trim();

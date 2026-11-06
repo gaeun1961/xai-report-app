@@ -1792,3 +1792,12 @@
     align-items: flex-start;
   }
 }
+
+/* text that only appears in a saved PNG (see SaveImageButton) */
+.captureOnly {
+  display: none;
+}
+
+:global([data-capturing]) .captureOnly {
+  display: block;
+}

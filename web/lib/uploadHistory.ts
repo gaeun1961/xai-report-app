@@ -100,6 +100,21 @@ export function loadUploadReport(id: string): ShapReport | null {
   }
 }
 
+// Overwrite an already-saved report in place (e.g. 설명 안정성 arriving after
+// the report was saved). Only if it's still stored - never resurrects one the
+// quota logic evicted or refused; the in-memory copy is updated regardless.
+export function updateUploadReport(id: string, report: ShapReport): void {
+  if (sessionReports.has(id)) sessionReports.set(id, report);
+  try {
+    if (localStorage.getItem(REPORT_PREFIX + id) === null) return;
+    const { candidates: _omit, ...stored } = report;
+    void _omit;
+    localStorage.setItem(REPORT_PREFIX + id, JSON.stringify(stored));
+  } catch {
+    // quota/unavailable - keeps the earlier stored copy, which still loads
+  }
+}
+
 export function saveUploadReport(report: ShapReport, fileName: string): string {
   const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
   const entry: UploadHistoryEntry = {

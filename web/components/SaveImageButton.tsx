@@ -22,6 +22,9 @@ export default function SaveImageButton({ targetId, fileName }: Props) {
     if (!node) return;
     setBusy(true);
     setFailed(false);
+    // reveals .captureOnly text (e.g. a tooltip's note) while the image is
+    // drawn - html-to-image copies live computed styles
+    node.dataset.capturing = "";
     try {
       const dataUrl = await toPng(node, {
         pixelRatio: 2,
@@ -35,6 +38,7 @@ export default function SaveImageButton({ targetId, fileName }: Props) {
     } catch {
       setFailed(true);
     } finally {
+      delete node.dataset.capturing;
       setBusy(false);
     }
   }

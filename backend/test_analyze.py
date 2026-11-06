@@ -696,6 +696,37 @@ def test_candidates_let_the_frontend_repick_cases():
         assert not dep_feats & rest_feats
 
 
+def test_stability_after_analyze_both_tasks():
+    """/stability is a separate call on a cached analysis (classification and
+    regression alike) and returns the overlap/correlation numbers in range."""
+    client = TestClient(app)
+    for csv, target, task in (
+        (_whatif_csv(), "Survived", "classification"),
+        (_regression_csv(), "Price", "regression"),
+    ):
+        aid = client.post(
+            "/analyze",
+            files={"file": ("s.csv", csv, "text/csv")},
+            data={"target_column": target, "task_type": task},
+        ).json()["analysisId"]
+        res = client.post("/stability", json={"analysis_id": aid})
+        assert res.status_code == 200, res.text
+        s = res.json()
+        assert s["runs"] == common.STABILITY_RUNS and s["topK"] >= 1
+        assert 0 <= s["topKOverlapMin"] <= s["topKOverlap"] <= 1, s
+        assert -1 <= s["rankCorrMin"] <= s["rankCorr"] <= 1, s
+    assert client.post("/stability", json={"analysis_id": "nope"}).status_code == 404
+
+
+def test_summarize_stability_identical_vs_shuffled():
+    same = [np.array([5.0, 4, 3, 2, 1, 0.5])] * 3
+    s = common.summarize_stability(same, top_k=3)
+    assert s["topKOverlap"] == 1.0 and s["rankCorr"] == 1.0
+    # fully reversed ranking: top-3 share nothing, rank correlation -1
+    s = common.summarize_stability([same[0], same[0][::-1]], top_k=3)
+    assert s["topKOverlap"] == 0.0 and s["rankCorr"] == -1.0, s
+
+
 if __name__ == "__main__":
     test_analyze_returns_report()
     test_columns_returns_row_count()
@@ -728,4 +759,6 @@ if __name__ == "__main__":
     test_distributions_cover_every_row()
     test_dependence_reuses_shap_pool_held_out_first()
     test_candidates_let_the_frontend_repick_cases()
+    test_stability_after_analyze_both_tasks()
+    test_summarize_stability_identical_vs_shuffled()
     print("ok")

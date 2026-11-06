@@ -94,6 +94,22 @@ export type ShapReport = {
     minorityRecall?: number;
     minorityLabel?: string;
   };
+  // 설명 안정성: the model re-fit `runs` times on a `sampleFrac` subsample
+  // (seed varies), same `explainedRows` explained each time; top-k overlap
+  // and Spearman rank correlation of the importance rankings, mean + worst
+  // pair. Presets carry it in their JSON; an upload gets it from a separate
+  // /stability call after the report shows. undefined = not computed yet,
+  // null = tried and failed (not retried, the card just stays hidden).
+  explanationStability?: {
+    runs: number;
+    sampleFrac: number;
+    topK: number;
+    explainedRows: number;
+    topKOverlap: number;
+    topKOverlapMin: number;
+    rankCorr: number;
+    rankCorrMin: number;
+  } | null;
   // Pairwise correlations between the numeric columns (model-independent —
   // just how the raw data moves together). Optional so old JSON still loads.
   correlations?: { columns: string[]; matrix: number[][] };

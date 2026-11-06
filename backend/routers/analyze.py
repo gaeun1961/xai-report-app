@@ -688,6 +688,37 @@ def _whatif_sync(payload: WhatIfRequest):
     }
 
 
+class StabilityRequest(BaseModel):
+    analysis_id: str
+
+
+@router.post("/stability")
+async def stability(payload: StabilityRequest):
+    """Explanation stability for a cached analysis, called by the frontend
+    *after* /analyze has returned, so the report itself is never held up by
+    it. Each run takes the heavy lock on its own (see common's
+    STABILITY_* budget): a /whatif or another upload waits for at most one
+    fit+SHAP, not all five."""
+    entry = _ANALYSIS_CACHE.get(payload.analysis_id)
+    if entry is None or "X_full" not in entry:
+        raise HTTPException(404, "분석 기록을 찾을 수 없어요. CSV를 다시 업로드해주세요.")
+    task_type = entry["task_type"]
+    # same seeded cap /analyze trained on - stability is about the rows the
+    # explained model actually saw
+    X_fit, y_fit = _cap_training_rows(entry["X_full"], entry["y_full"], task_type)
+    X_exp = common.stability_explain_rows(X_fit)
+    imps = []
+    try:
+        for seed in range(common.STABILITY_RUNS):
+            imps.append(await _run_heavy(
+                common.stability_run, entry["model"], X_fit, y_fit, X_exp, seed, task_type
+            ))
+    except ValueError:
+        # e.g. a class too rare to stratify an 80% subsample on a tiny file
+        raise HTTPException(400, "이 데이터로는 설명 안정성을 계산할 수 없어요.")
+    return common.summarize_stability(imps, explained_rows=len(X_exp))
+
+
 @router.get("/model-types")
 async def model_types():
     """The whitelist itself, so the frontend renders the right inputs
