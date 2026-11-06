@@ -694,19 +694,10 @@
 }
 
 .boxPlotTooltip {
-  position: absolute;
-  bottom: calc(100% + 6px);
-  transform: translateX(-50%);
   padding: 6px 10px;
   border-radius: 8px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--foreground);
   font-size: 13px;
   white-space: nowrap;
-  pointer-events: none;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
-  z-index: 10;
 }
 
 .boxPlotLegendBox {
@@ -1345,24 +1336,15 @@
 
 .glossaryBubble {
   display: none;
-  position: absolute;
-  left: 0;
-  bottom: calc(100% + 8px);
-  z-index: 20;
   width: max-content;
-  max-width: min(240px, 70vw);
+  max-width: min(240px, calc(100vw - 16px));
   padding: 8px 10px;
   border-radius: 8px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--foreground);
   font-size: 13px;
   font-weight: 400;
   line-height: 1.6;
   text-decoration: none;
   white-space: normal;
-  pointer-events: none;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
 }
 
 .glossaryBubbleEditing {
@@ -1380,15 +1362,6 @@
   color: var(--foreground);
   font: inherit;
   line-height: 1.6;
-}
-
-.glossaryBubble::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 14px;
-  border: 5px solid transparent;
-  border-top-color: var(--surface);
 }
 
 .tooltipHost:hover .glossaryBubble,
@@ -1437,51 +1410,84 @@
   display: none;
   flex-direction: column;
   gap: 2px;
-  position: absolute;
-  right: 0;
-  bottom: calc(100% + 10px);
-  z-index: 20;
   width: max-content;
-  max-width: min(420px, 85vw);
+  max-width: min(420px, calc(100vw - 16px));
   padding: 12px 14px;
   border-radius: 10px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--foreground);
   font-size: 14px;
   font-weight: 400;
   line-height: 1.65;
   text-decoration: none;
   white-space: normal;
-  pointer-events: none;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
 }
 
 .infoTipLine {
   display: block;
 }
 
-.infoTipBubble::after {
+/* every tooltip bubble (InfoTip, glossary, chart points): colors, layer and
+   arrow. Placement (left/top, data-side, --arrow) is set by
+   lib/tooltipPlacement - right of the anchor, else left, else above/below,
+   always inside the viewport. */
+.bubble {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 20;
+  border: 1px solid var(--tooltip-border);
+  background: var(--tooltip-bg);
+  color: var(--foreground);
+  box-shadow: var(--tooltip-shadow);
+  pointer-events: none;
+}
+
+/* arrow: a rotated square in the bubble's colors, two borders showing */
+.bubble[data-side]::after {
   content: "";
   position: absolute;
-  top: 100%;
-  right: 14px;
-  border: 6px solid transparent;
-  border-top-color: var(--surface);
+  width: 10px;
+  height: 10px;
+  background: var(--tooltip-bg);
+  border: 0 solid var(--tooltip-border);
+  transform: rotate(45deg);
 }
 
-/* flipped when the icon sits too close to the top of the viewport for the
-   default upward bubble to fit without being clipped */
-.infoTipBubbleBelow {
-  bottom: auto;
-  top: calc(100% + 10px);
+.bubble[data-side="right"]::after {
+  left: -6px;
+  top: calc(var(--arrow) - 5px);
+  border-width: 0 0 1px 1px;
 }
 
-.infoTipBubbleBelow::after {
-  top: auto;
-  bottom: 100%;
-  border-top-color: transparent;
-  border-bottom-color: var(--surface);
+.bubble[data-side="left"]::after {
+  right: -6px;
+  top: calc(var(--arrow) - 5px);
+  border-width: 1px 1px 0 0;
+}
+
+.bubble[data-side="above"]::after {
+  bottom: -6px;
+  left: calc(var(--arrow) - 5px);
+  border-width: 0 1px 1px 0;
+}
+
+.bubble[data-side="below"]::after {
+  top: -6px;
+  left: calc(var(--arrow) - 5px);
+  border-width: 1px 0 0 1px;
+}
+
+/* a point-sized box at a chart point; its tooltip bubble is placed around it */
+.tooltipAnchor {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.boxPlotAnchor {
+  top: 50%;
 }
 
 .contribList {
@@ -1550,22 +1556,14 @@
 /* custom hover tooltip for scatter points — position is set inline as a %
    of the svg's own box, so it tracks the point at any responsive width */
 .scatterTooltip {
-  position: absolute;
-  transform: translate(-50%, calc(-100% - 10px));
   display: flex;
   flex-direction: column;
   gap: 2px;
   padding: 8px 10px;
   border-radius: 8px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--foreground);
   font-size: 13px;
   line-height: 1.4;
   white-space: nowrap;
-  pointer-events: none;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
-  z-index: 10;
 }
 
 .scatter {

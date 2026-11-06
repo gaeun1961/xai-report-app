@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { columnDesc, isSuggestedDesc } from "@/lib/columnGlossary";
 import { getFeatureDesc, setFeatureDesc } from "@/lib/featureDescs";
+import { placeChildBubble, placeInParent } from "@/lib/tooltipPlacement";
 import InfoTip from "./InfoTip";
 import styles from "./report.module.css";
 
@@ -69,7 +70,11 @@ function EditableFeatureLabel({
     return (
       <span className={`${styles.glossary} ${styles.tooltipHost}`}>
         {column}
-        <span className={`${styles.glossaryBubble} ${styles.glossaryBubbleEditing}`} role="tooltip">
+        <span
+          ref={placeInParent}
+          className={`${styles.bubble} ${styles.glossaryBubble} ${styles.glossaryBubbleEditing}`}
+          role="tooltip"
+        >
           <textarea
             className={styles.glossaryEditor}
             value={draft}
@@ -100,6 +105,8 @@ function EditableFeatureLabel({
       type="button"
       className={`${styles.glossary} ${styles.tooltipHost} ${styles.editableTerm}`}
       aria-label={`${column} 설명 수정`}
+      onMouseEnter={placeChildBubble}
+      onFocus={placeChildBubble}
       onClick={() => {
         setDraft(shownDesc ?? "");
         setEditing(true);
@@ -107,7 +114,7 @@ function EditableFeatureLabel({
     >
       {column}
       {shownDesc && (
-        <span className={styles.glossaryBubble} role="tooltip">
+        <span className={`${styles.bubble} ${styles.glossaryBubble}`} role="tooltip">
           {stillSuggested && <em className={styles.soon}>AI 추정</em>} {shownDesc}
         </span>
       )}

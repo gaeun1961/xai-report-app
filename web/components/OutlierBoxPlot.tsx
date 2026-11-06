@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { ShapReport } from "@/lib/types";
 import { columnDesc, isSuggestedDesc } from "@/lib/columnGlossary";
 import GlossaryTerm from "./GlossaryTerm";
+import { placeInParent } from "@/lib/tooltipPlacement";
 import styles from "./report.module.css";
 
 type OutlierItem = NonNullable<ShapReport["outliers"]>[number];
@@ -106,10 +107,16 @@ export default function OutlierBoxPlot({
                 ))}
                 {hover && hover.column === it.column && (
                   <span
-                    className={styles.boxPlotTooltip}
+                    className={`${styles.tooltipAnchor} ${styles.boxPlotAnchor}`}
                     style={{ left: `${hover.leftPct}%` }}
                   >
-                    {columnDesc(domain, hover.column) ?? hover.column}: {hover.value}
+                    <span
+                      key={hover.value}
+                      className={`${styles.bubble} ${styles.boxPlotTooltip}`}
+                      ref={placeInParent}
+                    >
+                      {columnDesc(domain, hover.column) ?? hover.column}: {hover.value}
+                    </span>
                   </span>
                 )}
               </span>

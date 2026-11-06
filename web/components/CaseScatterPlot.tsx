@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { ShapReport } from "@/lib/types";
 import { previewGeometry } from "@/lib/scatterPreview";
+import { placeInParent } from "@/lib/tooltipPlacement";
 import styles from "./report.module.css";
 
 // narrower viewport = fewer real pixels per SVG unit, so a touch target needs
@@ -329,12 +330,13 @@ export default function CaseScatterPlot({
 
       {previewGeo && preview && hoverPreview && (
         <div
-          className={styles.scatterTooltip}
+          className={styles.tooltipAnchor}
           style={{
             left: `${(previewGeo.to.x / WIDTH) * 100}%`,
             top: `${(previewGeo.to.y / HEIGHT) * 100}%`,
           }}
         >
+        <div className={`${styles.bubble} ${styles.scatterTooltip}`} ref={placeInParent}>
           <b>값 바꾼 예측</b>
           <span>
             예측: {preview.proba >= 0.5 ? positiveLabel : negativeLabel} (
@@ -342,15 +344,21 @@ export default function CaseScatterPlot({
           </span>
           <span>원래 예측에서 이동한 위치예요</span>
         </div>
+        </div>
       )}
 
       {hovered && hoverPos && (
         <div
-          className={styles.scatterTooltip}
+          className={styles.tooltipAnchor}
           style={{
             left: `${(hoverPos.x / WIDTH) * 100}%`,
             top: `${(hoverPos.y / HEIGHT) * 100}%`,
           }}
+        >
+        <div
+          key={hovered.id}
+          className={`${styles.bubble} ${styles.scatterTooltip}`}
+          ref={placeInParent}
         >
           <b>케이스 {noById.get(hovered.id)}</b>
           <span>
@@ -361,6 +369,7 @@ export default function CaseScatterPlot({
             실제: {hovered.actualPositive ? positiveLabel : negativeLabel}
             {hovered.isCorrect === false ? " · 틀림" : ""}
           </span>
+        </div>
         </div>
       )}
     </div>

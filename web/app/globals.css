@@ -7,6 +7,11 @@
   --accent: #1d9e75; /* green: active nav, bar fill, good badge, active chip */
   --accent-strong: #0f7a58; /* darker green for accent text */
   --warn: #d97706; /* amber: "주의" badge */
+  /* tooltip bubbles: white (not the sidebar's ivory --surface) with a visible
+     edge + lift so they read as a layer above cards and the sidebar */
+  --tooltip-bg: #ffffff;
+  --tooltip-border: #8a877e; /* 3.6:1 on white, 3.3:1 on ivory */
+  --tooltip-shadow: 0 8px 24px rgba(43, 42, 39, 0.18), 0 1px 3px rgba(43, 42, 39, 0.12);
 }
 
 html {
