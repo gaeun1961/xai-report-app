@@ -1,17 +1,26 @@
+/* Hallmark · shape: app screen · genre: modern-minimal · theme: brand · redesign: full
+ * paper: #ffffff / ivory #f7f5ee · accent: #1d9e75 · display: IBM Plex Sans KR · body: IBM Plex Sans KR
+ * nav: kept (sidebar shell) · signature: the feature-importance ledger, full width under the trust row · states: loading, empty, error (existing logic only)
+ * axes: light/grotesk-sans/chromatic-green · posture: settled · contrast: pass · v2.0.0 */
+/* Hallmark · pre-emit critique: P4 H3 E4 S3 R4 V3 · weakest: S, a stat-card grid was the reflex, so accuracy and stability share one ruled trust row instead */
+/* Hallmark · dropped the copy modal's overlay onClick and stopPropagation handlers · the modal is now a native <dialog>: Esc, backdrop click and the 닫기 button close it */
+@import url("./tokens.css");
+@import url("./base.css");
+
+/* the pre-redesign names, kept as aliases so every component module reads
+   the same tokens without a rename across ~2,500 lines */
 :root {
-  --background: #ffffff; /* page + sidebar bg */
-  --foreground: #2b2a27; /* body text (neutral dark gray) */
-  --text-muted: #6b6a64; /* secondary text, disabled states */
-  --border: #e5e3dc; /* card borders, dividers, bar track */
-  --surface: #f7f5ee; /* ivory: sidebar, callout boxes, inactive chips — distinct from #fff, not yellow */
-  --accent: #1d9e75; /* green: active nav, bar fill, good badge, active chip */
-  --accent-strong: #0f7a58; /* darker green for accent text */
-  --warn: #d97706; /* amber: "주의" badge */
-  /* tooltip bubbles: white (not the sidebar's ivory --surface) with a visible
-     edge + lift so they read as a layer above cards and the sidebar */
-  --tooltip-bg: #ffffff;
-  --tooltip-border: #8a877e; /* 3.6:1 on white, 3.3:1 on ivory */
-  --tooltip-shadow: 0 8px 24px rgba(43, 42, 39, 0.18), 0 1px 3px rgba(43, 42, 39, 0.12);
+  --background: var(--color-paper);
+  --foreground: var(--color-ink);
+  --text-muted: var(--color-muted);
+  --border: var(--color-rule);
+  --surface: var(--color-paper-2);
+  --accent: var(--color-accent);
+  --accent-strong: var(--color-accent-ink);
+  --warn: var(--color-warn);
+  --tooltip-bg: var(--color-paper);
+  --tooltip-border: var(--color-rule-strong); /* 3.6:1 on white, 3.3:1 on ivory */
+  --tooltip-shadow: var(--shadow-raised);
 }
 
 html {
@@ -20,7 +29,6 @@ html {
 
 html,
 body {
-  max-width: 100vw;
   /* clip, not hidden: still blocks horizontal overflow but does NOT turn body
      into a scroll container, which would break the sidebar's position: sticky */
   overflow-x: clip;
@@ -30,7 +38,7 @@ body {
   min-height: 100%;
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   /* Korean wraps by 어절(word), not mid-syllable — without this, normal
@@ -49,14 +57,34 @@ a {
   text-decoration: none;
 }
 
+button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+/* skip link: hidden until a keyboard user tabs to it */
+.skipLink {
+  position: absolute;
+  left: var(--space-md);
+  top: -100px;
+  z-index: var(--z-toast);
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-control);
+  background: var(--color-accent-ink);
+  color: var(--color-on-accent);
+  font-weight: 600;
+}
+
+.skipLink:focus-visible {
+  top: var(--space-md);
+}
+
 .shell {
   display: flex;
   align-items: flex-start;
   min-height: 100vh;
-  /* .landing's full-bleed background pseudo-element is 100vw wide, which on
-     some browsers counts the scrollbar's own width and overflows by a few
-     px — clip it here instead of letting the whole page gain a horizontal
-     scrollbar over a background layer */
+  /* .landing's full-bleed background pseudo-element can count the
+     scrollbar's own width and overflow by a few px — clip it here instead
+     of letting the whole page gain a horizontal scrollbar */
   overflow-x: clip;
 }
 

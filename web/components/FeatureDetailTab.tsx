@@ -20,8 +20,8 @@ const M = { top: 10, right: WIDE.right, bottom: 28, left: WIDE.left };
 const PW = WIDTH - M.left - M.right;
 const PH = HEIGHT - M.top - M.bottom;
 // literal colours - see DistributionChart (html-to-image capture)
-const DOT = "#1d9e75";
-const AXIS = "#b9b8b2";
+const DOT = "var(--color-accent)";
+const AXIS = "var(--color-axis)";
 
 // deterministic 0..1 "random" per point index, so the jitter doesn't move on
 // every re-render
@@ -84,7 +84,7 @@ function DependencePlot({
             strokeDasharray={t === 0 ? "4 3" : undefined}
             opacity={t === 0 ? 1 : 0.5}
           />
-          <text x={M.left - 6} y={y(t)} textAnchor="end" dominantBaseline="middle" fontSize={11} fill="#6b6a64">
+          <text x={M.left - 6} y={y(t)} textAnchor="end" dominantBaseline="middle" fontSize={11} fill="var(--color-muted)">
             {t === 0 ? "0" : fmtY(t)}
           </text>
         </g>
@@ -102,7 +102,7 @@ function DependencePlot({
           y={HEIGHT - 8}
           textAnchor={categories ? "middle" : k === 0 ? "start" : "end"}
           fontSize={11}
-          fill="#6b6a64"
+          fill="var(--color-muted)"
         >
           {l.text.length > 14 ? `${l.text.slice(0, 13)}…` : l.text}
         </text>
@@ -206,7 +206,7 @@ export default function FeatureDetailTab({
 
       <p className={styles.dataRelIntro}>
         <b>{feature}</b>
-        {label ? ` (${label})` : ""} — 특성 중요도 {features.indexOf(feature) + 1}위.{" "}
+        {label ? ` (${label})` : ""}: 특성 중요도 {features.indexOf(feature) + 1}위.{" "}
         {numeric ? "세 그래프의 가로축(특성값 범위)이 같아서 위아래로 비교할 수 있어요." : "세 그래프 모두 같은 카테고리 순서예요."}
       </p>
 

@@ -101,7 +101,9 @@ export default function Sidebar() {
         aria-label="사이드바 펼치기"
         onClick={toggleCollapsed}
       >
-        ☰
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M2.5 4h11M2.5 8h11M2.5 12h11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        </svg>
       </button>
     );
   }
@@ -118,7 +120,9 @@ export default function Sidebar() {
           aria-label="사이드바 접기"
           onClick={toggleCollapsed}
         >
-          ☰
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M2.5 4h11M2.5 8h11M2.5 12h11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          </svg>
         </button>
       </div>
 

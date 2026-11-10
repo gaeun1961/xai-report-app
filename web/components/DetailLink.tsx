@@ -12,7 +12,7 @@ export default function DetailLink({ feature, onOpen }: { feature: string; onOpe
       aria-label={`${feature} 특성 자세히 보기`}
       onClick={() => onOpen(feature)}
     >
-      자세히 보기 →
+      자세히 보기
     </button>
   );
 }

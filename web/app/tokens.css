@@ -1,0 +1,25 @@
+:root {
+  --space-3xs: 2px; --space-2xs: 4px; --space-xs: 8px; --space-sm: 12px; --space-md: 16px; --space-lg: 24px; --space-xl: 40px; --space-2xl: 64px; --space-3xl: 96px; --space-4xl: 144px;
+  --text-xs: 0.75rem; --text-sm: 0.875rem; --text-md: 1rem; --text-lg: 1.2rem; --text-xl: 1.44rem; --text-2xl: 1.728rem; --text-3xl: 2.074rem;
+  --text-display-s: 1.44rem; --text-display: 1.728rem; --text-section: 1.2rem; --text-title: 1rem; --text-lead: 1rem;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1); --ease-in: cubic-bezier(0.7, 0, 0.84, 0); --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-micro: 120ms; --dur-short: 220ms; --dur-long: 420ms;
+  --color-error: oklch(52% 0.19 27); --color-success: oklch(50% 0.12 150);
+  --container: 1200px; --gutter: 64px; --gap-columns: 32px; --section-gap-s: 120px; --section-gap: 144px; --section-gap-l: 176px;
+  --z-base: 1; --z-raised: 10; --z-dropdown: 100; --z-sticky: 200; --z-sticky-nav: 300; --z-modal: 400; --z-toast: 500; --z-tooltip: 600;
+  /* brand: the project's own green + ivory (app/globals.css before the redesign) */
+  --color-paper: #ffffff; --color-paper-2: #f7f5ee; --color-paper-3: #efece3;
+  --color-ink: #2b2a27; --color-ink-2: #4a4944; --color-muted: #6b6a64;
+  --color-rule: #e5e3dc; --color-rule-strong: #8a877e;
+  --color-accent: #1d9e75; --color-accent-ink: #0f7a58; --color-focus: #0f7a58; --color-on-accent: #ffffff;
+  --color-warn: #d97706; --color-warn-ink: #b45309; --color-warn-deep: #7c4a12;
+  --color-danger: #dc2626; --color-danger-ink: #b91c1c; --color-positive: #16a34a;
+  --color-series-2: #284b7a; --color-preview: #1e3a5f;
+  --color-bar-muted: #bdbcb9; --color-axis: #b9b8b2; --color-scrim: rgba(43, 42, 39, 0.4);
+  --shadow-raised: 0 8px 24px rgba(43, 42, 39, 0.18), 0 1px 3px rgba(43, 42, 39, 0.12);
+  --font-display: var(--font-plex), ui-sans-serif, system-ui, sans-serif; --font-body: var(--font-plex), ui-sans-serif, system-ui, sans-serif; --font-outlier: var(--font-body);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  --radius-card: 10px; --radius-control: 8px; --radius-pill: 999px; --rule-hair: 1px; --shadow-card: none;
+  --report-max: 1200px;
+  --tracking-display: -0.02em;
+}

@@ -32,6 +32,7 @@ import CopySummaryButton from "./CopySummaryButton";
 import SaveImageButton from "./SaveImageButton";
 import InfoTip from "./InfoTip";
 import styles from "./report.module.css";
+import PencilIcon from "./PencilIcon";
 
 type Tab = "summary" | "cases" | "feature" | "data";
 
@@ -325,7 +326,7 @@ function ValueLabelChip({
           setEditing(true);
         }}
       >
-        ✎
+        <PencilIcon />
       </button>
     </span>
   );
@@ -448,6 +449,7 @@ function SummaryBody({
         </section>
       )}
 
+      <div className={styles.trustRow}>
       <section className={styles.cardSection}>
         <h2 className={styles.h2}>
           {regression ? "모델 설명력 (R²)" : "전체 정확도"}
@@ -537,29 +539,6 @@ function SummaryBody({
         )}
       </section>
 
-      <section className={styles.cardSection}>
-        <h2 className={styles.h2}>
-          특성 중요도{" "}
-          {regression ? (
-            <InfoTip text="요리할 때 어떤 재료가 맛을 가장 많이 좌우하는지 궁금할 때가 있죠? 이 그래프가 딱 그거예요. **막대 길이는 각 항목이 예측에 준 영향이 전체에서 차지하는 비중**이에요 — 모든 막대를 더하면 100%예요. 막대 옆 작은 **±값은 그 항목이 예측값을 평균적으로 얼마나 움직였는지**를 원래 단위로 보여줘요. 옆에 작은 물음표가 있는 항목은 값이 클수록 예측값이 커지는지 작아지는지 경향도 볼 수 있어요 — 텍스트(범주형) 값을 가진 항목은 순서가 없어서 물음표가 없어요." />
-          ) : (
-            <InfoTip text="요리할 때 어떤 재료가 맛을 가장 많이 좌우하는지 궁금할 때가 있죠? 이 그래프가 딱 그거예요. **막대가 길수록, 그 항목이 AI의 예측 결과를 정하는 데 더 큰 힘을 썼다**는 뜻이에요. 막대가 짧으면 그 항목은 예측에 별로 영향을 못 준 거예요. 옆에 작은 물음표가 있는 항목은 어느 방향으로 작용하는 경향이 있는지도 볼 수 있어요 — 텍스트(범주형) 값을 가진 항목은 순서가 없어서 경향을 계산할 수 없어 물음표가 없어요." />
-          )}
-        </h2>
-        {valueEditor && report.columnGlossarySuggested === false && (
-          <p className={styles.sectionNote}>
-            컬럼 설명(AI 추정)을 불러오지 못했어요. 컬럼 옆 연필(✎)로 직접 써넣을 수
-            있고, 잠시 뒤 같은 파일을 다시 올리면 다시 시도해요.
-          </p>
-        )}
-        <FeatureImportanceChart
-          items={report.featureImportance}
-          domain={domain}
-          tooltips={tendencies}
-          regression={regression}
-        />
-      </section>
-
       {stability ? (
         <section className={styles.cardSection}>
           <h2 className={styles.h2}>
@@ -595,6 +574,31 @@ function SummaryBody({
           </p>
         )
       )}
+
+      </div>
+
+      <section className={styles.cardSection}>
+        <h2 className={styles.h2}>
+          특성 중요도{" "}
+          {regression ? (
+            <InfoTip text="요리할 때 어떤 재료가 맛을 가장 많이 좌우하는지 궁금할 때가 있죠? 이 그래프가 딱 그거예요. **막대 길이는 각 항목이 예측에 준 영향이 전체에서 차지하는 비중**이에요 — 모든 막대를 더하면 100%예요. 막대 옆 작은 **±값은 그 항목이 예측값을 평균적으로 얼마나 움직였는지**를 원래 단위로 보여줘요. 옆에 작은 물음표가 있는 항목은 값이 클수록 예측값이 커지는지 작아지는지 경향도 볼 수 있어요 — 텍스트(범주형) 값을 가진 항목은 순서가 없어서 물음표가 없어요." />
+          ) : (
+            <InfoTip text="요리할 때 어떤 재료가 맛을 가장 많이 좌우하는지 궁금할 때가 있죠? 이 그래프가 딱 그거예요. **막대가 길수록, 그 항목이 AI의 예측 결과를 정하는 데 더 큰 힘을 썼다**는 뜻이에요. 막대가 짧으면 그 항목은 예측에 별로 영향을 못 준 거예요. 옆에 작은 물음표가 있는 항목은 어느 방향으로 작용하는 경향이 있는지도 볼 수 있어요 — 텍스트(범주형) 값을 가진 항목은 순서가 없어서 경향을 계산할 수 없어 물음표가 없어요." />
+          )}
+        </h2>
+        {valueEditor && report.columnGlossarySuggested === false && (
+          <p className={styles.sectionNote}>
+            컬럼 설명(AI 추정)을 불러오지 못했어요. 컬럼 옆 연필 버튼으로 직접 써넣을 수
+            있고, 잠시 뒤 같은 파일을 다시 올리면 다시 시도해요.
+          </p>
+        )}
+        <FeatureImportanceChart
+          items={report.featureImportance}
+          domain={domain}
+          tooltips={tendencies}
+          regression={regression}
+        />
+      </section>
 
       {report.partialDependence && report.partialDependence.length > 0 && (
         <section className={styles.cardSection}>
@@ -763,7 +767,7 @@ function CasesBody({ report, domain, selectedId, onSelect, picks, onPicks }: Cas
               onChange={(e) => setLabelColumn(e.target.value)}
               aria-label="케이스 이름 기준 컬럼"
             >
-              <option value="">번호 (케이스 1, 2, ...)</option>
+              <option value="">번호 (케이스 1, 2, …)</option>
               {rawColumns.map((col) => (
                 <option key={col} value={col}>
                   {col}

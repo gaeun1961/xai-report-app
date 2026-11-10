@@ -64,6 +64,8 @@ export default function RegressionScatterPlot({ cases, noById, selectedId, onSel
   const hovered = hoverId ? cases.find((c) => c.id === hoverId) : undefined;
 
   return (
+    // narrow screens: the plot keeps a readable width and scrolls sideways
+    <div className={styles.scatterScroll}>
     <div className={styles.scatterWrap}>
       <div className={styles.scatterLegend}>
         <span className={styles.scatterLegendItem}>
@@ -191,6 +193,7 @@ export default function RegressionScatterPlot({ cases, noById, selectedId, onSel
         </div>
         </div>
       )}
+    </div>
     </div>
   );
 }

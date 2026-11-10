@@ -11,8 +11,8 @@ export type Distribution = NonNullable<ShapReport["distributions"]>[number];
 // SVG bars get literal colours (globals.css --accent, and --text-muted at
 // 45% over white): "이미지로 저장" (html-to-image) drew class-styled SVG
 // rects black, while the same classes render fine on screen
-const BAR_POS = "#1d9e75";
-const BAR_NEG = "#bdbcb9";
+const BAR_POS = "var(--color-accent)";
+const BAR_NEG = "var(--color-bar-muted)";
 
 const WIDTH = 280;
 const HEIGHT = 70;

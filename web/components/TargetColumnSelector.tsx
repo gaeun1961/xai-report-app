@@ -54,7 +54,7 @@ export default function TargetColumnSelector({
       {recommended.map(item)}
       {recommended.length > 0 && others.length > 0 && (
         <p className={styles.sectionNote}>
-          그 외 컬럼 — 고유값이 2개가 아니고 숫자형도 아니면 타겟으로 쓰기 어려워요
+          그 외 컬럼: 고유값이 2개가 아니고 숫자형도 아니면 타겟으로 쓰기 어려워요
         </p>
       )}
       {others.map(item)}
