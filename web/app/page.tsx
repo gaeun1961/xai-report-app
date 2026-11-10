@@ -3,6 +3,7 @@ import { loadReport } from "@/lib/loadReport";
 import { DOMAINS } from "@/lib/domains";
 import UploadFlow from "@/components/UploadFlow";
 import InfoTip from "@/components/InfoTip";
+import HeroDemo from "@/components/HeroDemo";
 import styles from "./home.module.css";
 
 const USE_CASES = [
@@ -30,24 +31,6 @@ const STEPS = [
   { title: "판단 근거 읽기", desc: "어떤 정보가 예측을 얼마나 밀었는지 문장으로 봐요." },
 ];
 
-// real rows from the Titanic preset (Sex decoded from its 0/1 code); the
-// highlighted one is the case the mock explains (row id 759, 79% "survived" - a held-out case in titanic.json)
-const SHEET_HEAD = ["Pclass", "Sex", "Age", "sibsp", "Parch", "Fare"];
-const SHEET_ROWS = [
-  { hit: false, cells: [3, "male", 39, 1, 5, 31.275] },
-  { hit: false, cells: [3, "male", 28, 3, 1, 25.4667] },
-  { hit: false, cells: [1, "female", 58, 0, 0, 146.5208] },
-  { hit: true, cells: [1, "female", 33, 0, 0, 86.5] },
-];
-
-// real Titanic feature importance, drawn on the same fixed 0-100% axis the
-// report's chart uses (so bar length = the value itself, not "longest = full")
-const FACTORS = [
-  { name: "Sex", value: 0.134 },
-  { name: "Pclass", value: 0.059 },
-  { name: "Fare", value: 0.041 },
-];
-
 export default function Home() {
   return (
     <div className={styles.bg}>
@@ -62,25 +45,29 @@ export default function Home() {
         </nav>
 
         <section id="upload" className={styles.hero}>
-          <h1 className={styles.title}>
-            AI가 왜 그렇게 판단했는지,
-            <br />
-            <span className={styles.titleAccent}>문장으로 읽어보세요</span>
-          </h1>
-          <p className={styles.sub}>
-            CSV 하나만 올리면 모델을 학습하고, 예측마다 그 근거를 풀어서 보여줘요.
-          </p>
+          <div className={styles.heroText}>
+            <h1 className={styles.title}>
+              AI가 왜 그렇게 판단했는지,
+              <br />
+              <span className={styles.titleAccent}>문장으로 읽어보세요</span>
+            </h1>
+            <p className={styles.sub}>
+              CSV 하나만 올리면 모델을 학습하고, 예측마다 그 근거를 풀어서 보여줘요.
+            </p>
 
-          <div className={styles.action}>
-            <UploadFlow />
-            <p className={styles.finePrint}>
-            정답(타겟) 컬럼이 있는 학습용 CSV · 5MB · 5만 행 이하 (5천 행이 넘으면
-            일부만 샘플로 학습해요)
-            <br />
-            결과가 두 가지(예: 생존/사망)이거나 숫자(예: 가격)인 데이터 · 서버가
-            잠들어 있으면 깨우는 데 1분 정도 걸려요
-          </p>
+            <div className={styles.action}>
+              <UploadFlow />
+              <p className={styles.finePrint}>
+                정답(타겟) 컬럼이 있는 학습용 CSV, 5MB·5만 행 이하 (5천 행이 넘으면
+                일부만 샘플로 학습해요)
+                <br />
+                결과가 두 가지(예: 생존/사망)이거나 숫자(예: 가격)인 데이터. 서버가
+                잠들어 있으면 깨우는 데 1분 정도 걸려요
+              </p>
+            </div>
           </div>
+
+          <HeroDemo />
         </section>
 
         <section className={styles.section}>
@@ -137,72 +124,6 @@ export default function Home() {
               </li>
             ))}
           </ol>
-        </section>
-
-        <section className={styles.section}>
-          <p className={styles.eyebrow}>이런 결과를 받아요</p>
-          <div className={styles.window}>
-            <div className={styles.windowBar}>
-              <i className={styles.dot} />
-              <i className={styles.dot} />
-              <i className={styles.dot} />
-              <span className={styles.windowTitle}>titanic.csv</span>
-            </div>
-            <div className={styles.windowBody}>
-              <div className={styles.pane}>
-                <span className={styles.paneLabel}>입력된 데이터 (CSV 파일)</span>
-                <div className={styles.sheetWrap}>
-                  <table className={styles.sheet}>
-                    <thead>
-                      <tr className={styles.sheetLetters}>
-                        <th />
-                        {SHEET_HEAD.map((_, i) => (
-                          <th key={i}>{String.fromCharCode(65 + i)}</th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr className={styles.sheetHead}>
-                        <th>1</th>
-                        {SHEET_HEAD.map((h) => (
-                          <td key={h}>{h}</td>
-                        ))}
-                      </tr>
-                      {SHEET_ROWS.map((r, i) => (
-                        <tr key={i} className={r.hit ? styles.sheetHit : undefined}>
-                          <th>{i + 2}</th>
-                          {r.cells.map((v, j) => (
-                            <td key={j} className={typeof v === "string" ? styles.sheetText : undefined}>
-                              {v}
-                            </td>
-                          ))}
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                <span className={styles.paneNote}>초록색 행 하나를 모델이 예측해요</span>
-              </div>
-              <div className={styles.pane}>
-                <span className={styles.paneLabel}>리포트가 보여주는 것 · 특성 중요도</span>
-                <p className={styles.verdict}>
-                  모델은 이 케이스를 <strong>&lsquo;생존&rsquo;</strong>으로 예측했어요
-                  (확신도 79%).
-                </p>
-                <div className={styles.bars}>
-                  {FACTORS.map((f) => (
-                    <div key={f.name} className={styles.barRow}>
-                      <span>{f.name}</span>
-                      <span className={styles.barTrack}>
-                        <i className={styles.barFill} style={{ width: `${f.value * 100}%` }} />
-                      </span>
-                      <span className={styles.barVal}>{f.value.toFixed(3)}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
         </section>
 
         <section id="examples" className={styles.section}>
