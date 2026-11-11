@@ -84,7 +84,11 @@ export default function UploadFlow() {
 
   return (
     <>
-      {error && <p className={styles.errorBox}>{error}</p>}
+      {error && (
+        <p className={styles.errorBox} role="alert">
+          {error}
+        </p>
+      )}
 
       <FileDropzone onFile={handleFile} fileName={file?.name} />
 
@@ -177,7 +181,7 @@ export default function UploadFlow() {
             disabled={!target || !!problem || step === "analyzing"}
             onClick={handleAnalyze}
           >
-            {step === "analyzing" ? "분석 중..." : "분석 시작"}
+            {step === "analyzing" ? "분석 중…" : "분석 시작"}
           </button>
           {step === "analyzing" && (
             <p className={styles.sectionNote}>

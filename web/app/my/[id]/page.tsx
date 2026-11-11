@@ -13,6 +13,7 @@ import { fetchStability } from "@/lib/api";
 import ReportView from "@/components/ReportView";
 import type { ShapReport } from "@/lib/types";
 import styles from "@/components/report.module.css";
+import PencilIcon from "@/components/PencilIcon";
 
 export default function MyReportPage() {
   const { id } = useParams<{ id: string }>();
@@ -93,7 +94,7 @@ export default function MyReportPage() {
                   setEditingName(true);
                 }}
               >
-                ✎
+                <PencilIcon />
               </button>
             )}
           </span>

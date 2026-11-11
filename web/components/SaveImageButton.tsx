@@ -28,7 +28,8 @@ export default function SaveImageButton({ targetId, fileName }: Props) {
     try {
       const dataUrl = await toPng(node, {
         pixelRatio: 2,
-        backgroundColor: "#ffffff",
+        // the page token, read live so the PNG matches the screen
+        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue("--color-paper").trim(),
         filter: (n) => !(n instanceof HTMLElement && n.dataset.noCapture !== undefined),
       });
       const a = document.createElement("a");
@@ -45,10 +46,14 @@ export default function SaveImageButton({ targetId, fileName }: Props) {
 
   return (
     <div className={styles.copyBtnRow} data-no-capture>
-      <button type="button" className={styles.copyBtn} onClick={save} disabled={busy}>
-        {busy ? "이미지 만드는 중..." : "이미지로 저장"}
+      <button type="button" className={styles.secondaryBtn} onClick={save} disabled={busy}>
+        {busy ? "이미지 만드는 중…" : "이미지로 저장"}
       </button>
-      {failed && <span className={styles.sectionNote}>이미지를 만들지 못했어요.</span>}
+      {failed && (
+        <span className={styles.sectionNote} role="alert">
+          이미지를 만들지 못했어요. 잠시 뒤 다시 눌러 주세요.
+        </span>
+      )}
     </div>
   );
 }

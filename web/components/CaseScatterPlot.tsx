@@ -30,7 +30,7 @@ export type ScatterPreview = { caseId: string; proba: number };
 // "이미지로 저장" isn't involved with, but a literal keeps the contrast
 // numbers below exact. #1e3a5f vs white 11.5:1, vs the green dot 3.4:1,
 // vs the amber dot 3.6:1 - all >= 3:1 (non-text contrast)
-const PREVIEW_COLOR = "#1e3a5f";
+const PREVIEW_COLOR = "var(--color-preview)";
 const RING_R = 7.5;
 
 type Props = {
@@ -135,7 +135,7 @@ function PreviewMarker({
         />
       )}
       {/* white halo under the ring so it stays readable over other dots */}
-      <circle cx={to.x} cy={to.y} r={RING_R} fill="none" stroke="#fff" strokeWidth={5} pointerEvents="none" />
+      <circle cx={to.x} cy={to.y} r={RING_R} fill="none" stroke="var(--color-paper)" strokeWidth={5} pointerEvents="none" />
       <circle
         cx={to.x}
         cy={to.y}
@@ -214,6 +214,8 @@ export default function CaseScatterPlot({
   });
 
   return (
+    // narrow screens: the plot keeps a readable width and scrolls sideways
+    <div className={styles.scatterScroll}>
     <div className={styles.scatterWrap}>
       <div className={styles.scatterLegend}>
         <span className={styles.scatterLegendItem}>
@@ -372,6 +374,7 @@ export default function CaseScatterPlot({
         </div>
         </div>
       )}
+    </div>
     </div>
   );
 }

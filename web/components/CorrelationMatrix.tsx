@@ -172,7 +172,7 @@ export default function CorrelationMatrix({
               {chipName(columns[selected.i])} ↔ {chipName(columns[selected.j])} (r=
               {selected.v.toFixed(2)})
             </b>{" "}
-            — {explainCorr(selected.v)}
+            : {explainCorr(selected.v)}
           </p>
         )}
 
@@ -216,7 +216,7 @@ export default function CorrelationMatrix({
                       ? "var(--border)"
                       : v >= 0
                         ? `color-mix(in srgb, var(--accent) ${pct}%, transparent)`
-                        : `color-mix(in srgb, #b45309 ${pct}%, transparent)`;
+                        : `color-mix(in srgb, var(--color-warn-ink) ${pct}%, transparent)`;
                   const strong = i !== j && mag >= STRONG;
                   const key = `${i}-${j}`;
                   return (
@@ -238,7 +238,7 @@ export default function CorrelationMatrix({
                             : styles.corrCellDim
                           : ""
                       }`}
-                      style={{ background: bg, color: mag > 0.5 ? "#fff" : undefined }}
+                      style={{ background: bg, color: mag > 0.5 ? "var(--color-on-accent)" : undefined }}
                       title={`${columns[i]} ↔ ${columns[j]}: ${v.toFixed(2)}`}
                     >
                       {i === j ? "" : fmt(v)}

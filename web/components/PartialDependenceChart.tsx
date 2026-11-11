@@ -16,7 +16,7 @@ const HEIGHT = 90;
 const PAD = 8;
 // literal colours: "이미지로 저장" (html-to-image) dropped class-styled SVG
 // strokes and drew fills black (globals.css --accent)
-const LINE = "#1d9e75";
+const LINE = "var(--color-accent)";
 
 function formatValue(v: number | string): string {
   return typeof v === "number" ? (Number.isInteger(v) ? String(v) : v.toFixed(1)) : v;
@@ -146,7 +146,7 @@ export function PdpCell({
         />
       ) : (
         <>
-          <svg viewBox={`0 0 ${width} ${height}`} className={styles.pdpSvg}>
+          <svg viewBox={`0 0 ${width} ${height}`} className={styles.pdpSvg} aria-hidden="true">
             <path d={path} stroke={LINE} strokeWidth={2} fill="none" />
             {entry.points.map((p, i) => (
               <circle key={i} cx={x(values[i])} cy={y(p.proba)} r={2.5} fill={LINE} />

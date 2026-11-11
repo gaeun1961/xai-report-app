@@ -42,7 +42,7 @@ export default function MissingnessDonutGrid({
 
           return (
             <div key={it.label} className={styles.donutCell}>
-              <svg viewBox="0 0 64 64" className={styles.donutSvg}>
+              <svg viewBox="0 0 64 64" className={styles.donutSvg} aria-hidden="true">
                 <circle cx={32} cy={32} r={R} className={styles.donutTrack} />
                 {hasArc && (
                   <circle

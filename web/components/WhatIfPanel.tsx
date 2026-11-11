@@ -129,7 +129,7 @@ export default function WhatIfPanel({
           onClick={run}
           disabled={loading}
         >
-          {loading ? "다시 예측하는 중..." : "다시 예측하기"}
+          {loading ? "다시 예측하는 중…" : "다시 예측하기"}
         </button>
         {changed && (
           <button type="button" className={styles.toggleBtn} onClick={reset}>
@@ -138,7 +138,11 @@ export default function WhatIfPanel({
         )}
       </div>
 
-      {error && <p className={styles.sectionNote}>{error}</p>}
+      {error && (
+        <p className={styles.sectionNote} role="alert">
+          {error}
+        </p>
+      )}
 
       {result && (
         <div className={styles.baseline}>

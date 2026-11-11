@@ -6,6 +6,7 @@ import { columnDesc, columnValueLabel, isSuggestedDesc } from "@/lib/columnGloss
 import { fmtNum, fmtSigned } from "@/lib/reportSummary";
 import GlossaryTerm from "./GlossaryTerm";
 import styles from "./report.module.css";
+import PencilIcon from "./PencilIcon";
 
 const CASE_NAME_PREFIX = "xai-case-name:";
 
@@ -236,7 +237,7 @@ export default function CaseReportCard({
                 setEditingName(true);
               }}
             >
-              ✎
+              <PencilIcon />
             </button>
           </span>
         )}

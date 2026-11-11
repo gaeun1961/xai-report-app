@@ -122,12 +122,16 @@ export default function ModelComparePanel({ analysisId, reportId, reportLabel }:
           {spec?.note && <p className={styles.sectionNote}>{spec.note}</p>}
 
           <button type="button" className={styles.toggleBtn} onClick={run} disabled={loading}>
-            {loading ? "재학습하는 중... (최대 1분 정도 걸릴 수 있어요)" : "비교하기"}
+            {loading ? "재학습하는 중… (최대 1분 정도 걸릴 수 있어요)" : "비교하기"}
           </button>
         </>
       )}
 
-      {error && <p className={styles.sectionNote}>{error}</p>}
+      {error && (
+        <p className={styles.sectionNote} role="alert">
+          {error}
+        </p>
+      )}
     </section>
   );
 }

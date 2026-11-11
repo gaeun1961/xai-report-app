@@ -1,46 +1,41 @@
+/* one capped measure at every width: at 1920 the gutters grow, the
+   charts and the reading line do not */
 .report {
+  max-width: var(--report-max);
   margin: 0 auto;
-  padding: 48px 24px 80px;
+  padding: var(--space-xl) var(--space-xl) var(--space-2xl);
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-md);
 }
 
-.report {
-  max-width: 1000px;
-}
-
-/* larger screens: use more of the width instead of leaving big side margins */
-@media (min-width: 1440px) {
-
+@media (max-width: 40rem) {
   .report {
-    max-width: 1280px;
-  }
-}
-
-@media (min-width: 1800px) {
-  .report {
-    max-width: 1440px;
+    padding: var(--space-lg) var(--space-md) var(--space-xl);
   }
 }
 
 .reportCol {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-md);
   min-width: 0;
 }
 
 .h1 {
-  font-size: 28px;
+  max-width: none;
+  font-size: var(--text-3xl);
   font-weight: 700;
+  line-height: 1.2;
   letter-spacing: -0.02em;
 }
 
 .h2 {
-  font-size: 18px;
+  max-width: none;
+  font-size: var(--text-lg);
   font-weight: 700;
-  margin-top: 16px;
+  line-height: 1.35;
+  margin-top: var(--space-md);
 }
 
 /* kept for callers that still pass it; same as .h2 now */
@@ -59,14 +54,19 @@
 
 .tabs {
   display: flex;
-  gap: 4px;
+  gap: var(--space-2xs);
   border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  scrollbar-width: none;
 }
 
 .tab {
-  padding: 8px 14px;
-  font-size: 15px;
+  min-height: 44px;
+  padding: var(--space-xs) var(--space-md);
+  font-size: var(--text-md);
   font-weight: 600;
+  white-space: nowrap;
+  transition: color var(--dur-micro) var(--ease-out);
   border: none;
   border-bottom: 2px solid transparent;
   margin-bottom: -1px;
@@ -143,15 +143,61 @@
   color: var(--accent-strong);
 }
 
+/* a report section: ruled, not boxed. The charts and small multiples
+   inside keep their own frames, so no card ever sits inside a card */
 .cardSection {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 20px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
+  gap: var(--space-sm);
+  padding: var(--space-lg) 0 var(--space-md);
+  border-top: 1px solid var(--border);
   background: var(--background);
   scroll-margin-top: 52px;
+}
+
+/* the first section under the tab bar: the tab rule already separates it */
+.reportCol > .cardSection:first-child {
+  border-top: none;
+}
+
+/* accuracy + stability: the two trust answers, side by side */
+.trustRow {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  border-top: 1px solid var(--border);
+}
+
+.trustRow > .cardSection {
+  border-top: none;
+}
+
+.trustRow > :nth-child(2) {
+  padding-left: var(--space-xl);
+  border-left: 1px solid var(--border);
+}
+
+.trustRow > p:nth-child(2) {
+  align-self: center;
+}
+
+.trustRow > :first-child {
+  padding-right: var(--space-xl);
+}
+
+@media (max-width: 60rem) {
+  .trustRow {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .trustRow > :first-child {
+    padding-right: 0;
+  }
+
+  .trustRow > :nth-child(2) {
+    padding-left: 0;
+    border-left: none;
+    border-top: 1px solid var(--border);
+  }
 }
 
 /* .h2's own margin-top (meant for headings that follow other content) would
@@ -224,7 +270,7 @@
 }
 
 .corrCellStrongNeg {
-  border-color: #b45309;
+  border-color: var(--color-warn-ink);
   font-weight: 700;
 }
 
@@ -268,13 +314,13 @@
 .corrChipActive:hover {
   background: var(--accent-strong);
   border-color: var(--accent-strong);
-  color: #fff;
+  color: var(--color-on-accent);
 }
 
 .corrExplain {
   padding: 10px 14px;
   border-radius: 8px;
-  border-left: 3px solid var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
   background: color-mix(in srgb, var(--accent) 8%, transparent);
   font-size: 14px;
   line-height: 1.6;
@@ -282,9 +328,11 @@
 }
 
 .accuracy {
-  font-size: 40px;
+  font-size: 48px;
   font-weight: 700;
+  line-height: 1.1;
   letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
   color: var(--accent-strong);
 }
 
@@ -313,16 +361,17 @@
 
 .qualityWeak {
   background: color-mix(in srgb, var(--warn) 20%, transparent);
-  color: #b45309;
+  color: var(--color-warn-ink);
 }
 
 .qualityMessage {
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--text-muted);
+  gap: var(--space-2xs);
+  max-width: 72ch;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--color-ink-2);
 }
 
 .qualityMessage p {
@@ -331,7 +380,7 @@
 
 .sectionNote {
   margin-top: -4px;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.6;
   color: var(--text-muted);
 }
@@ -547,18 +596,22 @@
 }
 
 .detailLink {
+  min-height: 28px;
   padding: 0;
   border: 0;
   background: none;
   color: var(--accent-strong);
-  font-size: 12px;
+  font-size: 13px;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  text-underline-offset: 3px;
   font-weight: 600;
   white-space: nowrap;
   cursor: pointer;
 }
 
 .detailLink:hover {
-  text-decoration: underline;
+  text-decoration-color: currentColor;
 }
 
 .detailLink:focus-visible {
@@ -761,7 +814,7 @@
 }
 
 .donutHigh {
-  stroke: #b91c1c;
+  stroke: var(--color-danger-ink);
 }
 
 .donutText {
@@ -778,7 +831,7 @@
 }
 
 .donutTextHigh {
-  fill: #b91c1c;
+  fill: var(--color-danger-ink);
 }
 
 .donutLabel {
@@ -858,8 +911,11 @@
 }
 
 .rangeInput {
-  width: 52px;
+  width: 7ch;
+  min-width: 64px;
+  min-height: 32px;
   padding: 3px 6px;
+  font-variant-numeric: tabular-nums;
   border: 1px solid var(--border);
   border-radius: 6px;
   background: var(--background);
@@ -870,6 +926,7 @@
 
 .select {
   margin-left: 6px;
+  min-height: 32px;
   padding: 4px 8px;
   border: 1px solid var(--border);
   border-radius: 6px;
@@ -919,7 +976,7 @@
 .filterBtnActive {
   background: var(--foreground);
   border-color: var(--foreground);
-  color: #fff;
+  color: var(--color-on-accent);
 }
 
 .selector {
@@ -948,7 +1005,7 @@
 .selectorBtnActive {
   background: var(--accent);
   border-color: var(--accent);
-  color: #fff;
+  color: var(--color-on-accent);
 }
 
 /* case report card */
@@ -1054,13 +1111,13 @@
 }
 
 .badgeYes {
-  background: color-mix(in srgb, #16a34a 18%, transparent);
-  color: #16a34a;
+  background: color-mix(in srgb, var(--color-positive) 18%, transparent);
+  color: var(--color-positive);
 }
 
 .badgeNo {
-  background: color-mix(in srgb, #dc2626 18%, transparent);
-  color: #dc2626;
+  background: color-mix(in srgb, var(--color-danger) 18%, transparent);
+  color: var(--color-danger);
 }
 
 /* actual-label badge: calm when the prediction was right, warning when wrong */
@@ -1071,7 +1128,7 @@
 
 .badgeActualBad {
   background: color-mix(in srgb, var(--warn) 22%, transparent);
-  color: #b45309;
+  color: var(--color-warn-ink);
   font-weight: 700;
 }
 
@@ -1111,11 +1168,11 @@
 .whyWrong {
   padding: 10px 14px;
   border-radius: 8px;
-  border-left: 3px solid var(--warn);
+  border: 1px solid color-mix(in srgb, var(--warn) 40%, transparent);
   background: color-mix(in srgb, var(--warn) 10%, transparent);
   font-size: 14px;
   line-height: 1.6;
-  color: #7c4a12;
+  color: var(--color-warn-deep);
 }
 
 .copyBtnRow {
@@ -1124,35 +1181,64 @@
   justify-content: flex-end;
 }
 
-.copyBtn {
-  padding: 8px 16px;
-  border: 1px solid var(--accent);
-  border-radius: 8px;
-  background: var(--accent);
-  color: #fff;
-  font-size: 14px;
+/* the one primary button: accent fill, 40px tall */
+.copyBtn,
+.secondaryBtn {
+  min-height: 40px;
+  padding: var(--space-xs) var(--space-md);
+  border: 1px solid var(--accent-strong);
+  border-radius: var(--radius-control);
+  background: var(--accent-strong);
+  color: var(--color-on-accent);
+  font-size: var(--text-sm);
   font-weight: 600;
+  white-space: nowrap;
   cursor: pointer;
+  transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+}
+
+.copyBtn:hover:not(:disabled) {
+  background: var(--color-ink);
+  border-color: var(--color-ink);
+}
+
+/* every other action: outline */
+.secondaryBtn {
+  border-color: var(--color-rule-strong);
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.secondaryBtn:hover:not(:disabled) {
+  border-color: var(--foreground);
+}
+
+/* disabled = working: muted fill, muted ink, progress cursor */
+.copyBtn:disabled,
+.secondaryBtn:disabled {
+  border-color: var(--color-rule);
+  background: var(--color-paper-3);
+  color: var(--color-muted);
+  cursor: progress;
 }
 
 .copyBtn:hover {
   opacity: 0.9;
 }
 
-.copyModalOverlay {
-  position: fixed;
-  inset: 0;
-  background: color-mix(in srgb, #000 45%, transparent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  z-index: 50;
+.copyModalBox::backdrop {
+  background: var(--color-scrim);
 }
 
 .copyModalBox {
-  width: min(640px, 100%);
+  width: min(640px, calc(100% - 32px));
   max-height: 80vh;
+  margin: auto;
+  overscroll-behavior: contain;
+  color: inherit;
+}
+
+.copyModalBox[open] {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -1186,13 +1272,16 @@
 
 .copyModalActions {
   display: flex;
+  align-items: center;
   justify-content: flex-end;
+  gap: var(--space-sm);
 }
 
 .guideRow {
   display: flex;
-  align-items: center;
-  gap: 16px;
+  align-items: flex-start;
+  gap: var(--space-lg);
+  padding-top: var(--space-xs);
 }
 
 @media (max-width: 640px) {
@@ -1209,11 +1298,9 @@
 .guide {
   flex: 1;
   margin: 0;
-  padding: 12px 16px;
-  border-radius: 8px;
-  background: var(--surface);
-  font-size: 14px;
-  line-height: 1.6;
+  max-width: 80ch;
+  font-size: var(--text-sm);
+  line-height: 1.7;
   color: var(--text-muted);
 }
 
@@ -1536,13 +1623,13 @@
 }
 
 .up {
-  /* --accent (#1d9e75) on white is 3.39:1 — fails WCAG AA (4.5:1) for this
-     13px bold text. --accent-strong (#0f7a58) is 5.32:1, passes. */
+  /* --accent (var(--color-accent)) on white is 3.39:1 — fails WCAG AA (4.5:1) for this
+     13px bold text. --accent-strong (var(--color-accent-ink)) is 5.32:1, passes. */
   color: var(--accent-strong);
 }
 
 .down {
-  color: #dc2626;
+  color: var(--color-danger);
 }
 
 /* case scatter plot: x = actual label (2 bands), y = predicted P(positive) */
@@ -1634,7 +1721,7 @@
   width: 9px;
   height: 9px;
   border-radius: 999px;
-  border: 2px solid #1e3a5f;
+  border: 2px solid var(--color-preview);
   font-style: normal;
 }
 
@@ -1707,11 +1794,11 @@
 .errorBox {
   padding: 10px 14px;
   border-radius: 8px;
-  border-left: 3px solid var(--warn);
+  border: 1px solid color-mix(in srgb, var(--warn) 40%, transparent);
   background: color-mix(in srgb, var(--warn) 10%, transparent);
   font-size: 14px;
   line-height: 1.6;
-  color: #7c4a12;
+  color: var(--color-warn-deep);
 }
 
 .targetList {
@@ -1758,12 +1845,12 @@
   white-space: nowrap;
 }
 
-/* white text on both fills is >= 4.5:1: #0f7a58 5.3:1, #284b7a 8.8:1
-   (the plain accent #1d9e75 is only 3.4:1 with white) */
+/* white text on both fills is >= 4.5:1: var(--color-accent-ink) 5.3:1, var(--color-series-2) 8.8:1
+   (the plain accent var(--color-accent) is only 3.4:1 with white) */
 .targetBadge {
   padding: 1px 7px;
   border-radius: 999px;
-  color: #fff;
+  color: var(--color-on-accent);
   font-size: 12px;
   font-weight: 700;
 }
@@ -1773,15 +1860,14 @@
 }
 
 .targetBadgeReg {
-  background: #284b7a;
+  background: var(--color-series-2);
 }
 
 /* stacks "결과 복사하기" and "이미지로 저장" in the guide row's button slot */
 .saveBtnCol {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 8px;
+  align-items: flex-start;
+  gap: var(--space-xs);
   flex-shrink: 0;
 }
 
@@ -1798,4 +1884,34 @@
 
 :global([data-capturing]) .captureOnly {
   display: block;
+}
+
+/* glossary terms and info tips drop the UA outline for a styled one; a
+   keyboard user still gets a full ring, instantly */
+.glossary:focus-visible,
+.infoTip:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.infoTip:focus-visible {
+  border-radius: 999px;
+}
+
+/* under 640px the 640-wide scatter viewBox would shrink its labels to ~6px:
+   keep the plot at a readable width and let it scroll sideways instead */
+.scatterScroll {
+  min-width: 0;
+}
+
+@media (max-width: 40rem) {
+  .scatterScroll {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+  }
+
+  .scatterScroll > .scatterWrap {
+    min-width: 560px;
+  }
 }
