@@ -196,22 +196,6 @@
   background: var(--background);
 }
 
-.steps {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.steps li {
-  padding: 24px 16px;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  background: var(--background);
-}
-
 .stepNum {
   display: block;
   margin-bottom: 10px;
@@ -496,7 +480,6 @@
     padding-top: 40px;
   }
 
-  .steps,
   .useCases {
     grid-template-columns: 1fr;
   }
@@ -589,5 +572,288 @@
   .demo .sheet th,
   .demo .sheet td {
     padding: 5px 4px;
+  }
+}
+
+/* ---- "이렇게 사용해요" scroll story ----
+   wide: step texts scroll past a sticky stage that swaps its picture as each
+   step crosses the middle of the screen. narrow: each step carries its own
+   picture inline, no stage */
+.story {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.storySteps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.storyInline {
+  margin-top: var(--space-md);
+}
+
+.storyStage {
+  display: none;
+}
+
+@media (min-width: 60rem) {
+  .story {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: var(--space-2xl);
+  }
+
+  .storySteps {
+    gap: 0;
+  }
+
+  /* each step is a screen-tall stop, so one scroll moves one step */
+  /* each step is a stop of about half a screen; its text sits at the top
+     so it lines up with the stage's top edge as it becomes active */
+  .storySteps li {
+    min-height: 36vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    opacity: 0.35;
+    transition: opacity var(--dur-short) var(--ease-out);
+  }
+
+  .storySteps li.storyStepActive {
+    opacity: 1;
+  }
+
+  /* the last stop only needs room for its own text and the stage card */
+  .storySteps li:last-child {
+    min-height: 240px;
+  }
+
+  .storyInline {
+    display: none;
+  }
+
+  /* only as tall as the panel on show, so the last step needs no extra
+     room to keep a short picture level with its text */
+  .storyStage {
+    display: block;
+    position: sticky;
+    top: 120px;
+    align-self: start;
+  }
+}
+
+/* the panels share one grid cell; only the active one is seen */
+/* inactive panels float over the active one (fading out) and take no room */
+.storyPanel {
+  position: absolute;
+  inset: 0 0 auto;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(16px);
+  transition:
+    opacity var(--dur-long) var(--ease-out),
+    transform var(--dur-long) var(--ease-out),
+    visibility 0s linear var(--dur-long);
+}
+
+.storyPanel[data-active] {
+  position: relative;
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition:
+    opacity var(--dur-long) var(--ease-out),
+    transform var(--dur-long) var(--ease-out),
+    visibility 0s;
+}
+
+/* ---- tour stages: the report's own pieces, real Titanic numbers ---- */
+.tourCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--background);
+}
+
+.tourLabel {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.tourFigure {
+  display: block;
+  margin: 4px 0;
+  font-size: 44px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent-strong);
+}
+
+.tourNote {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.tourTrust {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-lg);
+}
+
+.tourTrust > div + div {
+  padding-left: var(--space-lg);
+  border-left: 1px solid var(--border);
+}
+
+.tourScatter {
+  width: 100%;
+  height: auto;
+}
+
+.tourMid {
+  stroke: var(--color-rule-strong);
+  stroke-dasharray: 4 4;
+}
+
+.tourDotOk {
+  fill: var(--accent);
+}
+
+.tourDotWrong {
+  fill: var(--warn);
+}
+
+.tourAxis {
+  font-size: 12px;
+  font-weight: 600;
+  fill: var(--text-muted);
+}
+
+.tourQuality {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.tourQuality li {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr) 52px;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 14px;
+}
+
+.tourQualityName {
+  font-weight: 600;
+}
+
+/* each stage's own small entrance once it becomes active */
+.storyPanel .tourFigure {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity var(--dur-long) var(--ease-out) 150ms,
+    transform var(--dur-long) var(--ease-out) 150ms;
+}
+
+.storyPanel[data-active] .tourFigure {
+  opacity: 1;
+  transform: none;
+}
+
+.storyPanel circle {
+  opacity: 0;
+  transition: opacity var(--dur-short) var(--ease-out);
+}
+
+.storyPanel[data-active] circle {
+  opacity: 1;
+}
+
+.storyPanel .barFill {
+  transform: scaleX(0);
+  transition: transform var(--dur-long) var(--ease-out);
+}
+
+.storyPanel[data-active] .barFill {
+  transform: none;
+}
+
+/* no motion wanted: panels swap instantly, every inner piece already in place */
+@media (prefers-reduced-motion: reduce) {
+  .storyPanel,
+  .storyPanel .tourFigure,
+  .storyPanel circle,
+  .storyPanel .barFill,
+  .storySteps li {
+    transition: none !important;
+  }
+
+  .storyPanel .tourFigure,
+  .storyPanel circle,
+  .storyPanel .barFill {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* the story's step text carries a whole screen each, so it runs larger */
+@media (min-width: 60rem) {
+  .storySteps .stepNum {
+    font-size: 36px;
+  }
+
+  .storySteps .stepTitle {
+    font-size: 24px;
+  }
+
+  .storySteps .stepDesc {
+    font-size: 16px;
+  }
+}
+
+/* "이렇게 사용해요": three quiet steps in a row, no cards */
+.howSteps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-lg);
+}
+
+.howSteps li {
+  padding-top: var(--space-md);
+  border-top: 2px solid var(--border);
+}
+
+.howNum {
+  display: block;
+  margin-bottom: var(--space-xs);
+  font-size: 15px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent-strong);
+}
+
+@media (max-width: 720px) {
+  .howSteps {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-md);
   }
 }
