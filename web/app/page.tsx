@@ -4,6 +4,7 @@ import { DOMAINS } from "@/lib/domains";
 import UploadFlow from "@/components/UploadFlow";
 import InfoTip from "@/components/InfoTip";
 import HeroDemo from "@/components/HeroDemo";
+import HowItWorks from "@/components/HowItWorks";
 import styles from "./home.module.css";
 
 const USE_CASES = [
@@ -23,12 +24,6 @@ const USE_CASES = [
     title: "이미 만든 모델과 비교할 때",
     desc: "같은 학습 데이터를 올려서, 직접 만든 모델의 판단이 baseline과 얼마나 다른지 견줘볼 수 있어요.",
   },
-];
-
-const STEPS = [
-  { title: "CSV 올리기", desc: "예측하고 싶은 결과가 담긴 표를 올려요." },
-  { title: "맞힐 컬럼 고르기", desc: "결과가 담긴 컬럼을 하나 골라요." },
-  { title: "판단 근거 읽기", desc: "어떤 정보가 예측을 얼마나 밀었는지 문장으로 봐요." },
 ];
 
 export default function Home() {
@@ -115,15 +110,7 @@ export default function Home() {
 
         <section className={styles.section}>
           <p className={styles.eyebrow}>이렇게 사용해요</p>
-          <ol className={styles.steps}>
-            {STEPS.map((s, i) => (
-              <li key={s.title}>
-                <span className={styles.stepNum}>0{i + 1}</span>
-                <strong className={styles.stepTitle}>{s.title}</strong>
-                <span className={styles.stepDesc}>{s.desc}</span>
-              </li>
-            ))}
-          </ol>
+          <HowItWorks />
         </section>
 
         <section id="examples" className={styles.section}>
