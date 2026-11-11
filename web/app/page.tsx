@@ -4,8 +4,14 @@ import { DOMAINS } from "@/lib/domains";
 import UploadFlow from "@/components/UploadFlow";
 import InfoTip from "@/components/InfoTip";
 import HeroDemo from "@/components/HeroDemo";
-import HowItWorks from "@/components/HowItWorks";
+import ReportTour from "@/components/ReportTour";
 import styles from "./home.module.css";
+
+const STEPS = [
+  { title: "CSV 올리기", desc: "예측하고 싶은 결과가 담긴 표를 올려요." },
+  { title: "맞힐 컬럼 고르기", desc: "결과가 담긴 컬럼을 하나 골라요." },
+  { title: "판단 근거 읽기", desc: "어떤 정보가 예측을 얼마나 밀었는지 문장으로 봐요." },
+];
 
 const USE_CASES = [
   {
@@ -27,6 +33,8 @@ const USE_CASES = [
 ];
 
 export default function Home() {
+  // the tour walks the real Titanic preset report
+  const tourReport = loadReport("titanic");
   return (
     <div className={styles.bg}>
       <main className={styles.page}>
@@ -67,8 +75,23 @@ export default function Home() {
 
         <section className={styles.section}>
           <p className={styles.eyebrow}>이렇게 사용해요</p>
-          <HowItWorks />
+          <ol className={styles.howSteps}>
+            {STEPS.map((st, i) => (
+              <li key={st.title}>
+                <span className={styles.howNum}>0{i + 1}</span>
+                <strong className={styles.stepTitle}>{st.title}</strong>
+                <span className={styles.stepDesc}>{st.desc}</span>
+              </li>
+            ))}
+          </ol>
         </section>
+
+        {tourReport && (
+          <section className={styles.section}>
+            <p className={styles.eyebrow}>리포트에서 볼 수 있는 것</p>
+            <ReportTour report={tourReport} />
+          </section>
+        )}
 
         <section className={styles.section}>
           <p className={styles.eyebrow}>왜 필요한가요</p>

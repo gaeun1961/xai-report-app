@@ -612,11 +612,13 @@
   }
 
   /* each step is a screen-tall stop, so one scroll moves one step */
+  /* each step is a stop of about half a screen; its text sits at the top
+     so it lines up with the stage's top edge as it becomes active */
   .storySteps li {
-    min-height: 60vh;
+    min-height: 36vh;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     opacity: 0.35;
     transition: opacity var(--dur-short) var(--ease-out);
   }
@@ -625,11 +627,9 @@
     opacity: 1;
   }
 
-  /* the first stop starts right under the section label, not mid-screen */
-  .storySteps li:first-child {
-    justify-content: flex-start;
-    min-height: 50vh;
-    padding-top: var(--space-xl);
+  /* the last stop is just long enough to read before the next section */
+  .storySteps li:last-child {
+    min-height: 380px;
   }
 
   .storyInline {
@@ -639,7 +639,7 @@
   .storyStage {
     display: grid;
     position: sticky;
-    top: calc(50vh - 170px);
+    top: 120px;
     align-self: start;
     min-height: 340px;
   }
@@ -648,7 +648,7 @@
 /* the panels share one grid cell; only the active one is seen */
 .storyPanel {
   grid-area: 1 / 1;
-  align-self: center;
+  align-self: start;
   opacity: 0;
   visibility: hidden;
   transform: translateY(16px);
@@ -668,118 +668,8 @@
     visibility 0s;
 }
 
-/* step 1: the file lands in the drop zone */
-.storyDrop {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-sm);
-  min-height: 220px;
-  padding: var(--space-lg);
-  border: 1.5px dashed var(--color-rule-strong);
-  border-radius: 14px;
-  background: var(--background);
-}
-
-.storyFile {
-  padding: 10px 16px;
-  border: 1px solid var(--accent);
-  border-radius: 10px;
-  background: color-mix(in srgb, var(--accent) 10%, var(--background));
-  color: var(--accent-strong);
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.storyPanel .storyFile {
-  transform: translateY(-28px);
-  opacity: 0;
-  transition:
-    transform var(--dur-long) var(--ease-out) 120ms,
-    opacity var(--dur-long) var(--ease-out) 120ms;
-}
-
-.storyPanel[data-active] .storyFile {
-  transform: none;
-  opacity: 1;
-}
-
-.storyDropText {
-  font-size: 14px;
-  color: var(--text-muted);
-}
-
-/* step 2: the column picker, target chosen */
-.storyColumns {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-}
-
-.storyColumns li {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-sm);
-  padding: 12px 16px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--background);
-  font-size: 14px;
-}
-
-.storyColumns li.storyColumnPicked {
-  border-color: var(--accent);
-  box-shadow: inset 0 0 0 1px var(--accent);
-}
-
-.storyColumnName {
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-xs);
-  font-weight: 600;
-}
-
-.storyColumnNote {
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--text-muted);
-}
-
-.storyColumnMeta {
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-  font-size: 13px;
-  color: var(--text-muted);
-  font-variant-numeric: tabular-nums;
-}
-
-.storyBadge {
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--accent) 14%, transparent);
-  color: var(--accent-strong);
-  font-size: 12px;
-  font-weight: 600;
-}
-
-/* the picked row settles in a beat after the panel arrives */
-.storyPanel .storyColumnPicked {
-  transform: scale(0.97);
-  transition: transform var(--dur-short) var(--ease-out) 260ms;
-}
-
-.storyPanel[data-active] .storyColumnPicked {
-  transform: none;
-}
-
-/* step 3: the report's own sentences */
-.storyReport {
+/* ---- tour stages: the report's own pieces, real Titanic numbers ---- */
+.tourCard {
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
@@ -789,64 +679,131 @@
   background: var(--background);
 }
 
-.storyVerdict {
-  margin: 0;
-  font-size: 17px;
-  line-height: 1.6;
+.tourLabel {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
 }
 
-.storyVerdict strong,
-.storyReasons strong {
+.tourFigure {
+  display: block;
+  margin: 4px 0;
+  font-size: 44px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
   color: var(--accent-strong);
 }
 
-.storyReasons {
+.tourNote {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.tourTrust {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-lg);
+}
+
+.tourTrust > div + div {
+  padding-left: var(--space-lg);
+  border-left: 1px solid var(--border);
+}
+
+.tourScatter {
+  width: 100%;
+  height: auto;
+}
+
+.tourMid {
+  stroke: var(--color-rule-strong);
+  stroke-dasharray: 4 4;
+}
+
+.tourDotOk {
+  fill: var(--accent);
+}
+
+.tourDotWrong {
+  fill: var(--warn);
+}
+
+.tourAxis {
+  font-size: 12px;
+  font-weight: 600;
+  fill: var(--text-muted);
+}
+
+.tourQuality {
   margin: 0;
   padding: 0;
   list-style: none;
   display: flex;
   flex-direction: column;
-  border-top: 1px solid var(--border);
+  gap: var(--space-sm);
 }
 
-.storyReasons li {
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border);
-  font-size: 15px;
-  line-height: 1.6;
+.tourQuality li {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr) 52px;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 14px;
 }
 
-/* the reasons arrive one after another */
-.storyPanel .storyReasons li {
+.tourQualityName {
+  font-weight: 600;
+}
+
+/* each stage's own small entrance once it becomes active */
+.storyPanel .tourFigure {
   opacity: 0;
   transform: translateY(8px);
   transition:
-    opacity var(--dur-short) var(--ease-out),
-    transform var(--dur-short) var(--ease-out);
+    opacity var(--dur-long) var(--ease-out) 150ms,
+    transform var(--dur-long) var(--ease-out) 150ms;
 }
 
-.storyPanel[data-active] .storyReasons li {
+.storyPanel[data-active] .tourFigure {
   opacity: 1;
   transform: none;
 }
 
-.storyPanel[data-active] .storyReasons li:nth-child(1) { transition-delay: 200ms; }
-.storyPanel[data-active] .storyReasons li:nth-child(2) { transition-delay: 350ms; }
-.storyPanel[data-active] .storyReasons li:nth-child(3) { transition-delay: 500ms; }
+.storyPanel circle {
+  opacity: 0;
+  transition: opacity var(--dur-short) var(--ease-out);
+}
+
+.storyPanel[data-active] circle {
+  opacity: 1;
+}
+
+.storyPanel .barFill {
+  transform: scaleX(0);
+  transition: transform var(--dur-long) var(--ease-out);
+}
+
+.storyPanel[data-active] .barFill {
+  transform: none;
+}
 
 /* no motion wanted: panels swap instantly, every inner piece already in place */
 @media (prefers-reduced-motion: reduce) {
   .storyPanel,
-  .storyPanel .storyFile,
-  .storyPanel .storyColumnPicked,
-  .storyPanel .storyReasons li,
+  .storyPanel .tourFigure,
+  .storyPanel circle,
+  .storyPanel .barFill,
   .storySteps li {
     transition: none !important;
   }
 
-  .storyPanel .storyFile,
-  .storyPanel .storyColumnPicked,
-  .storyPanel .storyReasons li {
+  .storyPanel .tourFigure,
+  .storyPanel circle,
+  .storyPanel .barFill {
     opacity: 1;
     transform: none;
   }
@@ -855,7 +812,7 @@
 /* the story's step text carries a whole screen each, so it runs larger */
 @media (min-width: 60rem) {
   .storySteps .stepNum {
-    font-size: 44px;
+    font-size: 36px;
   }
 
   .storySteps .stepTitle {
@@ -864,5 +821,36 @@
 
   .storySteps .stepDesc {
     font-size: 16px;
+  }
+}
+
+/* "이렇게 사용해요": three quiet steps in a row, no cards */
+.howSteps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-lg);
+}
+
+.howSteps li {
+  padding-top: var(--space-md);
+  border-top: 2px solid var(--border);
+}
+
+.howNum {
+  display: block;
+  margin-bottom: var(--space-xs);
+  font-size: 15px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent-strong);
+}
+
+@media (max-width: 720px) {
+  .howSteps {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-md);
   }
 }
