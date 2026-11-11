@@ -66,6 +66,11 @@ export default function Home() {
         </section>
 
         <section className={styles.section}>
+          <p className={styles.eyebrow}>이렇게 사용해요</p>
+          <HowItWorks />
+        </section>
+
+        <section className={styles.section}>
           <p className={styles.eyebrow}>왜 필요한가요</p>
           <div className={styles.about}>
             <div>
@@ -106,11 +111,6 @@ export default function Home() {
               </li>
             ))}
           </ul>
-        </section>
-
-        <section className={styles.section}>
-          <p className={styles.eyebrow}>이렇게 사용해요</p>
-          <HowItWorks />
         </section>
 
         <section id="examples" className={styles.section}>

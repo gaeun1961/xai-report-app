@@ -625,6 +625,13 @@
     opacity: 1;
   }
 
+  /* the first stop starts right under the section label, not mid-screen */
+  .storySteps li:first-child {
+    justify-content: flex-start;
+    min-height: 50vh;
+    padding-top: var(--space-xl);
+  }
+
   .storyInline {
     display: none;
   }
@@ -635,7 +642,6 @@
     top: calc(50vh - 170px);
     align-self: start;
     min-height: 340px;
-    margin-top: 10vh;
   }
 }
 
