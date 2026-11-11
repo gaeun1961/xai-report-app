@@ -627,28 +627,30 @@
     opacity: 1;
   }
 
-  /* the last stop is just long enough to read before the next section */
+  /* the last stop only needs room for its own text and the stage card */
   .storySteps li:last-child {
-    min-height: 380px;
+    min-height: 240px;
   }
 
   .storyInline {
     display: none;
   }
 
+  /* only as tall as the panel on show, so the last step needs no extra
+     room to keep a short picture level with its text */
   .storyStage {
-    display: grid;
+    display: block;
     position: sticky;
     top: 120px;
     align-self: start;
-    min-height: 340px;
   }
 }
 
 /* the panels share one grid cell; only the active one is seen */
+/* inactive panels float over the active one (fading out) and take no room */
 .storyPanel {
-  grid-area: 1 / 1;
-  align-self: start;
+  position: absolute;
+  inset: 0 0 auto;
   opacity: 0;
   visibility: hidden;
   transform: translateY(16px);
@@ -659,6 +661,7 @@
 }
 
 .storyPanel[data-active] {
+  position: relative;
   opacity: 1;
   visibility: visible;
   transform: none;

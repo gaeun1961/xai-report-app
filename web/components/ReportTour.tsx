@@ -145,26 +145,38 @@ function Visual({ step, report }: { step: number; report: ShapReport }) {
 }
 
 // Scroll tour of the report: on wide screens the step texts scroll past a
-// sticky stage, and whichever step's text is level with the stage is the one
-// it shows (scrolling back up rewinds it). On narrow screens each step simply
-// carries its own picture under its text. Without JS the first step shows.
+// sticky stage, and the stage shows the last step whose top has risen past a
+// line at 45% of the viewport (scrolling back up rewinds it). On narrow
+// screens each step simply carries its own picture under its text. Without
+// JS the first step shows.
 export default function ReportTour({ report }: { report: ShapReport }) {
   const [active, setActive] = useState(0);
   const stepRefs = useRef<(HTMLLIElement | null)[]>([]);
 
   useEffect(() => {
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting) setActive(Number((e.target as HTMLElement).dataset.step));
-        }
-      },
-      // a band from just under the sticky stage's top (120px) to mid-screen:
-      // the step whose text is level with the stage is the active one
-      { rootMargin: "-120px 0px -55% 0px" },
-    );
-    stepRefs.current.forEach((el) => el && io.observe(el));
-    return () => io.disconnect();
+    // one line, read the same way scrolling down or up — an "is it in the
+    // band" observer let the step above take over early on the way up
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const line = window.innerHeight * 0.45;
+      let next = 0;
+      stepRefs.current.forEach((el, i) => {
+        if (el && el.getBoundingClientRect().top <= line) next = i;
+      });
+      setActive(next);
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      cancelAnimationFrame(frame);
+    };
   }, []);
 
   return (
